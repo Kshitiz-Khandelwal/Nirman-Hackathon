@@ -161,6 +161,58 @@ M12 Logger + Replay + Evaluation Harness
 
 ---
 
+## Perception Chain (Modules M01–M03)
+
+The perception chain forms the foundational sensing pipeline:
+- **M01 — Frame Acquisition & Timebase**: Monotonic clock timestamps, dedicated capture thread, drop-oldest ring buffer, auto-reconnect.
+- **M02 — Object Detection**: Ultralytics YOLOv8 nano inference, class filtering (`person`, `bicycle`, `car`, `chair`), filtered detection accounting.
+- **M03 — Multi-Object Tracking**: Persistent identity tracking (`ByteTrack` or `BoT-SORT`), bounding box history (N=10), finite-difference image velocity (px/sec). Enforces forward-only data flow with zero haptic/risk coupling.
+
+### Quickstart & Running the Pipeline
+
+```bash
+# Install dependencies
+pip install ultralytics pytest opencv-python pyyaml numpy
+
+# 1. Run live pipeline with webcam (Gate A demo)
+python scripts/run_pipeline.py
+
+# 2. Run on recorded test video (headless or GUI)
+python scripts/run_pipeline.py --source tests/fixtures/test_crossing.mp4
+python scripts/run_pipeline.py --source tests/fixtures/test_walking.mp4 --no-view
+
+# 3. Swap tracker backend between ByteTrack and BoT-SORT
+python scripts/run_pipeline.py --tracker bytetrack
+python scripts/run_pipeline.py --tracker botsort
+
+# 4. Verify M01 -> M02 standalone execution (no M03 dependency)
+python scripts/dump_detections.py
+```
+
+### Running Perception Tests (T01 – T08)
+
+```bash
+# Run all unit tests
+pytest tests/ -v
+
+# Run individual module tests
+pytest tests/test_m01_frame_source.py -v   # T01 (monotonicity), T02 (disconnect/recovery), T03 (queue bound)
+pytest tests/test_m02_detector.py -v       # T04 (qualitative dump), T05 (pre-filter low-conf retention)
+pytest tests/test_m03_tracker.py -v -s     # T06 (ID persistence), T07 (panning stability), T08 (benchmark)
+```
+
+### ID-Switch Benchmark Baseline (T08)
+
+On the two-person crossing test clip (`tests/fixtures/test_crossing.mp4`):
+- **Tracker backend:** `ByteTrack`
+- **Frames evaluated:** 60 frames
+- **Recorded ID-switch events:** `0`
+- **Duplicate IDs observed:** `0` (asserted per frame)
+
+*(Note: When swapping to `BoT-SORT` on high-ego-motion walking footage with camera rotation, evaluate whether ReID features reduce track loss under severe occlusion.)*
+
+---
+
 ## Documentation
 
 | Document | Description |
