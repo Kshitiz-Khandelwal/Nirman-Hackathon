@@ -90,6 +90,8 @@ def test_t06_persistent_track_id_single_subject():
         history_length=10,
         confidence_threshold=0.01,  # Match detect_raw threshold — fixture figures need low conf
         class_filter=None,           # No class filter — fixture objects aren't COCO-labeled
+        confidence_threshold=0.3,
+        class_filter=["person"],
     )
     cap = cv2.VideoCapture(str(fixture))
 
@@ -142,6 +144,8 @@ def test_t07_camera_rotation_bounded_track_count():
         history_length=10,
         confidence_threshold=0.01,
         class_filter=None,
+        confidence_threshold=0.3,
+        class_filter=["person"],
     )
     cap = cv2.VideoCapture(str(fixture))
 
