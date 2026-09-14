@@ -6,7 +6,9 @@ A chest-worn, vision-first local safety system that tracks nearby objects, estim
 
 ---
 
-## The Problem
+## The Problem & The Solution
+
+![The Problem vs The Solution - SpatialVector-HMI](assets/images/problem_solution_comic.jpg)
 
 Distance is not the same as danger. Incomplete or misleading information creates real risks.
 
@@ -16,7 +18,7 @@ Distance is not the same as danger. Incomplete or misleading information creates
 
 ---
 
-## The Solution
+## The Solution Breakdown
 
 **SpatialVector-HMI** goes beyond "something is nearby" → it answers:
 
@@ -193,3 +195,4 @@ M12 Logger + Replay + Evaluation Harness
 ---
 
 *Technology for a more independent tomorrow.*
+
