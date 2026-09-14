@@ -65,16 +65,16 @@ M12 Logger + Replay + Evaluation Harness
 
 ---
 
-## Hardware
+## Hardware Components
 
-| Component | Source | Purpose |
-|---|---|---|
-| Webcam | HOD | Chest-mounted vision input |
-| Arduino Uno | HOD | Haptic controller |
-| Vibration motors ×3 | Buy (~₹150–₹200) | Left / Center / Right tactile output |
-| IMU / MPU6050 | HOD | Ego-motion compensation |
-| Power bank | Prajwal | Portable power |
-| Chest harness | Ready | Stable camera placement |
+| Component | Description & Role |
+|---|---|
+| Chest-Mounted Camera / Webcam | Real-time egocentric visual sensing |
+| Microcontroller (Arduino Uno) | Haptic driver & pattern controller |
+| Vibration Motors (×3) | Directional tactile feedback (Left / Center / Right) |
+| IMU / Gyroscope (MPU6050) | Camera rotation & body ego-motion compensation |
+| Power Bank | Portable, untethered power supply |
+| Chest Harness | Rigid, aligned mounting for camera & IMU |
 
 ---
 
