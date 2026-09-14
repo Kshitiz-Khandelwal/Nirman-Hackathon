@@ -129,3 +129,4 @@ class ObjectDetector:
 
         self.total_detections_produced += len(filtered_detections)
         return filtered_detections
+

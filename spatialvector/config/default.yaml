@@ -13,3 +13,37 @@ tracker:
   backend: "bytetrack"       # or "botsort"
   history_length: 10
   max_missed_frames: 15
+
+optical_flow:
+  max_corners: 200
+  quality_level: 0.01
+  min_distance: 7
+  fb_error_threshold_px: 2.0      # forward-backward error rejection threshold (pixels)
+  reseed_below_point_count: 50    # re-seed features when tracked count drops below this
+
+imu:
+  serial_port: "/dev/ttyUSB0"     # Windows: "COM3"; Linux: "/dev/ttyUSB0"
+  baud_rate: 115200
+  max_timestamp_drift_s: 0.05     # 50ms — ~1.5 frames at 30fps
+  low_pass_alpha: 0.8             # EMA coefficient; 0=heavy filter, 1=no filter
+
+ego_motion:
+  # DECIDED DURING BUILD (not a placeholder) — see ego_motion.py module docstring.
+  # Below this flow_quality, motion_quality → DEGRADED regardless of IMU health.
+  # Rationale: if < 30% of tracked points survived LK + FB-error rejection, the flow
+  # field is too noisy to apply meaningful ego-motion correction. Pass raw flow through.
+  fallback_flow_quality_threshold: 0.30
+
+  # How much more cautious M07 should treat ObjectGeometry when fallback_active=True.
+  # A factor of 1.5 means: treat the uncertainty band as 1.5× wider than normal.
+  # M07 must read this value — do not hard-code it in M07 logic.
+  fallback_caution_widen_factor: 1.5
+
+geometry:
+  # Optional camera intrinsics — null is valid for the first prototype.
+  # If calibrated, set: {fx: <px>, fy: <px>, cx: <px>, cy: <px>}
+  camera_intrinsics: null
+
+  # Fraction of frame diagonal used as FOE containment radius for foe_containment boolean.
+  # 0.15 = an object within 15% of frame diagonal from the FOE is "on course".
+  foe_containment_radius_norm: 0.15

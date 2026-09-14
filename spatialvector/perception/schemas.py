@@ -31,3 +31,4 @@ class Track:
     track_age: int             # frames since first seen
     track_confidence: float
     last_seen_frame_id: int
+

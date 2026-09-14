@@ -238,3 +238,4 @@ class MultiObjectTracker:
         self._last_centers_by_class[class_name].append((new_track_id, center))
         if len(self._last_centers_by_class[class_name]) > 20:
             self._last_centers_by_class[class_name].pop(0)
+

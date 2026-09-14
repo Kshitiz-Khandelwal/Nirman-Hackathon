@@ -692,3 +692,4 @@ The updated design should be presented as an engineering contribution built arou
 ---
 
 *Primary project source: NIRMAAN 2026 proposal, "Real-Time Predictive Mobility Assistance", pages 2–6.*
+

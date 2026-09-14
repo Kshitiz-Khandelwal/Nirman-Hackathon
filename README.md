@@ -222,6 +222,91 @@ On the two-person crossing test clip (`tests/fixtures/test_crossing.mp4`):
 
 ---
 
+## Motion Chain — M04 / M05 / M06 ✅
+
+**Status:** Complete — T09–T15 passing, Gate B integration script ready.
+
+The motion chain takes tracked objects (M03) and computes the *geometry of approach* — optical flow field, Focus of Expansion (travel direction proxy), IMU-corrected ego-motion, and per-object bearing/velocity relative to camera center.
+
+### Modules
+
+| Module | File | Purpose |
+|--------|------|---------|
+| M04 | `spatialvector/motion/optical_flow.py` | Lucas-Kanade sparse flow + RANSAC FOE estimation |
+| M05a | `spatialvector/motion/imu_reader.py` | MPU-6050 serial reader (background thread) |
+| M05b | `spatialvector/motion/ego_motion.py` | Gyro-based rotation subtraction from flow |
+| M06 | `spatialvector/motion/geometry.py` | Per-object bearing, normalized velocity, FOE containment |
+
+### Run the Gate B motion pipeline
+
+```bash
+# Live webcam (no IMU — DEGRADED fallback mode, which is fine for demo)
+python scripts/run_motion_pipeline.py
+
+# Against a recorded walking clip
+python scripts/run_motion_pipeline.py --source tests/fixtures/test_crossing.mp4
+
+# With real IMU (MPU-6050 on Arduino over serial)
+python scripts/run_motion_pipeline.py --source 0 --imu-port COM3
+
+# Simulate an IMU that disconnects after 5 seconds (to test fallback)
+python scripts/run_motion_pipeline.py --source tests/fixtures/test_crossing.mp4 \
+    --sim-imu --sim-imu-disconnect-after 5.0
+
+# Headless (no OpenCV window — for remote/SSH use)
+python scripts/run_motion_pipeline.py --source tests/fixtures/test_crossing.mp4 --no-view
+```
+
+### Run the tests
+
+```bash
+# M04 — optical flow + FOE (T09, T10, T11)
+pytest tests/test_m04_optical_flow.py -v
+python -u tests/test_m04_optical_flow.py    # standalone, no pytest needed
+
+# M05 — IMU ingestion + ego-motion (T12, T13)
+pytest tests/test_m05_imu.py -v
+python -u tests/test_m05_imu.py
+
+# M06 — geometry (T14, T15)
+pytest tests/test_m06_geometry.py -v
+python -u tests/test_m06_geometry.py
+
+# All motion chain tests at once
+pytest tests/test_m04_optical_flow.py tests/test_m05_imu.py tests/test_m06_geometry.py -v
+```
+
+### Simulating an IMU disconnect (for Gate B verification)
+
+```bash
+# Flag --sim-imu-disconnect-after N disconnects the simulated IMU after N seconds.
+# You will see the status bar change from green "OK" to red "DEGRADED | FALLBACK ACTIVE".
+python scripts/run_motion_pipeline.py \
+    --source tests/fixtures/test_crossing.mp4 \
+    --sim-imu --sim-imu-disconnect-after 5.0
+```
+
+### What `fallback_active: True` means (for M07 author)
+
+When `MotionState.fallback_active` is `True`:
+- The IMU was absent, disconnected, or its timestamp drifted beyond `imu.max_timestamp_drift_s` (50ms)
+- **OR** `flow_quality` dropped below `ego_motion.fallback_flow_quality_threshold` (0.30)
+- `corrected_flow` is **raw, uncorrected** flow — rotational component has NOT been subtracted
+- `ego_rotation` is `(0.0, 0.0, 0.0)` — not measured, not estimated
+- `ObjectGeometry.geometry_confidence` is penalized by 50% automatically (see `geometry.py`)
+- **M07 must read `ego_motion.fallback_caution_widen_factor` (1.5) from config** and widen its uncertainty envelope accordingly — do not hard-code this value in M07 logic
+
+### Current measured FOE accuracy (from T09)
+
+Synthetic forward-zoom sequence (true FOE at image center = (320, 240)):
+- Median FOE within **±20% of frame dimensions** (128px × 96px tolerance on 640×480)
+- `foe_confidence` peaks > 0.10 on clean sequences
+- Real-world accuracy will be lower due to gait bob — M07 should treat `foe_containment` as a **cue**, not a hard binary
+
+**Fallback threshold (for M07 inheritance):** `ego_motion.fallback_flow_quality_threshold = 0.30` — decided during build, not at demo time.
+
+---
+
 ## Research References
 
 | Paper | Relevance |

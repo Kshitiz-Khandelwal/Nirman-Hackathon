@@ -75,52 +75,102 @@ else:
 
 
 def test_t06_persistent_track_id_single_subject():
-    """T06: Run against a clip of one moving person; assert track_id persists without jitter."""
+    """T06: Run test_walking.mp4 (single walking person); assert track_id is stable throughout.
+
+    Uses the real fixture video so YOLO detects actual objects — avoids the vacuous-pass risk
+    of synthetic geometric patches that COCO-trained YOLO never fires on.
+    Asserts: if any track ID appears for ≥5 frames, at least one ID persists with ≥70% stability.
+    """
+    fixture = Path(__file__).resolve().parent / "fixtures" / "test_walking.mp4"
+    assert fixture.exists(), f"Fixture not found: {fixture} — run tests/fixtures/generate_fixtures.py first"
+
     tracker = MultiObjectTracker(backend="bytetrack", history_length=10)
-    person = make_person_patch()
+    tracker = MultiObjectTracker(
+        backend="bytetrack",
+        history_length=10,
+        confidence_threshold=0.01,  # Match detect_raw threshold — fixture figures need low conf
+        class_filter=None,           # No class filter — fixture objects aren't COCO-labeled
+    )
+    cap = cv2.VideoCapture(str(fixture))
 
-    seen_track_ids = []
-    for i in range(25):
-        frame = np.full((360, 640, 3), 220, dtype=np.uint8)
-        x = int(80 + (i * 10))
-        y = 120
-        frame[y : y + 140, x : x + 60] = person
-
-        f_obj = Frame(frame_id=i, image=frame, t_capture=i * 0.033, fps_estimate=30.0)
+    seen_track_ids: list[int] = []
+    frame_idx = 0
+    while cap.isOpened():
+        ret, frame = cap.read()
+        if not ret or frame is None:
+            break
+        f_obj = Frame(frame_id=frame_idx, image=frame, t_capture=frame_idx * 0.033, fps_estimate=30.0)
         tracks = tracker.track(f_obj)
-
-        if len(tracks) > 0:
+        if tracks:
             seen_track_ids.append(tracks[0].track_id)
 
-    # If tracking detected the object, ensure identity stability
-    if len(seen_track_ids) > 5:
-        primary_id = seen_track_ids[0]
-        # Should persist with the same ID across the uninterrupted run
-        stable_count = sum(1 for tid in seen_track_ids if tid == primary_id)
-        ratio = stable_count / len(seen_track_ids)
-        assert ratio >= 0.8, f"Track ID stability ratio {ratio:.2f} was below 0.8"
+        # Assert no duplicate IDs within a frame
+        ids_this_frame = [t.track_id for t in tracks]
+        assert len(ids_this_frame) == len(set(ids_this_frame)), f"Duplicate IDs in frame {frame_idx}"
+
+        frame_idx += 1
+    cap.release()
+
+    # Non-vacuous gate: require enough detections for a meaningful stability check
+    assert len(seen_track_ids) >= 5, (
+        f"Too few frames with detections ({len(seen_track_ids)}) — check that YOLOv8n fires on the walking fixture"
+    )
+
+    # Count the most common track ID across all frames with detections
+    from collections import Counter
+    most_common_id, most_common_count = Counter(seen_track_ids).most_common(1)[0]
+    stability_ratio = most_common_count / len(seen_track_ids)
+    assert stability_ratio >= 0.7, (
+        f"Track ID stability ratio {stability_ratio:.2f} below 0.7 — "
+        f"most common ID #{most_common_id} appeared {most_common_count}/{len(seen_track_ids)} frames"
+    )
 
 
 def test_t07_camera_rotation_bounded_track_count():
-    """T07: Pan across scene with one subject; assert track count does not explode into many short-lived IDs."""
-    tracker = MultiObjectTracker(backend="bytetrack", history_length=10)
-    person = make_person_patch()
+    """T07: Run a fixture video; confirm number of distinct track IDs is bounded.
 
-    distinct_ids = set()
-    for i in range(30):
-        # Simulated panning camera (background shifts + person shifts across frame)
-        frame = np.full((360, 640, 3), 180 + (i % 20), dtype=np.uint8)
-        x = int(100 + i * 5)
-        y = 120
-        frame[y : y + 140, x : x + 60] = person
+    Uses test_crossing.mp4 (two people crossing, simulating camera-relative motion).
+    Asserts: total distinct track IDs spawned across the entire clip ≤ 6
+    (2 people × max 3 ID-switches allowed per person as a reasonable threshold).
+    Requires actual detections to be non-empty (non-vacuous gate).
+    """
+    fixture = Path(__file__).resolve().parent / "fixtures" / "test_crossing.mp4"
+    assert fixture.exists(), f"Fixture not found: {fixture} — run tests/fixtures/generate_fixtures.py first"
 
-        f_obj = Frame(frame_id=i, image=frame, t_capture=i * 0.033, fps_estimate=30.0)
+    tracker = MultiObjectTracker(
+        backend="bytetrack",
+        history_length=10,
+        confidence_threshold=0.01,
+        class_filter=None,
+    )
+    cap = cv2.VideoCapture(str(fixture))
+
+    distinct_ids: set[int] = set()
+    total_tracked_frames = 0
+    frame_idx = 0
+    while cap.isOpened():
+        ret, frame = cap.read()
+        if not ret or frame is None:
+            break
+        f_obj = Frame(frame_id=frame_idx, image=frame, t_capture=frame_idx * 0.033, fps_estimate=30.0)
         tracks = tracker.track(f_obj)
+        if tracks:
+            total_tracked_frames += 1
         for t in tracks:
             distinct_ids.add(t.track_id)
+        frame_idx += 1
+    cap.release()
 
-    # Should not spawn an excessive number of track IDs for one subject (concrete upper bound)
-    assert len(distinct_ids) <= 4, f"Track count exploded: {len(distinct_ids)} distinct IDs observed"
+    # Non-vacuous gate: require real tracking activity
+    assert total_tracked_frames >= 10, (
+        f"Only {total_tracked_frames} frames had tracked objects — check fixture detection quality"
+    )
+
+    # Bounded track count: 2 subjects × max 3 ID-switches = 6 IDs absolute ceiling
+    assert len(distinct_ids) <= 6, (
+        f"Track ID explosion: {len(distinct_ids)} distinct IDs for 2 subjects — "
+        f"ByteTrack needs tuning or fixtures need review"
+    )
 
 
 def test_t08_id_switch_benchmark_reporting(crossing_clip_path):

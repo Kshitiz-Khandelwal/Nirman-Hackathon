@@ -61,3 +61,4 @@ def generate_crossing_clip():
 if __name__ == "__main__":
     generate_walking_clip()
     generate_crossing_clip()
+
