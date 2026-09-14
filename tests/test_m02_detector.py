@@ -81,3 +81,20 @@ def test_t05_low_confidence_boxes_present_pre_filter():
     if len(raw_candidates) > len(filtered_detections):
         low_conf_found = any(c.confidence < 0.85 for c in raw_candidates)
         assert low_conf_found, "detect_raw should retain boxes below threshold"
+
+
+if __name__ == "__main__":
+    import tempfile
+    print("--- Running M02 Detector Tests Standalone ---")
+    with tempfile.TemporaryDirectory() as tmpdir:
+        tmp_p = Path(tmpdir)
+        print("[TEST] Running T04: Detector qualitative output...")
+        test_t04_detector_qualitative_output(tmp_p)
+        print("  -> T04 PASSED (saved sample to disk)")
+
+        print("[TEST] Running T05: Low-confidence box retention in detect_raw()...")
+        test_t05_low_confidence_boxes_present_pre_filter()
+        print("  -> T05 PASSED")
+
+    print("\nALL M02 TESTS PASSED SUCCESSFULLY.")
+

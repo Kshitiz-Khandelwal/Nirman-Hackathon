@@ -58,11 +58,20 @@ def generate_test_crossing_clip(file_path: Path):
     writer.release()
 
 
-@pytest.fixture(scope="session")
-def crossing_clip_path(tmp_path_factory):
-    p = tmp_path_factory.mktemp("video") / "crossing_test.mp4"
-    generate_test_crossing_clip(p)
-    return str(p)
+try:
+    import pytest
+except ImportError:
+    pytest = None
+
+if pytest is not None:
+    @pytest.fixture(scope="session")
+    def crossing_clip_path(tmp_path_factory):
+        p = tmp_path_factory.mktemp("video") / "crossing_test.mp4"
+        generate_test_crossing_clip(p)
+        return str(p)
+else:
+    def crossing_clip_path():
+        return None
 
 
 def test_t06_persistent_track_id_single_subject():
@@ -145,3 +154,25 @@ def test_t08_id_switch_benchmark_reporting(crossing_clip_path):
 
     # Report metric; does not fail unless duplicate IDs or unexpected exception occurred
     assert id_switch_count >= 0
+
+
+if __name__ == "__main__":
+    import tempfile
+    print("--- Running M03 Multi-Object Tracker Tests Standalone ---")
+    print("[TEST] Running T06: Persistent Track ID on single subject...")
+    test_t06_persistent_track_id_single_subject()
+    print("  -> T06 PASSED")
+
+    print("[TEST] Running T07: Panning camera bounded track count...")
+    test_t07_camera_rotation_bounded_track_count()
+    print("  -> T07 PASSED")
+
+    print("[TEST] Running T08: ID-switch benchmark on crossing clip...")
+    with tempfile.TemporaryDirectory() as tmpdir:
+        clip_p = Path(tmpdir) / "crossing.mp4"
+        generate_test_crossing_clip(clip_p)
+        test_t08_id_switch_benchmark_reporting(str(clip_p))
+        print("  -> T08 PASSED")
+
+    print("\nALL M03 TESTS PASSED SUCCESSFULLY.")
+
