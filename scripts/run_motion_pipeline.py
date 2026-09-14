@@ -132,14 +132,24 @@ def main():
     frame_count = 0
     fps_history: list[float] = []
     t_start = time.monotonic()
+    consecutive_timeouts = 0
 
     try:
         while True:
             frame_obj = frame_src.get_frame(timeout=1.0)
             if frame_obj is None:
-                print("[Gate B] Frame source timeout — quitting")
+                consecutive_timeouts += 1
+                if frame_src.is_running() and consecutive_timeouts < 5:
+                    # Still warming up camera hardware
+                    continue
+                print(f"\n[Gate B] No frames received from source '{source}' (status: {frame_src.status}).")
+                if isinstance(source, int) or str(source).isdigit():
+                    print("[Gate B] Hint: If you do not have a physical webcam connected at index "
+                          f"{source}, run with a video fixture:\n"
+                          "        python scripts/run_motion_pipeline.py --source tests/fixtures/test_crossing.mp4\n")
                 break
 
+            consecutive_timeouts = 0
             img = frame_obj.image
             h, w = img.shape[:2]
             t_frame = frame_obj.t_capture
