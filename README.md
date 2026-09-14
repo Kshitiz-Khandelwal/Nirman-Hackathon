@@ -8,7 +8,7 @@ A chest-worn, vision-first local safety system that tracks nearby objects, estim
 
 ## The Problem & The Solution
 
-![The Problem vs The Solution - SpatialVector-HMI](assets/images/problem_solution_comic.jpg)
+![The Problem vs The Solution - SpatialVector-HMI](assets/images/spatialvector_problem_solution.jpg)
 
 Distance is not the same as danger. Incomplete or misleading information creates real risks.
 
