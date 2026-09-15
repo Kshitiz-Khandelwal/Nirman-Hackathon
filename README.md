@@ -111,8 +111,11 @@ cp camera_source.example.txt camera_source.txt
 
 ### 3. Launch Master System (All-in-One)
 ```bash
-# Live mode (resolves camera from camera_source.txt, starts dashboard & pipeline)
+# Canonical Demo Day Entrypoint:
 python run.py
+
+# Windows shortcut:
+.\run.bat
 
 # Synthetic demo mode (no camera or hardware required)
 python run.py --synthetic
@@ -125,6 +128,14 @@ This single command spins up:
 2. Camera stream capture & auto-reconnect engine
 3. Full Perception, Tracking, Flow, Prediction & Risk Pipeline
 4. Automatically opens the interactive mobile dashboard in your browser
+
+#### 📌 Launcher Hierarchy & Canonical Entrypoints
+- **`run.py` / `run.bat`**: **CANONICAL ENTRYPOINT FOR DEMO DAY** — All-in-one execution (Perception + Decision + Haptics + M11 Telemetry Server + Web Dashboard).
+- **`run_system.bat` / `run_system.py`**: Backwards-compatibility alias delegating to `run.py`.
+- **`demo/validate_scenarios.py`**: Automated validation harness testing all 6 demo scenes against M01–M09 and M12 logging.
+- **`demo/run_gate_g.py`**: Cold-start reproducibility suite (runs full demo sequence twice across independent subprocesses).
+- **`scripts/run_full_pipeline.py`**: Diagnostic engineering pipeline for Gates E & F testing.
+- **`scripts/run_decision_pipeline.py`**: Decision-chain unit demo for Gates C & D testing.
 
 > **Integrity Guarantee**: The live dashboard never fabricates track/risk data — an empty or DEGRADED state always means exactly what it says. Synthetic obstacle scenarios only run in explicitly requested `--synthetic` mode.
 
