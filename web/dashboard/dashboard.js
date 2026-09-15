@@ -5,15 +5,17 @@
  * 1. 5-Tab Navigation (Live View, Prediction Inspector, Haptic State, Test & Replay, Social Assist)
  * 2. Client-Side Staleness Watchdog (Section 0 requirement: threshold = 1500ms)
  * 3. Dynamic VDO.Ninja Camera Feed embedding & real-time link configuration
- * 4. WebSocket auto-reconnect with telemetry visualization:
+ * 4. Aspect Ratio (Fit/Fill) and HUD (ON/OFF) video overlay controls
+ * 5. WebSocket auto-reconnect with telemetry visualization:
  *    - Real-time Risk Alert Banner with Circular Gauge (Safe, Caution, Warning, Critical, Degraded)
+ *    - 3 Separate Metric Tiles (Risk Score, TTC, CPA)
  *    - Corridor Risk Triad (Left, Center, Right)
  *    - Recommended Direction Guidance
- *    - Live HUD Perspective & Bounding Box Overlay Canvas
- * 5. Interactive Prediction Inspector with Vector Trajectory Canvas & Dynamic Reasoning
- * 6. Interactive Haptic State with Vest SVG Vibration Ripples & Telemetry History
- * 7. Interactive Test & Replay Scenarios (S1-S6) with Multi-metric Timeline Chart & Scrubber
- * 8. Social Assist with Privacy-isolated Face Recognition & Contacts Directory
+ *    - Calibrated Ground-Plane Perspective HUD Overlay Canvas
+ * 6. Interactive Prediction Inspector with Vector Trajectory Canvas & Dynamic Reasoning
+ * 7. Interactive Haptic State with Vest SVG Vibration Ripples & Telemetry History
+ * 8. Interactive Test & Replay Scenarios (S1-S6) with Multi-metric Timeline Chart & Scrubber
+ * 9. Social Assist with Privacy-isolated Face Recognition & Contacts Directory
  */
 
 (function () {
@@ -24,6 +26,10 @@
     let ws = null;
     let reconnectDelay = 1000;
     let currentCameraUrl = "https://vdo.ninja/?view=vYEkARC";
+
+    // Overlay and Video Controls
+    let hudOverlayEnabled = true;
+    let isVideoCover = true;
 
     // Telemetry and Model State
     let currentRiskState = "WARNING";
@@ -41,7 +47,7 @@
             relative_velocity: 2.5,
             pred_conf: 0.81,
             state: "WARNING",
-            bbox: [160, 80, 240, 190]
+            bbox: [162, 85, 238, 190]
         }
     ];
     let selectedTrackIndex = 0;
@@ -224,13 +230,11 @@
     // -------------------------------------------------------------------------
     setInterval(function checkWatchdog() {
         if (lastMessageTimestamp === 0) {
-            // Initializing/waiting for first connection
             return;
         }
 
         const elapsed = Date.now() - lastMessageTimestamp;
         if (elapsed > STALE_THRESHOLD_MS) {
-            // Pipeline stalled or connection dropped
             stalenessBanner.style.display = "block";
             staleSecTxt.textContent = (elapsed / 1000).toFixed(1);
 
@@ -238,7 +242,6 @@
             connStatusDot.className = "status-dot disconnected";
             connStatusText.textContent = "Pipeline Stalled / Offline";
 
-            // Put motors into idle visually
             resetMotorVisuals();
         } else {
             stalenessBanner.style.display = "none";
@@ -257,13 +260,35 @@
     updateClock();
 
     // -------------------------------------------------------------------------
-    // 2. Camera Source & VDO.Ninja Integration
+    // 2. Camera Source, VDO.Ninja & HUD Controls
     // -------------------------------------------------------------------------
+    window.toggleHudOverlay = function () {
+        hudOverlayEnabled = !hudOverlayEnabled;
+        const btn = document.getElementById("btn-toggle-hud");
+        if (btn) btn.innerHTML = `<span>HUD: ${hudOverlayEnabled ? "ON" : "OFF"}</span>`;
+        if (liveOverlayCanvas) {
+            liveOverlayCanvas.style.display = hudOverlayEnabled ? "block" : "none";
+            if (hudOverlayEnabled) drawLiveOverlay();
+        }
+    };
+
+    window.toggleVideoAspect = function () {
+        isVideoCover = !isVideoCover;
+        const btn = document.getElementById("btn-toggle-aspect");
+        if (btn) btn.innerHTML = `<span>${isVideoCover ? "Fill" : "Fit"}</span>`;
+        if (vdoNinjaFrame) {
+            if (isVideoCover) {
+                vdoNinjaFrame.classList.add("fit-cover");
+            } else {
+                vdoNinjaFrame.classList.remove("fit-cover");
+            }
+        }
+    };
+
     function formatVdoNinjaUrl(rawUrl) {
         if (!rawUrl) return "about:blank";
         let url = rawUrl.trim();
         if (url.includes("vdo.ninja")) {
-            // Add cleanoutput and transparent HUD styling flags if missing
             if (!url.includes("cleanoutput")) {
                 url += (url.includes("?") ? "&" : "?") + "cleanoutput";
             }
@@ -444,7 +469,6 @@
         // 4. Tracks & Objects
         if (msg.tracks && msg.tracks.length > 0) {
             activeTracks = msg.tracks;
-            // Compute min TTC and CPA
             let minTtc = null;
             let minCpa = null;
             for (const t of activeTracks) {
@@ -491,7 +515,6 @@
     function updateRiskBanner(state, riskScore) {
         if (!riskAlertCard) return;
 
-        // Colors & Text
         riskAlertCard.className = `risk-alert-card alert-${state.toLowerCase()}`;
         if (alertStateName) alertStateName.textContent = state;
 
@@ -523,7 +546,6 @@
         if (alertStateSub) alertStateSub.textContent = subText;
         if (valRiskScore) valRiskScore.textContent = riskScore.toFixed(2);
 
-        // Circular Gauge Animation
         if (gaugeCircleStroke) {
             const pct = Math.min(100, Math.max(0, Math.round(riskScore * 100)));
             gaugeCircleStroke.setAttribute("stroke-dasharray", `${pct}, 100`);
@@ -567,16 +589,15 @@
             return;
         }
 
-        // Safest corridor
         if (left <= center && left <= right) {
             recDirName.textContent = "MOVE LEFT";
             recDirSub.textContent = "Left corridor is safest";
-            recDirName.style.color = "#10b981";
+            recDirName.style.color = "#047857";
             recArrowIcon.innerHTML = `<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>`;
         } else if (right < left && right <= center) {
             recDirName.textContent = "MOVE RIGHT";
             recDirSub.textContent = "Right corridor is safest";
-            recDirName.style.color = "#10b981";
+            recDirName.style.color = "#047857";
             recArrowIcon.innerHTML = `<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>`;
         } else {
             recDirName.textContent = "MAINTAIN PATH";
@@ -590,78 +611,79 @@
     // 6. Live HUD Perspective & Bounding Box Overlay
     // -------------------------------------------------------------------------
     function drawLiveOverlay() {
-        if (!liveOverlayCanvas) return;
+        if (!liveOverlayCanvas || !hudOverlayEnabled) return;
         const ctx = liveOverlayCanvas.getContext("2d");
         const w = liveOverlayCanvas.width;
         const h = liveOverlayCanvas.height;
 
         ctx.clearRect(0, 0, w, h);
 
-        // Perspective corridor lines on ground plane
-        const vanishY = h * 0.42;
+        // Ground perspective horizon (positioned cleanly below the center)
+        const vanishY = h * 0.56;
         const vanishX = w * 0.50;
 
-        // Ground perspective trapezoids (Left, Center, Right)
-        // Center Corridor (Hazards zone)
+        // Ground perspective trapezoids (Only occupy lower 44% of frame)
+        // Center Corridor (Hazard zone)
         ctx.save();
         ctx.beginPath();
-        ctx.moveTo(vanishX - 35, vanishY);
-        ctx.lineTo(vanishX + 35, vanishY);
-        ctx.lineTo(w * 0.70, h);
-        ctx.lineTo(w * 0.30, h);
+        ctx.moveTo(vanishX - 24, vanishY);
+        ctx.lineTo(vanishX + 24, vanishY);
+        ctx.lineTo(w * 0.68, h);
+        ctx.lineTo(w * 0.32, h);
         ctx.closePath();
 
         if (currentGlobalRisk > 0.5) {
-            ctx.fillStyle = "rgba(239, 68, 68, 0.22)"; // Red danger tint
-            ctx.strokeStyle = "rgba(239, 68, 68, 0.8)";
+            ctx.fillStyle = "rgba(239, 68, 68, 0.16)";
+            ctx.strokeStyle = "rgba(239, 68, 68, 0.75)";
         } else {
-            ctx.fillStyle = "rgba(16, 185, 129, 0.15)";
-            ctx.strokeStyle = "rgba(16, 185, 129, 0.6)";
+            ctx.fillStyle = "rgba(16, 185, 129, 0.10)";
+            ctx.strokeStyle = "rgba(16, 185, 129, 0.55)";
         }
         ctx.fill();
-        ctx.lineWidth = 2;
-        ctx.setLineDash([6, 4]);
+        ctx.lineWidth = 1.5;
+        ctx.setLineDash([5, 4]);
         ctx.stroke();
         ctx.restore();
 
         // Left Corridor
         ctx.save();
         ctx.beginPath();
-        ctx.moveTo(vanishX - 90, vanishY);
-        ctx.lineTo(vanishX - 35, vanishY);
-        ctx.lineTo(w * 0.30, h);
-        ctx.lineTo(w * 0.05, h);
+        ctx.moveTo(vanishX - 60, vanishY);
+        ctx.lineTo(vanishX - 24, vanishY);
+        ctx.lineTo(w * 0.32, h);
+        ctx.lineTo(w * 0.04, h);
         ctx.closePath();
-        ctx.fillStyle = "rgba(16, 185, 129, 0.12)";
+        ctx.fillStyle = "rgba(16, 185, 129, 0.08)";
         ctx.fill();
         ctx.restore();
 
         // Right Corridor
         ctx.save();
         ctx.beginPath();
-        ctx.moveTo(vanishX + 35, vanishY);
-        ctx.lineTo(vanishX + 90, vanishY);
-        ctx.lineTo(w * 0.95, h);
-        ctx.lineTo(w * 0.70, h);
+        ctx.moveTo(vanishX + 24, vanishY);
+        ctx.lineTo(vanishX + 60, vanishY);
+        ctx.lineTo(w * 0.96, h);
+        ctx.lineTo(w * 0.68, h);
         ctx.closePath();
-        ctx.fillStyle = "rgba(16, 185, 129, 0.12)";
+        ctx.fillStyle = "rgba(16, 185, 129, 0.08)";
         ctx.fill();
         ctx.restore();
 
         // Draw Bounding Boxes for detected objects (e.g. Scooter #2)
         const primaryTrack = activeTracks[selectedTrackIndex] || activeTracks[0];
-        if (primaryTrack) {
-            const bx = 165;
-            const by = 80;
-            const bw = 70;
-            const bh = 110;
+        if (primaryTrack && primaryTrack.ttc_s !== undefined) {
+            const bx = 162;
+            const by = 85;
+            const bw = 76;
+            const bh = 105;
 
             ctx.save();
-            ctx.strokeStyle = "#ef4444";
-            ctx.lineWidth = 2.5;
+            ctx.strokeStyle = (currentGlobalRisk > 0.5) ? "#ef4444" : "#10b981";
+            ctx.lineWidth = 2;
             ctx.setLineDash([]);
-            // Corner-bracket bounding box
-            const len = 12;
+
+            // High-tech corner brackets
+            const len = 10;
             // Top-left
             ctx.beginPath(); ctx.moveTo(bx, by + len); ctx.lineTo(bx, by); ctx.lineTo(bx + len, by); ctx.stroke();
             // Top-right
@@ -671,27 +693,18 @@
             // Bottom-right
             ctx.beginPath(); ctx.moveTo(bx + bw - len, by + bh); ctx.lineTo(bx + bw, by + bh); ctx.lineTo(bx + bw, by + bh - len); ctx.stroke();
 
-            // Label Tag
-            const labelText = `${primaryTrack.class_name || 'Object'} #${primaryTrack.track_id} | TTC: ${Number(currentTTC).toFixed(1)}s`;
-            ctx.font = "bold 10px 'JetBrains Mono', monospace";
+            // Label Tag Badge
+            const labelText = `${primaryTrack.class_name || 'Scooter'} #${primaryTrack.track_id} | TTC: ${Number(currentTTC).toFixed(1)}s`;
+            ctx.font = "bold 9px 'JetBrains Mono', monospace";
             const textWidth = ctx.measureText(labelText).width;
 
-            ctx.fillStyle = "rgba(239, 68, 68, 0.9)";
+            ctx.fillStyle = (currentGlobalRisk > 0.5) ? "rgba(220, 38, 38, 0.92)" : "rgba(16, 185, 129, 0.92)";
             ctx.beginPath();
-            ctx.roundRect(bx, by - 20, textWidth + 12, 18, 4);
+            ctx.roundRect(bx - 2, by - 19, textWidth + 12, 17, 4);
             ctx.fill();
 
             ctx.fillStyle = "#ffffff";
-            ctx.fillText(labelText, bx + 6, by - 7);
-
-            // Vector arrow projecting collision trajectory
-            ctx.beginPath();
-            ctx.moveTo(bx + bw / 2, by + bh);
-            ctx.lineTo(vanishX, h * 0.90);
-            ctx.strokeStyle = "#ef4444";
-            ctx.lineWidth = 2;
-            ctx.setLineDash([4, 4]);
-            ctx.stroke();
+            ctx.fillText(labelText, bx + 4, by - 7);
             ctx.restore();
         }
     }
@@ -746,7 +759,6 @@
             inspState.className = `pill-badge ${(track.state || 'warning').toLowerCase() === 'safe' ? 'green' : 'orange'}`;
         }
 
-        // Dynamic reasoning steps
         if (inspectorReasoningList) {
             inspectorReasoningList.innerHTML = `
                 <div class="reasoning-item"><span class="reasoning-num">1.</span><span>Object tracked consistently across video frames</span></div>
@@ -767,11 +779,10 @@
 
         ctx.clearRect(0, 0, w, h);
 
-        // Deep technical grid background
         ctx.fillStyle = "#0f172a";
         ctx.fillRect(0, 0, w, h);
 
-        ctx.strokeStyle = "rgba(51, 65, 85, 0.4)";
+        ctx.strokeStyle = "rgba(51, 65, 85, 0.35)";
         ctx.lineWidth = 1;
         for (let x = 20; x < w; x += 30) {
             ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, h); ctx.stroke();
@@ -780,13 +791,12 @@
             ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(w, y); ctx.stroke();
         }
 
-        // Center axes
         const userX = w * 0.5;
         const userY = h * 0.88;
         const foeX = w * 0.5;
         const foeY = h * 0.28;
 
-        // 1. User Path (Dashed Blue Line)
+        // User Path (Dashed Blue Line)
         ctx.save();
         ctx.beginPath();
         ctx.moveTo(userX, userY);
@@ -797,7 +807,7 @@
         ctx.stroke();
         ctx.restore();
 
-        // 2. FOE (Focus of Expansion) marker
+        // FOE marker
         ctx.save();
         ctx.beginPath();
         ctx.arc(foeX, foeY, 6, 0, Math.PI * 2);
@@ -808,7 +818,7 @@
         ctx.stroke();
         ctx.restore();
 
-        // 3. User Current Position marker
+        // User Current Position marker
         ctx.save();
         ctx.beginPath();
         ctx.arc(userX, userY, 7, 0, Math.PI * 2);
@@ -823,7 +833,7 @@
         ctx.fillText("Current position", userX - 70, userY + 4);
         ctx.restore();
 
-        // 4. Object Position & Velocity Vector
+        // Object Position & Velocity Vector
         const objX = w * 0.50;
         const objY = h * 0.22;
         const interX = w * 0.50;
@@ -862,7 +872,6 @@
         ctx.lineWidth = 2;
         ctx.stroke();
 
-        // Tag: 2.1s collision
         ctx.fillStyle = "rgba(239, 68, 68, 0.95)";
         ctx.beginPath();
         ctx.roundRect(interX + 10, interY - 9, 74, 18, 4);
@@ -937,7 +946,6 @@
         if (hapticDurVal) hapticDurVal.textContent = `${dur} ms`;
         if (hapticTimeVal) hapticTimeVal.textContent = timeNow;
 
-        // Reset motors first
         resetMotorVisuals();
 
         const isVibrating = pattern !== "ALL_CLEAR";
@@ -960,7 +968,6 @@
             setMotorActive(svgMotorRight, svgRippleRight, svgLblRight, devMotorRStatus, true);
         }
 
-        // Add to history
         hapticHistory.unshift({ time: timeNow, pattern, duration: dur, urgency });
         if (hapticHistory.length > 20) hapticHistory.pop();
         renderHapticCommandsList();
@@ -1089,21 +1096,18 @@
 
         ctx.clearRect(0, 0, w, h);
 
-        // Chart background
         ctx.fillStyle = "#ffffff";
         ctx.fillRect(0, 0, w, h);
 
         const scen = SCENARIOS[currentScenarioId] || SCENARIOS.s1;
         const pts = scen.curve;
 
-        // Draw horizontal grid guidelines
         ctx.strokeStyle = "#f1f5f9";
         ctx.lineWidth = 1;
         for (let y = 15; y < h; y += 22) {
             ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(w, y); ctx.stroke();
         }
 
-        // Draw Risk Curve
         ctx.beginPath();
         const step = w / (pts.length - 1);
         pts.forEach((val, i) => {
@@ -1117,14 +1121,12 @@
         ctx.lineWidth = 2.5;
         ctx.stroke();
 
-        // Area under curve
         ctx.lineTo(w, h);
         ctx.lineTo(0, h);
         ctx.closePath();
         ctx.fillStyle = scen.riskPeak > 0.5 ? "rgba(249, 115, 22, 0.08)" : "rgba(37, 99, 235, 0.08)";
         ctx.fill();
 
-        // Scrubber Cursor Line
         const cursorX = (replayProgress / 100) * w;
         ctx.save();
         ctx.strokeStyle = "#0f172a";
@@ -1135,7 +1137,6 @@
         ctx.lineTo(cursorX, h);
         ctx.stroke();
 
-        // Scrubber thumb dot
         const curveIdx = Math.min(pts.length - 1, Math.floor((replayProgress / 100) * pts.length));
         const cursorY = h - 10 - ((pts[curveIdx] || 0.1) * (h - 25));
         ctx.beginPath();
@@ -1156,7 +1157,6 @@
 
         if (toggleSocialSwitch) {
             if (socialAssistEnabled) {
-                toggleSocialSwitch.classList.remove("off");
                 toggleSocialSwitch.style.background = "var(--c-primary)";
                 const knob = toggleSocialSwitch.querySelector(".toggle-knob");
                 if (knob) {
@@ -1164,7 +1164,6 @@
                     knob.style.left = "auto";
                 }
             } else {
-                toggleSocialSwitch.classList.add("off");
                 toggleSocialSwitch.style.background = "#cbd5e1";
                 const knob = toggleSocialSwitch.querySelector(".toggle-knob");
                 if (knob) {
