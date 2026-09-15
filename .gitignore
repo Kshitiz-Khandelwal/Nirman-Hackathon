@@ -4,4 +4,5 @@ __pycache__/
 *.pt
 .pytest_cache/
 detections_dump.json
+sessions/
 

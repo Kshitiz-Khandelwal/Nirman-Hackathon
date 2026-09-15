@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>SpatialVector-HMI — Live Telemetry & Mobile Dashboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-base: #0a0d14;
+            --bg-surface: #111622;
+            --bg-card: #161c2d;
+            --border: #232b3e;
+            --border-highlight: #323d56;
+            --text-main: #f1f5f9;
+            --text-muted: #94a3b8;
+            --text-dim: #64748b;
+
+            --c-safe: #10b981;
+            --c-safe-glow: rgba(16, 185, 129, 0.25);
+            --c-caution: #f59e0b;
+            --c-caution-glow: rgba(245, 158, 11, 0.25);
+            --c-warning: #f97316;
+            --c-warning-glow: rgba(249, 115, 22, 0.25);
+            --c-critical: #ef4444;
+            --c-critical-glow: rgba(239, 68, 68, 0.35);
+            --c-degraded: #a855f7;
+            --c-degraded-glow: rgba(168, 85, 247, 0.25);
+            --c-disconnected: #dc2626;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: var(--bg-base);
+            color: var(--text-main);
+            font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            padding: 12px;
+            overflow-x: hidden;
+        }
+
+        .mono {
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        /* Top Header */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--bg-surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 12px 16px;
+            margin-bottom: 12px;
+        }
+
+        .brand-title {
+            font-size: 1.1rem;
+            font-weight: 800;
+            letter-spacing: -0.02em;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .brand-badge {
+            background: rgba(16, 185, 129, 0.15);
+            color: var(--c-safe);
+            font-size: 0.7rem;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-weight: 700;
+        }
+
+        .header-meta {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        .conn-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--c-critical);
+            box-shadow: 0 0 8px var(--c-critical);
+            display: inline-block;
+        }
+        .conn-dot.online {
+            background: var(--c-safe);
+            box-shadow: 0 0 8px var(--c-safe);
+        }
+
+        /* Staleness Watchdog Banner (Required per Section 0) */
+        #watchdog-banner {
+            display: none;
+            background: linear-gradient(135deg, rgba(220, 38, 38, 0.9), rgba(185, 28, 28, 0.9));
+            color: #ffffff;
+            padding: 12px 16px;
+            border-radius: 10px;
+            font-weight: 700;
+            font-size: 0.9rem;
+            margin-bottom: 12px;
+            text-align: center;
+            box-shadow: 0 0 20px rgba(220, 38, 38, 0.4);
+            animation: pulse-stale 1.5s infinite;
+        }
+
+        @keyframes pulse-stale {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.85; transform: scale(0.995); }
+        }
+
+        /* Main Grid */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 12px;
+            flex: 1;
+        }
+
+        @media (min-width: 768px) {
+            .dashboard-grid {
+                grid-template-columns: 1.1fr 0.9fr;
+            }
+        }
+
+        .card {
+            background: var(--bg-surface);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 8px;
+        }
+
+        .card-title {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--text-dim);
+            font-weight: 700;
+        }
+
+        /* 1. Primary Risk State Banner */
+        .state-banner {
+            background: var(--bg-card);
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .state-banner.state-safe {
+            border-color: var(--c-safe);
+            background: radial-gradient(circle at center, rgba(16, 185, 129, 0.12), var(--bg-card) 70%);
+            box-shadow: 0 0 24px var(--c-safe-glow);
+        }
+        .state-banner.state-caution {
+            border-color: var(--c-caution);
+            background: radial-gradient(circle at center, rgba(245, 158, 11, 0.15), var(--bg-card) 70%);
+            box-shadow: 0 0 24px var(--c-caution-glow);
+        }
+        .state-banner.state-warning {
+            border-color: var(--c-warning);
+            background: radial-gradient(circle at center, rgba(249, 115, 22, 0.18), var(--bg-card) 70%);
+            box-shadow: 0 0 28px var(--c-warning-glow);
+        }
+        .state-banner.state-critical {
+            border-color: var(--c-critical);
+            background: radial-gradient(circle at center, rgba(239, 68, 68, 0.25), var(--bg-card) 70%);
+            box-shadow: 0 0 32px var(--c-critical-glow);
+            animation: pulse-crit 1s infinite;
+        }
+        .state-banner.state-degraded {
+            border-color: var(--c-degraded);
+            background: radial-gradient(circle at center, rgba(168, 85, 247, 0.15), var(--bg-card) 70%);
+            box-shadow: 0 0 24px var(--c-degraded-glow);
+        }
+        .state-banner.state-disconnected {
+            border-color: var(--c-disconnected);
+            background: radial-gradient(circle at center, rgba(220, 38, 38, 0.25), var(--bg-card) 70%);
+        }
+
+        @keyframes pulse-crit {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.015); }
+        }
+
+        .state-label {
+            font-size: 2.2rem;
+            font-weight: 800;
+            letter-spacing: -0.01em;
+            line-height: 1;
+        }
+
+        .risk-score-display {
+            font-size: 1.1rem;
+            color: var(--text-muted);
+            margin-top: 4px;
+        }
+
+        .risk-score-value {
+            font-weight: 700;
+            color: var(--text-main);
+        }
+
+        /* 2. Corridor Gauges */
+        .corridor-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 8px;
+        }
+
+        .corridor-cell {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 10px;
+            text-align: center;
+        }
+
+        .corridor-label {
+            font-size: 0.75rem;
+            color: var(--text-dim);
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .corridor-val {
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin: 4px 0;
+        }
+
+        .progress-track {
+            height: 6px;
+            background: #202738;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-top: 4px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            width: 0%;
+            background: var(--c-safe);
+            transition: width 0.2s ease, background-color 0.2s ease;
+        }
+
+        /* 3. Haptic Actuation Visualization */
+        .haptic-container {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        .motors-visualizer {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            padding: 8px 0;
+        }
+
+        .motor-node {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .motor-disk {
+            width: 52px;
+            height: 52px;
+            border-radius: 50%;
+            background: #1c2436;
+            border: 2px solid var(--border-highlight);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 0.9rem;
+            color: var(--text-dim);
+            transition: all 0.15s ease;
+            position: relative;
+        }
+
+        .motor-disk.active {
+            background: rgba(16, 185, 129, 0.2);
+            border-color: var(--c-safe);
+            color: #ffffff;
+            box-shadow: 0 0 16px var(--c-safe);
+            animation: motor-shake 0.1s infinite;
+        }
+
+        .motor-disk.active.crit {
+            background: rgba(239, 68, 68, 0.3);
+            border-color: var(--c-critical);
+            box-shadow: 0 0 20px var(--c-critical);
+        }
+
+        @keyframes motor-shake {
+            0% { transform: translate(0, 0); }
+            25% { transform: translate(-1.5px, 1.5px); }
+            50% { transform: translate(1.5px, -1.5px); }
+            75% { transform: translate(-1.5px, -1.5px); }
+            100% { transform: translate(0, 0); }
+        }
+
+        .haptic-meta-row {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.85rem;
+            border-top: 1px solid var(--border);
+            padding-top: 10px;
+        }
+
+        .pattern-pill {
+            background: rgba(255, 255, 255, 0.08);
+            padding: 2px 8px;
+            border-radius: 6px;
+            font-weight: 600;
+        }
+
+        /* 4. Reason Codes List */
+        .reasons-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            min-height: 32px;
+            align-items: center;
+        }
+
+        .reason-tag {
+            background: rgba(59, 130, 246, 0.15);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            color: #93c5fd;
+            font-size: 0.75rem;
+            padding: 3px 8px;
+            border-radius: 6px;
+        }
+
+        /* 5. Tracks Table */
+        .table-wrap {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.8rem;
+        }
+
+        th {
+            text-align: left;
+            padding: 6px 8px;
+            color: var(--text-dim);
+            border-bottom: 1px solid var(--border);
+            font-weight: 600;
+        }
+
+        td {
+            padding: 8px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+        }
+
+        /* 6. System Health Pills */
+        .health-strip {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            background: var(--bg-surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 10px 14px;
+            margin-top: 12px;
+            font-size: 0.75rem;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .health-pill {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            background: var(--bg-card);
+            padding: 4px 10px;
+            border-radius: 6px;
+            border: 1px solid var(--border);
+        }
+
+        .pill-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--c-safe);
+        }
+        .pill-dot.err {
+            background: var(--c-critical);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header -->
+    <header>
+        <div class="brand-title">
+            <span>SpatialVector-HMI</span>
+            <span class="brand-badge">M11 LIVE</span>
+        </div>
+        <div class="header-meta">
+            <span id="session-id-display" class="mono">sess: --</span>
+            <span id="frame-counter" class="mono">F# 0</span>
+            <span id="conn-indicator" class="conn-dot" title="Connection status"></span>
+        </div>
+    </header>
+
+    <!-- Client-Side Staleness Watchdog Alert Banner -->
+    <div id="watchdog-banner">
+        ⚠️ PIPELINE STALLED / TELEMETRY DISCONNECTED — No frames received for <span id="stale-seconds">0.0</span>s
+    </div>
+
+    <!-- Main Grid -->
+    <div class="dashboard-grid">
+
+        <!-- Column 1: Core Safety & Corridors -->
+        <div class="card">
+            <div class="card-header">
+                <span class="card-title">M08 Master Risk Engine</span>
+                <span id="pipeline-conf" class="mono" style="font-size: 0.75rem; color: var(--text-muted);">conf: 1.00</span>
+            </div>
+
+            <!-- Big State Banner -->
+            <div id="state-banner" class="state-banner state-safe">
+                <div id="state-text" class="state-label">SAFE</div>
+                <div class="risk-score-display mono">
+                    Global Risk: <span id="risk-score" class="risk-score-value">0.000</span> / 1.000
+                </div>
+            </div>
+
+            <!-- Corridor Gauges -->
+            <div class="card-header" style="margin-top: 4px;">
+                <span class="card-title">M09 Corridor Risk Breakdown</span>
+            </div>
+            <div class="corridor-row">
+                <div class="corridor-cell">
+                    <div class="corridor-label">Left</div>
+                    <div id="corr-left-val" class="corridor-val mono">0.00</div>
+                    <div class="progress-track"><div id="corr-left-bar" class="progress-fill"></div></div>
+                </div>
+                <div class="corridor-cell">
+                    <div class="corridor-label">Center</div>
+                    <div id="corr-center-val" class="corridor-val mono">0.00</div>
+                    <div class="progress-track"><div id="corr-center-bar" class="progress-fill"></div></div>
+                </div>
+                <div class="corridor-cell">
+                    <div class="corridor-label">Right</div>
+                    <div id="corr-right-val" class="corridor-val mono">0.00</div>
+                    <div class="progress-track"><div id="corr-right-bar" class="progress-fill"></div></div>
+                </div>
+            </div>
+
+            <!-- Risk Reason Explanation -->
+            <div class="card-header" style="margin-top: 4px;">
+                <span class="card-title">Risk Explanation & Reasons</span>
+            </div>
+            <div id="reasons-list" class="reasons-container mono">
+                <span style="color: var(--text-dim); font-size: 0.75rem;">Clear path — no collision hazards</span>
+            </div>
+        </div>
+
+        <!-- Column 2: Haptics & Track Telemetry -->
+        <div class="card">
+            <div class="card-header">
+                <span class="card-title">M10 Haptic Actuation State</span>
+                <span id="haptic-dir" class="pattern-pill mono" style="color: var(--c-safe);">STOP</span>
+            </div>
+
+            <!-- Haptic Motor Visualizer -->
+            <div class="haptic-container">
+                <div class="motors-visualizer">
+                    <div class="motor-node">
+                        <div id="motor-l" class="motor-disk">L</div>
+                        <span style="font-size: 0.7rem; color: var(--text-dim); font-weight: 700;">LEFT</span>
+                    </div>
+                    <div class="motor-node">
+                        <div id="motor-c" class="motor-disk">C</div>
+                        <span style="font-size: 0.7rem; color: var(--text-dim); font-weight: 700;">CENTER</span>
+                    </div>
+                    <div class="motor-node">
+                        <div id="motor-r" class="motor-disk">R</div>
+                        <span style="font-size: 0.7rem; color: var(--text-dim); font-weight: 700;">RIGHT</span>
+                    </div>
+                </div>
+
+                <div class="haptic-meta-row mono">
+                    <span>Pattern: <strong id="pattern-id-text" style="color: var(--text-main);">ALL_CLEAR</strong></span>
+                    <span>Urgency: <strong id="urgency-text">1</strong>/5</span>
+                    <span>Duration: <strong id="duration-text">200</strong>ms</span>
+                </div>
+            </div>
+
+            <!-- Track Telemetry Table -->
+            <div class="card-header" style="margin-top: 6px;">
+                <span class="card-title">Obstacle Tracks (M03–M07)</span>
+                <span id="track-count" class="mono" style="font-size: 0.75rem; color: var(--text-muted);">0 active</span>
+            </div>
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr class="mono">
+                            <th>ID</th>
+                            <th>Class</th>
+                            <th>CPA</th>
+                            <th>TTC</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tracks-body" class="mono">
+                        <tr>
+                            <td colspan="4" style="color: var(--text-dim); text-align: center;">No tracks in view</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- System Health Strip -->
+    <div class="health-strip mono">
+        <div class="health-pill">
+            <span id="health-cam-dot" class="pill-dot"></span>
+            <span>Camera: <strong id="health-cam-txt">OK</strong></span>
+        </div>
+        <div class="health-pill">
+            <span id="health-imu-dot" class="pill-dot"></span>
+            <span>IMU: <strong id="health-imu-txt">OK</strong></span>
+        </div>
+        <div class="health-pill">
+            <span id="health-ard-dot" class="pill-dot"></span>
+            <span>Arduino: <strong id="health-ard-txt">OK</strong></span>
+        </div>
+        <div class="health-pill">
+            <span>Latency: <strong id="latency-txt">0</strong>ms</span>
+        </div>
+    </div>
+
+    <script src="dashboard.js"></script>
+</body>
+</html>

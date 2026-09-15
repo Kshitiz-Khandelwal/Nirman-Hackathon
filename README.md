@@ -307,6 +307,53 @@ Synthetic forward-zoom sequence (true FOE at image center = (320, 240)):
 
 ---
 
+## Modules M10–M12: Output, Telemetry & Evaluation Chain
+
+### 1. Run the Full Live Demo (M01 → M12)
+
+```bash
+# Synthetic Gate C/D/E mode (No camera, no YOLO, no hardware required)
+python scripts/run_full_pipeline.py --synthetic
+
+# Live camera + simulated IMU + simulated Arduino + Phone Dashboard
+python scripts/run_full_pipeline.py --sim-imu --sim-arduino
+
+# With physical Arduino and IMU
+python scripts/run_full_pipeline.py --imu-port COM3 --arduino-port COM4
+```
+
+### 2. Phone Telemetry Dashboard (M11)
+Open your phone browser on the same Wi-Fi network and navigate to:
+```text
+http://<laptop-ip>:8080/
+```
+- **Real-Time Visuals**: Displays current state (`SAFE`, `CAUTION`, `WARNING`, `CRITICAL`, `DEGRADED`), numeric risk score `0.000`–`1.000`, 3-motor actuation ripples, and corridor risk bars.
+- **Risk Explanation**: Shows human-readable `reason_codes` (e.g. `ttc_low:1.8s`, `intersection:track_4`).
+- **Client-Side Staleness Watchdog (Section 0)**: The dashboard autonomously monitors update timestamps. If no telemetry message is received within **1.5 seconds**, the phone independently trips into a flashing `DISCONNECTED / PIPELINE STALLED` alert, ensuring observers never mistake a frozen pipeline for a clear scene.
+
+### 3. Proving M11 Removability (Safety Independence)
+Run the pipeline with `--no-telemetry`:
+```bash
+python scripts/run_full_pipeline.py --synthetic --no-telemetry
+```
+The safety loop and M10 haptic motors execute at 100% capacity with zero dependency on the telemetry server.
+
+### 4. M12 Session Recording & Deterministic Replay
+Sessions are automatically recorded to `sessions/<session_id>/session.jsonl` with schema versioning.
+To replay a session offline through the decision chain:
+```bash
+python -c "from spatialvector.hmi.replay import SessionReplayer; rep = SessionReplayer('sessions/<session_id>/session.jsonl'); res = rep.run_replay(); print(res['state_distribution'])"
+```
+Replays run with **100% determinism (T32)** and allow offline A/B evaluation of risk-engine weights without live re-recording.
+
+### 5. Benchmark Metrics & Watchdog Timings
+- **Telemetry Transport Latency (T30)**: Benchmarked at **~10–14ms** average over local WebSocket.
+- **Arduino Hardware Watchdog**: **500ms** timeout (firmware zeroes motors autonomously if laptop stalls).
+- **Client Staleness Watchdog**: **1500ms** threshold on phone dashboard.
+
+
+---
+
 ## Research References
 
 | Paper | Relevance |

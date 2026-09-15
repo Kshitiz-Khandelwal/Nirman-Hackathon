@@ -115,3 +115,30 @@ corridor_policy:
   # Rolling window for trend detection (frames).
   # M09 looks at this many frames of history to decide if risk is rising.
   trend_window_frames: 5
+
+# ---------------------------------------------------------------------------
+# M10 — Arduino Haptic Interface
+# ---------------------------------------------------------------------------
+arduino:
+  serial_port: "COM3"              # Linux: "/dev/ttyACM0"; Windows: "COM3"
+  baud_rate: 115200
+  watchdog_timeout_ms: 500
+  command_queue_size: 10
+
+# ---------------------------------------------------------------------------
+# M11 — Local Telemetry Gateway & Phone Dashboard
+# ---------------------------------------------------------------------------
+telemetry:
+  host: "0.0.0.0"
+  port: 8080
+  stale_threshold_s: 1.5          # client-side watchdog window
+  send_raw_video: false            # opt-in only
+
+# ---------------------------------------------------------------------------
+# M12 — Session Logger & Replay Harness
+# ---------------------------------------------------------------------------
+logging:
+  session_dir: "sessions/"
+  schema_version: 1
+  log_raw_frames: false             # opt-in — JSONL metadata only by default
+
