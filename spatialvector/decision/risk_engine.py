@@ -263,11 +263,6 @@ class RiskEngine:
 
         for pred in predictions:
             risk_score = object_risks.get(pred.track_id, (0.0, []))[0]
-            # Use miss_distance_normalized to infer lateral position:
-            # If miss is small and intersection True, it's center-ish.
-            # We use ttc_s None + no intersection as lateral offset heuristic.
-            # This is an approximation — full bearing would require ObjectGeometry in M08.
-            # For now: assign based on cpa position sign (derived from miss_distance and intersection).
             corridor = self._assign_corridor_from_prediction(pred)
             corridor_scores[corridor].append(risk_score)
 

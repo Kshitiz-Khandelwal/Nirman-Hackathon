@@ -788,8 +788,11 @@
         const track = activeTracks[selectedTrackIndex] || activeTracks[0];
         if (!track) return;
 
+        const isHazard = Array.isArray(lastReasonCodes) && lastReasonCodes.some(c => typeof c === 'string' && c.includes(`track_${track.track_id}`));
+        const trackState = (currentRiskState === "DEGRADED") ? "DEGRADED" : (isHazard ? currentRiskState : "SAFE");
+
         if (inspectorObjLabel) {
-            inspectorObjLabel.textContent = `${track.class_name || 'Object'} #${track.track_id} (${track.state || 'Active'})`;
+            inspectorObjLabel.textContent = `${track.class_name || 'Object'} #${track.track_id} (${trackState})`;
         }
 
         if (inspId) inspId.textContent = `#${track.track_id}`;
@@ -824,9 +827,8 @@
             inspPredConf.textContent = (track.pred_conf ?? 0.0).toFixed(2);
         }
         if (inspState) {
-            const state = track.state || (currentGlobalRisk > 0.6 ? "CRITICAL" : (currentGlobalRisk > 0.3 ? "WARNING" : "SAFE"));
-            inspState.textContent = state;
-            inspState.className = `pill-badge ${state.toLowerCase() === 'safe' ? 'green' : (state.toLowerCase() === 'critical' ? 'red' : 'orange')}`;
+            inspState.textContent = trackState;
+            inspState.className = `pill-badge ${trackState.toLowerCase() === 'safe' ? 'green' : (trackState.toLowerCase() === 'critical' ? 'red' : (trackState.toLowerCase() === 'warning' ? 'orange' : 'yellow'))}`;
         }
 
         renderReasoningList(lastReasonCodes, track.track_id);

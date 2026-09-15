@@ -67,7 +67,6 @@ def build_track_telemetry(tracks: List[Any], pred_map: Dict[int, Any]) -> List[D
             "pred_conf": getattr(pred, "prediction_confidence", None),
             "bearing": getattr(pred, "bearing", None),
             "relative_velocity": getattr(t, "estimated_image_velocity", (0.0, 0.0)),
-            "state": "CRITICAL" if getattr(pred, "intersection_flag", False) or (getattr(pred, "ttc_s", None) is not None and getattr(pred, "ttc_s", 99) < 1.5) else ("WARNING" if getattr(pred, "ttc_s", None) is not None and getattr(pred, "ttc_s", 99) < 3.0 else "SAFE"),
         })
     return result
 
