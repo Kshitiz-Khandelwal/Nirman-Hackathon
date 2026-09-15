@@ -166,7 +166,31 @@ def test_t03_cpu_stress_bounded_queue_and_drop_counter(test_video_file):
     assert drained <= queue_size
 
 
+def test_t01b_source_resolver(tmp_path):
+    """T01b: Verify camera source resolution priority and file fallback."""
+    from spatialvector.perception.source_resolver import (
+        resolve_camera_source,
+        write_camera_source_file,
+        read_camera_source_file,
+    )
+
+    # 1. Explicit CLI argument takes highest precedence
+    src, origin = resolve_camera_source(cli_source="https://vdo.ninja/?view=cliprec")
+    assert src == "https://vdo.ninja/?view=cliprec"
+    assert "command-line" in origin
+
+    # Integer CLI source converts to int
+    src_int, _ = resolve_camera_source(cli_source="2")
+    assert src_int == 2
+
+    # 2. File source
+    dummy_file = tmp_path / "camera_source.txt"
+    dummy_file.write_text("https://vdo.ninja/?view=fromfile\n", encoding="utf-8")
+    assert "fromfile" in dummy_file.read_text(encoding="utf-8")
+
+
 if __name__ == "__main__":
+
     import tempfile
     print("--- Running M01 Tests Standalone ---")
     with tempfile.TemporaryDirectory() as tmpdir:

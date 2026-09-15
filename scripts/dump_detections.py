@@ -27,8 +27,10 @@ def main():
         video_src = str(test_fixture)
         logger.info(f"Using test fixture video: {video_src}")
     else:
-        video_src = config["camera"]["device_index"]
-        logger.info(f"Using webcam index: {video_src}")
+        from spatialvector.perception.source_resolver import resolve_camera_source
+        video_src, origin = resolve_camera_source()
+        logger.info(f"Using camera source from {origin}: {video_src}")
+
 
     source = FrameSource(
         source=video_src,

@@ -1,0 +1,4 @@
+# SpatialVector-HMI Camera Source Configuration
+# Paste your VDO.Ninja URL, stream URL, or webcam index below.
+# Tip: To make VDO.Ninja permanent, use ?push=myroom on your phone and ?view=myroom here.
+https://vdo.ninja/?view=vYEkARC

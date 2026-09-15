@@ -64,8 +64,10 @@ def parse_args():
     p = argparse.ArgumentParser(
         description="SpatialVector-HMI Gate C/D — Full Decision Pipeline"
     )
-    p.add_argument("--source", default="0",
-                   help="Camera index or video path (live mode only)")
+    p.add_argument("--source", default=None,
+                   help="Camera index, video path, or VDO.Ninja URL (reads from camera_source.txt if omitted)")
+    p.add_argument("--prompt", action="store_true",
+                   help="Prompt interactively for new camera / VDO.Ninja URL and save it")
     p.add_argument("--synthetic", action="store_true",
                    help="Use synthetic tracks — no camera, no YOLO. Gate C/D mode.")
     p.add_argument("--no-view", action="store_true",
@@ -77,6 +79,7 @@ def parse_args():
     p.add_argument("--delay", type=float, default=0.03,
                    help="Pacing sleep delay between frames in seconds (default: 0.03s / 30ms)")
     return p.parse_args()
+
 
 
 # ---------------------------------------------------------------------------
@@ -345,14 +348,23 @@ def run_live(args):
     from spatialvector.motion.imu_reader import SimulatedIMUReader
     from spatialvector.motion.ego_motion import EgoMotionCompensator
     from spatialvector.motion.geometry import compute_geometry_batch
+    from spatialvector.perception.source_resolver import resolve_camera_source
 
-    source = int(args.source) if args.source.isdigit() else args.source
+    source, source_origin = resolve_camera_source(cli_source=args.source, interactive=args.prompt)
+    print(f"\n[Pipeline] Active camera source: {source}")
+    print(f"[Pipeline] Source resolved from: {source_origin}")
+    if isinstance(source, str) and "vdo.ninja" in source.lower():
+        print("[Pipeline] [Tip] To keep the same link forever without re-copying:")
+        print("          Phone broadcaster:  https://vdo.ninja/?push=kshitizcam")
+        print("          Desktop camera:     https://vdo.ninja/?view=kshitizcam")
+
     is_network = isinstance(source, str) and any(
         source.lower().startswith(p) for p in ("http://", "https://", "rtsp://", "udp://")
     )
     loop_video = isinstance(source, str) and not is_network
 
     frame_src = FrameSource(source=source, target_fps=args.fps, queue_size=5, loop_video=loop_video)
+
     tracker = MultiObjectTracker(backend="bytetrack", history_length=10, confidence_threshold=0.4)
     flow_est = OpticalFlowEstimator(max_corners=200, quality_level=0.01,
                                     min_distance=7.0, fb_error_threshold_px=2.0,

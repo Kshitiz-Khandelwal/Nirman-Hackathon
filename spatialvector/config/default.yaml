@@ -1,8 +1,12 @@
 camera:
   device_index: 0
+  # Optional persistent stream / VDO.Ninja URL (e.g. "https://vdo.ninja/?view=kshitizcam")
+  # Leave null to use camera_source.txt, device_index, or CLI --source.
+  stream_url: null
   resolution: [1280, 720]
   target_fps: 30
   queue_size: 5
+
 
 detector:
   model_path: "yolov8n.pt"
