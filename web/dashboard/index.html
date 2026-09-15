@@ -3,576 +3,1345 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SpatialVector-HMI — Live Telemetry & Mobile Dashboard</title>
+    <title>SpatialVector-HMI — Mobile Assistive Dashboard</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg-base: #0a0d14;
-            --bg-surface: #111622;
-            --bg-card: #161c2d;
-            --border: #232b3e;
-            --border-highlight: #323d56;
-            --text-main: #f1f5f9;
-            --text-muted: #94a3b8;
-            --text-dim: #64748b;
+            --bg-app: #f1f5f9;
+            --bg-card: #ffffff;
+            --border-light: #e2e8f0;
+            --border-subtle: #edf2f7;
+            --text-title: #0f172a;
+            --text-body: #334155;
+            --text-muted: #64748b;
+            --text-dim: #94a3b8;
 
+            --c-primary: #2563eb;
+            --c-primary-light: #eff6ff;
             --c-safe: #10b981;
-            --c-safe-glow: rgba(16, 185, 129, 0.25);
+            --c-safe-bg: #ecfdf5;
+            --c-safe-border: #a7f3d0;
+            --c-safe-text: #065f46;
+
             --c-caution: #f59e0b;
-            --c-caution-glow: rgba(245, 158, 11, 0.25);
+            --c-caution-bg: #fffbeb;
+            --c-caution-border: #fde68a;
+            --c-caution-text: #92400e;
+
             --c-warning: #f97316;
-            --c-warning-glow: rgba(249, 115, 22, 0.25);
+            --c-warning-bg: #fff7ed;
+            --c-warning-border: #fed7aa;
+            --c-warning-text: #9a3412;
+
             --c-critical: #ef4444;
-            --c-critical-glow: rgba(239, 68, 68, 0.35);
-            --c-degraded: #a855f7;
-            --c-degraded-glow: rgba(168, 85, 247, 0.25);
-            --c-disconnected: #dc2626;
+            --c-critical-bg: #fef2f2;
+            --c-critical-border: #fecaca;
+            --c-critical-text: #991b1b;
+
+            --c-degraded: #8b5cf6;
+            --c-degraded-bg: #f5f3ff;
+            --c-degraded-border: #ddd6fe;
+            --c-degraded-text: #5b21b6;
         }
 
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
+            -webkit-tap-highlight-color: transparent;
         }
 
         body {
-            background-color: var(--bg-base);
-            color: var(--text-main);
+            background-color: #0b0f17;
             font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+            color: var(--text-body);
             min-height: 100vh;
             display: flex;
-            flex-direction: column;
-            padding: 12px;
-            overflow-x: hidden;
+            justify-content: center;
+            align-items: flex-start;
+            padding: 0;
         }
 
         .mono {
             font-family: 'JetBrains Mono', monospace;
         }
 
-        /* Top Header */
-        header {
+        /* Responsive Mobile Container */
+        .app-shell {
+            width: 100%;
+            max-width: 440px;
+            background-color: var(--bg-app);
+            min-height: 100vh;
             display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: var(--bg-surface);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 12px 16px;
-            margin-bottom: 12px;
+            flex-direction: column;
+            position: relative;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
         }
 
-        .brand-title {
-            font-size: 1.1rem;
-            font-weight: 800;
-            letter-spacing: -0.02em;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .brand-badge {
-            background: rgba(16, 185, 129, 0.15);
-            color: var(--c-safe);
-            font-size: 0.7rem;
-            padding: 2px 6px;
-            border-radius: 4px;
-            font-weight: 700;
-        }
-
-        .header-meta {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            font-size: 0.8rem;
-            color: var(--text-muted);
-        }
-
-        .conn-dot {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background: var(--c-critical);
-            box-shadow: 0 0 8px var(--c-critical);
-            display: inline-block;
-        }
-        .conn-dot.online {
-            background: var(--c-safe);
-            box-shadow: 0 0 8px var(--c-safe);
-        }
-
-        /* Staleness Watchdog Banner (Required per Section 0) */
-        #watchdog-banner {
-            display: none;
-            background: linear-gradient(135deg, rgba(220, 38, 38, 0.9), rgba(185, 28, 28, 0.9));
-            color: #ffffff;
-            padding: 12px 16px;
-            border-radius: 10px;
-            font-weight: 700;
-            font-size: 0.9rem;
-            margin-bottom: 12px;
-            text-align: center;
-            box-shadow: 0 0 20px rgba(220, 38, 38, 0.4);
-            animation: pulse-stale 1.5s infinite;
-        }
-
-        @keyframes pulse-stale {
-            0%, 100% { opacity: 1; transform: scale(1); }
-            50% { opacity: 0.85; transform: scale(0.995); }
-        }
-
-        /* Main Grid */
-        .dashboard-grid {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 12px;
-            flex: 1;
-        }
-
-        @media (min-width: 768px) {
-            .dashboard-grid {
-                grid-template-columns: 1.1fr 0.9fr;
+        @media (min-width: 500px) {
+            body {
+                padding: 20px 10px;
+            }
+            .app-shell {
+                border-radius: 40px;
+                overflow: hidden;
+                border: 8px solid #1e293b;
+                height: 920px;
+                min-height: 920px;
             }
         }
 
-        .card {
-            background: var(--bg-surface);
-            border: 1px solid var(--border);
-            border-radius: 14px;
-            padding: 16px;
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
-
-        .card-header {
+        /* Status Bar / Dynamic Island Area */
+        .phone-notch-bar {
+            padding: 10px 20px 4px 20px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border-bottom: 1px solid var(--border);
-            padding-bottom: 8px;
-        }
-
-        .card-title {
             font-size: 0.8rem;
-            text-transform: uppercase;
-            letter-spacing: 0.08em;
-            color: var(--text-dim);
             font-weight: 700;
+            color: var(--text-title);
+            background: #ffffff;
         }
 
-        /* 1. Primary Risk State Banner */
-        .state-banner {
-            background: var(--bg-card);
-            border: 2px solid var(--border);
-            border-radius: 12px;
-            padding: 20px;
-            text-align: center;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        /* Header */
+        .app-header {
+            background: #ffffff;
+            padding: 6px 16px 12px 16px;
+            border-bottom: 1px solid var(--border-light);
             display: flex;
             flex-direction: column;
-            align-items: center;
             gap: 6px;
         }
 
-        .state-banner.state-safe {
-            border-color: var(--c-safe);
-            background: radial-gradient(circle at center, rgba(16, 185, 129, 0.12), var(--bg-card) 70%);
-            box-shadow: 0 0 24px var(--c-safe-glow);
-        }
-        .state-banner.state-caution {
-            border-color: var(--c-caution);
-            background: radial-gradient(circle at center, rgba(245, 158, 11, 0.15), var(--bg-card) 70%);
-            box-shadow: 0 0 24px var(--c-caution-glow);
-        }
-        .state-banner.state-warning {
-            border-color: var(--c-warning);
-            background: radial-gradient(circle at center, rgba(249, 115, 22, 0.18), var(--bg-card) 70%);
-            box-shadow: 0 0 28px var(--c-warning-glow);
-        }
-        .state-banner.state-critical {
-            border-color: var(--c-critical);
-            background: radial-gradient(circle at center, rgba(239, 68, 68, 0.25), var(--bg-card) 70%);
-            box-shadow: 0 0 32px var(--c-critical-glow);
-            animation: pulse-crit 1s infinite;
-        }
-        .state-banner.state-degraded {
-            border-color: var(--c-degraded);
-            background: radial-gradient(circle at center, rgba(168, 85, 247, 0.15), var(--bg-card) 70%);
-            box-shadow: 0 0 24px var(--c-degraded-glow);
-        }
-        .state-banner.state-disconnected {
-            border-color: var(--c-disconnected);
-            background: radial-gradient(circle at center, rgba(220, 38, 38, 0.25), var(--bg-card) 70%);
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
 
-        @keyframes pulse-crit {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.015); }
-        }
-
-        .state-label {
-            font-size: 2.2rem;
-            font-weight: 800;
-            letter-spacing: -0.01em;
-            line-height: 1;
-        }
-
-        .risk-score-display {
-            font-size: 1.1rem;
-            color: var(--text-muted);
-            margin-top: 4px;
-        }
-
-        .risk-score-value {
-            font-weight: 700;
-            color: var(--text-main);
-        }
-
-        /* 2. Corridor Gauges */
-        .corridor-row {
-            display: grid;
-            grid-template-columns: 1fr 1fr 1fr;
+        .header-brand {
+            display: flex;
+            align-items: center;
             gap: 8px;
         }
 
-        .corridor-cell {
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            padding: 10px;
-            text-align: center;
+        .brand-logo-icon {
+            width: 24px;
+            height: 24px;
+            color: var(--c-primary);
         }
 
-        .corridor-label {
-            font-size: 0.75rem;
-            color: var(--text-dim);
-            font-weight: 700;
-            text-transform: uppercase;
-        }
-
-        .corridor-val {
-            font-size: 1.2rem;
-            font-weight: 700;
-            margin: 4px 0;
-        }
-
-        .progress-track {
-            height: 6px;
-            background: #202738;
-            border-radius: 4px;
-            overflow: hidden;
-            margin-top: 4px;
-        }
-
-        .progress-fill {
-            height: 100%;
-            width: 0%;
-            background: var(--c-safe);
-            transition: width 0.2s ease, background-color 0.2s ease;
-        }
-
-        /* 3. Haptic Actuation Visualization */
-        .haptic-container {
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 16px;
+        .brand-titles {
             display: flex;
             flex-direction: column;
-            gap: 14px;
         }
 
-        .motors-visualizer {
-            display: flex;
-            justify-content: space-around;
-            align-items: center;
-            padding: 8px 0;
+        .brand-name {
+            font-size: 0.95rem;
+            font-weight: 800;
+            color: var(--text-title);
+            line-height: 1.1;
         }
 
-        .motor-node {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 6px;
+        .brand-tagline {
+            font-size: 0.65rem;
+            color: var(--text-muted);
+            font-weight: 500;
         }
 
-        .motor-disk {
-            width: 52px;
-            height: 52px;
+        .header-action-btn {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            padding: 6px;
             border-radius: 50%;
-            background: #1c2436;
-            border: 2px solid var(--border-highlight);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-weight: 800;
-            font-size: 0.9rem;
-            color: var(--text-dim);
-            transition: all 0.15s ease;
-            position: relative;
+        }
+        .header-action-btn:hover {
+            background: var(--border-light);
         }
 
-        .motor-disk.active {
-            background: rgba(16, 185, 129, 0.2);
-            border-color: var(--c-safe);
-            color: #ffffff;
-            box-shadow: 0 0 16px var(--c-safe);
-            animation: motor-shake 0.1s infinite;
-        }
-
-        .motor-disk.active.crit {
-            background: rgba(239, 68, 68, 0.3);
-            border-color: var(--c-critical);
-            box-shadow: 0 0 20px var(--c-critical);
-        }
-
-        @keyframes motor-shake {
-            0% { transform: translate(0, 0); }
-            25% { transform: translate(-1.5px, 1.5px); }
-            50% { transform: translate(1.5px, -1.5px); }
-            75% { transform: translate(-1.5px, -1.5px); }
-            100% { transform: translate(0, 0); }
-        }
-
-        .haptic-meta-row {
+        .header-subline {
             display: flex;
             justify-content: space-between;
-            font-size: 0.85rem;
-            border-top: 1px solid var(--border);
-            padding-top: 10px;
+            align-items: center;
+            font-size: 0.72rem;
+            padding-top: 2px;
         }
 
-        .pattern-pill {
-            background: rgba(255, 255, 255, 0.08);
+        .conn-pill {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            color: var(--c-safe-text);
+            font-weight: 700;
+            background: var(--c-safe-bg);
             padding: 2px 8px;
-            border-radius: 6px;
-            font-weight: 600;
+            border-radius: 20px;
+            border: 1px solid var(--c-safe-border);
+        }
+        .conn-pill.disconnected {
+            color: var(--c-critical-text);
+            background: var(--c-critical-bg);
+            border-color: var(--c-critical-border);
         }
 
-        /* 4. Reason Codes List */
-        .reasons-container {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 6px;
-            min-height: 32px;
-            align-items: center;
-        }
-
-        .reason-tag {
-            background: rgba(59, 130, 246, 0.15);
-            border: 1px solid rgba(59, 130, 246, 0.3);
-            color: #93c5fd;
-            font-size: 0.75rem;
-            padding: 3px 8px;
-            border-radius: 6px;
-        }
-
-        /* 5. Tracks Table */
-        .table-wrap {
-            overflow-x: auto;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 0.8rem;
-        }
-
-        th {
-            text-align: left;
-            padding: 6px 8px;
-            color: var(--text-dim);
-            border-bottom: 1px solid var(--border);
-            font-weight: 600;
-        }
-
-        td {
-            padding: 8px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
-        }
-
-        /* 6. System Health Pills */
-        .health-strip {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-            background: var(--bg-surface);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 10px 14px;
-            margin-top: 12px;
-            font-size: 0.75rem;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .health-pill {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            background: var(--bg-card);
-            padding: 4px 10px;
-            border-radius: 6px;
-            border: 1px solid var(--border);
-        }
-
-        .pill-dot {
+        .status-dot {
             width: 6px;
             height: 6px;
             border-radius: 50%;
             background: var(--c-safe);
         }
-        .pill-dot.err {
+        .status-dot.disconnected {
             background: var(--c-critical);
+        }
+
+        .session-info {
+            color: var(--text-muted);
+            font-weight: 600;
+        }
+
+        /* Staleness Watchdog Top Edge Banner */
+        #staleness-banner {
+            display: none;
+            background: #ef4444;
+            color: #ffffff;
+            font-size: 0.75rem;
+            font-weight: 700;
+            padding: 6px 12px;
+            text-align: center;
+            animation: pulse-warn 1.5s infinite;
+        }
+        @keyframes pulse-warn {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.8; }
+        }
+
+        /* Main Screen Container */
+        .screens-viewport {
+            flex: 1;
+            overflow-y: auto;
+            padding: 12px 14px 80px 14px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .tab-screen {
+            display: none;
+            flex-direction: column;
+            gap: 12px;
+            animation: fadeIn 0.15s ease-out;
+        }
+        .tab-screen.active {
+            display: flex;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(3px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Reusable Card */
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-light);
+            border-radius: 16px;
+            padding: 14px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .card-header-line {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .card-heading {
+            font-size: 0.78rem;
+            font-weight: 800;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+        }
+
+        /* ------------------------------------------------------------- */
+        /* TAB 1: LIVE VIEW STYLING                                      */
+        /* ------------------------------------------------------------- */
+        .risk-alert-card {
+            border-radius: 16px;
+            padding: 14px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            border: 1px solid var(--c-warning-border);
+            background: var(--c-warning-bg);
+            transition: all 0.2s ease;
+        }
+        .risk-alert-card.alert-safe {
+            background: var(--c-safe-bg);
+            border-color: var(--c-safe-border);
+        }
+        .risk-alert-card.alert-caution {
+            background: var(--c-caution-bg);
+            border-color: var(--c-caution-border);
+        }
+        .risk-alert-card.alert-warning {
+            background: var(--c-warning-bg);
+            border-color: var(--c-warning-border);
+        }
+        .risk-alert-card.alert-critical {
+            background: var(--c-critical-bg);
+            border-color: var(--c-critical-border);
+        }
+        .risk-alert-card.alert-degraded {
+            background: var(--c-degraded-bg);
+            border-color: var(--c-degraded-border);
+        }
+
+        .alert-top-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .alert-icon-wrap {
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #ffffff;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .alert-title-wrap {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .alert-state-title {
+            font-size: 1.05rem;
+            font-weight: 800;
+            letter-spacing: -0.01em;
+            line-height: 1.1;
+        }
+
+        .alert-state-sub {
+            font-size: 0.72rem;
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+
+        .metrics-triplet {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 8px;
+            background: #ffffff;
+            border-radius: 12px;
+            padding: 10px 8px;
+            border: 1px solid rgba(0,0,0,0.06);
+            align-items: center;
+        }
+
+        .metric-cell {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+
+        .metric-cell:not(:last-child) {
+            border-right: 1px solid var(--border-light);
+        }
+
+        .gauge-ring-wrap {
+            width: 46px;
+            height: 46px;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .gauge-number {
+            font-size: 0.95rem;
+            font-weight: 800;
+            color: var(--text-title);
+        }
+
+        .metric-big-num {
+            font-size: 1.15rem;
+            font-weight: 800;
+            color: var(--text-title);
+        }
+
+        .metric-tag {
+            font-size: 0.65rem;
+            color: var(--text-muted);
+            font-weight: 700;
+            margin-top: 2px;
+            text-transform: uppercase;
+        }
+
+        /* Live Camera Feed Card */
+        .camera-feed-card {
+            background: #ffffff;
+            border: 1px solid var(--border-light);
+            border-radius: 16px;
+            padding: 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .video-viewport {
+            width: 100%;
+            height: 220px;
+            background: #0f172a;
+            border-radius: 12px;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .video-frame-embed {
+            width: 100%;
+            height: 100%;
+            border: none;
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 1;
+        }
+
+        .video-overlay-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 2;
+            pointer-events: none;
+        }
+
+        .video-controls-bar {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            z-index: 3;
+            display: flex;
+            gap: 6px;
+        }
+
+        .vdo-pill-badge {
+            background: rgba(15, 23, 42, 0.75);
+            backdrop-filter: blur(4px);
+            color: #ffffff;
+            font-size: 0.65rem;
+            padding: 3px 7px;
+            border-radius: 6px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        /* 3 Corridor Boxes */
+        .corridor-triad {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 8px;
+        }
+
+        .corridor-box {
+            border-radius: 10px;
+            padding: 8px;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+            border: 1px solid var(--border-light);
+            background: var(--bg-app);
+        }
+
+        .corridor-box.safe {
+            background: var(--c-safe-bg);
+            border-color: var(--c-safe-border);
+            color: var(--c-safe-text);
+        }
+
+        .corridor-box.risky {
+            background: var(--c-critical-bg);
+            border-color: var(--c-critical-border);
+            color: var(--c-critical-text);
+        }
+
+        .corridor-name {
+            font-size: 0.7rem;
+            font-weight: 700;
+            color: var(--text-muted);
+        }
+
+        .corridor-score {
+            font-size: 1.1rem;
+            font-weight: 800;
+        }
+
+        .corridor-status-tag {
+            font-size: 0.65rem;
+            font-weight: 800;
+            text-transform: uppercase;
+        }
+
+        /* Recommended Direction Banner */
+        .recommendation-card {
+            background: #ffffff;
+            border: 1px solid var(--c-safe-border);
+            border-radius: 14px;
+            padding: 12px 16px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            box-shadow: 0 2px 6px rgba(16, 185, 129, 0.08);
+        }
+
+        .rec-arrow-box {
+            width: 42px;
+            height: 42px;
+            border-radius: 10px;
+            background: var(--c-safe-bg);
+            color: var(--c-safe);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            flex-shrink: 0;
+        }
+
+        .rec-texts {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .rec-label-sub {
+            font-size: 0.65rem;
+            font-weight: 700;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+        }
+
+        .rec-command {
+            font-size: 1.15rem;
+            font-weight: 800;
+            color: var(--c-safe-text);
+            line-height: 1.1;
+        }
+
+        .rec-explanation {
+            font-size: 0.72rem;
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+
+        /* ------------------------------------------------------------- */
+        /* TAB 2: PREDICTION INSPECTOR                                   */
+        /* ------------------------------------------------------------- */
+        .inspector-selector-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #ffffff;
+            border: 1px solid var(--border-light);
+            border-radius: 10px;
+            padding: 8px 12px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: var(--text-title);
+        }
+
+        .detail-table-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 6px 0;
+            font-size: 0.8rem;
+            border-bottom: 1px solid var(--border-subtle);
+        }
+        .detail-table-row:last-child {
+            border-bottom: none;
+        }
+
+        .detail-key {
+            color: var(--text-muted);
+            font-weight: 600;
+        }
+
+        .detail-val {
+            font-weight: 700;
+            color: var(--text-title);
+        }
+
+        .pill-badge {
+            font-size: 0.7rem;
+            padding: 2px 7px;
+            border-radius: 6px;
+            font-weight: 800;
+        }
+        .pill-badge.red {
+            background: var(--c-critical-bg);
+            color: var(--c-critical-text);
+            border: 1px solid var(--c-critical-border);
+        }
+        .pill-badge.green {
+            background: var(--c-safe-bg);
+            color: var(--c-safe-text);
+            border: 1px solid var(--c-safe-border);
+        }
+        .pill-badge.orange {
+            background: var(--c-warning-bg);
+            color: var(--c-warning-text);
+            border: 1px solid var(--c-warning-border);
+        }
+
+        .reasoning-list {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            font-size: 0.75rem;
+            color: var(--text-body);
+            line-height: 1.4;
+        }
+        .reasoning-item {
+            display: flex;
+            gap: 8px;
+        }
+        .reasoning-num {
+            font-weight: 700;
+            color: var(--c-primary);
+        }
+
+        /* ------------------------------------------------------------- */
+        /* TAB 3: HAPTIC STATE & CHEST HARNESS                          */
+        /* ------------------------------------------------------------- */
+        .segmented-switcher {
+            display: flex;
+            background: #e2e8f0;
+            border-radius: 10px;
+            padding: 2px;
+            gap: 2px;
+        }
+        .segment-btn {
+            flex: 1;
+            background: none;
+            border: none;
+            padding: 6px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: var(--text-muted);
+            border-radius: 8px;
+            cursor: pointer;
+        }
+        .segment-btn.active {
+            background: #ffffff;
+            color: var(--text-title);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+        }
+
+        .chest-harness-display {
+            width: 100%;
+            height: 190px;
+            background: #f8fafc;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .harness-svg {
+            width: 170px;
+            height: 170px;
+        }
+
+        .motor-node-circle {
+            transition: all 0.2s ease;
+        }
+        .motor-node-circle.vibrating {
+            animation: pulse-ring 0.4s infinite;
+        }
+        @keyframes pulse-ring {
+            0% { r: 12; opacity: 1; }
+            100% { r: 24; opacity: 0; }
+        }
+
+        /* ------------------------------------------------------------- */
+        /* TAB 4: TEST & REPLAY                                          */
+        /* ------------------------------------------------------------- */
+        .test-scenario-dropdown {
+            width: 100%;
+            padding: 8px 12px;
+            border-radius: 10px;
+            border: 1px solid var(--border-light);
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: var(--text-title);
+            background: #ffffff;
+        }
+
+        .replay-btn-row {
+            display: flex;
+            gap: 8px;
+        }
+        .btn-action {
+            flex: 1;
+            padding: 8px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            border-radius: 8px;
+            cursor: pointer;
+            border: 1px solid var(--border-light);
+            background: #ffffff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+        .btn-action.primary {
+            background: var(--c-primary);
+            color: #ffffff;
+            border-color: var(--c-primary);
+        }
+
+        .timeline-chart-box {
+            width: 100%;
+            height: 90px;
+            background: #f8fafc;
+            border-radius: 8px;
+            position: relative;
+            border: 1px solid var(--border-light);
+        }
+
+        /* ------------------------------------------------------------- */
+        /* TAB 5: SOCIAL ASSIST                                          */
+        /* ------------------------------------------------------------- */
+        .toggle-switch-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .toggle-switch {
+            width: 44px;
+            height: 24px;
+            background: var(--c-primary);
+            border-radius: 12px;
+            position: relative;
+            cursor: pointer;
+        }
+        .toggle-knob {
+            width: 20px;
+            height: 20px;
+            background: #ffffff;
+            border-radius: 50%;
+            position: absolute;
+            top: 2px;
+            right: 2px;
+            transition: all 0.2s ease;
+        }
+
+        /* ------------------------------------------------------------- */
+        /* BOTTOM NAVIGATION BAR                                         */
+        /* ------------------------------------------------------------- */
+        .bottom-nav-bar {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: #ffffff;
+            border-top: 1px solid var(--border-light);
+            display: flex;
+            justify-content: space-around;
+            padding: 8px 4px 14px 4px;
+            z-index: 50;
+        }
+
+        .nav-item {
+            background: none;
+            border: none;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            color: var(--text-muted);
+            cursor: pointer;
+            width: 60px;
+            transition: all 0.15s ease;
+        }
+
+        .nav-item.active {
+            color: var(--c-primary);
+        }
+
+        .nav-icon-svg {
+            width: 20px;
+            height: 20px;
+        }
+
+        .nav-label {
+            font-size: 0.65rem;
+            font-weight: 700;
+        }
+
+        /* Camera URL Setting Modal */
+        .modal-overlay {
+            display: none;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(4px);
+            z-index: 100;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .modal-card {
+            background: #ffffff;
+            border-radius: 20px;
+            padding: 20px;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            box-shadow: 0 20px 25px -5px rgba(0,0,0,0.2);
+        }
+        .input-text {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid var(--border-light);
+            border-radius: 10px;
+            font-size: 0.85rem;
         }
     </style>
 </head>
 <body>
 
-    <!-- Header -->
-    <header>
-        <div class="brand-title">
-            <span>SpatialVector-HMI</span>
-            <span class="brand-badge">M11 LIVE</span>
-        </div>
-        <div class="header-meta">
-            <span id="session-id-display" class="mono">sess: --</span>
-            <span id="frame-counter" class="mono">F# 0</span>
-            <span id="conn-indicator" class="conn-dot" title="Connection status"></span>
-        </div>
-    </header>
+    <div class="app-shell">
 
-    <!-- Client-Side Staleness Watchdog Alert Banner -->
-    <div id="watchdog-banner">
-        ⚠️ PIPELINE STALLED / TELEMETRY DISCONNECTED — No frames received for <span id="stale-seconds">0.0</span>s
-    </div>
-
-    <!-- Main Grid -->
-    <div class="dashboard-grid">
-
-        <!-- Column 1: Core Safety & Corridors -->
-        <div class="card">
-            <div class="card-header">
-                <span class="card-title">M08 Master Risk Engine</span>
-                <span id="pipeline-conf" class="mono" style="font-size: 0.75rem; color: var(--text-muted);">conf: 1.00</span>
-            </div>
-
-            <!-- Big State Banner -->
-            <div id="state-banner" class="state-banner state-safe">
-                <div id="state-text" class="state-label">SAFE</div>
-                <div class="risk-score-display mono">
-                    Global Risk: <span id="risk-score" class="risk-score-value">0.000</span> / 1.000
-                </div>
-            </div>
-
-            <!-- Corridor Gauges -->
-            <div class="card-header" style="margin-top: 4px;">
-                <span class="card-title">M09 Corridor Risk Breakdown</span>
-            </div>
-            <div class="corridor-row">
-                <div class="corridor-cell">
-                    <div class="corridor-label">Left</div>
-                    <div id="corr-left-val" class="corridor-val mono">0.00</div>
-                    <div class="progress-track"><div id="corr-left-bar" class="progress-fill"></div></div>
-                </div>
-                <div class="corridor-cell">
-                    <div class="corridor-label">Center</div>
-                    <div id="corr-center-val" class="corridor-val mono">0.00</div>
-                    <div class="progress-track"><div id="corr-center-bar" class="progress-fill"></div></div>
-                </div>
-                <div class="corridor-cell">
-                    <div class="corridor-label">Right</div>
-                    <div id="corr-right-val" class="corridor-val mono">0.00</div>
-                    <div class="progress-track"><div id="corr-right-bar" class="progress-fill"></div></div>
-                </div>
-            </div>
-
-            <!-- Risk Reason Explanation -->
-            <div class="card-header" style="margin-top: 4px;">
-                <span class="card-title">Risk Explanation & Reasons</span>
-            </div>
-            <div id="reasons-list" class="reasons-container mono">
-                <span style="color: var(--text-dim); font-size: 0.75rem;">Clear path — no collision hazards</span>
+        <!-- Top Phone Status Header -->
+        <div class="phone-notch-bar mono">
+            <span>09:41</span>
+            <div style="display:flex; gap:6px; align-items:center;">
+                <span>5G</span>
+                <span>● 82%</span>
             </div>
         </div>
 
-        <!-- Column 2: Haptics & Track Telemetry -->
-        <div class="card">
-            <div class="card-header">
-                <span class="card-title">M10 Haptic Actuation State</span>
-                <span id="haptic-dir" class="pattern-pill mono" style="color: var(--c-safe);">STOP</span>
-            </div>
-
-            <!-- Haptic Motor Visualizer -->
-            <div class="haptic-container">
-                <div class="motors-visualizer">
-                    <div class="motor-node">
-                        <div id="motor-l" class="motor-disk">L</div>
-                        <span style="font-size: 0.7rem; color: var(--text-dim); font-weight: 700;">LEFT</span>
-                    </div>
-                    <div class="motor-node">
-                        <div id="motor-c" class="motor-disk">C</div>
-                        <span style="font-size: 0.7rem; color: var(--text-dim); font-weight: 700;">CENTER</span>
-                    </div>
-                    <div class="motor-node">
-                        <div id="motor-r" class="motor-disk">R</div>
-                        <span style="font-size: 0.7rem; color: var(--text-dim); font-weight: 700;">RIGHT</span>
+        <!-- App Brand Header -->
+        <header class="app-header">
+            <div class="header-top">
+                <div class="header-brand">
+                    <svg class="brand-logo-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <polygon points="12 2 2 7 12 12 22 7 12 2"></polygon>
+                        <polyline points="2 17 12 22 22 17"></polyline>
+                        <polyline points="2 12 12 17 22 12"></polyline>
+                    </svg>
+                    <div class="brand-titles">
+                        <span class="brand-name">SpatialVector-HMI</span>
+                        <span class="brand-tagline">Predict. Navigate. Empower.</span>
                     </div>
                 </div>
+                <button id="btn-open-settings" class="header-action-btn" title="Camera Settings">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="3"></circle>
+                        <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+                    </svg>
+                </button>
+            </div>
 
-                <div class="haptic-meta-row mono">
-                    <span>Pattern: <strong id="pattern-id-text" style="color: var(--text-main);">ALL_CLEAR</strong></span>
-                    <span>Urgency: <strong id="urgency-text">1</strong>/5</span>
-                    <span>Duration: <strong id="duration-text">200</strong>ms</span>
+            <div class="header-subline">
+                <div id="conn-pill-badge" class="conn-pill">
+                    <span id="conn-status-dot" class="status-dot"></span>
+                    <span id="conn-status-text">Local Edge Connected</span>
+                </div>
+                <div class="session-info mono">
+                    <span id="session-id-label">Session: demo_014</span>
+                    <span id="header-clock" style="margin-left: 8px;">09:41:23</span>
                 </div>
             </div>
+        </header>
 
-            <!-- Track Telemetry Table -->
-            <div class="card-header" style="margin-top: 6px;">
-                <span class="card-title">Obstacle Tracks (M03–M07)</span>
-                <span id="track-count" class="mono" style="font-size: 0.75rem; color: var(--text-muted);">0 active</span>
+        <!-- Client-Side Staleness Watchdog Alert Banner -->
+        <div id="staleness-banner">
+            ⚠️ PIPELINE STALLED — No updates received for <span id="stale-sec-txt">0.0</span>s
+        </div>
+
+        <!-- Main Viewport containing the 5 screens -->
+        <div class="screens-viewport">
+
+            <!-- ======================================================== -->
+            <!-- 1. LIVE VIEW TAB                                         -->
+            <!-- ======================================================== -->
+            <div id="screen-live" class="tab-screen active">
+
+                <!-- 1. Primary Risk Warning Alert Banner -->
+                <div id="risk-alert-card" class="risk-alert-card alert-warning">
+                    <div class="alert-top-row">
+                        <div class="alert-icon-wrap" id="alert-icon-box">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"></path>
+                                <line x1="12" y1="9" x2="12" y2="13"></line>
+                                <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                            </svg>
+                        </div>
+                        <div class="alert-title-wrap">
+                            <span id="alert-state-name" class="alert-state-title" style="color: #9a3412;">WARNING</span>
+                            <span id="alert-state-sub" class="alert-state-sub">Predicted collision risk detected</span>
+                        </div>
+                    </div>
+
+                    <!-- 3 Metrics in a row -->
+                    <div class="metrics-triplet">
+                        <div class="metric-cell">
+                            <div class="gauge-ring-wrap">
+                                <svg width="46" height="46" viewBox="0 0 36 36">
+                                    <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="#e2e8f0" stroke-width="3.5" />
+                                    <path id="gauge-circle-stroke" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="#f97316" stroke-dasharray="84, 100" stroke-width="3.5" />
+                                </svg>
+                                <span id="val-risk-score" class="gauge-number mono" style="position: absolute;">0.84</span>
+                            </div>
+                            <span class="metric-tag">Risk Score</span>
+                        </div>
+                        <div class="metric-cell">
+                            <span id="val-ttc" class="metric-big-num mono">2.1 s</span>
+                            <span class="metric-tag">TTC</span>
+                        </div>
+                        <div class="metric-cell">
+                            <span id="val-cpa" class="metric-big-num mono">0.41 m</span>
+                            <span class="metric-tag">CPA</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 2. Live Camera View with VDO.Ninja stream -->
+                <div class="camera-feed-card">
+                    <div class="card-header-line">
+                        <span class="card-heading">Live View (Camera)</span>
+                        <span id="camera-stream-badge" class="vdo-pill-badge mono">● VDO.NINJA</span>
+                    </div>
+
+                    <div class="video-viewport">
+                        <!-- Embedded VDO.Ninja stream iframe -->
+                        <iframe id="vdo-ninja-frame" class="video-frame-embed" src="about:blank" allow="autoplay; camera; microphone"></iframe>
+                        <!-- HUD & Vector overlays -->
+                        <canvas id="live-overlay-canvas" class="video-overlay-canvas" width="400" height="220"></canvas>
+                        
+                        <div class="video-controls-bar">
+                            <button id="btn-toggle-camera-src" class="vdo-pill-badge" style="cursor:pointer; border:none;">
+                                <span>Change Link</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- 3 Corridor Risk Boxes -->
+                    <div class="corridor-triad">
+                        <div id="box-corr-left" class="corridor-box safe">
+                            <span class="corridor-name">Left</span>
+                            <span id="txt-corr-left" class="corridor-score mono">0.12</span>
+                            <span id="lbl-corr-left" class="corridor-status-tag">SAFE</span>
+                        </div>
+                        <div id="box-corr-center" class="corridor-box risky">
+                            <span class="corridor-name">Center</span>
+                            <span id="txt-corr-center" class="corridor-score mono">0.84</span>
+                            <span id="lbl-corr-center" class="corridor-status-tag">RISKY</span>
+                        </div>
+                        <div id="box-corr-right" class="corridor-box safe">
+                            <span class="corridor-name">Right</span>
+                            <span id="txt-corr-right" class="corridor-score mono">0.23</span>
+                            <span id="lbl-corr-right" class="corridor-status-tag">SAFE</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 3. Recommended Direction Banner -->
+                <div class="recommendation-card">
+                    <div id="rec-arrow-icon" class="rec-arrow-box">
+                        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="19" y1="12" x2="5" y2="12"></line>
+                            <polyline points="12 19 5 12 12 5"></polyline>
+                        </svg>
+                    </div>
+                    <div class="rec-texts">
+                        <span class="rec-label-sub">Recommended Direction</span>
+                        <span id="rec-dir-name" class="rec-command">MOVE LEFT</span>
+                        <span id="rec-dir-sub" class="rec-explanation">Left corridor is safest</span>
+                    </div>
+                </div>
+
             </div>
-            <div class="table-wrap">
-                <table>
-                    <thead>
-                        <tr class="mono">
-                            <th>ID</th>
-                            <th>Class</th>
-                            <th>CPA</th>
-                            <th>TTC</th>
-                        </tr>
-                    </thead>
-                    <tbody id="tracks-body" class="mono">
-                        <tr>
-                            <td colspan="4" style="color: var(--text-dim); text-align: center;">No tracks in view</td>
-                        </tr>
-                    </tbody>
-                </table>
+
+            <!-- ======================================================== -->
+            <!-- 2. PREDICTION INSPECTOR TAB                              -->
+            <!-- ======================================================== -->
+            <div id="screen-predict" class="tab-screen">
+                
+                <div class="inspector-selector-bar">
+                    <button id="btn-insp-prev" onclick="prevTrack()" style="background:none;border:none;cursor:pointer;color:var(--text-muted);font-weight:700;font-size:1.1rem;padding:0 8px;">&lt;</button>
+                    <span id="inspector-obj-label">Scooter #2 (Highest Risk)</span>
+                    <button id="btn-insp-next" onclick="nextTrack()" style="background:none;border:none;cursor:pointer;color:var(--text-muted);font-weight:700;font-size:1.1rem;padding:0 8px;">&gt;</button>
+                </div>
+
+                <!-- Vector Trajectory View -->
+                <div class="card" style="padding:10px;">
+                    <div class="video-viewport" style="height: 180px; background: #0f172a;">
+                        <canvas id="inspector-canvas" width="400" height="180" style="width:100%; height:100%;"></canvas>
+                    </div>
+                </div>
+
+                <!-- Object Details Card -->
+                <div class="card">
+                    <span class="card-heading">Object Details</span>
+                    <div class="detail-table-row"><span class="detail-key">Track ID</span><span id="insp-id" class="detail-val mono">#2</span></div>
+                    <div class="detail-table-row"><span class="detail-key">Class</span><span id="insp-class" class="detail-val">Scooter</span></div>
+                    <div class="detail-table-row"><span class="detail-key">Track Confidence</span><span id="insp-track-conf" class="detail-val mono">0.87</span></div>
+                    <div class="detail-table-row"><span class="detail-key">TTC</span><span id="insp-ttc" class="detail-val mono">2.1 s</span></div>
+                    <div class="detail-table-row"><span class="detail-key">CPA</span><span id="insp-cpa" class="detail-val mono">0.41 m</span></div>
+                    <div class="detail-table-row"><span class="detail-key">Intersection</span><span id="insp-intersect" class="pill-badge red">YES</span></div>
+                    <div class="detail-table-row"><span class="detail-key">Relative Velocity</span><span id="insp-vel" class="detail-val mono">2.5 m/s</span></div>
+                    <div class="detail-table-row"><span class="detail-key">Prediction Confidence</span><span id="insp-pred-conf" class="detail-val mono">0.81</span></div>
+                    <div class="detail-table-row"><span class="detail-key">Current State</span><span id="insp-state" class="pill-badge orange">WARNING</span></div>
+                </div>
+
+                <!-- Prediction Reasoning Card -->
+                <div class="card">
+                    <span class="card-heading">Prediction Reasoning</span>
+                    <div id="inspector-reasoning-list" class="reasoning-list">
+                        <div class="reasoning-item"><span class="reasoning-num">1.</span><span>Object tracked for 28 frames</span></div>
+                        <div class="reasoning-item"><span class="reasoning-num">2.</span><span>Relative velocity estimated</span></div>
+                        <div class="reasoning-item"><span class="reasoning-num">3.</span><span>User motion compensated using IMU</span></div>
+                        <div class="reasoning-item"><span class="reasoning-num">4.</span><span>Predicted path intersects CENTER corridor</span></div>
+                        <div class="reasoning-item"><span class="reasoning-num">5.</span><span>CPA below safe threshold</span></div>
+                        <div class="reasoning-item"><span class="reasoning-num">6.</span><span>Risk transitioned from CAUTION → WARNING</span></div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- ======================================================== -->
+            <!-- 3. HAPTIC STATE TAB                                      -->
+            <!-- ======================================================== -->
+            <div id="screen-haptics" class="tab-screen">
+                
+                <div class="card-header-line">
+                    <div>
+                        <h2 style="font-size:1.1rem; font-weight:800; color:var(--text-title);">Haptic State</h2>
+                        <span style="font-size:0.72rem; color:var(--text-muted);">Real-time haptic feedback status</span>
+                    </div>
+                    <span class="vdo-pill-badge" style="background:#ecfdf5; color:#065f46; border:1px solid #a7f3d0;">● Live</span>
+                </div>
+
+                <div class="segmented-switcher" id="haptics-segmented">
+                    <button class="segment-btn active" id="btn-seg-device" onclick="switchHapticView('device')">Device View</button>
+                    <button class="segment-btn" id="btn-seg-commands" onclick="switchHapticView('commands')">Recent Commands</button>
+                </div>
+
+                <div id="haptics-device-view">
+                    <!-- Chest Harness Graphic -->
+                    <div class="chest-harness-display">
+                        <svg class="harness-svg" viewBox="0 0 200 200">
+                            <!-- T-shirt / Vest Outline -->
+                            <path d="M 60,30 L 80,45 Q 100,55 120,45 L 140,30 L 175,55 L 155,80 L 145,72 L 145,175 L 55,175 L 55,72 L 45,80 L 25,55 Z" fill="#ffffff" stroke="#cbd5e1" stroke-width="2.5" stroke-linejoin="round" />
+                            <!-- Chest Unit Box -->
+                            <rect x="82" y="70" width="36" height="30" rx="4" fill="#f1f5f9" stroke="#94a3b8" stroke-width="1.5" />
+                            
+                            <!-- Left Motor (Pin 5) -->
+                            <circle id="svg-motor-left" cx="62" cy="115" r="14" fill="#eff6ff" stroke="#3b82f6" stroke-width="2.5" />
+                            <circle id="svg-ripple-left" cx="62" cy="115" r="14" fill="none" stroke="#3b82f6" stroke-width="2" opacity="0" class="motor-node-circle" />
+                            <text id="svg-lbl-left" x="62" y="145" font-size="10" font-weight="700" fill="#3b82f6" text-anchor="middle">LEFT</text>
+
+                            <!-- Center Motor (Pin 6) -->
+                            <circle id="svg-motor-center" cx="100" cy="115" r="14" fill="#f8fafc" stroke="#94a3b8" stroke-width="2" />
+                            <circle id="svg-ripple-center" cx="100" cy="115" r="14" fill="none" stroke="#3b82f6" stroke-width="2" opacity="0" class="motor-node-circle" />
+                            <text id="svg-lbl-center" x="100" y="145" font-size="10" font-weight="700" fill="#64748b" text-anchor="middle">CENTER</text>
+
+                            <!-- Right Motor (Pin 9) -->
+                            <circle id="svg-motor-right" cx="138" cy="115" r="14" fill="#f8fafc" stroke="#94a3b8" stroke-width="2" />
+                            <circle id="svg-ripple-right" cx="138" cy="115" r="14" fill="none" stroke="#3b82f6" stroke-width="2" opacity="0" class="motor-node-circle" />
+                            <text id="svg-lbl-right" x="138" y="145" font-size="10" font-weight="700" fill="#64748b" text-anchor="middle">RIGHT</text>
+                        </svg>
+                    </div>
+
+                    <!-- Current Haptic Command -->
+                    <div class="card" style="margin-top:12px;">
+                        <span class="card-heading">Current Haptic Command</span>
+                        <div style="display:flex; justify-content:space-between; align-items:center;">
+                            <div style="display:flex; align-items:center; gap:10px;">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2.5">
+                                    <path d="M2 12h3l3-9 4 18 3-9h3l2-3"></path>
+                                </svg>
+                                <span id="haptic-pat-label" style="font-size:1.05rem; font-weight:800; color:var(--text-title);">LEFT_FAST</span>
+                            </div>
+                            <span id="haptic-vib-badge" class="pill-badge" style="background:#eff6ff; color:#2563eb; border:1px solid #bfdbfe;">● Vibrating</span>
+                        </div>
+
+                        <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:6px; margin-top:4px;">
+                            <div class="corridor-box"><span class="corridor-name">Urgency</span><span id="haptic-urg-val" class="corridor-score mono" style="font-size:0.95rem;">3/3</span></div>
+                            <div class="corridor-box"><span class="corridor-name">Duration</span><span id="haptic-dur-val" class="corridor-score mono" style="font-size:0.95rem;">320 ms</span></div>
+                            <div class="corridor-box"><span class="corridor-name">Last Cmd</span><span id="haptic-time-val" class="corridor-score mono" style="font-size:0.8rem;">09:41:22</span></div>
+                        </div>
+                    </div>
+
+                    <!-- Device Status -->
+                    <div class="card" style="margin-top:12px;">
+                        <span class="card-heading">Device Status</span>
+                        <div class="detail-table-row"><span class="detail-key">Arduino</span><span id="dev-ard-status" class="pill-badge green">● Connected</span></div>
+                        <div class="detail-table-row"><span class="detail-key">Latency</span><span id="dev-latency-val" class="detail-val mono">32 ms</span></div>
+                        <div class="detail-table-row"><span class="detail-key">Watchdog</span><span class="pill-badge green">● Active</span></div>
+                        <div class="detail-table-row"><span class="detail-key">Left Motor</span><span id="dev-motor-l-status" class="pill-badge green">● ACTIVE</span></div>
+                        <div class="detail-table-row"><span class="detail-key">Center Motor</span><span id="dev-motor-c-status" class="detail-val" style="color:var(--text-muted);">○ Idle</span></div>
+                        <div class="detail-table-row"><span class="detail-key">Right Motor</span><span id="dev-motor-r-status" class="detail-val" style="color:var(--text-muted);">○ Idle</span></div>
+                        <div class="detail-table-row"><span class="detail-key">Battery (Device)</span><span class="detail-val mono">82%</span></div>
+                    </div>
+
+                    <!-- Haptic Language Guide -->
+                    <div class="card" style="margin-top:12px;">
+                        <span class="card-heading">Haptic Language Guide</span>
+                        <div style="font-size:0.75rem; color:var(--text-body); line-height:1.4;">
+                            <div><strong>Direction = Motor:</strong> Left → Left motor, Center → Center, Right → Right</div>
+                            <div style="margin-top:4px;"><strong>Urgency = Pulse Rate:</strong> Low (slow), Medium, High (fast), Critical (rapid)</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="haptics-commands-view" style="display:none;">
+                    <div class="card">
+                        <span class="card-heading">Recent Commands Telemetry</span>
+                        <div id="haptic-commands-list" style="display:flex; flex-direction:column; gap:8px;">
+                            <div class="detail-table-row"><span class="detail-key mono">09:41:22</span><span class="detail-val">LEFT_FAST (320ms, urg 3)</span></div>
+                            <div class="detail-table-row"><span class="detail-key mono">09:41:20</span><span class="detail-val">LEFT_MEDIUM (240ms, urg 2)</span></div>
+                            <div class="detail-table-row"><span class="detail-key mono">09:41:18</span><span class="detail-val">ALL_CLEAR (200ms, urg 1)</span></div>
+                            <div class="detail-table-row"><span class="detail-key mono">09:41:15</span><span class="detail-val">ALL_CLEAR (200ms, urg 1)</span></div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- ======================================================== -->
+            <!-- 4. TEST & REPLAY TAB                                     -->
+            <!-- ======================================================== -->
+            <div id="screen-test" class="tab-screen">
+                
+                <div class="card-header-line">
+                    <div>
+                        <h2 style="font-size:1.1rem; font-weight:800; color:var(--text-title);">Test & Replay</h2>
+                        <span style="font-size:0.72rem; color:var(--text-muted);">Validate system behavior with recorded scenarios</span>
+                    </div>
+                </div>
+
+                <!-- Scenario Selector Dropdown -->
+                <select id="select-test-scenario" class="test-scenario-dropdown" onchange="selectScenario(this.value)">
+                    <option value="s1">Scenario S1 - Parallel Wall (Safe)</option>
+                    <option value="s2">Scenario S2 - Head-On Obstacle (Warning)</option>
+                    <option value="s3">Scenario S3 - Crossing Pedestrian (Warning)</option>
+                    <option value="s4">Scenario S4 - Safe Pass (Safe)</option>
+                    <option value="s5">Scenario S5 - Receding Object (Safe)</option>
+                    <option value="s6">Scenario S6 - Multiple Obstacles (Critical)</option>
+                </select>
+
+                <div class="replay-btn-row">
+                    <button id="btn-replay-start" class="btn-action primary" onclick="startReplay()">▶ Start Replay</button>
+                    <button id="btn-replay-pause" class="btn-action" onclick="pauseReplay()">⏸ Pause</button>
+                    <button id="btn-replay-reset" class="btn-action" onclick="resetReplay()">↺ Reset</button>
+                </div>
+
+                <!-- Scenario Details Card -->
+                <div class="card">
+                    <span class="card-heading">Scenario Details</span>
+                    <div class="detail-table-row"><span class="detail-key">Description</span><span id="scen-desc" class="detail-val">Walk parallel to a wall (close distance)</span></div>
+                    <div class="detail-table-row"><span class="detail-key">Expected</span><span id="scen-expected" class="detail-val mono">SAFE / SILENT</span></div>
+                    <div class="detail-table-row"><span class="detail-key">Actual</span><span id="scen-actual" class="detail-val mono">SAFE / SILENT</span></div>
+                    <div class="detail-table-row"><span class="detail-key">Result</span><span id="scen-result" class="pill-badge green">✔ PASS</span></div>
+                </div>
+
+                <!-- Replay Timeline Chart -->
+                <div class="card">
+                    <div class="card-header-line">
+                        <span class="card-heading">Replay Timeline</span>
+                        <span style="font-size:0.65rem; color:var(--text-muted);">● Risk ● TTC ● CPA</span>
+                    </div>
+                    <div class="timeline-chart-box">
+                        <canvas id="replay-timeline-canvas" width="380" height="90" style="width:100%; height:100%;"></canvas>
+                    </div>
+                </div>
+
+                <!-- Frame Scrubber -->
+                <div class="card">
+                    <div class="detail-table-row">
+                        <span class="detail-key">Scrubbed Frame</span>
+                        <span id="scen-frame-txt" class="detail-val mono">Frame 1260 | Risk 0.11</span>
+                    </div>
+                    <input id="replay-slider" type="range" min="0" max="100" value="35" style="width:100%; accent-color:var(--c-primary);" oninput="onScrubberInput(this.value)">
+                </div>
+
+                <!-- Scenarios Table -->
+                <div class="card" style="padding:10px;">
+                    <span class="card-heading" style="margin-bottom:6px;">All Test Scenarios</span>
+                    <div class="detail-table-row" style="cursor:pointer;" onclick="selectScenario('s1')"><span>S1 Parallel Wall</span><span class="pill-badge green">Pass</span></div>
+                    <div class="detail-table-row" style="cursor:pointer;" onclick="selectScenario('s2')"><span>S2 Head-On Obstacle</span><span class="pill-badge green">Pass</span></div>
+                    <div class="detail-table-row" style="cursor:pointer;" onclick="selectScenario('s3')"><span>S3 Crossing Pedestrian</span><span class="pill-badge green">Pass</span></div>
+                    <div class="detail-table-row" style="cursor:pointer;" onclick="selectScenario('s4')"><span>S4 Safe Pass</span><span class="pill-badge green">Pass</span></div>
+                    <div class="detail-table-row" style="cursor:pointer;" onclick="selectScenario('s5')"><span>S5 Receding Object</span><span class="pill-badge green">Pass</span></div>
+                    <div class="detail-table-row" style="cursor:pointer;" onclick="selectScenario('s6')"><span>S6 Multiple Obstacles</span><span class="pill-badge green">Pass</span></div>
+                </div>
+
+            </div>
+
+            <!-- ======================================================== -->
+            <!-- 5. SOCIAL ASSIST TAB                                     -->
+            <!-- ======================================================== -->
+            <div id="screen-social" class="tab-screen">
+                
+                <div class="toggle-switch-row">
+                    <div>
+                        <h2 style="font-size:1.1rem; font-weight:800; color:var(--text-title);">Social Assist</h2>
+                        <span style="font-size:0.72rem; color:var(--text-muted);">Optional identity assistance · Does not affect safety</span>
+                    </div>
+                    <div style="display:flex; align-items:center; gap:8px;">
+                        <span id="social-switch-label" style="font-size:0.75rem; font-weight:700; color:var(--c-primary);">Enabled</span>
+                        <div class="toggle-switch" id="toggle-social-switch" onclick="toggleSocialAssist()">
+                            <div class="toggle-knob"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="segmented-switcher" id="social-segmented">
+                    <button class="segment-btn active" id="btn-seg-live-rec" onclick="switchSocialView('live')">Live Recognition</button>
+                    <button class="segment-btn" id="btn-seg-contacts" onclick="switchSocialView('contacts')">Known Contacts</button>
+                </div>
+
+                <div id="social-live-view">
+                    <!-- Camera recognition view -->
+                    <div class="card" style="padding:10px;">
+                        <div class="video-viewport" style="height: 180px; background: #1e293b;">
+                            <div id="social-face-box" style="position:absolute; width:110px; height:130px; border:2px solid #10b981; border-radius:8px; display:flex; flex-direction:column; justify-content:space-between; padding:4px;">
+                                <span class="vdo-pill-badge" style="background:#10b981; font-size:0.6rem;">Person #4</span>
+                                <span class="vdo-pill-badge" style="background:#10b981; font-size:0.6rem; align-self:flex-end;">Rahul (0.91)</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Identity Card -->
+                    <div class="card" style="margin-top:12px;">
+                        <span class="card-heading">Identity Information</span>
+                        <div class="detail-table-row"><span class="detail-key">Track ID</span><span class="detail-val mono">#4</span></div>
+                        <div class="detail-table-row"><span class="detail-key">Class</span><span class="detail-val">Person</span></div>
+                        <div class="detail-table-row"><span class="detail-key">Known Contact</span><span class="detail-val" style="font-weight:800; color:var(--c-primary);">Rahul</span></div>
+                        <div class="detail-table-row"><span class="detail-key">Confidence</span><span class="detail-val mono">0.91</span></div>
+                        <div class="detail-table-row"><span class="detail-key">Status</span><span class="pill-badge green">● Known</span></div>
+                    </div>
+                </div>
+
+                <div id="social-contacts-view" style="display:none;">
+                    <div class="card">
+                        <span class="card-heading">Enrolled Contacts (Local Edge Database)</span>
+                        <div class="detail-table-row"><span style="font-weight:700;">Rahul Sharma</span><span class="pill-badge green">● Known · Friend</span></div>
+                        <div class="detail-table-row"><span style="font-weight:700;">Dr. Roy</span><span class="pill-badge green">● Known · Physician</span></div>
+                        <div class="detail-table-row"><span style="font-weight:700;">Priya Patel</span><span class="pill-badge green">● Known · Family</span></div>
+                        <div class="detail-table-row"><span style="font-weight:700;">Security Desk</span><span class="pill-badge green">● Known · Staff</span></div>
+                    </div>
+                </div>
+
+                <!-- Privacy & Data Governance -->
+                <div class="card" style="margin-top:12px;">
+                    <span class="card-heading">Privacy & Data Governance</span>
+                    <div class="detail-table-row"><span class="detail-key">Local Edge Processing</span><span class="pill-badge green">✔ ON</span></div>
+                    <div class="detail-table-row"><span class="detail-key">Cloud Upload</span><span class="pill-badge red">✖ OFF</span></div>
+                    <div class="detail-table-row"><span class="detail-key">Raw Recording</span><span class="pill-badge red">✖ OFF</span></div>
+                    <div class="detail-table-row"><span class="detail-key">Face Recognition</span><span class="pill-badge green">✔ ON (Optional)</span></div>
+                    <div class="detail-table-row"><span class="detail-key">Telemetry Stream</span><span class="detail-val" style="color:var(--c-primary); font-size:0.75rem;">ℹ Metadata Only</span></div>
+                </div>
+
+                <!-- Privacy Notice Banner -->
+                <div style="background:var(--c-primary-light); border:1px solid #bfdbfe; border-radius:12px; padding:10px 12px; font-size:0.72rem; color:#1e40af; line-height:1.4; margin-top:12px;">
+                    ℹ <strong>Privacy Rule:</strong> Camera is used for spatial perception. Identity recognition is isolated and never gates collision warnings.
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- Bottom Navigation Bar (5 tabs) -->
+        <nav class="bottom-nav-bar">
+            <button class="nav-item active" onclick="switchTab('live')">
+                <svg class="nav-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                    <polyline points="9 22 9 12 15 12 15 22"></polyline>
+                </svg>
+                <span class="nav-label">Live</span>
+            </button>
+            <button class="nav-item" onclick="switchTab('predict')">
+                <svg class="nav-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <circle cx="12" cy="12" r="6"></circle>
+                    <circle cx="12" cy="12" r="2"></circle>
+                </svg>
+                <span class="nav-label">Predict</span>
+            </button>
+            <button class="nav-item" onclick="switchTab('haptics')">
+                <svg class="nav-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M2 12h3l3-9 4 18 3-9h3l2-3"></path>
+                </svg>
+                <span class="nav-label">Haptics</span>
+            </button>
+            <button class="nav-item" onclick="switchTab('test')">
+                <svg class="nav-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M10 2v7.31"></path>
+                    <path d="M14 2v7.31"></path>
+                    <path d="M8.5 2h7"></path>
+                    <path d="M14 9.3a6.5 6.5 0 1 1-4 0"></path>
+                </svg>
+                <span class="nav-label">Test</span>
+            </button>
+            <button class="nav-item" onclick="switchTab('social')">
+                <svg class="nav-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path>
+                    <circle cx="12" cy="7" r="4"></circle>
+                </svg>
+                <span class="nav-label">Social</span>
+            </button>
+        </nav>
+
+        <!-- Settings Modal (Camera / VDO.Ninja URL update) -->
+        <div id="settings-modal" class="modal-overlay">
+            <div class="modal-card">
+                <div class="card-header-line">
+                    <h3 style="font-size:1rem; font-weight:800; color:var(--text-title);">Camera Source Settings</h3>
+                    <button id="btn-close-settings" style="background:none; border:none; font-size:1.2rem; cursor:pointer;">&times;</button>
+                </div>
+                <p style="font-size:0.75rem; color:var(--text-muted);">
+                    Paste your VDO.Ninja viewer link below. The phone video stream will display in the dashboard immediately.
+                </p>
+                <input id="input-camera-url" type="text" class="input-text mono" placeholder="https://vdo.ninja/?view=vYEkARC">
+                <div style="display:flex; justify-content:flex-end; gap:8px;">
+                    <button id="btn-cancel-settings" class="btn-action">Cancel</button>
+                    <button id="btn-save-settings" class="btn-action primary">Save & Connect</button>
+                </div>
             </div>
         </div>
 
-    </div>
-
-    <!-- System Health Strip -->
-    <div class="health-strip mono">
-        <div class="health-pill">
-            <span id="health-cam-dot" class="pill-dot"></span>
-            <span>Camera: <strong id="health-cam-txt">OK</strong></span>
-        </div>
-        <div class="health-pill">
-            <span id="health-imu-dot" class="pill-dot"></span>
-            <span>IMU: <strong id="health-imu-txt">OK</strong></span>
-        </div>
-        <div class="health-pill">
-            <span id="health-ard-dot" class="pill-dot"></span>
-            <span>Arduino: <strong id="health-ard-txt">OK</strong></span>
-        </div>
-        <div class="health-pill">
-            <span>Latency: <strong id="latency-txt">0</strong>ms</span>
-        </div>
     </div>
 
     <script src="dashboard.js"></script>

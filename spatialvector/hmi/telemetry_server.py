@@ -70,6 +70,32 @@ class TelemetryServer:
                 "timestamp": time.monotonic(),
             }
 
+        @self.app.get("/api/source")
+        async def get_source():
+            try:
+                from spatialvector.perception.source_resolver import resolve_camera_source, read_camera_source_file
+                src, origin = resolve_camera_source()
+                return {
+                    "source": str(src),
+                    "origin": origin,
+                    "saved": read_camera_source_file(),
+                }
+            except Exception as e:
+                return {"source": "0", "origin": "error", "error": str(e)}
+
+        @self.app.post("/api/set-source")
+        async def set_source(req: dict):
+            try:
+                from spatialvector.perception.source_resolver import write_camera_source_file
+                val = req.get("source")
+                if val:
+                    p = write_camera_source_file(str(val).strip())
+                    return {"status": "OK", "source": str(val).strip(), "path": str(p)}
+                return {"status": "ERROR", "message": "Missing 'source'"}
+            except Exception as e:
+                return {"status": "ERROR", "error": str(e)}
+
+
         @self.app.websocket("/ws/telemetry")
         async def websocket_endpoint(websocket: WebSocket):
             await websocket.accept()
