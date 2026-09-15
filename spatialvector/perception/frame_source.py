@@ -45,6 +45,8 @@ class FrameSource:
         self.is_network_stream = isinstance(self.source, str) and any(
             str(self.source).lower().startswith(p) for p in ("http://", "https://", "rtsp://", "udp://")
         )
+        self.is_vdo_ninja = isinstance(self.source, str) and "vdo.ninja" in str(self.source).lower()
+        self._vdo_capture = None
 
         # Internal queue: non-blocking, bounded
         self._queue: queue.Queue[Frame] = queue.Queue(maxsize=self.queue_size)
@@ -145,45 +147,7 @@ class FrameSource:
                     time.sleep(self.reconnect_interval)
                     continue
 
-            self.status = self.STATUS_OK
-            frame_id = self.frames_captured
-            self.frames_captured += 1
-
-            # Check timestamp drift (>3x expected inter-frame interval)
-            if self._last_capture_time is not None:
-                dt = t_capture - self._last_capture_time
-                if dt > (3.0 * self._expected_interval):
-                    logger.warning(
-                        f"Timestamp drift detected: frame interval {dt:.4f}s > 3x expected {self._expected_interval:.4f}s"
-                    )
-            self._last_capture_time = t_capture
-
-            # Compute actual rolling FPS from monotonic timestamps
-            self._timestamps.append(t_capture)
-            if len(self._timestamps) > 1:
-                duration = self._timestamps[-1] - self._timestamps[0]
-                if duration > 0:
-                    self.fps_estimate = (len(self._timestamps) - 1) / duration
-
-            frame = Frame(
-                frame_id=frame_id,
-                image=img,
-                t_capture=t_capture,
-                fps_estimate=self.fps_estimate,
-            )
-
-            # Bounded queue: drop oldest if full
-            while True:
-                try:
-                    self._queue.put_nowait(frame)
-                    break
-                except queue.Full:
-                    try:
-                        _ = self._queue.get_nowait()
-                        self.frames_dropped += 1
-                        logger.debug(f"Frame queue full; dropped oldest frame. Total dropped: {self.frames_dropped}")
-                    except queue.Empty:
-                        pass
+            self._process_and_enqueue(img, t_capture)
 
             # If playing back a local video file, pace according to target_fps so we don't rush through
             if isinstance(self.source, str) and not self.is_network_stream and self.target_fps > 0:
@@ -197,8 +161,61 @@ class FrameSource:
             self._cap = None
         self.status = self.STATUS_DISCONNECTED
 
+    def _process_and_enqueue(self, img: np.ndarray, t_capture: float):
+        """Process an acquired frame, compute rolling FPS, and put into bounded queue."""
+        self.status = self.STATUS_OK
+        frame_id = self.frames_captured
+        self.frames_captured += 1
+
+        # Check timestamp drift (>3x expected inter-frame interval)
+        if self._last_capture_time is not None:
+            dt = t_capture - self._last_capture_time
+            if dt > (3.0 * self._expected_interval):
+                logger.warning(
+                    f"Timestamp drift detected: frame interval {dt:.4f}s > 3x expected {self._expected_interval:.4f}s"
+                )
+        self._last_capture_time = t_capture
+
+        # Compute actual rolling FPS from monotonic timestamps
+        self._timestamps.append(t_capture)
+        if len(self._timestamps) > 1:
+            duration = self._timestamps[-1] - self._timestamps[0]
+            if duration > 0:
+                self.fps_estimate = (len(self._timestamps) - 1) / duration
+
+        frame = Frame(
+            frame_id=frame_id,
+            image=img,
+            t_capture=t_capture,
+            fps_estimate=self.fps_estimate,
+        )
+
+        # Bounded queue: drop oldest if full
+        while True:
+            try:
+                self._queue.put_nowait(frame)
+                break
+            except queue.Full:
+                try:
+                    _ = self._queue.get_nowait()
+                    self.frames_dropped += 1
+                    logger.debug(f"Frame queue full; dropped oldest frame. Total dropped: {self.frames_dropped}")
+                except queue.Empty:
+                    pass
+
     def start(self) -> "FrameSource":
         """Start the capture thread."""
+        if self.is_vdo_ninja:
+            if self._vdo_capture is None:
+                from .vdo_ninja_source import VdoNinjaCapture
+                self._vdo_capture = VdoNinjaCapture(
+                    str(self.source),
+                    on_frame=self._process_and_enqueue,
+                    target_fps=self.target_fps,
+                )
+                self._vdo_capture.start()
+            return self
+
         if self._thread is not None and self._thread.is_alive():
             return self
 
@@ -209,6 +226,10 @@ class FrameSource:
 
     def stop(self):
         """Stop the capture thread and release resources."""
+        if self._vdo_capture is not None:
+            self._vdo_capture.stop()
+            self._vdo_capture = None
+
         self._stop_event.set()
         if self._thread is not None:
             self._thread.join(timeout=2.0)

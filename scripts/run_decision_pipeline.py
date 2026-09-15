@@ -374,7 +374,10 @@ def run_live(args):
             frame_obj = frame_src.get_frame(timeout=1.0)
             if frame_obj is None:
                 consecutive_timeouts += 1
-                if consecutive_timeouts < 5:
+                max_allowed = 30 if frame_count == 0 else 10
+                if consecutive_timeouts < max_allowed:
+                    if frame_count == 0 and consecutive_timeouts % 3 == 0:
+                        print(f"[Pipeline] Waiting for stream connection ({consecutive_timeouts}/{max_allowed}s)...")
                     continue
                 print("[Pipeline] No frames — exiting.")
                 break

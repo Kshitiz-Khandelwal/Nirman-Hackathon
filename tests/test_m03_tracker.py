@@ -84,14 +84,11 @@ def test_t06_persistent_track_id_single_subject():
     fixture = Path(__file__).resolve().parent / "fixtures" / "test_walking.mp4"
     assert fixture.exists(), f"Fixture not found: {fixture} — run tests/fixtures/generate_fixtures.py first"
 
-    tracker = MultiObjectTracker(backend="bytetrack", history_length=10)
     tracker = MultiObjectTracker(
         backend="bytetrack",
         history_length=10,
         confidence_threshold=0.01,  # Match detect_raw threshold — fixture figures need low conf
         class_filter=None,           # No class filter — fixture objects aren't COCO-labeled
-        confidence_threshold=0.3,
-        class_filter=["person"],
     )
     cap = cv2.VideoCapture(str(fixture))
 
@@ -144,8 +141,6 @@ def test_t07_camera_rotation_bounded_track_count():
         history_length=10,
         confidence_threshold=0.01,
         class_filter=None,
-        confidence_threshold=0.3,
-        class_filter=["person"],
     )
     cap = cv2.VideoCapture(str(fixture))
 
