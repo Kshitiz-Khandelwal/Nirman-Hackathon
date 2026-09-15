@@ -389,12 +389,14 @@ class RiskEngine:
         """Overall confidence in the current frame's predictions.
 
         Low when:
-          - No predictions at all
-          - All predictions have low prediction_confidence
-          - Upstream is in fallback mode
+          - Upstream sensors or motion estimation are in fallback mode (fallback_active=True)
+          - Tracked objects have low prediction_confidence
+        When predictions is empty:
+          - If fallback_active=True: sensors/flow failed → confidence=0.0 (DEGRADED)
+          - If fallback_active=False: pipeline is healthy and scene is clear → confidence=1.0 (SAFE)
         """
         if not predictions:
-            return 0.0
+            return 0.0 if fallback_active else 1.0
 
         avg_conf = float(np.mean([p.prediction_confidence for p in predictions]))
 

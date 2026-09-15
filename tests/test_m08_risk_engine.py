@@ -265,6 +265,33 @@ def test_t22b_degraded_when_low_confidence():
     print(f"  T22b: DEGRADED correctly issued for low-confidence predictions. PASSED.")
 
 
+def test_t22c_empty_scene_healthy_pipeline_is_safe():
+    """T22c: Empty scene with healthy pipeline must be SAFE, not DEGRADED.
+
+    When there are 0 predictions:
+      - If fallback_active=False (sensors healthy, clear path): state must be SAFE, global_risk=0.0.
+      - If fallback_active=True (sensors failed, degraded): state must be DEGRADED.
+    """
+    engine = RiskEngine(degraded_confidence_threshold=0.25)
+
+    # Healthy sensors + empty hallway -> SAFE
+    rs_healthy = engine.update([], fallback_active=False, timestamp=0.0)
+    assert rs_healthy.state == "SAFE", (
+        f"T22c: Empty scene with healthy sensors should be SAFE, got {rs_healthy.state} "
+        f"(confidence={rs_healthy.confidence}, reasons={rs_healthy.escalation_reasons})"
+    )
+    assert rs_healthy.global_risk == 0.0, f"T22c: Expected risk 0.0, got {rs_healthy.global_risk}"
+    assert rs_healthy.confidence == 1.0, f"T22c: Expected confidence 1.0, got {rs_healthy.confidence}"
+
+    # Degraded sensors + empty predictions -> DEGRADED
+    rs_degraded = engine.update([], fallback_active=True, timestamp=1.0)
+    assert rs_degraded.state == "DEGRADED", (
+        f"T22c: Fallback active should yield DEGRADED, got {rs_degraded.state}"
+    )
+    assert rs_degraded.confidence == 0.0, f"T22c: Expected confidence 0.0, got {rs_degraded.confidence}"
+    print("  T22c: Empty scene produces SAFE when healthy and DEGRADED when sensor fails. PASSED.")
+
+
 # ---------------------------------------------------------------------------
 # Standalone runner
 # ---------------------------------------------------------------------------
@@ -287,4 +314,9 @@ if __name__ == "__main__":
     test_t22b_degraded_when_low_confidence()
     print("  -> T22b PASSED")
 
+    print("[TEST] T22c: Empty scene healthy vs degraded...")
+    test_t22c_empty_scene_healthy_pipeline_is_safe()
+    print("  -> T22c PASSED")
+
     print("\nALL M08 TESTS PASSED.")
+

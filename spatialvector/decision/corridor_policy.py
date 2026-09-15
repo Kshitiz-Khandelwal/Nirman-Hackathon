@@ -117,14 +117,14 @@ class CorridorPolicy:
         for corr in ("left", "center", "right"):
             self._history[corr].append(corridor_risks.get(corr, 0.0))
 
-        # --- DEGRADED state: produce a safe fallback command ---
+        # --- DEGRADED state: produce a distinct safe fallback command ---
         if risk_state.state == "DEGRADED":
             return HapticCommand(
                 timestamp=ts,
                 direction="STOP",
                 urgency=2,
-                pattern_id="STOP_SLOW",
-                duration_ms=400,
+                pattern_id="DEGRADED_WARN",
+                duration_ms=350,
             )
 
         # --- SAFE state: no command (send a "clear" pulse) ---
@@ -133,8 +133,8 @@ class CorridorPolicy:
                 timestamp=ts,
                 direction="STOP",
                 urgency=1,
-                pattern_id="STOP_SLOW",   # M10 interprets urgency=1 direction=STOP as "all clear"
-                duration_ms=400,
+                pattern_id="ALL_CLEAR",   # M10 interprets urgency=1 direction=STOP as "all clear"
+                duration_ms=200,
             )
 
         # --- All-corridors-blocked check ---

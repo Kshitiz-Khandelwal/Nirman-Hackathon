@@ -219,21 +219,35 @@ def test_t25b_stop_distinct_from_directional_high_urgency():
 
 
 def test_t23b_degraded_state_produces_command():
-    """T23b: DEGRADED risk state still produces a HapticCommand (uncertain, but not nothing)."""
+    """T23b: DEGRADED risk state produces distinct DEGRADED_WARN pattern."""
     policy = CorridorPolicy()
     rs = _make_risk_state(state="DEGRADED", global_risk=0.0,
                           corridor_risks={"left": 0.0, "center": 0.0, "right": 0.0},
                           confidence=0.1)
 
-    try:
-        cmd = policy.select(rs, timestamp=0.0)
-    except Exception as exc:
-        pytest.fail(f"T23b: DEGRADED state raised exception: {exc}")
+    cmd = policy.select(rs, timestamp=0.0)
 
-    # Must produce something — even if it's a low-urgency stop
-    assert cmd is not None, "T23b: Must produce a command even in DEGRADED state"
-    assert cmd.urgency >= 1, "T23b: urgency must be at least 1"
-    print(f"  T23b: DEGRADED -> direction={cmd.direction}, urgency={cmd.urgency}. PASSED.")
+    assert cmd is not None, "T23b: Must produce a command in DEGRADED state"
+    assert cmd.direction == "STOP"
+    assert cmd.urgency == 2, "T23b: DEGRADED urgency must be 2"
+    assert cmd.pattern_id == "DEGRADED_WARN", f"T23b: Expected DEGRADED_WARN, got {cmd.pattern_id}"
+    print(f"  T23b: DEGRADED -> direction={cmd.direction}, urgency={cmd.urgency}, pattern={cmd.pattern_id}. PASSED.")
+
+
+def test_t23c_safe_clear_state_produces_all_clear():
+    """T23c: Confirmed SAFE state produces distinct ALL_CLEAR pattern with urgency=1."""
+    policy = CorridorPolicy()
+    rs = _make_risk_state(state="SAFE", global_risk=0.0,
+                          corridor_risks={"left": 0.0, "center": 0.0, "right": 0.0},
+                          confidence=1.0)
+
+    cmd = policy.select(rs, timestamp=0.0)
+
+    assert cmd is not None, "T23c: Must produce a command in SAFE clear state"
+    assert cmd.direction == "STOP"
+    assert cmd.urgency == 1, "T23c: SAFE clear urgency must be 1"
+    assert cmd.pattern_id == "ALL_CLEAR", f"T23c: Expected ALL_CLEAR, got {cmd.pattern_id}"
+    print(f"  T23c: SAFE clear -> direction={cmd.direction}, urgency={cmd.urgency}, pattern={cmd.pattern_id}. PASSED.")
 
 
 # ---------------------------------------------------------------------------

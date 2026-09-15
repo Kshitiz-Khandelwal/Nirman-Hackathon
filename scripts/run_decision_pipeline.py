@@ -324,7 +324,7 @@ def run_synthetic(no_view: bool):
     print("                Note: STOP_CRITICAL requires all corridors >= 0.70 risk.")
     print("                Oblique approach objects produce high CENTER risk only (correct geometry).")
     print("                To test STOP_CRITICAL: see T25 in tests/test_m09_corridor_policy.py")
-    print("  Frames 91+:   clear scene       -> DEGRADED (no tracks) -> STOP_SLOW")
+    print("  Frames 91+:   clear scene       -> SAFE (no tracks, sensors healthy) -> de-escalates to ALL_CLEAR")
 
 
 # ---------------------------------------------------------------------------
