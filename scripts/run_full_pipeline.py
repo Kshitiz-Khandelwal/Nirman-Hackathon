@@ -37,7 +37,7 @@ from spatialvector.decision.risk_engine import RiskEngine
 from spatialvector.decision.schemas import HapticCommand, Prediction, RiskState
 from spatialvector.hmi.arduino_interface import ArduinoInterface, SimulatedArduinoInterface
 from spatialvector.hmi.logger import SessionLogger
-from spatialvector.hmi.schemas import TelemetryMessage
+from spatialvector.hmi.schemas import TelemetryMessage, build_track_telemetry
 from spatialvector.hmi.telemetry_server import TelemetryServer
 from spatialvector.motion.schemas import ObjectGeometry
 from spatialvector.perception.schemas import Frame, Track
@@ -353,17 +353,17 @@ def main():
 
                 # Broadcast to M11 Telemetry
                 if telemetry_server:
+                    pred_map = {p.track_id: p for p in predictions}
                     telemetry_server.broadcast(TelemetryMessage(
                         session_id=session_id,
                         ts=ts,
                         frame_id=fid,
-                        tracks=[{"track_id": t.track_id, "class_name": t.class_name,
-                                 "cpa": getattr(pred_map.get(t.track_id), "cpa_normalized", None),
-                                 "ttc_s": getattr(pred_map.get(t.track_id), "ttc_s", None)}
-                                for t in tracks] if (pred_map := {p.track_id: p for p in predictions}) else [],
+                        tracks=build_track_telemetry(tracks, pred_map),
                         risk_state=asdict(risk_state),
                         haptic=asdict(cmd),
                         pipeline_health={"camera": "OK", "imu": "OK", "arduino": "OK"},
+                        frame_width=640,
+                        frame_height=480,
                     ))
 
                 # Record in M12 Logger
@@ -465,10 +465,7 @@ def main():
                         session_id=session_id,
                         ts=ts,
                         frame_id=f_obj.frame_id,
-                        tracks=[{"track_id": t.track_id, "class_name": t.class_name,
-                                 "cpa": getattr(pred_map.get(t.track_id), "cpa_normalized", None),
-                                 "ttc_s": getattr(pred_map.get(t.track_id), "ttc_s", None)}
-                                for t in tracks],
+                        tracks=build_track_telemetry(tracks, pred_map),
                         risk_state=asdict(risk_state),
                         haptic=asdict(cmd),
                         pipeline_health={
@@ -476,6 +473,8 @@ def main():
                             "imu": "OK" if (imu_s and imu_s.status == "OK") else "DISCONNECTED",
                             "arduino": "OK" if arduino.get_status().connected else "DISCONNECTED",
                         },
+                        frame_width=w,
+                        frame_height=h,
                     ))
 
                 # M12 Logger

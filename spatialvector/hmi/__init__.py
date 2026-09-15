@@ -9,10 +9,12 @@ from spatialvector.hmi.schemas import (
     ArduinoStatus,
     TelemetryMessage,
     SessionRecord,
+    build_track_telemetry,
 )
 
 __all__ = [
     "ArduinoStatus",
     "TelemetryMessage",
     "SessionRecord",
+    "build_track_telemetry",
 ]

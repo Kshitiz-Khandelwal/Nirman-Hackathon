@@ -23,40 +23,26 @@
 
     const STALE_THRESHOLD_MS = 1500;
     let lastMessageTimestamp = 0;
+    let pageLoadTimestamp = Date.now();
     let ws = null;
     let reconnectDelay = 1000;
-    let currentCameraUrl = "https://vdo.ninja/?view=vYEkARC";
+    let currentCameraUrl = "https://vdo.ninja/?view=spatialvector_demo";
 
     // Overlay and Video Controls
     let hudOverlayEnabled = true;
     let isVideoCover = true;
 
-    // Telemetry and Model State
-    let currentRiskState = "WARNING";
-    let currentGlobalRisk = 0.84;
-    let currentTTC = 2.1;
-    let currentCPA = 0.41;
-    let activeTracks = [
-        {
-            track_id: 2,
-            class_name: "Scooter",
-            confidence: 0.87,
-            ttc_s: 2.1,
-            cpa: 0.41,
-            intersect: true,
-            relative_velocity: 2.5,
-            pred_conf: 0.81,
-            state: "WARNING",
-            bbox: [162, 85, 238, 190]
-        }
-    ];
+    // Telemetry and Model State (Clean Standby State on Startup)
+    let currentRiskState = "STANDBY";
+    let currentGlobalRisk = 0.0;
+    let currentTTC = null;
+    let currentCPA = null;
+    let activeTracks = [];
     let selectedTrackIndex = 0;
-    let hapticHistory = [
-        { time: "09:41:22", pattern: "LEFT_FAST", duration: 320, urgency: 3 },
-        { time: "09:41:20", pattern: "LEFT_MEDIUM", duration: 240, urgency: 2 },
-        { time: "09:41:18", pattern: "ALL_CLEAR", duration: 200, urgency: 1 },
-        { time: "09:41:15", pattern: "ALL_CLEAR", duration: 200, urgency: 1 }
-    ];
+    let hapticHistory = [];
+    let currentFrameWidth = 640;
+    let currentFrameHeight = 480;
+    let lastReasonCodes = [];
 
     // Replay State
     const SCENARIOS = {
@@ -229,25 +215,42 @@
     // 1. Client-Side Staleness Watchdog (Section 0 Requirement)
     // -------------------------------------------------------------------------
     setInterval(function checkWatchdog() {
-        if (lastMessageTimestamp === 0) {
+        const now = Date.now();
+        const hasNeverConnected = (lastMessageTimestamp === 0);
+        const timeSinceLoad = now - pageLoadTimestamp;
+        const timeSinceLastMsg = now - lastMessageTimestamp;
+
+        if (hasNeverConnected) {
+            // If never received any message and grace period expired, flag offline
+            if (timeSinceLoad > STALE_THRESHOLD_MS) {
+                if (stalenessBanner) {
+                    stalenessBanner.style.display = "block";
+                    stalenessBanner.innerHTML = `⚠️ PIPELINE OFFLINE — Waiting for telemetry server (${(timeSinceLoad / 1000).toFixed(1)}s)`;
+                }
+                if (connPillBadge) connPillBadge.className = "conn-pill disconnected";
+                if (connStatusDot) connStatusDot.className = "status-dot disconnected";
+                if (connStatusText) connStatusText.textContent = "Pipeline Offline / Not Started";
+                resetMotorVisuals();
+            }
             return;
         }
 
-        const elapsed = Date.now() - lastMessageTimestamp;
-        if (elapsed > STALE_THRESHOLD_MS) {
-            stalenessBanner.style.display = "block";
-            staleSecTxt.textContent = (elapsed / 1000).toFixed(1);
+        if (timeSinceLastMsg > STALE_THRESHOLD_MS) {
+            if (stalenessBanner) {
+                stalenessBanner.style.display = "block";
+                stalenessBanner.innerHTML = `⚠️ PIPELINE STALLED — No updates received for <span id="stale-sec-txt">${(timeSinceLastMsg / 1000).toFixed(1)}</span>s`;
+            }
 
-            connPillBadge.className = "conn-pill disconnected";
-            connStatusDot.className = "status-dot disconnected";
-            connStatusText.textContent = "Pipeline Stalled / Offline";
+            if (connPillBadge) connPillBadge.className = "conn-pill disconnected";
+            if (connStatusDot) connStatusDot.className = "status-dot disconnected";
+            if (connStatusText) connStatusText.textContent = "Pipeline Stalled / Offline";
 
             resetMotorVisuals();
         } else {
-            stalenessBanner.style.display = "none";
-            connPillBadge.className = "conn-pill";
-            connStatusDot.className = "status-dot";
-            connStatusText.textContent = "Local Edge Connected";
+            if (stalenessBanner) stalenessBanner.style.display = "none";
+            if (connPillBadge) connPillBadge.className = "conn-pill";
+            if (connStatusDot) connStatusDot.className = "status-dot";
+            if (connStatusText) connStatusText.textContent = "Local Edge Connected";
         }
     }, 150);
 
@@ -412,9 +415,10 @@
 
         ws.onopen = function () {
             lastMessageTimestamp = Date.now();
-            connPillBadge.className = "conn-pill";
-            connStatusDot.className = "status-dot";
-            connStatusText.textContent = "Local Edge Connected";
+            if (connPillBadge) connPillBadge.className = "conn-pill";
+            if (connStatusDot) connStatusDot.className = "status-dot";
+            if (connStatusText) connStatusText.textContent = "Local Edge Connected";
+            if (stalenessBanner) stalenessBanner.style.display = "none";
             reconnectDelay = 1000;
         };
 
@@ -429,10 +433,20 @@
         };
 
         ws.onclose = function () {
+            if (connPillBadge) connPillBadge.className = "conn-pill disconnected";
+            if (connStatusDot) connStatusDot.className = "status-dot disconnected";
+            if (connStatusText) connStatusText.textContent = "Pipeline Disconnected";
+            if (stalenessBanner) {
+                stalenessBanner.style.display = "block";
+                stalenessBanner.textContent = "⚠️ PIPELINE DISCONNECTED — Reconnecting...";
+            }
             scheduleReconnect();
         };
 
         ws.onerror = function () {
+            if (connPillBadge) connPillBadge.className = "conn-pill disconnected";
+            if (connStatusDot) connStatusDot.className = "status-dot disconnected";
+            if (connStatusText) connStatusText.textContent = "Connection Error";
             ws.close();
         };
     }
@@ -447,8 +461,16 @@
             sessionIdLabel.textContent = `Session: ${msg.session_id.substring(0, 10)}`;
         }
 
+        if (msg.frame_width) currentFrameWidth = msg.frame_width;
+        if (msg.frame_height) currentFrameHeight = msg.frame_height;
+
         // 1. Risk State & Score
         const rs = msg.risk_state || {};
+        if (Array.isArray(rs.reason_codes)) {
+            lastReasonCodes = rs.reason_codes;
+        } else {
+            lastReasonCodes = [];
+        }
         const state = (rs.state || "SAFE").toUpperCase();
         const globalRisk = (typeof rs.global_risk === "number") ? rs.global_risk : 0.0;
         currentRiskState = state;
@@ -456,11 +478,11 @@
 
         updateRiskBanner(state, globalRisk);
 
-        // 2. Corridors
+        // 2. Corridors (Defaults to 0.0 instead of fake mock constants)
         const cr = rs.corridor_risks || {};
-        const leftRisk = cr.left !== undefined ? cr.left : 0.12;
-        const centerRisk = cr.center !== undefined ? cr.center : 0.84;
-        const rightRisk = cr.right !== undefined ? cr.right : 0.23;
+        const leftRisk = (typeof cr.left === "number") ? cr.left : 0.0;
+        const centerRisk = (typeof cr.center === "number") ? cr.center : 0.0;
+        const rightRisk = (typeof cr.right === "number") ? cr.right : 0.0;
         updateCorridorBoxes(leftRisk, centerRisk, rightRisk);
 
         // 3. Recommended Direction
@@ -479,11 +501,15 @@
                     if (minCpa === null || t.cpa < minCpa) minCpa = t.cpa;
                 }
             }
-            currentTTC = minTtc !== null ? minTtc : 2.1;
-            currentCPA = minCpa !== null ? minCpa : 0.41;
+            currentTTC = minTtc;
+            currentCPA = minCpa;
+        } else {
+            activeTracks = [];
+            currentTTC = null;
+            currentCPA = null;
         }
-        if (valTtc) valTtc.textContent = `${Number(currentTTC).toFixed(1)} s`;
-        if (valCpa) valCpa.textContent = `${Number(currentCPA).toFixed(2)} m`;
+        if (valTtc) valTtc.textContent = currentTTC !== null ? `${Number(currentTTC).toFixed(1)} s` : "—";
+        if (valCpa) valCpa.textContent = currentCPA !== null ? `${Number(currentCPA).toFixed(2)} m` : "—";
 
         // 5. Haptic Feedback
         if (msg.haptic) {
@@ -669,43 +695,54 @@
         ctx.fill();
         ctx.restore();
 
-        // Draw Bounding Boxes for detected objects (e.g. Scooter #2)
-        const primaryTrack = activeTracks[selectedTrackIndex] || activeTracks[0];
-        if (primaryTrack && primaryTrack.ttc_s !== undefined) {
-            const bx = 162;
-            const by = 85;
-            const bw = 76;
-            const bh = 105;
+        // Draw Bounding Boxes dynamically from real telemetry tracks (with video-to-canvas coordinate mapping)
+        if (activeTracks && activeTracks.length > 0) {
+            const primaryTrack = activeTracks[selectedTrackIndex] || activeTracks[0];
+            if (primaryTrack && primaryTrack.bbox && Array.isArray(primaryTrack.bbox) && primaryTrack.bbox.length === 4) {
+                // bbox is [x1, y1, x2, y2] in original frame pixel coordinates.
+                // Scale to the canvas's actual rendered size — do not assume a fixed frame resolution.
+                const scaleX = liveOverlayCanvas.width / (currentFrameWidth || 640);
+                const scaleY = liveOverlayCanvas.height / (currentFrameHeight || 480);
+                const bx = primaryTrack.bbox[0] * scaleX;
+                const by = primaryTrack.bbox[1] * scaleY;
+                const bw = (primaryTrack.bbox[2] - primaryTrack.bbox[0]) * scaleX;
+                const bh = (primaryTrack.bbox[3] - primaryTrack.bbox[1]) * scaleY;
 
-            ctx.save();
-            ctx.strokeStyle = (currentGlobalRisk > 0.5) ? "#ef4444" : "#10b981";
-            ctx.lineWidth = 2;
-            ctx.setLineDash([]);
+                if (bw > 4 && bh > 4) {
+                    ctx.save();
+                    ctx.strokeStyle = (currentGlobalRisk > 0.5) ? "#ef4444" : "#10b981";
+                    ctx.lineWidth = 2;
+                    ctx.setLineDash([]);
 
-            // High-tech corner brackets
-            const len = 10;
-            // Top-left
-            ctx.beginPath(); ctx.moveTo(bx, by + len); ctx.lineTo(bx, by); ctx.lineTo(bx + len, by); ctx.stroke();
-            // Top-right
-            ctx.beginPath(); ctx.moveTo(bx + bw - len, by); ctx.lineTo(bx + bw, by); ctx.lineTo(bx + bw, by + len); ctx.stroke();
-            // Bottom-left
-            ctx.beginPath(); ctx.moveTo(bx, by + bh - len); ctx.lineTo(bx, by + bh); ctx.lineTo(bx + len, by + bh); ctx.stroke();
-            // Bottom-right
-            ctx.beginPath(); ctx.moveTo(bx + bw - len, by + bh); ctx.lineTo(bx + bw, by + bh); ctx.lineTo(bx + bw, by + bh - len); ctx.stroke();
+                    // High-tech corner brackets
+                    const len = Math.min(10, Math.min(bw, bh) / 3);
+                    // Top-left
+                    ctx.beginPath(); ctx.moveTo(bx, by + len); ctx.lineTo(bx, by); ctx.lineTo(bx + len, by); ctx.stroke();
+                    // Top-right
+                    ctx.beginPath(); ctx.moveTo(bx + bw - len, by); ctx.lineTo(bx + bw, by); ctx.lineTo(bx + bw, by + len); ctx.stroke();
+                    // Bottom-left
+                    ctx.beginPath(); ctx.moveTo(bx, by + bh - len); ctx.lineTo(bx, by + bh); ctx.lineTo(bx + len, by + bh); ctx.stroke();
+                    // Bottom-right
+                    ctx.beginPath(); ctx.moveTo(bx + bw - len, by + bh); ctx.lineTo(bx + bw, by + bh); ctx.lineTo(bx + bw, by + bh - len); ctx.stroke();
 
-            // Label Tag Badge
-            const labelText = `${primaryTrack.class_name || 'Scooter'} #${primaryTrack.track_id} | TTC: ${Number(currentTTC).toFixed(1)}s`;
-            ctx.font = "bold 9px 'JetBrains Mono', monospace";
-            const textWidth = ctx.measureText(labelText).width;
+                    // Label Tag Badge
+                    const ttcPart = (primaryTrack.ttc_s !== null && primaryTrack.ttc_s !== undefined)
+                        ? ` | TTC: ${Number(primaryTrack.ttc_s).toFixed(1)}s`
+                        : (currentTTC !== null ? ` | TTC: ${Number(currentTTC).toFixed(1)}s` : "");
+                    const labelText = `${primaryTrack.class_name || 'Obstacle'} #${primaryTrack.track_id}${ttcPart}`;
+                    ctx.font = "bold 9px 'JetBrains Mono', monospace";
+                    const textWidth = ctx.measureText(labelText).width;
 
-            ctx.fillStyle = (currentGlobalRisk > 0.5) ? "rgba(220, 38, 38, 0.92)" : "rgba(16, 185, 129, 0.92)";
-            ctx.beginPath();
-            ctx.roundRect(bx - 2, by - 19, textWidth + 12, 17, 4);
-            ctx.fill();
+                    ctx.fillStyle = (currentGlobalRisk > 0.5) ? "rgba(220, 38, 38, 0.92)" : "rgba(16, 185, 129, 0.92)";
+                    ctx.beginPath();
+                    ctx.roundRect(bx - 2, Math.max(0, by - 19), textWidth + 12, 17, 4);
+                    ctx.fill();
 
-            ctx.fillStyle = "#ffffff";
-            ctx.fillText(labelText, bx + 4, by - 7);
-            ctx.restore();
+                    ctx.fillStyle = "#ffffff";
+                    ctx.fillText(labelText, bx + 4, Math.max(12, by - 7));
+                    ctx.restore();
+                }
+            }
         }
     }
 
@@ -727,48 +764,118 @@
     };
 
     function updateInspector() {
-        const track = activeTracks[selectedTrackIndex] || {
-            track_id: 2,
-            class_name: "Scooter",
-            confidence: 0.87,
-            ttc_s: 2.1,
-            cpa: 0.41,
-            intersect: true,
-            relative_velocity: 2.5,
-            pred_conf: 0.81,
-            state: "WARNING"
-        };
+        if (!activeTracks || activeTracks.length === 0) {
+            if (inspectorObjLabel) inspectorObjLabel.textContent = "No Track Selected";
+            if (inspId) inspId.textContent = "—";
+            if (inspClass) inspClass.textContent = "None";
+            if (inspTrackConf) inspTrackConf.textContent = "—";
+            if (inspTtc) inspTtc.textContent = "None";
+            if (inspCpa) inspCpa.textContent = "--";
+            if (inspIntersect) {
+                inspIntersect.textContent = "NO";
+                inspIntersect.className = "pill-badge green";
+            }
+            if (inspVel) inspVel.textContent = "— px/s";
+            if (inspPredConf) inspPredConf.textContent = "—";
+            if (inspState) {
+                inspState.textContent = "IDLE";
+                inspState.className = "pill-badge green";
+            }
+            renderReasoningList(lastReasonCodes, null);
+            return;
+        }
+
+        const track = activeTracks[selectedTrackIndex] || activeTracks[0];
+        if (!track) return;
 
         if (inspectorObjLabel) {
-            inspectorObjLabel.textContent = `${track.class_name} #${track.track_id} (${track.state || 'Selected'})`;
+            inspectorObjLabel.textContent = `${track.class_name || 'Object'} #${track.track_id} (${track.state || 'Active'})`;
         }
 
         if (inspId) inspId.textContent = `#${track.track_id}`;
-        if (inspClass) inspClass.textContent = track.class_name;
-        if (inspTrackConf) inspTrackConf.textContent = (track.confidence || 0.87).toFixed(2);
-        if (inspTtc) inspTtc.textContent = track.ttc_s ? `${Number(track.ttc_s).toFixed(1)} s` : "None";
-        if (inspCpa) inspCpa.textContent = track.cpa ? `${Number(track.cpa).toFixed(2)} m` : "--";
-        if (inspIntersect) {
-            inspIntersect.textContent = track.intersect ? "YES" : "NO";
-            inspIntersect.className = track.intersect ? "pill-badge red" : "pill-badge green";
+        if (inspClass) inspClass.textContent = track.class_name || "Unknown";
+        if (inspTrackConf) {
+            inspTrackConf.textContent = (track.track_confidence ?? 0.0).toFixed(2);
         }
-        if (inspVel) inspVel.textContent = `${track.relative_velocity || 2.5} m/s`;
-        if (inspPredConf) inspPredConf.textContent = (track.pred_conf || 0.81).toFixed(2);
+        if (inspTtc) {
+            inspTtc.textContent = (track.ttc_s !== null && track.ttc_s !== undefined) ? `${Number(track.ttc_s).toFixed(1)} s` : "None";
+        }
+        if (inspCpa) {
+            inspCpa.textContent = (track.cpa !== null && track.cpa !== undefined) ? `${Number(track.cpa).toFixed(2)} m` : "--";
+        }
+        if (inspIntersect) {
+            const isIntersect = Boolean(track.intersect);
+            inspIntersect.textContent = isIntersect ? "YES" : "NO";
+            inspIntersect.className = isIntersect ? "pill-badge red" : "pill-badge green";
+        }
+        if (inspVel) {
+            let velStr = "0.0 px/s";
+            if (Array.isArray(track.relative_velocity) && track.relative_velocity.length >= 2) {
+                const speed = Math.hypot(track.relative_velocity[0], track.relative_velocity[1]);
+                velStr = `${speed.toFixed(1)} px/s`;
+            } else if (typeof track.relative_velocity === 'number') {
+                velStr = `${track.relative_velocity.toFixed(1)} px/s`;
+            } else if (track.relative_velocity) {
+                velStr = `${track.relative_velocity} px/s`;
+            }
+            inspVel.textContent = velStr;
+        }
+        if (inspPredConf) {
+            inspPredConf.textContent = (track.pred_conf ?? 0.0).toFixed(2);
+        }
         if (inspState) {
-            inspState.textContent = track.state || "WARNING";
-            inspState.className = `pill-badge ${(track.state || 'warning').toLowerCase() === 'safe' ? 'green' : 'orange'}`;
+            const state = track.state || (currentGlobalRisk > 0.6 ? "CRITICAL" : (currentGlobalRisk > 0.3 ? "WARNING" : "SAFE"));
+            inspState.textContent = state;
+            inspState.className = `pill-badge ${state.toLowerCase() === 'safe' ? 'green' : (state.toLowerCase() === 'critical' ? 'red' : 'orange')}`;
         }
 
-        if (inspectorReasoningList) {
-            inspectorReasoningList.innerHTML = `
-                <div class="reasoning-item"><span class="reasoning-num">1.</span><span>Object tracked consistently across video frames</span></div>
-                <div class="reasoning-item"><span class="reasoning-num">2.</span><span>Relative velocity estimated at ${track.relative_velocity || 2.5} m/s</span></div>
-                <div class="reasoning-item"><span class="reasoning-num">3.</span><span>User ego-motion compensated using IMU angular rate</span></div>
-                <div class="reasoning-item"><span class="reasoning-num">4.</span><span>Predicted path intersects CENTER corridor</span></div>
-                <div class="reasoning-item"><span class="reasoning-num">5.</span><span>CPA (${Number(track.cpa || 0.41).toFixed(2)}m) below safe passing threshold (0.60m)</span></div>
-                <div class="reasoning-item"><span class="reasoning-num">6.</span><span>Hysteresis policy transitioned state to ${track.state || 'WARNING'}</span></div>
-            `;
+        renderReasoningList(lastReasonCodes, track.track_id);
+    }
+
+    function renderReasoningList(reasonCodes, selectedTrackId) {
+        if (!inspectorReasoningList) return;
+        if (!reasonCodes || reasonCodes.length === 0) {
+            inspectorReasoningList.innerHTML = `<div class="reasoning-item"><span>No active risk factors for this track.</span></div>`;
+            return;
         }
+
+        let filtered = reasonCodes;
+        if (selectedTrackId !== null && selectedTrackId !== undefined) {
+            const matching = reasonCodes.filter(c => typeof c === 'string' && c.includes(`track_${selectedTrackId}`));
+            if (matching.length > 0) {
+                filtered = matching;
+            }
+        }
+
+        if (filtered.length === 0) {
+            inspectorReasoningList.innerHTML = `<div class="reasoning-item"><span>No active risk factors for this track.</span></div>`;
+            return;
+        }
+
+        inspectorReasoningList.innerHTML = filtered.map((code, i) => `
+            <div class="reasoning-item"><span class="reasoning-num">${i + 1}.</span><span>${formatReasonCode(code)}</span></div>
+        `).join('');
+    }
+
+    function formatReasonCode(code) {
+        if (!code || typeof code !== 'string') return "";
+        const parts = code.split(':');
+        const type = parts[0];
+        const labels = {
+            ttc_low: "Time-to-collision below safe threshold",
+            intersection: "Predicted path intersects user's trajectory",
+            miss_dist: "Close point of approach within danger margin",
+            degraded: "System operating in degraded state",
+            waiting_for_camera: "Waiting for camera connection",
+            camera_disconnected: "Camera connection lost",
+        };
+        const base = labels[type] || type.replace(/_/g, " ");
+        const trackPart = parts.find(p => p.startsWith("track_"));
+        const detailPart = parts.slice(1).find(p => !p.startsWith("track_"));
+        let extra = "";
+        if (detailPart) extra += ` [${detailPart}]`;
+        if (trackPart) extra += ` (${trackPart.replace('_', ' ')})`;
+        return `${base}${extra}`;
     }
 
     function drawInspectorCanvas() {
@@ -941,8 +1048,10 @@
         const dur = haptic.duration_ms || 200;
         const timeNow = new Date().toTimeString().split(" ")[0];
 
+        // MAX_URGENCY = 5 matches corridor_policy.py's urgency_levels config value
+        const MAX_URGENCY = 5;
         if (hapticPatLabel) hapticPatLabel.textContent = pattern;
-        if (hapticUrgVal) hapticUrgVal.textContent = `${urgency}/3`;
+        if (hapticUrgVal) hapticUrgVal.textContent = `${urgency}/${MAX_URGENCY}`;
         if (hapticDurVal) hapticDurVal.textContent = `${dur} ms`;
         if (hapticTimeVal) hapticTimeVal.textContent = timeNow;
 

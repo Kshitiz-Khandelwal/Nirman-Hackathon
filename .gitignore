@@ -5,4 +5,5 @@ __pycache__/
 .pytest_cache/
 detections_dump.json
 sessions/
+camera_source.txt
 

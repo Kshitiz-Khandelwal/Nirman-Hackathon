@@ -999,20 +999,20 @@
             </div>
 
             <div class="header-subline">
-                <div id="conn-pill-badge" class="conn-pill">
-                    <span id="conn-status-dot" class="status-dot"></span>
-                    <span id="conn-status-text">Local Edge Connected</span>
+                <div id="conn-pill-badge" class="conn-pill disconnected">
+                    <span id="conn-status-dot" class="status-dot disconnected"></span>
+                    <span id="conn-status-text">Waiting for Edge Pipeline...</span>
                 </div>
                 <div class="session-info mono">
-                    <span id="session-id-label">Session: demo_014</span>
-                    <span id="header-clock" style="margin-left: 8px;">09:41:23</span>
+                    <span id="session-id-label">Session: Standby</span>
+                    <span id="header-clock" style="margin-left: 8px;">00:00:00</span>
                 </div>
             </div>
         </header>
 
         <!-- Client-Side Staleness Watchdog Alert Banner -->
         <div id="staleness-banner">
-            ⚠️ PIPELINE STALLED — No updates received for <span id="stale-sec-txt">0.0</span>s
+            ⚠️ PIPELINE OFFLINE — Waiting for telemetry connection...
         </div>
 
         <!-- Main Viewport containing the 5 screens -->
@@ -1024,18 +1024,17 @@
             <div id="screen-live" class="tab-screen active">
 
                 <!-- 1. Primary Risk Warning Alert Banner -->
-                <div id="risk-alert-card" class="risk-alert-card alert-warning">
+                <div id="risk-alert-card" class="risk-alert-card alert-safe">
                     <div class="alert-top-row">
                         <div class="alert-icon-wrap" id="alert-icon-box">
-                            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"></path>
-                                <line x1="12" y1="9" x2="12" y2="13"></line>
-                                <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <polyline points="12 6 12 12 16 14"></polyline>
                             </svg>
                         </div>
                         <div class="alert-title-wrap">
-                            <span id="alert-state-name" class="alert-state-title" style="color: #9a3412;">WARNING</span>
-                            <span id="alert-state-sub" class="alert-state-sub">Predicted collision risk detected</span>
+                            <span id="alert-state-name" class="alert-state-title" style="color: #065f46;">STANDBY</span>
+                            <span id="alert-state-sub" class="alert-state-sub">Waiting for telemetry pipeline</span>
                         </div>
                     </div>
 
@@ -1045,18 +1044,18 @@
                             <div class="gauge-ring-wrap">
                                 <svg width="44" height="44" viewBox="0 0 36 36">
                                     <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="#f1f5f9" stroke-width="3.5" />
-                                    <path id="gauge-circle-stroke" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="#f97316" stroke-dasharray="84, 100" stroke-linecap="round" stroke-width="3.5" />
+                                    <path id="gauge-circle-stroke" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="#10b981" stroke-dasharray="0, 100" stroke-linecap="round" stroke-width="3.5" />
                                 </svg>
-                                <span id="val-risk-score" class="gauge-number mono">0.84</span>
+                                <span id="val-risk-score" class="gauge-number mono">0.00</span>
                             </div>
                             <span class="metric-tag">Risk Score</span>
                         </div>
                         <div class="metric-cell">
-                            <span id="val-ttc" class="metric-big-num mono">2.1 s</span>
+                            <span id="val-ttc" class="metric-big-num mono">—</span>
                             <span class="metric-tag">TTC</span>
                         </div>
                         <div class="metric-cell">
-                            <span id="val-cpa" class="metric-big-num mono">0.41 m</span>
+                            <span id="val-cpa" class="metric-big-num mono">—</span>
                             <span class="metric-tag">CPA</span>
                         </div>
                     </div>
@@ -1092,18 +1091,18 @@
                     <div class="corridor-triad">
                         <div id="box-corr-left" class="corridor-box safe">
                             <span class="corridor-name">Left</span>
-                            <span id="txt-corr-left" class="corridor-score mono">0.12</span>
-                            <span id="lbl-corr-left" class="corridor-status-tag">SAFE</span>
+                            <span id="txt-corr-left" class="corridor-score mono">0.00</span>
+                            <span id="lbl-corr-left" class="corridor-status-tag">CLEAR</span>
                         </div>
-                        <div id="box-corr-center" class="corridor-box risky">
+                        <div id="box-corr-center" class="corridor-box safe">
                             <span class="corridor-name">Center</span>
-                            <span id="txt-corr-center" class="corridor-score mono">0.84</span>
-                            <span id="lbl-corr-center" class="corridor-status-tag">RISKY</span>
+                            <span id="txt-corr-center" class="corridor-score mono">0.00</span>
+                            <span id="lbl-corr-center" class="corridor-status-tag">CLEAR</span>
                         </div>
                         <div id="box-corr-right" class="corridor-box safe">
                             <span class="corridor-name">Right</span>
-                            <span id="txt-corr-right" class="corridor-score mono">0.23</span>
-                            <span id="lbl-corr-right" class="corridor-status-tag">SAFE</span>
+                            <span id="txt-corr-right" class="corridor-score mono">0.00</span>
+                            <span id="lbl-corr-right" class="corridor-status-tag">CLEAR</span>
                         </div>
                     </div>
                 </div>
@@ -1118,8 +1117,8 @@
                     </div>
                     <div class="rec-texts">
                         <span class="rec-label-sub">Recommended Direction</span>
-                        <span id="rec-dir-name" class="rec-command">MOVE LEFT</span>
-                        <span id="rec-dir-sub" class="rec-explanation">Left corridor is safest</span>
+                        <span id="rec-dir-name" class="rec-command">STANDBY</span>
+                        <span id="rec-dir-sub" class="rec-explanation">Waiting for path analysis</span>
                     </div>
                 </div>
 
@@ -1132,7 +1131,7 @@
                 
                 <div class="inspector-selector-bar">
                     <button id="btn-insp-prev" onclick="prevTrack()" style="color:var(--text-muted); font-weight:800; font-size:1.1rem; padding:2px 8px;">&lt;</button>
-                    <span id="inspector-obj-label">Scooter #2 (Highest Risk)</span>
+                    <span id="inspector-obj-label">No Track Selected</span>
                     <button id="btn-insp-next" onclick="nextTrack()" style="color:var(--text-muted); font-weight:800; font-size:1.1rem; padding:2px 8px;">&gt;</button>
                 </div>
 
@@ -1146,27 +1145,22 @@
                 <!-- Object Details Card -->
                 <div class="card">
                     <span class="card-heading">Object Details</span>
-                    <div class="detail-table-row"><span class="detail-key">Track ID</span><span id="insp-id" class="detail-val mono">#2</span></div>
-                    <div class="detail-table-row"><span class="detail-key">Class</span><span id="insp-class" class="detail-val">Scooter</span></div>
-                    <div class="detail-table-row"><span class="detail-key">Track Confidence</span><span id="insp-track-conf" class="detail-val mono">0.87</span></div>
-                    <div class="detail-table-row"><span class="detail-key">TTC</span><span id="insp-ttc" class="detail-val mono">2.1 s</span></div>
-                    <div class="detail-table-row"><span class="detail-key">CPA</span><span id="insp-cpa" class="detail-val mono">0.41 m</span></div>
-                    <div class="detail-table-row"><span class="detail-key">Intersection</span><span id="insp-intersect" class="pill-badge red">YES</span></div>
-                    <div class="detail-table-row"><span class="detail-key">Relative Velocity</span><span id="insp-vel" class="detail-val mono">2.5 m/s</span></div>
-                    <div class="detail-table-row"><span class="detail-key">Prediction Confidence</span><span id="insp-pred-conf" class="detail-val mono">0.81</span></div>
-                    <div class="detail-table-row"><span class="detail-key">Current State</span><span id="insp-state" class="pill-badge orange">WARNING</span></div>
+                    <div class="detail-table-row"><span class="detail-key">Track ID</span><span id="insp-id" class="detail-val mono">—</span></div>
+                    <div class="detail-table-row"><span class="detail-key">Class</span><span id="insp-class" class="detail-val">None</span></div>
+                    <div class="detail-table-row"><span class="detail-key">Track Confidence</span><span id="insp-track-conf" class="detail-val mono">—</span></div>
+                    <div class="detail-table-row"><span class="detail-key">TTC</span><span id="insp-ttc" class="detail-val mono">None</span></div>
+                    <div class="detail-table-row"><span class="detail-key">CPA</span><span id="insp-cpa" class="detail-val mono">--</span></div>
+                    <div class="detail-table-row"><span class="detail-key">Intersection</span><span id="insp-intersect" class="pill-badge green">NO</span></div>
+                    <div class="detail-table-row"><span class="detail-key">Relative Velocity</span><span id="insp-vel" class="detail-val mono">— px/s</span></div>
+                    <div class="detail-table-row"><span class="detail-key">Prediction Confidence</span><span id="insp-pred-conf" class="detail-val mono">—</span></div>
+                    <div class="detail-table-row"><span class="detail-key">Current State</span><span id="insp-state" class="pill-badge green">IDLE</span></div>
                 </div>
 
                 <!-- Prediction Reasoning Card -->
                 <div class="card">
                     <span class="card-heading">Prediction Reasoning</span>
                     <div id="inspector-reasoning-list" class="reasoning-list">
-                        <div class="reasoning-item"><span class="reasoning-num">1.</span><span>Object tracked for 28 frames</span></div>
-                        <div class="reasoning-item"><span class="reasoning-num">2.</span><span>Relative velocity estimated</span></div>
-                        <div class="reasoning-item"><span class="reasoning-num">3.</span><span>User motion compensated using IMU</span></div>
-                        <div class="reasoning-item"><span class="reasoning-num">4.</span><span>Predicted path intersects CENTER corridor</span></div>
-                        <div class="reasoning-item"><span class="reasoning-num">5.</span><span>CPA below safe threshold</span></div>
-                        <div class="reasoning-item"><span class="reasoning-num">6.</span><span>Risk transitioned from CAUTION → WARNING</span></div>
+                        <div class="reasoning-item"><span>No active risk factors for this track.</span></div>
                     </div>
                 </div>
 
@@ -1230,7 +1224,7 @@
                         </div>
 
                         <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:6px; margin-top:4px;">
-                            <div class="corridor-box"><span class="corridor-name">Urgency</span><span id="haptic-urg-val" class="corridor-score mono" style="font-size:0.95rem;">3/3</span></div>
+                            <div class="corridor-box"><span class="corridor-name">Urgency</span><span id="haptic-urg-val" class="corridor-score mono" style="font-size:0.95rem;">1/5</span></div>
                             <div class="corridor-box"><span class="corridor-name">Duration</span><span id="haptic-dur-val" class="corridor-score mono" style="font-size:0.95rem;">320 ms</span></div>
                             <div class="corridor-box"><span class="corridor-name">Last Cmd</span><span id="haptic-time-val" class="corridor-score mono" style="font-size:0.8rem;">09:41:22</span></div>
                         </div>

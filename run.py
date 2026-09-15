@@ -1,17 +1,18 @@
-"""SpatialVector-HMI — Master System Launcher
+"""SpatialVector-HMI — Master System Launcher (run.py)
 
-Activates the entire system with a single command:
-1. Telemetry & Web Server (FastAPI + WebSocket on port 8081)
-2. Frontend Mobile Dashboard (serves web/dashboard to browser)
-3. Camera Stream Resolver (reads VDO.Ninja URL from camera_source.txt or CLI)
+Unified single command to launch the entire SpatialVector-HMI system:
+1. Telemetry Gateway & Web Dashboard Server (FastAPI + WebSocket on port 8081)
+2. Interactive Mobile & Desktop Dashboard (web/dashboard served over HTTP)
+3. Camera Stream Resolver (VDO.Ninja WebRTC, USB webcam, or RTSP/file)
 4. Decision & Safety Pipeline (M01-M09 Perception, Flow, Prediction, Risk Engine, Corridor Policy)
-5. Haptic Output & Telemetry Broadcasting (M10-M12)
+5. Haptic Output & Real-Time Telemetry Broadcasting (M10-M12)
 
 Usage:
-    python run_system.py                    # Live mode with camera from camera_source.txt
-    python run_system.py --synthetic        # Standalone demo mode (no camera needed)
-    python run_system.py --source 0         # Local webcam
-    python run_system.py --port 8081        # Custom dashboard port
+    python run.py                     # Live mode (reads source from camera_source.txt)
+    python run.py --synthetic         # Standalone synthetic demo mode (no camera needed)
+    python run.py --source 0          # Local webcam
+    python run.py --port 8081         # Custom dashboard port
+    python run.py --no-browser        # Do not automatically launch browser
 """
 
 from __future__ import annotations
@@ -20,6 +21,7 @@ import argparse
 from dataclasses import asdict
 import logging
 from pathlib import Path
+import shutil
 import sys
 import time
 import webbrowser
@@ -43,7 +45,7 @@ logging.basicConfig(
     format="%(asctime)s [%(levelname)s] %(message)s",
     datefmt="%H:%M:%S",
 )
-logger = logging.getLogger("SpatialVector-Launcher")
+logger = logging.getLogger("SpatialVector-Runner")
 
 
 def parse_args():
@@ -59,8 +61,18 @@ def parse_args():
     return p.parse_args()
 
 
+def check_prerequisites(is_vdo_ninja: bool):
+    """Verifies that optional or required libraries are present."""
+    if is_vdo_ninja:
+        try:
+            import playwright  # noqa: F401
+        except ImportError:
+            print("\n[!] WARNING: Playwright is required for VDO.Ninja phone streaming.")
+            print("    Run: pip install playwright && playwright install chromium\n")
+
+
 class SyntheticTrackGenerator:
-    """Generates dynamic, realistic synthetic trajectories for live dashboard demonstration."""
+    """Generates dynamic, realistic synthetic trajectories for standalone demo mode."""
 
     def __init__(self):
         self.frame_id = 0
@@ -69,7 +81,7 @@ class SyntheticTrackGenerator:
         self.frame_id += 1
         t = (self.frame_id % 120) / 120.0  # 8-second cycle at 15 FPS
 
-        # Simulate approaching object in center corridor
+        # Approaching obstacle in center corridor
         dist = max(0.5, 6.0 * (1.0 - t))
         ttc = max(0.8, dist / 2.2)
         cpa = 0.35 + 0.1 * (1.0 - t)
@@ -127,14 +139,7 @@ def build_waiting_telemetry_message(
     consecutive_misses: int,
     threshold: int = 20,
 ) -> TelemetryMessage:
-    """Constructs an honest, un-fabricated telemetry message during camera acquisition gaps.
-    
-    Guarantees:
-    - state is always DEGRADED (never fabricated CRITICAL/WARNING/SAFE)
-    - tracks is always []
-    - global_risk is always 0.0
-    - camera health reflects CONNECTING vs DISCONNECTED based on threshold
-    """
+    """Constructs an honest, un-fabricated telemetry message during camera acquisition gaps."""
     camera_health = "CONNECTING" if consecutive_misses < threshold else "DISCONNECTED"
     reason = "waiting_for_camera" if camera_health == "CONNECTING" else "camera_disconnected"
     return TelemetryMessage(
@@ -165,31 +170,32 @@ def build_waiting_telemetry_message(
 def main():
     args = parse_args()
 
-    print("\n" + "=" * 72)
-    print("      SpatialVector-HMI — Autonomous Safety & HMI System      ")
-    print("=" * 72)
+    print("\n" + "=" * 74)
+    print("      SpatialVector-HMI — Autonomous Navigation & Safety System       ")
+    print("                 Nirmaan 2026 Hackathon Master Runner                 ")
+    print("=" * 74)
 
     session_id = f"sess_{int(time.time())}"
 
-    # 1. Start Telemetry Server & Web Dashboard
-    print(f"[*] Initializing Telemetry Server & Dashboard on {args.host}:{args.port}...")
+    # 1. Initialize Telemetry & Web Server
+    print(f"[*] Starting Telemetry Server on http://{args.host}:{args.port}")
     telemetry_server = TelemetryServer(host=args.host, port=args.port)
     telemetry_server.start()
 
     dash_url = f"http://localhost:{args.port}/"
     ws_url = f"ws://localhost:{args.port}/ws/telemetry"
-    print(f"[*] Web Dashboard: {dash_url}")
+    print(f"[*] Dashboard URL:  {dash_url}")
     print(f"[*] WebSocket Feed: {ws_url}")
 
-    # 2. Open Browser if requested
+    # 2. Launch Browser
     if not args.no_browser:
-        print(f"[*] Launching dashboard in browser: {dash_url}")
+        print(f"[*] Opening dashboard in browser: {dash_url}")
         try:
             webbrowser.open(dash_url)
         except Exception:
             pass
 
-    # 3. Decision Chain Builders
+    # 3. Decision Pipeline Setup
     predictor = CollisionPredictor(horizon_s=5.0, contact_threshold_normalized=0.05, corridor_width_normalized=0.12)
     engine = RiskEngine(
         weight_ttc=0.50,
@@ -206,7 +212,8 @@ def main():
 
     # 4. Pipeline Execution
     if args.synthetic:
-        print("[*] Running in SYNTHETIC DEMO mode (Gate C/D/E)...")
+        print("\n[*] MODE: Synthetic Demo (Gate C/D/E)")
+        print("[*] Generating simulated obstacles and broadcasting telemetry...")
         synth = SyntheticTrackGenerator()
         try:
             while True:
@@ -228,9 +235,9 @@ def main():
                 ))
                 time.sleep(args.delay)
         except KeyboardInterrupt:
-            print("\n[*] Stopping launcher...")
+            print("\n[*] Stopping runner...")
     else:
-        # Live Camera Mode
+        # Live Pipeline Execution
         from spatialvector.motion.ego_motion import EgoMotionCompensator
         from spatialvector.motion.geometry import compute_geometry_batch
         from spatialvector.motion.imu_reader import SimulatedIMUReader
@@ -239,11 +246,21 @@ def main():
         from spatialvector.perception.tracker import MultiObjectTracker
 
         src, origin = resolve_camera_source(cli_source=args.source)
-        print(f"[*] Camera Source: {src} (resolved from {origin})")
-        print("[*] Starting Perception & Decision pipeline (Press Ctrl+C to stop)...")
+        is_vdo = isinstance(src, str) and "vdo.ninja" in src.lower()
+        check_prerequisites(is_vdo)
+
+        print(f"\n[*] MODE: Live Perception Pipeline")
+        print(f"[*] Camera Source: {src}")
+        print(f"[*] Source Origin: {origin}")
+        print("[*] Press Ctrl+C to stop pipeline\n")
 
         is_network = isinstance(src, str) and any(src.lower().startswith(p) for p in ("http://", "https://", "rtsp://"))
-        frame_src = FrameSource(source=src, target_fps=args.fps, queue_size=5, loop_video=(not is_network and isinstance(src, str)))
+        frame_src = FrameSource(
+            source=src,
+            target_fps=args.fps,
+            queue_size=5,
+            loop_video=(not is_network and isinstance(src, str)),
+        )
         tracker = MultiObjectTracker(backend="bytetrack", history_length=10, confidence_threshold=0.4)
         flow_est = OpticalFlowEstimator(max_corners=200, quality_level=0.01, min_distance=7.0)
         imu = SimulatedIMUReader()
@@ -253,7 +270,7 @@ def main():
         frame_src.start()
         frame_count = 0
         consecutive_misses = 0
-        last_risk_state = None      # remembers last real risk state, for reference only
+        last_risk_state = None
         last_cmd = None
 
         CAMERA_WAIT_WARN_THRESHOLD = 20     # ~10s at 0.5s timeout for VDO.Ninja/Chromium cold start
@@ -315,7 +332,12 @@ def main():
                 ))
 
                 if frame_count % 30 == 0:
-                    print(f"[Frame {f_obj.frame_id:4d}] State: {risk_state.state} | Risk: {risk_state.global_risk:.2f} | Haptic: {cmd.pattern_id}")
+                    print(
+                        f"[Frame {f_obj.frame_id:4d}] State: {risk_state.state:<8} | "
+                        f"Risk: {risk_state.global_risk:.2f} | "
+                        f"Tracks: {len(tracks)} | "
+                        f"Haptic: {cmd.pattern_id}"
+                    )
 
                 time.sleep(args.delay)
 

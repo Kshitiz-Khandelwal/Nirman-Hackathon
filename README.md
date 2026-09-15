@@ -83,9 +83,50 @@ M12 Logger + Replay + Evaluation Harness
 - **Computer Vision**: OpenCV, Ultralytics YOLO (nano/ONNX)
 - **Tracking**: ByteTrack / BoT-SORT
 - **Motion**: Lucas-Kanade optical flow, NumPy geometry
+- **Phone Streaming**: VDO.Ninja via Playwright WebRTC headless bridge
 - **Arduino**: Serial/BLE haptic protocol
-- **Dashboard**: FastAPI / Flask + WebSocket → mobile browser UI
+- **Dashboard**: FastAPI + WebSocket → mobile browser UI
 - **Logging**: JSONL session files + OpenCV video replay
+
+---
+
+## 🚀 Quick Start & Installation
+
+### 1. Install Dependencies
+```bash
+pip install -r requirements.txt
+playwright install chromium
+```
+
+### 2. Configure Camera Source
+```bash
+# Copy the template to camera_source.txt
+cp camera_source.example.txt camera_source.txt
+
+# Edit camera_source.txt:
+# - For VDO.Ninja phone streaming: https://vdo.ninja/?view=YOUR_ROOM_ID
+# - For local webcam: 0
+# - For IP camera / RTSP / DroidCam: http://192.168.1.50:8080/video
+```
+
+### 3. Launch Master System (All-in-One)
+```bash
+# Live mode (resolves camera from camera_source.txt, starts dashboard & pipeline)
+python run.py
+
+# Synthetic demo mode (no camera or hardware required)
+python run.py --synthetic
+
+# Explicit webcam index
+python run.py --source 0
+```
+This single command spins up:
+1. Telemetry WebSocket & Web Server on `http://localhost:8081`
+2. Camera stream capture & auto-reconnect engine
+3. Full Perception, Tracking, Flow, Prediction & Risk Pipeline
+4. Automatically opens the interactive mobile dashboard in your browser
+
+> **Integrity Guarantee**: The live dashboard never fabricates track/risk data — an empty or DEGRADED state always means exactly what it says. Synthetic obstacle scenarios only run in explicitly requested `--synthetic` mode.
 
 ---
 

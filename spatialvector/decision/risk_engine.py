@@ -259,13 +259,7 @@ class RiskEngine:
         """
         corridor_scores: dict[str, list[float]] = {"left": [], "center": [], "right": []}
 
-        # Build a lookup from track_id to bearing (from predictions, use object_risks)
-        # We need geometry/bearing to assign to corridors. Prediction doesn't carry bearing,
-        # so we use the sign of miss_distance as a proxy — but actually we should track bearing.
-        # Since predictions don't have bearing, we use a heuristic: track_id modulo approach.
-        # DESIGN DECISION: We store per-object corridor assignment based on the track's
-        # bearing from the most recent Prediction's miss_distance sign as a crude proxy.
-        # A future improvement: pass ObjectGeometry alongside Prediction here.
+        # Corridor assignment uses Prediction.bearing directly — see _assign_corridor_from_prediction().
 
         for pred in predictions:
             risk_score = object_risks.get(pred.track_id, (0.0, []))[0]

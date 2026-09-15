@@ -38,9 +38,38 @@ class TelemetryMessage:
         "imu": "OK",
         "arduino": "OK",
     })
+    frame_width: int = 640
+    frame_height: int = 480
 
     def to_dict(self) -> Dict[str, Any]:
         return asdict(self)
+
+
+def build_track_telemetry(tracks: List[Any], pred_map: Dict[int, Any]) -> List[Dict[str, Any]]:
+    """Builds the full per-track telemetry payload — every field the dashboard reads.
+    
+    Includes:
+    - track_id, class_name, bbox ([x1, y1, x2, y2]), track_confidence
+    - cpa, ttc_s, intersect (bool), pred_conf, bearing
+    - relative_velocity: (vx, vy) image velocity in px/sec
+    """
+    result = []
+    for t in tracks:
+        pred = pred_map.get(t.track_id)
+        result.append({
+            "track_id": t.track_id,
+            "class_name": t.class_name,
+            "bbox": list(t.bbox_history[-1]) if getattr(t, "bbox_history", None) else None,
+            "track_confidence": getattr(t, "track_confidence", 0.0),
+            "cpa": getattr(pred, "cpa_normalized", None),
+            "ttc_s": getattr(pred, "ttc_s", None),
+            "intersect": bool(getattr(pred, "intersection_flag", False)),
+            "pred_conf": getattr(pred, "prediction_confidence", None),
+            "bearing": getattr(pred, "bearing", None),
+            "relative_velocity": getattr(t, "estimated_image_velocity", (0.0, 0.0)),
+            "state": "CRITICAL" if getattr(pred, "intersection_flag", False) or (getattr(pred, "ttc_s", None) is not None and getattr(pred, "ttc_s", 99) < 1.5) else ("WARNING" if getattr(pred, "ttc_s", None) is not None and getattr(pred, "ttc_s", 99) < 3.0 else "SAFE"),
+        })
+    return result
 
 
 @dataclass

@@ -208,9 +208,17 @@ class FrameSource:
         if self.is_vdo_ninja:
             if self._vdo_capture is None:
                 from .vdo_ninja_source import VdoNinjaCapture
+
+                def _on_vdo_status_change(connected: bool):
+                    if connected:
+                        self.status = self.STATUS_OK
+                    else:
+                        self.status = self.STATUS_DISCONNECTED
+
                 self._vdo_capture = VdoNinjaCapture(
                     str(self.source),
                     on_frame=self._process_and_enqueue,
+                    on_status_change=_on_vdo_status_change,
                     target_fps=self.target_fps,
                 )
                 self._vdo_capture.start()
@@ -241,9 +249,16 @@ class FrameSource:
 
     def get_frame(self, timeout: Optional[float] = 0.5) -> Optional[Frame]:
         """Fetch the next available frame from the bounded queue."""
+        # Active disconnect tracking for VDO.Ninja
+        if self.is_vdo_ninja and self._vdo_capture is not None:
+            if not self._vdo_capture.check_health():
+                self.status = self.STATUS_DISCONNECTED
+
         try:
             return self._queue.get(timeout=timeout)
         except queue.Empty:
+            if self.is_vdo_ninja and self._vdo_capture is not None and not self._vdo_capture.check_health():
+                self.status = self.STATUS_DISCONNECTED
             return None
 
     def __iter__(self):
@@ -257,5 +272,7 @@ class FrameSource:
         return frame
 
     def is_running(self) -> bool:
+        if self.is_vdo_ninja:
+            return self._vdo_capture is not None and self._vdo_capture.is_alive()
         return self._thread is not None and self._thread.is_alive()
 
