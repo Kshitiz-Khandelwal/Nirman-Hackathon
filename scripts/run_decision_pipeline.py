@@ -72,6 +72,10 @@ def parse_args():
                    help="Headless — no OpenCV window")
     p.add_argument("--imu-port", default=None, help="Serial port for IMU")
     p.add_argument("--sim-imu", action="store_true", help="Use simulated IMU")
+    p.add_argument("--fps", type=float, default=15.0,
+                   help="Target capture FPS (default: 15.0 for smooth, stable processing)")
+    p.add_argument("--delay", type=float, default=0.03,
+                   help="Pacing sleep delay between frames in seconds (default: 0.03s / 30ms)")
     return p.parse_args()
 
 
@@ -348,7 +352,7 @@ def run_live(args):
     )
     loop_video = isinstance(source, str) and not is_network
 
-    frame_src = FrameSource(source=source, target_fps=30.0, queue_size=5, loop_video=loop_video)
+    frame_src = FrameSource(source=source, target_fps=args.fps, queue_size=5, loop_video=loop_video)
     tracker = MultiObjectTracker(backend="bytetrack", history_length=10, confidence_threshold=0.4)
     flow_est = OpticalFlowEstimator(max_corners=200, quality_level=0.01,
                                     min_distance=7.0, fb_error_threshold_px=2.0,
@@ -364,7 +368,7 @@ def run_live(args):
     predictor, engine, policy = build_decision_chain()
 
     frame_src.start()
-    print(f"[M01-M09] Live pipeline started on source={source}. Press 'q' to quit.\n")
+    print(f"[M01-M09] Live pipeline started on source={source} at {args.fps:.1f} FPS pacing. Press 'q' to quit.\n")
 
     frame_count = 0
     consecutive_timeouts = 0
@@ -405,8 +409,11 @@ def run_live(args):
                 # Draw rich overlay on frame with bounding boxes, corridors, and telemetry
                 canvas = _draw_overlay(img, tracks, predictions, risk_state, cmd)
                 cv2.imshow("SpatialVector-HMI M01-M09", canvas)
-                if cv2.waitKey(1) & 0xFF == ord('q'):
+                wait_ms = max(1, int(args.delay * 1000))
+                if cv2.waitKey(wait_ms) & 0xFF == ord('q'):
                     break
+            elif args.delay > 0:
+                time.sleep(args.delay)
 
     finally:
         frame_src.stop()
@@ -459,15 +466,18 @@ def _draw_overlay(
 
     # 2. Draw tracks & bounding boxes
     for t in tracks:
-        x1 = int(t.bbox[0] * scale)
-        y1 = int(t.bbox[1] * scale)
-        x2 = int(t.bbox[2] * scale)
-        y2 = int(t.bbox[3] * scale)
+        if not t.bbox_history:
+            continue
+        bbox = t.bbox_history[-1]
+        x1 = int(bbox[0] * scale)
+        y1 = int(bbox[1] * scale)
+        x2 = int(bbox[2] * scale)
+        y2 = int(bbox[3] * scale)
 
         p = pred_by_id.get(t.track_id)
-        if p and p.intersects_user:
+        if p and p.intersection_flag:
             box_color = (0, 0, 240)  # Red - collision
-        elif p and p.cpa_m < 0.25:
+        elif p and p.cpa_normalized < 0.25:
             box_color = (0, 165, 255)  # Orange - caution
         else:
             box_color = (0, 220, 0)  # Green - safe
@@ -476,7 +486,7 @@ def _draw_overlay(
 
         # Label
         ttc_str = f"TTC:{p.ttc_s:.1f}s" if (p and p.ttc_s is not None) else "TTC:None"
-        cpa_str = f"CPA:{p.cpa_m:.2f}m" if p else ""
+        cpa_str = f"CPA:{p.cpa_normalized:.2f}" if p else ""
         label = f"#{t.track_id} {t.class_name} | {cpa_str} | {ttc_str}"
 
         (tw, th), _ = cv2.getTextSize(label, cv2.FONT_HERSHEY_SIMPLEX, 0.45, 1)
