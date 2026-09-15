@@ -87,8 +87,8 @@ class OpticalFlowEstimator:
         """
         gray = cv2.cvtColor(frame_bgr, cv2.COLOR_BGR2GRAY)
 
-        if self._prev_gray is None:
-            # Bootstrap: seed initial points, return empty result
+        if self._prev_gray is None or self._prev_gray.shape != gray.shape:
+            # Bootstrap or resolution shift: re-seed initial points, return empty result
             self._prev_gray = gray
             self._prev_pts = self._detect_features(gray)
             return FlowResult(
@@ -177,14 +177,18 @@ class OpticalFlowEstimator:
         if prev_pts is None or len(prev_pts) == 0:
             return np.empty((0, 2), np.float32), np.empty((0, 2), np.float32), 0
 
-        # Forward pass: prev → curr
-        fwd_pts, fwd_status, _ = cv2.calcOpticalFlowPyrLK(
-            prev_gray, curr_gray, prev_pts, None, **self._lk_params
-        )
-        # Backward pass: curr → prev (for consistency check)
-        bwd_pts, bwd_status, _ = cv2.calcOpticalFlowPyrLK(
-            curr_gray, prev_gray, fwd_pts, None, **self._lk_params
-        )
+        try:
+            # Forward pass: prev → curr
+            fwd_pts, fwd_status, _ = cv2.calcOpticalFlowPyrLK(
+                prev_gray, curr_gray, prev_pts, None, **self._lk_params
+            )
+            # Backward pass: curr → prev (for consistency check)
+            bwd_pts, bwd_status, _ = cv2.calcOpticalFlowPyrLK(
+                curr_gray, prev_gray, fwd_pts, None, **self._lk_params
+            )
+        except cv2.error as e:
+            logger.warning(f"[M04] Optical flow calculation failed: {e}")
+            return np.empty((0, 2), np.float32), np.empty((0, 2), np.float32), 0
 
         fwd_status = fwd_status.ravel()
         bwd_status = bwd_status.ravel()

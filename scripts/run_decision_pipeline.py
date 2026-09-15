@@ -402,8 +402,8 @@ def run_live(args):
             _print_frame(frame_obj.frame_id, predictions, risk_state, cmd)
 
             if not args.no_view:
-                # Draw overlay on frame
-                canvas = _draw_overlay(img, risk_state, cmd)
+                # Draw rich overlay on frame with bounding boxes, corridors, and telemetry
+                canvas = _draw_overlay(img, tracks, predictions, risk_state, cmd)
                 cv2.imshow("SpatialVector-HMI M01-M09", canvas)
                 if cv2.waitKey(1) & 0xFF == ord('q'):
                     break
@@ -420,17 +420,71 @@ def run_live(args):
         print(f"\n[Pipeline] Done. {frame_count} frames processed.")
 
 
-def _draw_overlay(img: np.ndarray, risk_state: RiskState, cmd: HapticCommand) -> np.ndarray:
-    """Draw a simple risk/haptic overlay on the live frame."""
+def _draw_overlay(
+    img: np.ndarray,
+    tracks: list[Track],
+    predictions: list[Prediction],
+    risk_state: RiskState,
+    cmd: HapticCommand,
+) -> np.ndarray:
+    """Draw rich bounding boxes, corridor dividers, risk badges, and haptic overlay."""
     try:
         import cv2
     except ImportError:
         return img
 
-    canvas = img.copy()
-    h, w = canvas.shape[:2]
+    h, w = img.shape[:2]
+    # Upscale if low resolution (e.g. 180x320) so boxes & text are easily visible
+    scale = 1.0
+    if w < 640:
+        scale = 640.0 / w
+        target_w = int(w * scale)
+        target_h = int(h * scale)
+        canvas = cv2.resize(img, (target_w, target_h), interpolation=cv2.INTER_LINEAR)
+        w, h = target_w, target_h
+    else:
+        canvas = img.copy()
 
-    # Status bar
+    # Map track_id to prediction
+    pred_by_id = {p.track_id: p for p in predictions}
+
+    # 1. Draw 3 Corridors (Left, Center, Right)
+    left_x = int(w * 0.333)
+    right_x = int(w * 0.666)
+    cv2.line(canvas, (left_x, 34), (left_x, h - 30), (80, 80, 80), 1, cv2.LINE_AA)
+    cv2.line(canvas, (right_x, 34), (right_x, h - 30), (80, 80, 80), 1, cv2.LINE_AA)
+    cv2.putText(canvas, "LEFT", (10, 50), cv2.FONT_HERSHEY_SIMPLEX, 0.4, (140, 140, 140), 1)
+    cv2.putText(canvas, "CENTER", (left_x + 10, 50), cv2.FONT_HERSHEY_SIMPLEX, 0.4, (140, 140, 140), 1)
+    cv2.putText(canvas, "RIGHT", (right_x + 10, 50), cv2.FONT_HERSHEY_SIMPLEX, 0.4, (140, 140, 140), 1)
+
+    # 2. Draw tracks & bounding boxes
+    for t in tracks:
+        x1 = int(t.bbox[0] * scale)
+        y1 = int(t.bbox[1] * scale)
+        x2 = int(t.bbox[2] * scale)
+        y2 = int(t.bbox[3] * scale)
+
+        p = pred_by_id.get(t.track_id)
+        if p and p.intersects_user:
+            box_color = (0, 0, 240)  # Red - collision
+        elif p and p.cpa_m < 0.25:
+            box_color = (0, 165, 255)  # Orange - caution
+        else:
+            box_color = (0, 220, 0)  # Green - safe
+
+        cv2.rectangle(canvas, (x1, y1), (x2, y2), box_color, 2)
+
+        # Label
+        ttc_str = f"TTC:{p.ttc_s:.1f}s" if (p and p.ttc_s is not None) else "TTC:None"
+        cpa_str = f"CPA:{p.cpa_m:.2f}m" if p else ""
+        label = f"#{t.track_id} {t.class_name} | {cpa_str} | {ttc_str}"
+
+        (tw, th), _ = cv2.getTextSize(label, cv2.FONT_HERSHEY_SIMPLEX, 0.45, 1)
+        top_y = max(36, y1 - 4)
+        cv2.rectangle(canvas, (x1, top_y - th - 4), (x1 + tw + 6, top_y + 2), box_color, -1)
+        cv2.putText(canvas, label, (x1 + 3, top_y - 2), cv2.FONT_HERSHEY_SIMPLEX, 0.45, (0, 0, 0), 1)
+
+    # 3. Status Bar at top
     state_color_bgr = {
         "SAFE": (0, 180, 0), "CAUTION": (0, 200, 200),
         "WARNING": (0, 140, 255), "CRITICAL": (0, 0, 220), "DEGRADED": (200, 0, 200),
@@ -438,10 +492,14 @@ def _draw_overlay(img: np.ndarray, risk_state: RiskState, cmd: HapticCommand) ->
 
     cv2.rectangle(canvas, (0, 0), (w, 32), state_color_bgr, -1)
     cr = risk_state.corridor_risks
-    text = (f"STATE={risk_state.state} risk={risk_state.global_risk:.2f} | "
-            f"L={cr.get('left',0):.2f} C={cr.get('center',0):.2f} R={cr.get('right',0):.2f} | "
-            f"HAPTIC: {cmd.direction} u={cmd.urgency} {cmd.pattern_id}")
-    cv2.putText(canvas, text, (6, 22), cv2.FONT_HERSHEY_SIMPLEX, 0.45, (255, 255, 255), 1)
+    text_top = (f"STATE={risk_state.state} (conf={risk_state.confidence:.2f}) | "
+                f"L={cr.get('left',0):.2f} C={cr.get('center',0):.2f} R={cr.get('right',0):.2f}")
+    cv2.putText(canvas, text_top, (8, 21), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 1)
+
+    # 4. Haptic banner at bottom
+    cv2.rectangle(canvas, (0, h - 28), (w, h), (30, 30, 30), -1)
+    haptic_text = f"HAPTIC: {cmd.direction} | Urgency={cmd.urgency}/5 | Pattern: {cmd.pattern_id} ({cmd.duration_ms}ms)"
+    cv2.putText(canvas, haptic_text, (8, h - 9), cv2.FONT_HERSHEY_SIMPLEX, 0.48, (0, 255, 255), 1)
 
     return canvas
 
