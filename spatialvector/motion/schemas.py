@@ -61,6 +61,9 @@ class MotionState:
                      When fallback_active is True, this is raw (uncorrected) flow.
     foe_x, foe_y:    FOE carried forward from FlowResult (possibly refined after correction).
     flow_quality:    carried from FlowResult.
+    foe_confidence:  0..1 confidence in the FOE estimate; carried directly from
+                     FlowResult.foe_confidence without modification. Low for pure-rotation
+                     or low-texture frames. M06 uses this to scale geometry_confidence.
     motion_quality:  "OK" when IMU data is fresh and correction applied;
                      "DEGRADED" when IMU absent, stale, or correction untrusted.
     fallback_active: True when running on conservative fallback (raw uncorrected flow).
@@ -74,6 +77,7 @@ class MotionState:
     foe_x: float
     foe_y: float
     flow_quality: float
+    foe_confidence: float                                      # 0..1 carried from FlowResult
     motion_quality: str                                        # "OK" | "DEGRADED"
     fallback_active: bool
 

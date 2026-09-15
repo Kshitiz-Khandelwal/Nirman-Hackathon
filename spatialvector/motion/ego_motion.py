@@ -122,6 +122,7 @@ class EgoMotionCompensator:
                 foe_x=flow.foe_x,
                 foe_y=flow.foe_y,
                 flow_quality=flow.flow_quality,
+                foe_confidence=flow.foe_confidence,      # carry forward, even in degraded mode
                 motion_quality="DEGRADED",
                 fallback_active=True,
             )
@@ -147,6 +148,7 @@ class EgoMotionCompensator:
             foe_x=flow.foe_x,
             foe_y=flow.foe_y,
             flow_quality=flow.flow_quality,
+            foe_confidence=flow.foe_confidence,          # carry forward from M04
             motion_quality="OK",
             fallback_active=False,
         )

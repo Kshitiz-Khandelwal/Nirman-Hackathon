@@ -47,3 +47,67 @@ geometry:
   # Fraction of frame diagonal used as FOE containment radius for foe_containment boolean.
   # 0.15 = an object within 15% of frame diagonal from the FOE is "on course".
   foe_containment_radius_norm: 0.15
+
+# ---------------------------------------------------------------------------
+# M07 — Collision Prediction
+# ---------------------------------------------------------------------------
+prediction:
+  # Finite TTC horizon: beyond this, treat as "no near-term collision concern."
+  # Decided: 5.0s — enough to give the user ~5 steps of warning at walking pace.
+  horizon_s: 5.0
+
+  # "Collision" distance in normalized geometry units (0..1 fraction of frame width).
+  # 0.05 = object must come within 5% of frame width to register contact.
+  contact_threshold_normalized: 0.05
+
+  # Corridor half-width for intersection_flag.
+  # 0.12 = an object whose CPA is within 12% of frame width is "in the corridor."
+  corridor_width_normalized: 0.12
+
+# ---------------------------------------------------------------------------
+# M08 — Risk Engine & State Machine
+# ---------------------------------------------------------------------------
+risk_engine:
+  # Per-object risk weights. Must sum <= 1.0 (any remainder is conservative slack).
+  # Rationale for each:
+  #   weight_ttc: TTC is the most direct timing signal — highest weight.
+  #   weight_miss_distance: CPA distance is always available, even when TTC=None.
+  #   weight_intersection_confidence: intersection only counts when we're confident.
+  weight_ttc: 0.50
+  weight_miss_distance: 0.30
+  weight_intersection_confidence: 0.20
+
+  # State transition thresholds (global_risk 0..1)
+  state_thresholds:
+    caution: 0.30
+    warning: 0.60
+    critical: 0.85
+
+  # Hysteresis windows (frames).
+  # Escalation requires sustained risk for hysteresis_frames_up consecutive frames.
+  # De-escalation requires sustained low risk for hysteresis_frames_down consecutive frames.
+  # Asymmetry (3 vs 5) is intentional: be quick to warn, slow to give all-clear.
+  hysteresis_frames_up: 3
+  hysteresis_frames_down: 5
+
+  # If average prediction_confidence drops below this, state -> DEGRADED.
+  # 0.25 = if fewer than 25% average confidence across all predictions, don't trust the output.
+  degraded_confidence_threshold: 0.25
+
+# ---------------------------------------------------------------------------
+# M09 — Safe-Corridor Selector + Haptic Policy
+# ---------------------------------------------------------------------------
+corridor_policy:
+  # Number of corridors (must match the left/center/right assumption in corridor_policy.py).
+  num_corridors: 3
+
+  # Maximum urgency level (1 = informational, 5 = critical).
+  urgency_levels: 5
+
+  # If ALL corridor risks exceed this threshold, issue the STOP/CRITICAL pattern.
+  # 0.7 = 70% risk in every direction means no safe route — halt and reassess.
+  all_unsafe_risk_threshold: 0.70
+
+  # Rolling window for trend detection (frames).
+  # M09 looks at this many frames of history to decide if risk is rising.
+  trend_window_frames: 5

@@ -59,6 +59,7 @@ def _make_motion_state(
     foe_y: float = float("nan"),
     flow_quality: float = 0.8,
     fallback_active: bool = False,
+    foe_confidence: float = 1.0,
 ) -> MotionState:
     return MotionState(
         timestamp=time.monotonic(),
@@ -67,6 +68,7 @@ def _make_motion_state(
         foe_x=foe_x,
         foe_y=foe_y,
         flow_quality=flow_quality,
+        foe_confidence=foe_confidence,
         motion_quality="OK" if not fallback_active else "DEGRADED",
         fallback_active=fallback_active,
     )
@@ -228,6 +230,49 @@ def test_t15b_empty_track_no_crash():
     assert geom.geometry_confidence == 0.0, "T15b: empty track should have zero confidence"
 
 
+def test_t15c_foe_confidence_affects_geometry_confidence():
+    """T15c (regression): geometry_confidence must be measurably lower when foe_confidence is
+    low vs. high, holding all other inputs constant.
+
+    This is the exact class of bug that "did it crash" tests won't catch: the original
+    geometry.py accepted foe_confidence but never used it, so confidence was always
+    identical regardless of FOE quality. This test guards against that regression.
+    """
+    track = _make_track(
+        track_id=1,
+        centers=[(320.0, 240.0), (325.0, 235.0), (330.0, 230.0)],
+        velocity=(50.0, -50.0),
+        track_age=10,  # mature track, no young-track penalty
+    )
+
+    # High FOE confidence — baseline
+    state_high_foe = _make_motion_state(
+        foe_x=320.0, foe_y=240.0, flow_quality=0.8, foe_confidence=1.0
+    )
+    # Low FOE confidence — only this changes
+    state_low_foe = _make_motion_state(
+        foe_x=320.0, foe_y=240.0, flow_quality=0.8, foe_confidence=0.05
+    )
+
+    geom_high = compute_object_geometry(track, state_high_foe, FRAME_W, FRAME_H)
+    geom_low = compute_object_geometry(track, state_low_foe, FRAME_W, FRAME_H)
+
+    assert geom_high.geometry_confidence > 0.0, "T15c: high-foe conf should be positive"
+    assert geom_low.geometry_confidence > 0.0, "T15c: low-foe conf should still be positive (floor applied)"
+    assert geom_high.geometry_confidence > geom_low.geometry_confidence, (
+        f"T15c: geometry_confidence did NOT drop for low foe_confidence. "
+        f"high={geom_high.geometry_confidence:.4f}, low={geom_low.geometry_confidence:.4f} "
+        f"(they should differ because _compute_confidence now uses foe_confidence)"
+    )
+    # Quantitative: the low-foe case should be meaningfully lower (floor=0.3 means ~30% reduction at minimum)
+    ratio = geom_low.geometry_confidence / geom_high.geometry_confidence
+    assert ratio < 0.95, (
+        f"T15c: low foe_confidence only reduced geometry_confidence by {(1-ratio)*100:.1f}%, "
+        f"expected at least 5% reduction. Ratio={ratio:.4f}. "
+        f"high={geom_high.geometry_confidence:.4f}, low={geom_low.geometry_confidence:.4f}"
+    )
+
+
 # ---------------------------------------------------------------------------
 # Standalone runner
 # ---------------------------------------------------------------------------
@@ -253,5 +298,9 @@ if __name__ == "__main__":
     print("[TEST] T15b: Empty track → no crash...")
     test_t15b_empty_track_no_crash()
     print("  -> T15b PASSED")
+
+    print("[TEST] T15c (regression): foe_confidence affects geometry_confidence...")
+    test_t15c_foe_confidence_affects_geometry_confidence()
+    print("  -> T15c PASSED")
 
     print("\nALL M06 TESTS PASSED.")

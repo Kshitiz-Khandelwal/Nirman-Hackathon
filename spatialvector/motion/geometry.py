@@ -120,7 +120,7 @@ def compute_object_geometry(
         track=track,
         flow_quality=motion_state.flow_quality,
         fallback_active=motion_state.fallback_active,
-        foe_confidence=motion_state.foe_x,   # NaN → FOE unreliable
+        foe_confidence=motion_state.foe_confidence,   # real confidence signal, not a pixel coord
     )
 
     return ObjectGeometry(
@@ -164,6 +164,11 @@ def _compute_confidence(
       - Low flow_quality from M04
       - Fallback mode active (IMU unavailable)
       - High bbox jitter (large variance in recent positions)
+      - Low foe_confidence from M04 (FOE poorly estimated)
+
+    foe_confidence floor: 0.3 — a poor FOE estimate reduces but does not eliminate
+    confidence for objects that don't rely on FOE alignment. An object clearly moving
+    toward the user center can still be meaningful even without a well-defined FOE.
     """
     conf = 1.0
 
@@ -187,5 +192,13 @@ def _compute_confidence(
         # Penalize if avg frame-to-frame jump std is > 30px
         if jitter > 30.0:
             conf *= max(0.2, 1.0 - jitter / 200.0)
+
+    # FOE confidence — clamp and apply with a floor so objects that don't
+    # rely on FOE alignment aren't zeroed out entirely.
+    # Floor of 0.3: a fully-uncertain FOE reduces confidence to at most 30% of
+    # what it would otherwise be; it does not zero it.
+    foe_factor = float(np.clip(foe_confidence, 0.0, 1.0))
+    foe_factor = max(foe_factor, 0.3)
+    conf *= foe_factor
 
     return float(np.clip(conf, 0.0, 1.0))
