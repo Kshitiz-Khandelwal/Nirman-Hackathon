@@ -41,6 +41,11 @@ class FrameSource:
         self.reconnect_interval = reconnect_interval
         self.loop_video = loop_video
 
+        # Check if source is a network stream (HTTP/RTSP/UDP)
+        self.is_network_stream = isinstance(self.source, str) and any(
+            str(self.source).lower().startswith(p) for p in ("http://", "https://", "rtsp://", "udp://")
+        )
+
         # Internal queue: non-blocking, bounded
         self._queue: queue.Queue[Frame] = queue.Queue(maxsize=self.queue_size)
 
@@ -86,6 +91,13 @@ class FrameSource:
                     cap.set(cv2.CAP_PROP_FRAME_HEIGHT, self.target_height)
                     if self.target_fps > 0:
                         cap.set(cv2.CAP_PROP_FPS, self.target_fps)
+                elif self.is_network_stream:
+                    # Live network streams (IP Webcam, DroidCam, RTSP) should keep buffer size minimal
+                    # to prevent OpenCV from accumulating a multi-second frame backlog
+                    try:
+                        cap.set(cv2.CAP_PROP_BUFFERSIZE, 1)
+                    except Exception:
+                        pass
                 self._cap = cap
                 self.status = self.STATUS_OK
                 logger.info(f"Successfully opened video source: {self.source}")
@@ -173,8 +185,8 @@ class FrameSource:
                     except queue.Empty:
                         pass
 
-            # If playing back video file, pace according to target_fps so we don't rush through in 1 second
-            if isinstance(self.source, str) and self.target_fps > 0:
+            # If playing back a local video file, pace according to target_fps so we don't rush through
+            if isinstance(self.source, str) and not self.is_network_stream and self.target_fps > 0:
                 elapsed = time.monotonic() - t_capture
                 sleep_time = (1.0 / self.target_fps) - elapsed
                 if sleep_time > 0:

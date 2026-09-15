@@ -343,7 +343,10 @@ def run_live(args):
     from spatialvector.motion.geometry import compute_geometry_batch
 
     source = int(args.source) if args.source.isdigit() else args.source
-    loop_video = isinstance(source, str)
+    is_network = isinstance(source, str) and any(
+        source.lower().startswith(p) for p in ("http://", "https://", "rtsp://", "udp://")
+    )
+    loop_video = isinstance(source, str) and not is_network
 
     frame_src = FrameSource(source=source, target_fps=30.0, queue_size=5, loop_video=loop_video)
     tracker = MultiObjectTracker(backend="bytetrack", history_length=10, confidence_threshold=0.4)

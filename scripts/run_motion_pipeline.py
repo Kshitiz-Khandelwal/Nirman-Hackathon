@@ -69,7 +69,10 @@ def main():
 
     # --- Source ---
     source = int(args.source) if args.source.isdigit() else args.source
-    loop_video = isinstance(source, str)  # loop recorded files
+    is_network = isinstance(source, str) and any(
+        source.lower().startswith(p) for p in ("http://", "https://", "rtsp://", "udp://")
+    )
+    loop_video = isinstance(source, str) and not is_network  # loop recorded files
 
     # --- M01: Frame source ---
     frame_src = FrameSource(

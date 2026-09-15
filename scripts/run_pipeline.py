@@ -37,7 +37,9 @@ def main():
     except (ValueError, TypeError):
         video_source = str(video_source)
 
-    tracker_backend = args.tracker or config["tracker"].get("backend", "bytetrack")
+    is_network = isinstance(video_source, str) and any(
+        video_source.lower().startswith(p) for p in ("http://", "https://", "rtsp://", "udp://")
+    )
 
     logger.info(f"Initializing M01 FrameSource (source={video_source})...")
     source = FrameSource(
@@ -45,7 +47,7 @@ def main():
         resolution=tuple(config["camera"]["resolution"]),
         target_fps=config["camera"]["target_fps"],
         queue_size=config["camera"]["queue_size"],
-        loop_video=isinstance(video_source, str),
+        loop_video=isinstance(video_source, str) and not is_network,
     )
 
     logger.info(f"Initializing M02 ObjectDetector (model={config['detector']['model_path']})...")
