@@ -64,14 +64,23 @@ def parse_args():
     parser.add_argument("--fps", type=float, default=20.0, help="Target processing FPS")
     parser.add_argument("--conf", type=float, default=0.35, help="YOLO detection confidence threshold")
     parser.add_argument("--tracker", type=str, choices=["bytetrack", "sort"], default="bytetrack", help="Tracker algorithm")
+    parser.add_argument("--mode", type=str, choices=["auto", "max", "studio"], default="auto", help="View mode: auto, max, or studio")
     return parser.parse_args()
 
 
 class PredictionViewer:
-    def __init__(self, source_str: str, target_fps: float = 20.0, det_conf: float = 0.35, tracker_type: str = "bytetrack"):
+    def __init__(
+        self,
+        source_str: str,
+        target_fps: float = 20.0,
+        det_conf: float = 0.35,
+        tracker_type: str = "bytetrack",
+        initial_mode: str = "auto",
+    ):
         self.target_fps = target_fps
         self.det_conf = det_conf
         self.tracker_type = tracker_type
+        self.view_mode = initial_mode.upper()   # "AUTO", "MAX", "STUDIO"
 
         # Interactive state
         self.paused = False
@@ -81,6 +90,8 @@ class PredictionViewer:
         self.win_name = "SpatialVector-HMI — Camera Perception & Prediction Engine"
         self.current_source_label = str(source_str)
         self.primary_source = source_str
+        self.auto_scaled_once = False
+        self.last_stream_shape = None
 
         # Pipeline modules
         self.init_source(source_str)
@@ -123,6 +134,26 @@ class PredictionViewer:
         self.frame_src.stop()
         self.init_source(new_source)
         self.current_source_label = label
+        self.auto_scaled_once = False   # Re-auto scale for the new source's aspect ratio!
+
+    def auto_scale_window(self, orig_w: int, orig_h: int):
+        """Auto-scale the OS window dimensions to optimal proportions for the input aspect ratio."""
+        is_portrait = orig_h > orig_w
+        if is_portrait:
+            # Optimal portrait layout: tall canvas so video has massive vertical & horizontal display
+            new_w, new_h = 860, 920
+        elif abs(orig_w / orig_h - 1.0) < 0.25:
+            # Square or 4:3
+            new_w, new_h = 960, 800
+        else:
+            # Standard 16:9 widescreen
+            new_w, new_h = 1280, 720
+
+        try:
+            cv2.resizeWindow(self.win_name, new_w, new_h)
+            print(f"[*] Auto-scaled window to {new_w}x{new_h} for {orig_w}x{orig_h} ({'PORTRAIT' if is_portrait else 'LANDSCAPE'}) stream")
+        except Exception as e:
+            print(f"[!] Window resize notice: {e}")
 
     def run(self):
         win_name = self.win_name
@@ -136,9 +167,11 @@ class PredictionViewer:
         print(f"[*] Input Source: {self.current_source_label}")
         print("[*] Hotkeys:")
         print("    [SPACE]   Pause / Resume")
+        print("    [A]       Auto-scale Window to Stream Aspect Ratio")
+        print("    [V]       Toggle View Mode (AUTO / MAX / STUDIO)")
         print("    [F]       Toggle Fullscreen Mode")
         print("    [H]       Toggle HUD Overlay")
-        print("    [T]       Toggle Telemetry Panel")
+        print("    [T]       Toggle Telemetry Panels")
         print("    [1] - [5] Benchmark Scenes S1–S5")
         print("    [C]       Return to Live Camera")
         print("    [Q]/[ESC] Quit\n")
@@ -154,7 +187,7 @@ class PredictionViewer:
                     if f_obj is None:
                         consecutive_misses += 1
                         if consecutive_misses > 20 and self.last_frame is None:
-                            # Draw waiting placeholder in full 1280x720 HD
+                            # Draw waiting placeholder
                             blank = np.full((720, 1280, 3), 18, dtype=np.uint8)
                             cv2.rectangle(blank, (0, 0), (1280, 52), (32, 32, 36), -1)
                             cv2.putText(blank, "SPATIALVECTOR-HMI // PREDICTION ENGINE", (24, 34), cv2.FONT_HERSHEY_SIMPLEX, 0.75, (0, 220, 255), 2, cv2.LINE_AA)
@@ -186,6 +219,12 @@ class PredictionViewer:
                 img = f_obj.image
                 orig_h, orig_w = img.shape[:2]
                 ts = time.monotonic()
+
+                # Stream aspect change detection & auto-scaling
+                if not self.auto_scaled_once or self.last_stream_shape != (orig_w, orig_h):
+                    self.auto_scale_window(orig_w, orig_h)
+                    self.auto_scaled_once = True
+                    self.last_stream_shape = (orig_w, orig_h)
 
                 tracks = self.tracker.track(f_obj)
                 flow = self.flow_est.update(img, f_obj.frame_id, ts)
@@ -247,6 +286,15 @@ class PredictionViewer:
         elif key == ord(' '):
             self.paused = not self.paused
             print(f"[*] {'PAUSED' if self.paused else 'RESUMED'}")
+        elif key in (ord('a'), ord('A')):
+            if self.last_frame is not None:
+                fh, fw = self.last_frame.image.shape[:2]
+                self.auto_scale_window(fw, fh)
+        elif key in (ord('v'), ord('V')):
+            modes = ["AUTO", "MAX", "STUDIO"]
+            idx = (modes.index(self.view_mode) + 1) % len(modes)
+            self.view_mode = modes[idx]
+            print(f"[*] View Mode switched to: {self.view_mode}")
         elif key in (ord('f'), ord('F')):
             self.is_fullscreen = not self.is_fullscreen
             if self.is_fullscreen:
@@ -254,8 +302,12 @@ class PredictionViewer:
                 print("[*] Fullscreen: ON")
             else:
                 cv2.setWindowProperty(self.win_name, cv2.WND_PROP_FULLSCREEN, cv2.WINDOW_NORMAL)
-                cv2.resizeWindow(self.win_name, 1280, 720)
-                print("[*] Fullscreen: OFF (1280x720)")
+                if self.last_frame is not None:
+                    fh, fw = self.last_frame.image.shape[:2]
+                    self.auto_scale_window(fw, fh)
+                else:
+                    cv2.resizeWindow(self.win_name, 1280, 720)
+                print("[*] Fullscreen: OFF")
         elif key in (ord('h'), ord('H')):
             self.show_hud = not self.show_hud
             print(f"[*] HUD Overlay: {'ON' if self.show_hud else 'OFF'}")
@@ -286,30 +338,60 @@ class PredictionViewer:
         target_h: int = 720,
     ) -> np.ndarray:
         orig_h, orig_w = img.shape[:2]
+        is_portrait = orig_h > orig_w
         
-        # 1. Strict Aspect Ratio Preservation (Zero Stretching)
-        top_bar_h = 44
-        bot_bar_h = 44
-        avail_w = target_w
+        # 1. Responsive Top & Bottom Bars
+        top_bar_h = 42
+        bot_bar_h = 40
         avail_h = max(100, target_h - top_bar_h - bot_bar_h)
 
-        scale = min(avail_w / float(orig_w), avail_h / float(orig_h))
-        vw = int(orig_w * scale)
-        vh = int(orig_h * scale)
-        ox = (target_w - vw) // 2
-        oy = top_bar_h + (avail_h - vh) // 2
+        # 2. View Mode & Dynamic Layout Calculation
+        mode = self.view_mode
+        if mode == "AUTO":
+            if is_portrait:
+                # In portrait, if window is very wide (>= 860), give balanced sidebars; else maximize video
+                use_sidebars = self.show_telemetry and (target_w >= 860)
+            else:
+                use_sidebars = self.show_telemetry and (target_w >= 1060)
+        elif mode == "STUDIO":
+            use_sidebars = self.show_telemetry and (target_w >= 700)
+        else: # "MAX"
+            use_sidebars = False
+
+        if use_sidebars:
+            # Clamped sidebar width: never starve the video!
+            sidebar_w = min(220, max(175, int(target_w * 0.22)))
+            avail_w = max(200, target_w - (sidebar_w * 2) - 20)
+            scale = min(avail_w / float(orig_w), avail_h / float(orig_h))
+            vw = int(orig_w * scale)
+            vh = int(orig_h * scale)
+            ox = sidebar_w + 10 + (avail_w - vw) // 2
+            oy = top_bar_h + (avail_h - vh) // 2
+            left_sidebar_rect = (8, top_bar_h + 8, ox - 8, target_h - bot_bar_h - 8)
+            right_sidebar_rect = (ox + vw + 8, top_bar_h + 8, target_w - 8, target_h - bot_bar_h - 8)
+        else:
+            # Maximum video scaling: full width & height available
+            avail_w = target_w
+            scale = min(avail_w / float(orig_w), avail_h / float(orig_h))
+            vw = int(orig_w * scale)
+            vh = int(orig_h * scale)
+            ox = (target_w - vw) // 2
+            oy = top_bar_h + (avail_h - vh) // 2
+            left_sidebar_rect = None
+            right_sidebar_rect = None
 
         # Base Studio Canvas
         canvas = np.full((target_h, target_w, 3), (16, 18, 22), dtype=np.uint8)
 
-        # Place Un-stretched Camera Frame
-        cam_resized = cv2.resize(img, (vw, vh), interpolation=cv2.INTER_LINEAR)
+        # Place Un-stretched Camera Frame with high-fidelity interpolation
+        interp = cv2.INTER_AREA if scale < 1.0 else cv2.INTER_LINEAR
+        cam_resized = cv2.resize(img, (vw, vh), interpolation=interp)
         canvas[oy:oy + vh, ox:ox + vw] = cam_resized
 
         # Subtle frame border
         cv2.rectangle(canvas, (ox, oy), (ox + vw, oy + vh), (50, 54, 64), 1)
 
-        # 2. Ground Perspective Corridors (Clipped strictly within camera viewport)
+        # 3. Ground Perspective Corridors (Clipped strictly within camera viewport)
         if self.show_hud:
             overlay = canvas.copy()
             vanish_y = oy + int(vh * 0.54)
@@ -356,26 +438,55 @@ class PredictionViewer:
             cv2.polylines(canvas, [l_pts], isClosed=False, color=(210, 230, 210), thickness=1, lineType=cv2.LINE_AA)
             cv2.polylines(canvas, [r_pts], isClosed=False, color=(210, 230, 210), thickness=1, lineType=cv2.LINE_AA)
 
-            # Corridor Risk Pills inside camera viewport
-            badge_y = oy + 22
+            # Auto-scaled Corridor Risk Pills
+            badge_y = oy + max(16, int(vh * 0.038))
+            pill_font = float(np.clip(vw / 750.0 * 0.44, 0.30, 0.44))
+
             def draw_pill(text: str, cx: int, cy: int, score: float):
-                (tw, th), _ = cv2.getTextSize(text, cv2.FONT_HERSHEY_SIMPLEX, 0.44, 1)
-                pw, ph = tw + 16, th + 8
+                (tw, th), _ = cv2.getTextSize(text, cv2.FONT_HERSHEY_SIMPLEX, pill_font, 1)
+                pw, ph = tw + 14, th + 8
                 bx1, by1 = cx - pw // 2, cy - ph // 2
                 bx2, by2 = bx1 + pw, by1 + ph
                 bg = (20, 20, 220) if score > 0.55 else (20, 24, 20)
                 cv2.rectangle(canvas, (bx1, by1), (bx2, by2), bg, -1)
                 cv2.rectangle(canvas, (bx1, by1), (bx2, by2), (80, 85, 95), 1)
-                cv2.putText(canvas, text, (bx1 + 8, by2 - 3), cv2.FONT_HERSHEY_SIMPLEX, 0.44, (240, 240, 240), 1, cv2.LINE_AA)
+                cv2.putText(canvas, text, (bx1 + 7, by2 - 3), cv2.FONT_HERSHEY_SIMPLEX, pill_font, (240, 240, 240), 1, cv2.LINE_AA)
 
-            draw_pill(f"LEFT: {l_risk:.2f}", ox + int(vw * 0.19), badge_y, l_risk)
-            draw_pill(f"CENTER: {c_risk:.2f}", ox + int(vw * 0.50), badge_y, c_risk)
-            draw_pill(f"RIGHT: {r_risk:.2f}", ox + int(vw * 0.81), badge_y, r_risk)
+            lbl_prefix = "L:" if vw < 400 else "LEFT: "
+            c_prefix = "C:" if vw < 400 else "CENTER: "
+            r_prefix = "R:" if vw < 400 else "RIGHT: "
 
-        # 3. Tracks, Precision Bounding Boxes & Kinematic Vectors
+            draw_pill(f"{lbl_prefix}{l_risk:.2f}", ox + int(vw * 0.19), badge_y, l_risk)
+            draw_pill(f"{c_prefix}{c_risk:.2f}", ox + int(vw * 0.50), badge_y, c_risk)
+            draw_pill(f"{r_prefix}{r_risk:.2f}", ox + int(vw * 0.81), badge_y, r_risk)
+
+        # 4. Tracks, Precision Bounding Boxes & Kinematic Vectors (Anti-Collision Label Stacking)
         pred_map = {p.track_id: p for p in predictions}
 
-        for t in tracks:
+        # Dynamic Font Scaling based on viewport width
+        badge_font = float(np.clip(vw / 850.0 * 0.42, 0.28, 0.44))
+        is_compact_badges = (vw < 520)
+
+        # Sort tracks by threat priority so most critical alerts get prime label positioning
+        def get_track_threat_rank(tr: Track) -> float:
+            p = pred_map.get(tr.track_id)
+            if not p:
+                return 0.0
+            rank = 0.0
+            if p.intersection_flag:
+                rank += 100.0
+            if getattr(p, "proximity_risk", 0.0) > 0.35:
+                rank += 50.0
+            if getattr(p, "expansion_rate", 0.0) > 0.15:
+                rank += 25.0
+            if p.ttc_s is not None:
+                rank += max(0.0, 10.0 - p.ttc_s)
+            return rank
+
+        sorted_tracks = sorted(tracks, key=get_track_threat_rank, reverse=True)
+        occupied_badge_rects: List[Tuple[int, int, int, int]] = []
+
+        for t in sorted_tracks:
             if not t.bbox_history:
                 continue
             rx1, ry1, rx2, ry2 = t.bbox_history[-1]
@@ -421,26 +532,70 @@ class PredictionViewer:
                 cv2.arrowedLine(canvas, (cx, cy), (end_x, end_y), (0, 240, 255), 2, tipLength=0.25, line_type=cv2.LINE_AA)
                 cv2.circle(canvas, (cx, cy), 3, (0, 240, 255), -1, cv2.LINE_AA)
 
-            # Structured Badge Label
-            ttc_str = f"TTC:{ttc:.1f}s" if ttc is not None else "TTC:--"
-            cpa_str = f"CPA:{cpa:.2f}" if cpa is not None else ""
-            hazard_tag = ""
-            if is_intersect:
-                hazard_tag = " !COLLISION!"
-            elif prox_risk > 0.35:
-                hazard_tag = " !PROXIMITY!"
-            elif exp_rate > 0.20:
-                hazard_tag = " !LOOMING!"
+            # Auto-Scaled Label Formatting (Compact mode avoids badge collision in portrait streams)
+            box_w = x2 - x1
+            use_compact = is_compact_badges or (box_w < 155)
 
-            label = f"#{t.track_id} {t.class_name.upper()} | {ttc_str} | {cpa_str}{hazard_tag}".strip(" |")
+            if use_compact:
+                tag = "!COLL!" if is_intersect else ("!PROX!" if prox_risk > 0.35 else ("!LOOM!" if exp_rate > 0.20 else ""))
+                t_str = f"{ttc:.1f}s" if ttc is not None else ""
+                c_name = t.class_name[:4].upper()
+                parts = [f"#{t.track_id} {c_name}"]
+                if t_str:
+                    parts.append(t_str)
+                elif cpa is not None and cpa < 0.30:
+                    parts.append(f"{cpa:.2f}")
+                if tag:
+                    parts.append(tag)
+                label = " ".join(parts)
+            else:
+                tag = " !COLLISION!" if is_intersect else (" !PROXIMITY!" if prox_risk > 0.35 else (" !LOOMING!" if exp_rate > 0.20 else ""))
+                ttc_str = f"TTC:{ttc:.1f}s" if ttc is not None else "TTC:--"
+                cpa_str = f"CPA:{cpa:.2f}" if cpa is not None else ""
+                label = f"#{t.track_id} {t.class_name.upper()} | {ttc_str} | {cpa_str}{tag}".strip(" |")
 
-            (tw, th), _ = cv2.getTextSize(label, cv2.FONT_HERSHEY_SIMPLEX, 0.44, 1)
-            lbl_y = y1 - 6 if y1 - 6 > oy + 14 else y2 + th + 10
-            cv2.rectangle(canvas, (x1, lbl_y - th - 5), (x1 + tw + 8, lbl_y + 4), (18, 18, 22), -1)
-            cv2.rectangle(canvas, (x1, lbl_y - th - 5), (x1 + tw + 8, lbl_y + 4), box_color, 1)
-            cv2.putText(canvas, label, (x1 + 4, lbl_y - 1), cv2.FONT_HERSHEY_SIMPLEX, 0.44, (255, 255, 255), 1, cv2.LINE_AA)
+            (tw, th), _ = cv2.getTextSize(label, cv2.FONT_HERSHEY_SIMPLEX, badge_font, 1)
+            bw = tw + 8
+            bh = th + 6
 
-        # 4. Top Telemetry Header Bar
+            # Anti-Collision Placement Solver
+            # Clamp horizontally strictly inside camera frame
+            bx1 = max(ox + 2, min(x1, ox + vw - bw - 2))
+            bx2 = bx1 + bw
+
+            def rect_intersects(r1, r2):
+                return not (r1[2] < r2[0] or r1[0] > r2[2] or r1[3] < r2[1] or r1[1] > r2[3])
+
+            c_top = (bx1, y1 - bh - 2, bx2, y1 - 2)
+            c_bot = (bx1, y2 + 2, bx2, y2 + bh + 2)
+            c_in = (bx1, y1 + 3, bx2, y1 + bh + 3)
+
+            chosen_rect = None
+            if c_top[1] >= oy + 16 and not any(rect_intersects(c_top, occ) for occ in occupied_badge_rects):
+                chosen_rect = c_top
+            elif c_bot[3] <= oy + vh - 2 and not any(rect_intersects(c_bot, occ) for occ in occupied_badge_rects):
+                chosen_rect = c_bot
+            elif not any(rect_intersects(c_in, occ) for occ in occupied_badge_rects):
+                chosen_rect = c_in
+            else:
+                # Stagger vertically below highest colliding badge in this column
+                colliding = [occ for occ in occupied_badge_rects if not (bx2 < occ[0] or bx1 > occ[2])]
+                if colliding:
+                    max_collided_y2 = max(occ[3] for occ in colliding)
+                    staggered_y1 = max_collided_y2 + 2
+                    if staggered_y1 + bh <= oy + vh - 2:
+                        chosen_rect = (bx1, staggered_y1, bx2, staggered_y1 + bh)
+                if chosen_rect is None:
+                    chosen_rect = c_top  # Safe fallback
+
+            occupied_badge_rects.append(chosen_rect)
+            cbx1, cby1, cbx2, cby2 = chosen_rect
+
+            cv2.rectangle(canvas, (cbx1, cby1), (cbx2, cby2), (18, 18, 22), -1)
+            cv2.rectangle(canvas, (cbx1, cby1), (cbx2, cby2), box_color, 1)
+            cv2.putText(canvas, label, (cbx1 + 4, cby2 - 4), cv2.FONT_HERSHEY_SIMPLEX, badge_font, (255, 255, 255), 1, cv2.LINE_AA)
+
+        # 5. Top Telemetry Header Bar (Auto-scaling text & meter)
         cv2.rectangle(canvas, (0, 0), (target_w, top_bar_h), (18, 20, 24), -1)
         cv2.line(canvas, (0, top_bar_h), (target_w, top_bar_h), (45, 48, 56), 1)
 
@@ -456,22 +611,22 @@ class PredictionViewer:
 
         # State Pill Badge
         state_label = f" {state} "
-        (stw, sth), _ = cv2.getTextSize(state_label, cv2.FONT_HERSHEY_SIMPLEX, 0.55, 2)
-        cv2.rectangle(canvas, (14, 7), (14 + stw + 10, 37), st_color, -1)
-        cv2.putText(canvas, state_label, (18, 27), cv2.FONT_HERSHEY_SIMPLEX, 0.55, (255, 255, 255), 2, cv2.LINE_AA)
+        (stw, sth), _ = cv2.getTextSize(state_label, cv2.FONT_HERSHEY_SIMPLEX, 0.50, 2)
+        cv2.rectangle(canvas, (12, 6), (12 + stw + 8, 36), st_color, -1)
+        cv2.putText(canvas, state_label, (16, 26), cv2.FONT_HERSHEY_SIMPLEX, 0.50, (255, 255, 255), 2, cv2.LINE_AA)
 
         # Risk Score + Visual Meter Bar
-        meter_x = 24 + stw + 14
-        meter_w = 110
-        meter_h = 12
+        meter_x = 22 + stw + 10
+        meter_w = 90 if target_w < 900 else 110
+        meter_h = 11
         meter_y = 16
         risk_pct = float(np.clip(risk.global_risk, 0.0, 1.0))
 
         risk_txt = f"RISK: {risk.global_risk:.2f}"
-        cv2.putText(canvas, risk_txt, (meter_x, 26), cv2.FONT_HERSHEY_SIMPLEX, 0.48, (230, 230, 230), 1, cv2.LINE_AA)
+        cv2.putText(canvas, risk_txt, (meter_x, 26), cv2.FONT_HERSHEY_SIMPLEX, 0.44, (230, 230, 230), 1, cv2.LINE_AA)
         
-        (rtw, _), _ = cv2.getTextSize(risk_txt, cv2.FONT_HERSHEY_SIMPLEX, 0.48, 1)
-        bar_x1 = meter_x + rtw + 10
+        (rtw, _), _ = cv2.getTextSize(risk_txt, cv2.FONT_HERSHEY_SIMPLEX, 0.44, 1)
+        bar_x1 = meter_x + rtw + 8
         cv2.rectangle(canvas, (bar_x1, meter_y), (bar_x1 + meter_w, meter_y + meter_h), (35, 38, 46), -1)
         fill_w = int(meter_w * risk_pct)
         if fill_w > 0:
@@ -479,16 +634,26 @@ class PredictionViewer:
             cv2.rectangle(canvas, (bar_x1, meter_y), (bar_x1 + fill_w, meter_y + meter_h), fill_color, -1)
         cv2.rectangle(canvas, (bar_x1, meter_y), (bar_x1 + meter_w, meter_y + meter_h), (75, 80, 90), 1)
 
-        # System Confidence
+        # Confidence
         conf_txt = f"CONF: {risk.confidence * 100:.0f}%"
-        cv2.putText(canvas, conf_txt, (bar_x1 + meter_w + 16, 26), cv2.FONT_HERSHEY_SIMPLEX, 0.46, (180, 185, 195), 1, cv2.LINE_AA)
+        cv2.putText(canvas, conf_txt, (bar_x1 + meter_w + 12, 26), cv2.FONT_HERSHEY_SIMPLEX, 0.42, (180, 185, 195), 1, cv2.LINE_AA)
 
-        # Right side: FPS & Frame ID
-        right_info = f"FPS: {fps:.1f} | Frame #{frame_id} | Hotkeys: [F] Fullscreen  [H] HUD  [T] Telemetry  [1-5] Scenes"
-        (rw, _), _ = cv2.getTextSize(right_info, cv2.FONT_HERSHEY_SIMPLEX, 0.42, 1)
-        cv2.putText(canvas, right_info, (max(target_w - rw - 14, bar_x1 + meter_w + 140), 26), cv2.FONT_HERSHEY_SIMPLEX, 0.42, (200, 205, 215), 1, cv2.LINE_AA)
+        # Right side: FPS, Frame ID, Mode, and Hotkeys
+        mode_label = f"MODE:{self.view_mode}"
+        if target_w >= 1050:
+            right_info = f"FPS: {fps:.1f} | #{frame_id} | [{mode_label}] | [A] Auto-Scale  [V] View  [H] HUD  [T] Telem"
+            r_font = 0.38
+        elif target_w >= 780:
+            right_info = f"{fps:.1f}FPS | #{frame_id} | [{mode_label}] | [A] Scale  [V] View  [H] HUD"
+            r_font = 0.35
+        else:
+            right_info = f"{fps:.1f}FPS | [{mode_label}]"
+            r_font = 0.34
 
-        # 5. Bottom Directional Guidance Banner (Clean ASCII arrows)
+        (rw, _), _ = cv2.getTextSize(right_info, cv2.FONT_HERSHEY_SIMPLEX, r_font, 1)
+        cv2.putText(canvas, right_info, (max(target_w - rw - 12, bar_x1 + meter_w + 95), 26), cv2.FONT_HERSHEY_SIMPLEX, r_font, (205, 210, 220), 1, cv2.LINE_AA)
+
+        # 6. Bottom Directional Guidance Banner
         cv2.rectangle(canvas, (0, target_h - bot_bar_h), (target_w, target_h), (18, 20, 24), -1)
         cv2.line(canvas, (0, target_h - bot_bar_h), (target_w, target_h - bot_bar_h), (45, 48, 56), 1)
 
@@ -506,36 +671,42 @@ class PredictionViewer:
             dir_color = (40, 190, 70)
 
         guidance_lead = f"GUIDANCE: [{dir_symbol}]"
-        cv2.putText(canvas, guidance_lead, (16, target_h - 16), cv2.FONT_HERSHEY_SIMPLEX, 0.50, dir_color, 2, cv2.LINE_AA)
+        g_font = 0.46 if target_w >= 900 else 0.40
+        cv2.putText(canvas, guidance_lead, (14, target_h - 14), cv2.FONT_HERSHEY_SIMPLEX, g_font, dir_color, 2, cv2.LINE_AA)
 
-        (gw, _), _ = cv2.getTextSize(guidance_lead, cv2.FONT_HERSHEY_SIMPLEX, 0.50, 2)
-        haptic_txt = (
-            f"  |  HAPTIC: {cmd.pattern_id} (Urgency {cmd.urgency}/5, {cmd.duration_ms}ms)"
-            f"  |  REASONS: {', '.join(risk.reason_codes[:2]) if risk.reason_codes else 'clear path'}"
-        )
-        cv2.putText(canvas, haptic_txt, (16 + gw, target_h - 16), cv2.FONT_HERSHEY_SIMPLEX, 0.44, (210, 215, 225), 1, cv2.LINE_AA)
+        (gw, _), _ = cv2.getTextSize(guidance_lead, cv2.FONT_HERSHEY_SIMPLEX, g_font, 2)
+        if target_w >= 880:
+            haptic_txt = (
+                f"  |  HAPTIC: {cmd.pattern_id} (Urgency {cmd.urgency}/5, {cmd.duration_ms}ms)"
+                f"  |  REASONS: {', '.join(risk.reason_codes[:2]) if risk.reason_codes else 'clear path'}"
+            )
+        else:
+            haptic_txt = f"  |  {cmd.pattern_id} ({cmd.urgency}/5)"
+        cv2.putText(canvas, haptic_txt, (14 + gw, target_h - 14), cv2.FONT_HERSHEY_SIMPLEX, 0.40, (210, 215, 225), 1, cv2.LINE_AA)
 
-        # 6. Rich Information Sidebar Panels (Utilizing pillarbox margins or floating card)
+        # 7. Rich Information Sidebars or Floating Telemetry Cards
         if self.show_telemetry:
-            # Check if there is comfortable space on sides (pillarbox margin >= 200px)
-            if ox >= 200:
+            fq = getattr(motion, 'flow_quality', 0.0)
+            foe_c = getattr(motion, 'foe_confidence', 0.0)
+            calib = getattr(self.predictor, "calibrator", None)
+            l_thresh = calib.current_threshold if calib else 0.05
+            n_floor = calib.noise_floor if calib else 0.02
+            max_exp = max([getattr(p, "expansion_rate", 0.0) for p in predictions], default=0.0)
+            max_prox = max([getattr(p, "proximity_risk", 0.0) for p in predictions], default=0.0)
+
+            if use_sidebars and left_sidebar_rect and right_sidebar_rect:
                 # LEFT SIDEBAR: Motion & Sensors
-                lw = ox - 16
-                lx1, ly1 = 12, top_bar_h + 12
-                lx2, ly2 = lx1 + lw, target_h - bot_bar_h - 12
+                lx1, ly1, lx2, ly2 = left_sidebar_rect
                 cv2.rectangle(canvas, (lx1, ly1), (lx2, ly2), (22, 25, 32), -1)
                 cv2.rectangle(canvas, (lx1, ly1), (lx2, ly2), (55, 60, 72), 1)
 
-                cv2.putText(canvas, "MOTION & SENSORS", (lx1 + 10, ly1 + 22), cv2.FONT_HERSHEY_SIMPLEX, 0.44, (0, 220, 255), 1, cv2.LINE_AA)
-                cv2.line(canvas, (lx1 + 10, ly1 + 28), (lx2 - 10, ly1 + 28), (45, 50, 60), 1)
+                cv2.putText(canvas, "MOTION & SENSORS", (lx1 + 8, ly1 + 20), cv2.FONT_HERSHEY_SIMPLEX, 0.40, (0, 220, 255), 1, cv2.LINE_AA)
+                cv2.line(canvas, (lx1 + 8, ly1 + 25), (lx2 - 8, ly1 + 25), (45, 50, 60), 1)
 
-                fq = getattr(motion, 'flow_quality', 0.0)
-                foe_c = getattr(motion, 'foe_confidence', 0.0)
-                calib = getattr(self.predictor, "calibrator", None)
-                l_thresh = calib.current_threshold if calib else 0.05
-                max_exp = max([getattr(p, "expansion_rate", 0.0) for p in predictions], default=0.0)
                 left_lines = [
-                    f"Resolution: {orig_w}x{orig_h}",
+                    f"Feed: {orig_w}x{orig_h} ({'PORT' if is_portrait else 'LAND'})",
+                    f"Canvas: {vw}x{vh} (scale: {scale:.2f})",
+                    f"Auto-Scale: ACTIVE",
                     f"Tracker: {self.tracker_type.upper()}",
                     f"Active Tracks: {len(tracks)}",
                     f"Predictions: {len(predictions)}",
@@ -543,23 +714,24 @@ class PredictionViewer:
                     f"Flow Quality: {fq:.2f}",
                     f"FOE Conf: {foe_c:.2f}",
                     f"Adapt Thresh: {l_thresh:.2f}/s",
+                    f"Noise Floor: {n_floor:.2f}/s",
                     f"Max Expansion: {max_exp:+.2f}/s",
                 ]
                 for i, line in enumerate(left_lines):
-                    cv2.putText(canvas, line, (lx1 + 10, ly1 + 46 + i * 19), cv2.FONT_HERSHEY_SIMPLEX, 0.39, (215, 220, 230), 1, cv2.LINE_AA)
+                    if ly1 + 42 + i * 18 > ly2 - 6:
+                        break
+                    cv2.putText(canvas, line, (lx1 + 8, ly1 + 42 + i * 18), cv2.FONT_HERSHEY_SIMPLEX, 0.36, (215, 220, 230), 1, cv2.LINE_AA)
 
                 # RIGHT SIDEBAR: Risk & Haptic Decision Engine
-                rw = ox - 16
-                rx1, ry1 = ox + vw + 12, top_bar_h + 12
-                rx2, ry2 = rx1 + rw, target_h - bot_bar_h - 12
+                rx1, ry1, rx2, ry2 = right_sidebar_rect
                 cv2.rectangle(canvas, (rx1, ry1), (rx2, ry2), (22, 25, 32), -1)
                 cv2.rectangle(canvas, (rx1, ry1), (rx2, ry2), (55, 60, 72), 1)
 
-                cv2.putText(canvas, "DECISION & RISK ENGINE", (rx1 + 10, ry1 + 22), cv2.FONT_HERSHEY_SIMPLEX, 0.44, (0, 220, 255), 1, cv2.LINE_AA)
-                cv2.line(canvas, (rx1 + 10, ry1 + 28), (rx2 - 10, ry1 + 28), (45, 50, 60), 1)
+                cv2.putText(canvas, "DECISION & RISK ENGINE", (rx1 + 8, ly1 + 20), cv2.FONT_HERSHEY_SIMPLEX, 0.40, (0, 220, 255), 1, cv2.LINE_AA)
+                cv2.line(canvas, (rx1 + 8, ly1 + 25), (rx2 - 8, ly1 + 25), (45, 50, 60), 1)
 
-                max_prox = max([getattr(p, "proximity_risk", 0.0) for p in predictions], default=0.0)
                 right_lines = [
+                    f"View Mode: {self.view_mode}",
                     f"State: {risk.state}",
                     f"Global Risk: {risk.global_risk:.2f}",
                     f"Proximity Risk: {max_prox:.2f}",
@@ -572,38 +744,40 @@ class PredictionViewer:
                     f"Urgency: {cmd.urgency}/5 ({cmd.duration_ms}ms)",
                 ]
                 for i, line in enumerate(right_lines):
-                    cv2.putText(canvas, line, (rx1 + 10, ry1 + 46 + i * 19), cv2.FONT_HERSHEY_SIMPLEX, 0.39, (215, 220, 230), 1, cv2.LINE_AA)
+                    if ry1 + 42 + i * 18 > ry2 - 6:
+                        break
+                    cv2.putText(canvas, line, (rx1 + 8, ry1 + 42 + i * 18), cv2.FONT_HERSHEY_SIMPLEX, 0.36, (215, 220, 230), 1, cv2.LINE_AA)
 
             else:
-                # Floating overlay card when video fills entire width
-                panel_w = 260
-                panel_h = 190
-                px1 = target_w - panel_w - 14
-                py1 = top_bar_h + 14
+                # Floating overlay card when in MAX_VIDEO mode or compact window
+                panel_w = 250
+                panel_h = 175
+                px1 = target_w - panel_w - 12
+                py1 = top_bar_h + 12
                 px2 = px1 + panel_w
                 py2 = py1 + panel_h
 
-                sub = canvas[py1:py2, px1:px2]
-                dark = np.zeros_like(sub)
-                cv2.addWeighted(dark, 0.80, sub, 0.20, 0, sub)
-                canvas[py1:py2, px1:px2] = sub
-                cv2.rectangle(canvas, (px1, py1), (px2, py2), (70, 75, 85), 1)
+                if px1 >= 0 and py2 < target_h - bot_bar_h:
+                    sub = canvas[py1:py2, px1:px2]
+                    dark = np.zeros_like(sub)
+                    cv2.addWeighted(dark, 0.82, sub, 0.18, 0, sub)
+                    canvas[py1:py2, px1:px2] = sub
+                    cv2.rectangle(canvas, (px1, py1), (px2, py2), (70, 75, 85), 1)
 
-                cv2.putText(canvas, "PREDICTION ENGINE TELEMETRY", (px1 + 10, py1 + 20), cv2.FONT_HERSHEY_SIMPLEX, 0.40, (0, 220, 255), 1, cv2.LINE_AA)
-                cv2.line(canvas, (px1 + 10, py1 + 26), (px2 - 10, py1 + 26), (60, 65, 75), 1)
+                    cv2.putText(canvas, f"TELEMETRY // {self.view_mode}", (px1 + 8, py1 + 18), cv2.FONT_HERSHEY_SIMPLEX, 0.38, (0, 220, 255), 1, cv2.LINE_AA)
+                    cv2.line(canvas, (px1 + 8, py1 + 23), (px2 - 8, py1 + 23), (60, 65, 75), 1)
 
-                lines = [
-                    f"Resolution: {orig_w}x{orig_h}",
-                    f"Active Tracks: {len(tracks)}",
-                    f"Predictions: {len(predictions)}",
-                    f"Ego-motion Fallback: {motion.fallback_active}",
-                    f"Flow Quality: {getattr(motion, 'flow_quality', 0.0):.2f}",
-                    f"FOE Confidence: {getattr(motion, 'foe_confidence', 0.0):.2f}",
-                    f"Tracker: {self.tracker_type.upper()}",
-                    f"State: {risk.state} (Risk: {risk.global_risk:.2f})",
-                ]
-                for i, line in enumerate(lines):
-                    cv2.putText(canvas, line, (px1 + 10, py1 + 45 + i * 16), cv2.FONT_HERSHEY_SIMPLEX, 0.38, (220, 225, 230), 1, cv2.LINE_AA)
+                    lines = [
+                        f"Feed: {orig_w}x{orig_h} ({'PORT' if is_portrait else 'LAND'})",
+                        f"Canvas: {vw}x{vh} (scale: {scale:.2f})",
+                        f"Active Tracks: {len(tracks)} | Preds: {len(predictions)}",
+                        f"State: {risk.state} (Risk: {risk.global_risk:.2f})",
+                        f"Proximity Risk: {max_prox:.2f}",
+                        f"Adapt Thresh: {l_thresh:.2f}/s",
+                        f"Guidance: {cmd.direction} [{cmd.pattern_id}]",
+                    ]
+                    for i, line in enumerate(lines):
+                        cv2.putText(canvas, line, (px1 + 8, py1 + 40 + i * 17), cv2.FONT_HERSHEY_SIMPLEX, 0.35, (220, 225, 230), 1, cv2.LINE_AA)
 
         return canvas
 
@@ -625,6 +799,7 @@ def main():
         target_fps=args.fps,
         det_conf=args.conf,
         tracker_type=args.tracker,
+        initial_mode=args.mode,
     )
     viewer.run()
 
