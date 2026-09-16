@@ -206,9 +206,13 @@ def main():
         hysteresis_frames_down=5,
         degraded_confidence_threshold=0.25,
     )
+    telemetry_server.set_risk_engine(engine)
     policy = CorridorPolicy(all_unsafe_risk_threshold=0.70, trend_window_frames=5)
     arduino = SimulatedArduinoInterface()
     arduino.start()
+
+    simple_url = f"http://localhost:{args.port}/app_simple/"
+    print(f"[*] Simplified 3-Tab UI: {simple_url}")
 
     # 4. Pipeline Execution
     if args.synthetic:

@@ -40,13 +40,13 @@ Config values (from config/default.yaml, section "risk_engine"):
   corridor_width_right:             [0.67, 1.0]  — right (by abs(bearing/pi))
 """
 
-from __future__ import annotations
-
+from dataclasses import asdict, dataclass, field
 import logging
 import math
+import threading
 import time
 from collections import deque
-from typing import Optional
+from typing import Any, Dict, Optional, Union
 
 import numpy as np
 
@@ -72,6 +72,43 @@ _DEFAULT_HORIZON_S = 5.0
 _LEFT_BOUNDARY = -math.pi / 6   # -30 degrees
 _RIGHT_BOUNDARY = math.pi / 6   #  30 degrees
 
+
+@dataclass(frozen=True)
+class RiskEngineConfig:
+    """Immutable configuration snapshot for M08 RiskEngine.
+    
+    Provides thread-safe atomic updates without lock contention in the hot loop.
+    """
+    weight_ttc: float = _DEFAULT_WEIGHT_TTC
+    weight_miss_distance: float = _DEFAULT_WEIGHT_MISS_DISTANCE
+    weight_intersection_confidence: float = _DEFAULT_WEIGHT_INTERSECTION_CONF
+    state_thresholds: Dict[str, float] = field(default_factory=lambda: dict(_DEFAULT_THRESHOLDS))
+    hysteresis_frames_up: int = _DEFAULT_HYSTERESIS_UP
+    hysteresis_frames_down: int = _DEFAULT_HYSTERESIS_DOWN
+    degraded_confidence_threshold: float = _DEFAULT_DEGRADED_CONF_THRESHOLD
+    horizon_s: float = _DEFAULT_HORIZON_S
+
+    def to_dict(self) -> Dict[str, Any]:
+        return asdict(self)
+
+    @classmethod
+    def from_dict(cls, data: Dict[str, Any]) -> RiskEngineConfig:
+        thresholds = data.get("state_thresholds")
+        if thresholds is not None and not isinstance(thresholds, dict):
+            raise ValueError("state_thresholds must be a dictionary")
+        thresh_dict = dict(thresholds) if thresholds else dict(_DEFAULT_THRESHOLDS)
+        return cls(
+            weight_ttc=float(data.get("weight_ttc", _DEFAULT_WEIGHT_TTC)),
+            weight_miss_distance=float(data.get("weight_miss_distance", _DEFAULT_WEIGHT_MISS_DISTANCE)),
+            weight_intersection_confidence=float(data.get("weight_intersection_confidence", _DEFAULT_WEIGHT_INTERSECTION_CONF)),
+            state_thresholds=thresh_dict,
+            hysteresis_frames_up=int(data.get("hysteresis_frames_up", _DEFAULT_HYSTERESIS_UP)),
+            hysteresis_frames_down=int(data.get("hysteresis_frames_down", _DEFAULT_HYSTERESIS_DOWN)),
+            degraded_confidence_threshold=float(data.get("degraded_confidence_threshold", _DEFAULT_DEGRADED_CONF_THRESHOLD)),
+            horizon_s=float(data.get("horizon_s", _DEFAULT_HORIZON_S)),
+        )
+
+
 class RiskEngine:
     """Aggregates Predictions into a stable, explainable RiskState.
 
@@ -91,14 +128,19 @@ class RiskEngine:
         degraded_confidence_threshold: float = _DEFAULT_DEGRADED_CONF_THRESHOLD,
         horizon_s: float = _DEFAULT_HORIZON_S,
     ):
-        self.w_ttc = weight_ttc
-        self.w_miss = weight_miss_distance
-        self.w_int_conf = weight_intersection_confidence
-        self.thresholds = state_thresholds or dict(_DEFAULT_THRESHOLDS)
-        self.hyst_up = hysteresis_frames_up
-        self.hyst_down = hysteresis_frames_down
-        self.degraded_conf_threshold = degraded_confidence_threshold
-        self.horizon_s = horizon_s
+        initial_cfg = RiskEngineConfig(
+            weight_ttc=weight_ttc,
+            weight_miss_distance=weight_miss_distance,
+            weight_intersection_confidence=weight_intersection_confidence,
+            state_thresholds=dict(state_thresholds) if state_thresholds else dict(_DEFAULT_THRESHOLDS),
+            hysteresis_frames_up=hysteresis_frames_up,
+            hysteresis_frames_down=hysteresis_frames_down,
+            degraded_confidence_threshold=degraded_confidence_threshold,
+            horizon_s=horizon_s,
+        )
+        self.validate_config(initial_cfg)
+        self._config = initial_cfg
+        self._config_lock = threading.Lock()
 
         # State machine
         self._current_state = "SAFE"
@@ -110,6 +152,94 @@ class RiskEngine:
 
         # Previous state for transition logging
         self._prev_state = "SAFE"
+
+    # Properties mirroring config for backwards compatibility
+    @property
+    def config(self) -> RiskEngineConfig:
+        with self._config_lock:
+            return self._config
+
+    @property
+    def w_ttc(self) -> float:
+        return self._config.weight_ttc
+
+    @property
+    def w_miss(self) -> float:
+        return self._config.weight_miss_distance
+
+    @property
+    def w_int_conf(self) -> float:
+        return self._config.weight_intersection_confidence
+
+    @property
+    def thresholds(self) -> dict[str, float]:
+        return self._config.state_thresholds
+
+    @property
+    def hyst_up(self) -> int:
+        return self._config.hysteresis_frames_up
+
+    @property
+    def hyst_down(self) -> int:
+        return self._config.hysteresis_frames_down
+
+    @property
+    def degraded_conf_threshold(self) -> float:
+        return self._config.degraded_confidence_threshold
+
+    @property
+    def horizon_s(self) -> float:
+        return self._config.horizon_s
+
+    @staticmethod
+    def validate_config(cfg: Union[RiskEngineConfig, dict]) -> None:
+        """Validates configuration parameters, raising ValueError on invalid values."""
+        if isinstance(cfg, dict):
+            cfg = RiskEngineConfig.from_dict(cfg)
+
+        for name, val in [
+            ("weight_ttc", cfg.weight_ttc),
+            ("weight_miss_distance", cfg.weight_miss_distance),
+            ("weight_intersection_confidence", cfg.weight_intersection_confidence),
+        ]:
+            if not (0.0 <= val <= 1.0):
+                raise ValueError(f"{name} must be in [0.0, 1.0], got {val}")
+
+        w_sum = cfg.weight_ttc + cfg.weight_miss_distance + cfg.weight_intersection_confidence
+        if w_sum > 1.05:
+            raise ValueError(f"Sum of weights must be <= 1.0 (got {w_sum:.3f})")
+
+        th = cfg.state_thresholds
+        for level in ("caution", "warning", "critical"):
+            if level not in th:
+                raise ValueError(f"state_thresholds missing required key '{level}'")
+            if not (0.0 < th[level] <= 1.0):
+                raise ValueError(f"Threshold '{level}' must be in (0.0, 1.0], got {th[level]}")
+
+        if not (th["caution"] < th["warning"] < th["critical"]):
+            raise ValueError(
+                f"State thresholds must be strictly ascending caution < warning < critical "
+                f"(got caution={th['caution']}, warning={th['warning']}, critical={th['critical']})"
+            )
+
+        if cfg.hysteresis_frames_up < 1:
+            raise ValueError(f"hysteresis_frames_up must be >= 1, got {cfg.hysteresis_frames_up}")
+        if cfg.hysteresis_frames_down < 1:
+            raise ValueError(f"hysteresis_frames_down must be >= 1, got {cfg.hysteresis_frames_down}")
+        if not (0.0 < cfg.degraded_confidence_threshold <= 1.0):
+            raise ValueError(f"degraded_confidence_threshold must be in (0.0, 1.0], got {cfg.degraded_confidence_threshold}")
+        if cfg.horizon_s <= 0.0:
+            raise ValueError(f"horizon_s must be > 0.0, got {cfg.horizon_s}")
+
+    def update_config(self, new_cfg: Union[RiskEngineConfig, dict]) -> RiskEngineConfig:
+        """Thread-safe configuration update via atomic reference swap."""
+        if isinstance(new_cfg, dict):
+            new_cfg = RiskEngineConfig.from_dict(new_cfg)
+        self.validate_config(new_cfg)
+        with self._config_lock:
+            self._config = new_cfg
+        logger.info(f"[M08] Live configuration updated: {new_cfg}")
+        return new_cfg
 
     def update(
         self,
@@ -130,11 +260,14 @@ class RiskEngine:
         """
         ts = timestamp if timestamp is not None else time.monotonic()
 
+        # Atomic config snapshot for the entire update() execution — zero torn reads
+        cfg = self._config
+
         # --- DEGRADED check ---
         # If no predictions, or all predictions have very low confidence,
         # or upstream is in fallback mode and confidence is borderline, → DEGRADED.
         system_confidence = self._compute_system_confidence(predictions, fallback_active)
-        if system_confidence < self.degraded_conf_threshold:
+        if system_confidence < cfg.degraded_confidence_threshold:
             state = self._apply_degraded()
             corridor_risks = {"left": 0.0, "center": 0.0, "right": 0.0}
             reason_codes = [f"degraded:conf={system_confidence:.3f}"]
@@ -148,13 +281,13 @@ class RiskEngine:
                 reason_codes=reason_codes,
                 corridor_risks=corridor_risks,
                 confidence=system_confidence,
-                recommended_horizon_s=self.horizon_s,
+                recommended_horizon_s=cfg.horizon_s,
             )
 
         # --- Per-object risk scores ---
         object_risks = {}   # track_id -> (risk_score, reason_parts)
         for pred in predictions:
-            risk, parts = self._object_risk(pred)
+            risk, parts = self._object_risk(pred, cfg=cfg)
             object_risks[pred.track_id] = (risk, parts)
 
         # --- Global risk = max of individual risks (most dangerous object drives state) ---
@@ -168,7 +301,7 @@ class RiskEngine:
             # Collect reason codes from objects above a "notable" threshold
             reason_codes = []
             for tid, (risk, parts) in object_risks.items():
-                if risk > self.thresholds["caution"] * 0.5:  # include anything meaningfully above baseline
+                if risk > cfg.state_thresholds["caution"] * 0.5:  # include anything meaningfully above baseline
                     for p in parts:
                         reason_codes.append(f"{p}:track_{tid}")
 
@@ -178,8 +311,8 @@ class RiskEngine:
         corridor_risks = self._compute_corridor_risks(predictions, object_risks)
 
         # --- State machine with hysteresis ---
-        raw_state = self._raw_state_for_risk(global_risk)
-        state = self._apply_hysteresis(raw_state, global_risk)
+        raw_state = self._raw_state_for_risk(global_risk, cfg=cfg)
+        state = self._apply_hysteresis(raw_state, global_risk, cfg=cfg)
         self._log_transition(state)
 
         return RiskState(
@@ -189,14 +322,14 @@ class RiskEngine:
             reason_codes=reason_codes,
             corridor_risks=corridor_risks,
             confidence=float(system_confidence),
-            recommended_horizon_s=self.horizon_s,
+            recommended_horizon_s=cfg.horizon_s,
         )
 
     # ------------------------------------------------------------------
     # Risk computation
     # ------------------------------------------------------------------
 
-    def _object_risk(self, pred: Prediction) -> tuple[float, list[str]]:
+    def _object_risk(self, pred: Prediction, cfg: Optional[RiskEngineConfig] = None) -> tuple[float, list[str]]:
         """Compute a 0..1 risk score for one Prediction, with reason codes.
 
         Components (each individually explainable):
@@ -204,8 +337,9 @@ class RiskEngine:
           - Miss distance:      higher when CPA distance is smaller.
           - Intersection×conf:  higher when paths cross AND prediction is confident.
 
-        These are the three weighted terms. Weights come from config.
+        These are the three weighted terms. Weights come from config snapshot.
         """
+        c = cfg or self._config
         reasons: list[str] = []
         risk = 0.0
 
@@ -215,7 +349,7 @@ class RiskEngine:
         ttc_score = 0.0
         if pred.ttc_s is not None:
             # Normalize TTC: 0s → score 1.0, horizon_s → score 0.0
-            ttc_score = float(np.clip(1.0 - pred.ttc_s / self.horizon_s, 0.0, 1.0))
+            ttc_score = float(np.clip(1.0 - pred.ttc_s / c.horizon_s, 0.0, 1.0))
             if ttc_score > 0.3:
                 reasons.append(f"ttc_low:{pred.ttc_s:.2f}s")
 
@@ -238,9 +372,9 @@ class RiskEngine:
 
         # --- Weighted sum ---
         risk = (
-            self.w_ttc * ttc_score
-            + self.w_miss * miss_score
-            + self.w_int_conf * int_conf_score
+            c.weight_ttc * ttc_score
+            + c.weight_miss_distance * miss_score
+            + c.weight_intersection_confidence * int_conf_score
         )
         risk = float(np.clip(risk, 0.0, 1.0))
 
@@ -300,18 +434,19 @@ class RiskEngine:
     # State machine with hysteresis
     # ------------------------------------------------------------------
 
-    def _raw_state_for_risk(self, risk: float) -> str:
+    def _raw_state_for_risk(self, risk: float, cfg: Optional[RiskEngineConfig] = None) -> str:
         """Map risk score to state string without hysteresis."""
-        if risk >= self.thresholds["critical"]:
+        c = cfg or self._config
+        if risk >= c.state_thresholds["critical"]:
             return "CRITICAL"
-        elif risk >= self.thresholds["warning"]:
+        elif risk >= c.state_thresholds["warning"]:
             return "WARNING"
-        elif risk >= self.thresholds["caution"]:
+        elif risk >= c.state_thresholds["caution"]:
             return "CAUTION"
         else:
             return "SAFE"
 
-    def _apply_hysteresis(self, raw_state: str, risk: float) -> str:
+    def _apply_hysteresis(self, raw_state: str, risk: float, cfg: Optional[RiskEngineConfig] = None) -> str:
         """Apply hysteresis: require sustained state before transitioning.
 
         Escalation:   need hyst_up consecutive frames above the NEXT level's threshold.
@@ -321,11 +456,12 @@ class RiskEngine:
         in a single frame (it must go SAFE→CAUTION→WARNING→CRITICAL over at least
         hyst_up * 2 frames).
         """
+        c = cfg or self._config
         state_order = ["SAFE", "CAUTION", "WARNING", "CRITICAL"]
         level_to_threshold = {
-            "CAUTION": self.thresholds["caution"],
-            "WARNING": self.thresholds["warning"],
-            "CRITICAL": self.thresholds["critical"],
+            "CAUTION": c.state_thresholds["caution"],
+            "WARNING": c.state_thresholds["warning"],
+            "CRITICAL": c.state_thresholds["critical"],
         }
 
         current_idx = state_order.index(self._current_state) if self._current_state in state_order else 0
@@ -339,7 +475,7 @@ class RiskEngine:
             else:
                 self._frames_above[next_state] = 0
 
-            if self._frames_above.get(next_state, 0) >= self.hyst_up:
+            if self._frames_above.get(next_state, 0) >= c.hysteresis_frames_up:
                 # Escalate one level
                 self._current_state = next_state
                 self._frames_above[next_state] = 0   # reset after transition
@@ -354,7 +490,7 @@ class RiskEngine:
             else:
                 self._frames_below[current_state_name] = 0
 
-            if self._frames_below.get(current_state_name, 0) >= self.hyst_down:
+            if self._frames_below.get(current_state_name, 0) >= c.hysteresis_frames_down:
                 # De-escalate one level
                 self._current_state = state_order[current_idx - 1]
                 self._frames_below[current_state_name] = 0   # reset after transition

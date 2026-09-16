@@ -156,3 +156,146 @@ class SessionLogger:
                 except queue.Empty:
                     break
             f.flush()
+
+
+def list_sessions(base_dir: Union[str, Path] = "sessions") -> list[dict]:
+    """Lists all available recorded sessions with metadata."""
+    base = Path(base_dir)
+    if not base.exists():
+        return []
+
+    sessions = []
+    for item in base.iterdir():
+        if item.is_dir():
+            jsonl_file = item / "session.jsonl"
+            if jsonl_file.exists():
+                size = jsonl_file.stat().st_size
+                created = jsonl_file.stat().st_mtime
+                header = {}
+                try:
+                    with open(jsonl_file, "r", encoding="utf-8") as f:
+                        first_line = f.readline()
+                        if first_line:
+                            header = json.loads(first_line)
+                except Exception:
+                    pass
+
+                sessions.append({
+                    "session_id": item.name,
+                    "file_path": str(jsonl_file),
+                    "size_bytes": size,
+                    "modified_time": created,
+                    "schema_version": header.get("schema_version", SCHEMA_VERSION),
+                    "created_at": header.get("created_at"),
+                })
+
+    sessions.sort(key=lambda s: s["modified_time"], reverse=True)
+    return sessions
+
+
+def export_session_json(session_id: str, base_dir: Union[str, Path] = "sessions") -> list[dict]:
+    """Reads a complete session JSONL file and returns it as a list of dictionaries."""
+    session_file = Path(base_dir) / session_id / "session.jsonl"
+    if not session_file.exists():
+        raise FileNotFoundError(f"Session '{session_id}' not found at {session_file}")
+
+    records = []
+    with open(session_file, "r", encoding="utf-8") as f:
+        for line in f:
+            line = line.strip()
+            if line:
+                records.append(json.loads(line))
+    return records
+
+
+def export_session_csv(session_id: str, base_dir: Union[str, Path] = "sessions") -> str:
+    """Exports session timeline records into flattened CSV format.
+
+    Flattening Decisions (Explicitly Documented):
+    ---------------------------------------------
+    1. Base columns: 'ts', 'frame_id', 'record_type'.
+    2. 'risk' records flattened:
+       - 'state': string (e.g. SAFE, CAUTION, WARNING, CRITICAL, DEGRADED)
+       - 'global_risk': float (0..1)
+       - 'corridor_left', 'corridor_center', 'corridor_right': individual float columns
+       - 'confidence': float (0..1)
+       - 'reason_codes': semicolon-delimited string
+    3. 'haptic' records flattened:
+       - 'direction': string (LEFT, CENTER, RIGHT, STOP)
+       - 'urgency': integer (1..5)
+       - 'pattern_id': string (e.g. LEFT_FAST, ALL_CLEAR)
+       - 'duration_ms': integer
+    4. 'predictions' records flattened:
+       - 'num_predictions': integer
+       - 'min_ttc_s': float or empty
+       - 'any_intersection': boolean
+    """
+    import csv
+    import io
+
+    records = export_session_json(session_id, base_dir=base_dir)
+    output = io.StringIO()
+    writer = csv.writer(output)
+
+    headers = [
+        "ts",
+        "frame_id",
+        "record_type",
+        "state",
+        "global_risk",
+        "corridor_left",
+        "corridor_center",
+        "corridor_right",
+        "confidence",
+        "reason_codes",
+        "haptic_direction",
+        "haptic_urgency",
+        "haptic_pattern_id",
+        "haptic_duration_ms",
+        "num_predictions",
+        "min_ttc_s",
+        "any_intersection",
+    ]
+    writer.writerow(headers)
+
+    for rec in records:
+        rtype = rec.get("record_type")
+        if rtype == "header":
+            continue
+
+        ts = rec.get("ts", 0.0)
+        fid = rec.get("frame_id", 0)
+        payload = rec.get("payload", {})
+
+        row = {h: "" for h in headers}
+        row["ts"] = f"{ts:.4f}"
+        row["frame_id"] = str(fid)
+        row["record_type"] = str(rtype)
+
+        if rtype == "risk":
+            row["state"] = payload.get("state", "")
+            row["global_risk"] = f"{payload.get('global_risk', 0.0):.3f}"
+            c_risks = payload.get("corridor_risks", {})
+            row["corridor_left"] = f"{c_risks.get('left', 0.0):.3f}"
+            row["corridor_center"] = f"{c_risks.get('center', 0.0):.3f}"
+            row["corridor_right"] = f"{c_risks.get('right', 0.0):.3f}"
+            row["confidence"] = f"{payload.get('confidence', 0.0):.3f}"
+            reasons = payload.get("reason_codes", [])
+            row["reason_codes"] = ";".join(reasons) if isinstance(reasons, list) else str(reasons)
+
+        elif rtype == "haptic":
+            row["haptic_direction"] = payload.get("direction", "")
+            row["haptic_urgency"] = str(payload.get("urgency", 1))
+            row["haptic_pattern_id"] = payload.get("pattern_id", "")
+            row["haptic_duration_ms"] = str(payload.get("duration_ms", 0))
+
+        elif rtype == "predictions":
+            preds = payload if isinstance(payload, list) else []
+            row["num_predictions"] = str(len(preds))
+            ttcs = [p.get("ttc_s") for p in preds if p.get("ttc_s") is not None]
+            row["min_ttc_s"] = f"{min(ttcs):.2f}" if ttcs else ""
+            row["any_intersection"] = str(any(p.get("intersection_flag", False) for p in preds))
+
+        writer.writerow([row[h] for h in headers])
+
+    return output.getvalue()

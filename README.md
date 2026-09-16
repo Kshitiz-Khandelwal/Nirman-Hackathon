@@ -383,6 +383,36 @@ http://<laptop-ip>:8080/
 - **Risk Explanation**: Shows human-readable `reason_codes` (e.g. `ttc_low:1.8s`, `intersection:track_4`).
 - **Client-Side Staleness Watchdog (Section 0)**: The dashboard autonomously monitors update timestamps. If no telemetry message is received within **1.5 seconds**, the phone independently trips into a flashing `DISCONNECTED / PIPELINE STALLED` alert, ensuring observers never mistake a frozen pipeline for a clear scene.
 
+### 2.5 Simplified 3-Tab Alternate Dashboard (`/app_simple/`)
+For sighted companions and mobile users desiring a streamlined, high-legibility experience, SpatialVector-HMI provides a modern **3-Tab Alternate UI** available alongside the legacy judge/developer dashboard:
+- **Alternate Dashboard URL**: `http://<laptop-ip>:8081/app_simple/`
+- **Legacy Dev / Judge Demo URL**: `http://<laptop-ip>:8081/` (remains 100% untouched and functional)
+
+#### Architectural Layout:
+1. **Home Tab (Live Navigation)**:
+   - High-contrast risk status banner with direction cue (`SAFE`, `CAUTION`, `WARNING`, `CRITICAL`, `DEGRADED`).
+   - Live camera view with auto-scaled canvas bounding box overlay and ground-plane corridor perspective.
+   - Backend-derived directional guidance (*"{Direction} side is safer"*).
+   - Expandable **Quick Details** panel showing primary track kinematics (TTC, CPA, Intersection YES/NO, relative bearing).
+   - Nearby objects detector and recent guidance history.
+2. **Haptics Tab**:
+   - 3-motor tactile vest graphic with active vibration ripples (Left, Center, Right).
+   - Current commanded pattern ID, tactile direction, and calibrated urgency on a **1–5 scale** (per `corridor_policy.py`).
+   - Device connection telemetry and haptic language reference guide.
+   - Haptic Calibration note (see Section 7 resolution below).
+3. **Settings Tab**:
+   - **Social Assist**: Relocated sandbox directory with zero impact on collision risk.
+   - **Display & Audio**: Display customization active; audio controls visible with honest *"Coming Soon"* badges (no audio backend currently exists).
+   - **Safety Preferences (Live M08/M09 Thresholds)**: Interactive sliders adjusting live collision weights and state thresholds with concurrency-safe atomic swap in `RiskEngine`.
+   - **Privacy & Data Governance**: Honestly labeled edge-enforcement toggles.
+   - **Advanced Diagnostics**: Expandable accordion linking to relocated *Prediction Inspector*, *Test & Replay (S1–S6)*, *System Hardware Health*, and *Session Logs & Export*.
+
+#### Resolution of Section 7 Open Items:
+1. **Haptic Calibration**: There is currently no per-user haptic gain calibration in M09/M10 firmware. Rather than fabricating a non-functional slider, the UI clearly displays the fixed **ISO-9241 baseline profile (1.0x gain)** and honestly labels custom sensitivity tuning as *"Coming in v2.0 firmware"*.
+2. **Privacy & Data Toggles**: Honestly labeled based on backend reality: Local Edge Processing is locked **ON (ENFORCED)**, Cloud Sync is locked **OFF (DISABLED)**, and Social Assist is **ISOLATED** in a privacy sandbox.
+3. **Threshold Persistence**: Live threshold adjustments made via sliders take effect immediately in runtime memory via thread-safe atomic swap (`POST /api/settings/risk-thresholds`). Changes are **session-only by default** to avoid unexpected config drift, with an explicit **"Save as Default"** button that persists values to `config/default.yaml`.
+
+
 ### 3. Proving M11 Removability (Safety Independence)
 Run the pipeline with `--no-telemetry`:
 ```bash

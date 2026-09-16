@@ -19,7 +19,7 @@ import threading
 import time
 from typing import Dict, List, Optional, Set
 
-from fastapi import FastAPI, WebSocket, WebSocketDisconnect
+from fastapi import FastAPI, HTTPException, Response, WebSocket, WebSocketDisconnect
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 import uvicorn
@@ -58,8 +58,13 @@ class TelemetryServer:
         self._uvicorn_server: Optional[uvicorn.Server] = None
         self._stop_event = threading.Event()
         self._latest_message: Optional[dict] = None
+        self._risk_engine: Optional[Any] = None
 
         self._setup_routes()
+
+    def set_risk_engine(self, engine: Any) -> None:
+        """Wires live M08 RiskEngine to telemetry server for runtime configuration."""
+        self._risk_engine = engine
 
     def _setup_routes(self):
         @self.app.get("/api/health")
@@ -95,6 +100,82 @@ class TelemetryServer:
             except Exception as e:
                 return {"status": "ERROR", "error": str(e)}
 
+        @self.app.get("/api/settings/risk-thresholds")
+        async def get_risk_thresholds():
+            """Returns active risk engine weights and state thresholds."""
+            if self._risk_engine is not None:
+                return {
+                    "status": "OK",
+                    "config": self._risk_engine.config.to_dict(),
+                    "source": "live_engine",
+                }
+            from spatialvector.decision.risk_engine import RiskEngineConfig
+            return {
+                "status": "OK",
+                "config": RiskEngineConfig().to_dict(),
+                "source": "defaults",
+            }
+
+        @self.app.post("/api/settings/risk-thresholds")
+        async def set_risk_thresholds(payload: dict):
+            """Updates active risk engine weights and thresholds with validation."""
+            from spatialvector.decision.risk_engine import RiskEngine, RiskEngineConfig
+            try:
+                cfg = RiskEngineConfig.from_dict(payload)
+                RiskEngine.validate_config(cfg)
+
+                if self._risk_engine is not None:
+                    self._risk_engine.update_config(cfg)
+
+                persisted = False
+                if payload.get("persist", False):
+                    self._persist_risk_config_to_yaml(cfg)
+                    persisted = True
+
+                return {
+                    "status": "OK",
+                    "config": cfg.to_dict(),
+                    "persisted": persisted,
+                    "message": "Risk thresholds updated successfully." + (" Persisted to default.yaml." if persisted else " (Session only)"),
+                }
+            except ValueError as ve:
+                raise HTTPException(status_code=400, detail=str(ve))
+            except Exception as exc:
+                raise HTTPException(status_code=500, detail=f"Failed to update thresholds: {exc}")
+
+        @self.app.get("/api/sessions")
+        async def get_sessions():
+            """Lists all recorded sessions with sizes and timestamps."""
+            try:
+                from spatialvector.hmi.logger import list_sessions
+                return {"status": "OK", "sessions": list_sessions()}
+            except Exception as e:
+                return {"status": "ERROR", "error": str(e), "sessions": []}
+
+        @self.app.get("/api/sessions/{session_id}/export")
+        async def export_session(session_id: str, format: str = "json"):
+            """Exports a recorded session as JSON or flattened CSV."""
+            from spatialvector.hmi.logger import export_session_csv, export_session_json
+            fmt = format.lower().strip()
+            try:
+                if fmt == "csv":
+                    csv_data = export_session_csv(session_id)
+                    return Response(
+                        content=csv_data,
+                        media_type="text/csv",
+                        headers={"Content-Disposition": f'attachment; filename="{session_id}.csv"'},
+                    )
+                else:
+                    json_data = export_session_json(session_id)
+                    return Response(
+                        content=json.dumps(json_data, indent=2),
+                        media_type="application/json",
+                        headers={"Content-Disposition": f'attachment; filename="{session_id}.json"'},
+                    )
+            except FileNotFoundError:
+                raise HTTPException(status_code=404, detail=f"Session '{session_id}' not found.")
+            except Exception as e:
+                raise HTTPException(status_code=500, detail=f"Export failed: {e}")
 
         @self.app.websocket("/ws/telemetry")
         async def websocket_endpoint(websocket: WebSocket):
@@ -126,10 +207,37 @@ class TelemetryServer:
                     self._active_connections.discard(websocket)
                 logger.info(f"[M11] WebSocket client disconnected. Remaining: {len(self._active_connections)}")
 
-        # Mount web dashboard if it exists
-        dashboard_dir = Path(__file__).resolve().parent.parent.parent / "web" / "dashboard"
+        # Mount web static directories
+        repo_root = Path(__file__).resolve().parent.parent.parent
+        shared_dir = repo_root / "web" / "shared"
+        app_simple_dir = repo_root / "web" / "app_simple"
+        dashboard_dir = repo_root / "web" / "dashboard"
+
+        if shared_dir.exists():
+            self.app.mount("/shared", StaticFiles(directory=str(shared_dir)), name="shared")
+        if app_simple_dir.exists():
+            self.app.mount("/app_simple", StaticFiles(directory=str(app_simple_dir), html=True), name="app_simple")
         if dashboard_dir.exists():
             self.app.mount("/", StaticFiles(directory=str(dashboard_dir), html=True), name="dashboard")
+
+    def _persist_risk_config_to_yaml(self, cfg: Any) -> None:
+        """Persists updated RiskEngineConfig back to spatialvector/config/default.yaml."""
+        import yaml
+        yaml_path = Path(__file__).resolve().parent.parent / "config" / "default.yaml"
+        if yaml_path.exists():
+            with open(yaml_path, "r", encoding="utf-8") as f:
+                data = yaml.safe_load(f) or {}
+            if "risk_engine" not in data:
+                data["risk_engine"] = {}
+            data["risk_engine"]["weight_ttc"] = cfg.weight_ttc
+            data["risk_engine"]["weight_miss_distance"] = cfg.weight_miss_distance
+            data["risk_engine"]["weight_intersection_confidence"] = cfg.weight_intersection_confidence
+            data["risk_engine"]["state_thresholds"] = dict(cfg.state_thresholds)
+            data["risk_engine"]["hysteresis_frames_up"] = cfg.hysteresis_frames_up
+            data["risk_engine"]["hysteresis_frames_down"] = cfg.hysteresis_frames_down
+            data["risk_engine"]["degraded_confidence_threshold"] = cfg.degraded_confidence_threshold
+            with open(yaml_path, "w", encoding="utf-8") as f:
+                yaml.dump(data, f, sort_keys=False)
 
     def start(self):
         """Starts uvicorn server in a daemon background thread."""
