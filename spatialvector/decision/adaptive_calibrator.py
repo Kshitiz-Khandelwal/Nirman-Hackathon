@@ -80,6 +80,14 @@ class SelfAdaptingLoomingCalibrator:
     def current_threshold(self) -> float:
         return self._adaptive_threshold
 
+    @property
+    def noise_floor(self) -> float:
+        return self._mean_floor
+
+    @property
+    def noise_std(self) -> float:
+        return self._std_floor
+
     def get_status(self) -> Dict[str, float]:
         return {
             "noise_mean": float(self._mean_floor),

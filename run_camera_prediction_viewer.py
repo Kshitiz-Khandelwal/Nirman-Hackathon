@@ -689,8 +689,8 @@ class PredictionViewer:
             fq = getattr(motion, 'flow_quality', 0.0)
             foe_c = getattr(motion, 'foe_confidence', 0.0)
             calib = getattr(self.predictor, "calibrator", None)
-            l_thresh = calib.current_threshold if calib else 0.05
-            n_floor = calib.noise_floor if calib else 0.02
+            l_thresh = getattr(calib, "current_threshold", 0.05) if calib else 0.05
+            n_floor = getattr(calib, "noise_floor", getattr(calib, "_mean_floor", 0.02)) if calib else 0.02
             max_exp = max([getattr(p, "expansion_rate", 0.0) for p in predictions], default=0.0)
             max_prox = max([getattr(p, "proximity_risk", 0.0) for p in predictions], default=0.0)
 
