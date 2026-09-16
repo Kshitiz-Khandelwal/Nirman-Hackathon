@@ -55,6 +55,8 @@ from spatialvector.motion.schemas import ObjectGeometry
 from spatialvector.perception.schemas import Track
 from spatialvector.decision.schemas import Prediction
 from spatialvector.decision.adaptive_calibrator import SelfAdaptingLoomingCalibrator
+from spatialvector.decision.corridor_constants import CORRIDOR_CENTER_BEARING_RAD
+from spatialvector.motion.temporal_smoother import AdaptiveEMA
 
 logger = logging.getLogger(__name__)
 
@@ -66,6 +68,16 @@ _REL_VEL_EPSILON = 1e-6
 _DEFAULT_HORIZON_S = 5.0
 _DEFAULT_CONTACT_THRESHOLD_NORM = 0.05
 _DEFAULT_CORRIDOR_WIDTH_NORM = 0.12
+
+# Direct static proximity hazard defaults — aligned with default.yaml & corridor boundaries
+_DEFAULT_PROXIMITY_CENTER_BEARING_RAD = CORRIDOR_CENTER_BEARING_RAD
+_DEFAULT_PROXIMITY_CENTER_SCALE_THRESHOLD = 0.22
+_DEFAULT_PROXIMITY_CENTER_SCALE_RANGE = 0.45
+_DEFAULT_PROXIMITY_CENTER_SCALE_FLOOR = 0.17
+_DEFAULT_PROXIMITY_OFFCENTER_SCALE_THRESHOLD = 0.38
+_DEFAULT_PROXIMITY_OFFCENTER_SCALE_RANGE = 0.45
+_DEFAULT_PROXIMITY_OFFCENTER_SCALE_FLOOR = 0.28
+_DEFAULT_PROXIMITY_OFFCENTER_CAP = 0.80
 
 # Assumed frame rate for converting velocity units to time.
 # ObjectGeometry uses normalized-per-second units (vx/W, vy/H per second).
@@ -89,20 +101,49 @@ class CollisionPredictor:
         horizon_s: float = _DEFAULT_HORIZON_S,
         contact_threshold_normalized: float = _DEFAULT_CONTACT_THRESHOLD_NORM,
         corridor_width_normalized: float = _DEFAULT_CORRIDOR_WIDTH_NORM,
+        proximity_center_bearing_rad: float = _DEFAULT_PROXIMITY_CENTER_BEARING_RAD,
+        proximity_center_scale_threshold: float = _DEFAULT_PROXIMITY_CENTER_SCALE_THRESHOLD,
+        proximity_center_scale_range: float = _DEFAULT_PROXIMITY_CENTER_SCALE_RANGE,
+        proximity_center_scale_floor: float = _DEFAULT_PROXIMITY_CENTER_SCALE_FLOOR,
+        proximity_offcenter_scale_threshold: float = _DEFAULT_PROXIMITY_OFFCENTER_SCALE_THRESHOLD,
+        proximity_offcenter_scale_range: float = _DEFAULT_PROXIMITY_OFFCENTER_SCALE_RANGE,
+        proximity_offcenter_scale_floor: float = _DEFAULT_PROXIMITY_OFFCENTER_SCALE_FLOOR,
+        proximity_offcenter_cap: float = _DEFAULT_PROXIMITY_OFFCENTER_CAP,
     ):
         """
         Args:
             horizon_s: finite TTC horizon. Beyond this, treat as no near-term concern.
-                       Configured value: 5.0 seconds.
             contact_threshold_normalized: "collision" distance in normalized units.
-                       Configured value: 0.05 (5% of frame width).
             corridor_width_normalized: corridor half-width for intersection_flag.
-                       Configured value: 0.12 (12% of frame width).
+            proximity_center_bearing_rad: corridor boundary angle in radians (pi/6 matches M08).
+            proximity_center_scale_threshold: minimum bbox scale to trigger center proximity risk.
+            proximity_center_scale_range: scaling denominator for center proximity risk.
+            proximity_center_scale_floor: floor subtracted from scale before dividing by range.
+            proximity_offcenter_scale_threshold: minimum bbox scale for off-center close objects.
+            proximity_offcenter_scale_range: scaling denominator for off-center proximity risk.
+            proximity_offcenter_scale_floor: floor subtracted for off-center obstacles.
+            proximity_offcenter_cap: max proximity risk for off-center obstacles.
         """
-        self.horizon_s = horizon_s
-        self.contact_threshold = contact_threshold_normalized
-        self.corridor_width = corridor_width_normalized
+        self.horizon_s = float(horizon_s)
+        self.contact_threshold = float(contact_threshold_normalized)
+        self.corridor_width = float(corridor_width_normalized)
+        self.proximity_center_bearing_rad = float(proximity_center_bearing_rad)
+        self.proximity_center_scale_threshold = float(proximity_center_scale_threshold)
+        self.proximity_center_scale_range = float(proximity_center_scale_range)
+        self.proximity_center_scale_floor = float(proximity_center_scale_floor)
+        self.proximity_offcenter_scale_threshold = float(proximity_offcenter_scale_threshold)
+        self.proximity_offcenter_scale_range = float(proximity_offcenter_scale_range)
+        self.proximity_offcenter_scale_floor = float(proximity_offcenter_scale_floor)
+        self.proximity_offcenter_cap = float(proximity_offcenter_cap)
+
         self.calibrator = SelfAdaptingLoomingCalibrator()
+        # Per-track smoothers for continuous telemetry (TTC, CPA, miss distance)
+        self._track_smoothers: dict[int, dict[str, AdaptiveEMA]] = {}
+
+    @property
+    def _ttc_smoothers(self) -> dict[int, AdaptiveEMA]:
+        """Expose TTC AdaptiveEMA smoothers by track_id for telemetry & diagnostics."""
+        return {tid: sm["ttc"] for tid, sm in self._track_smoothers.items() if "ttc" in sm}
 
     def predict(
         self,
@@ -176,28 +217,50 @@ class CollisionPredictor:
                 miss_norm = min(miss_norm, abs(obj_x))
                 ttc_s = min(ttc_s, looming_ttc) if ttc_s is not None else looming_ttc
 
-        # --- Direct Static Proximity Hazard ---
+        # --- Direct Static Proximity Hazard (Dead-Zone Free, Aligned with M08 Corridor Boundary) ---
         proximity_risk = 0.0
-        in_center_corridor = abs(bearing) < 0.35  # ~20 degrees
-        if in_center_corridor and proximity_scale > 0.30:
-            # Person or obstacle occupying > 30% of height dead center
-            proximity_risk = float(np.clip((proximity_scale - 0.25) / 0.45, 0.0, 1.0))
-        elif proximity_scale > 0.45:
-            proximity_risk = float(np.clip((proximity_scale - 0.35) / 0.45, 0.0, 0.8))
+        in_center_corridor = abs(bearing) <= self.proximity_center_bearing_rad
+        if in_center_corridor and proximity_scale > self.proximity_center_scale_threshold:
+            # Person or obstacle occupying sufficient height in center corridor
+            proximity_risk = float(np.clip(
+                (proximity_scale - self.proximity_center_scale_floor) / self.proximity_center_scale_range,
+                0.0,
+                1.0,
+            ))
+        elif proximity_scale > self.proximity_offcenter_scale_threshold:
+            proximity_risk = float(np.clip(
+                (proximity_scale - self.proximity_offcenter_scale_floor) / self.proximity_offcenter_scale_range,
+                0.0,
+                self.proximity_offcenter_cap,
+            ))
 
-        if proximity_risk >= 0.50:
-            # Direct path obstruction
+        if proximity_risk >= 0.40:
+            # Direct path obstruction: force intersection and synthetic CPA
             intersection_flag = True
             cpa_norm = min(cpa_norm, 0.05)
             miss_norm = min(miss_norm, 0.05)
             if ttc_s is None or ttc_s > 2.0:
                 ttc_s = float(np.clip(1.2 / max(proximity_scale, 0.1), 0.4, 2.5))
 
+        # --- Smooth Continuous Kinematics (TTC, CPA, miss distance) via AdaptiveEMA ---
+        tid = track.track_id
+        if tid not in self._track_smoothers:
+            self._track_smoothers[tid] = {
+                "ttc": AdaptiveEMA(alpha_slow=0.15, alpha_fast=0.60, window_size=30, rising_is_dangerous=False),
+                "cpa": AdaptiveEMA(alpha_slow=0.15, alpha_fast=0.60, window_size=30, rising_is_dangerous=False),
+                "miss": AdaptiveEMA(alpha_slow=0.15, alpha_fast=0.60, window_size=30, rising_is_dangerous=False),
+            }
+        smoothers = self._track_smoothers[tid]
+        if ttc_s is not None:
+            ttc_s = float(smoothers["ttc"].update(ttc_s))
+        cpa_norm = float(smoothers["cpa"].update(cpa_norm))
+        miss_norm = float(smoothers["miss"].update(miss_norm))
+
         # --- Prediction confidence ---
         pred_conf = self._compute_prediction_confidence(geometry, track)
-        if proximity_risk > 0.3:
+        if proximity_risk > 0.25:
             # Boost confidence for direct proximity hazards
-            pred_conf = max(pred_conf, float(np.clip(proximity_risk * 0.9, 0.4, 1.0)))
+            pred_conf = max(pred_conf, float(np.clip(proximity_risk * 0.95, 0.4, 1.0)))
 
         prediction = Prediction(
             track_id=track.track_id,
@@ -234,6 +297,12 @@ class CollisionPredictor:
         ]
         if exp_rates:
             self.calibrator.update(exp_rates)
+
+        # Evict stale per-track smoothers
+        active_tids = {t.track_id for t in tracks}
+        for tid in list(self._track_smoothers.keys()):
+            if tid not in active_tids:
+                del self._track_smoothers[tid]
 
         track_by_id = {t.track_id: t for t in tracks}
         results = []

@@ -693,6 +693,16 @@ class PredictionViewer:
             n_floor = getattr(calib, "noise_floor", getattr(calib, "_mean_floor", 0.02)) if calib else 0.02
             max_exp = max([getattr(p, "expansion_rate", 0.0) for p in predictions], default=0.0)
             max_prox = max([getattr(p, "proximity_risk", 0.0) for p in predictions], default=0.0)
+            max_proximity_scale = max([getattr(t, "bbox_scale", 0.0) for t in tracks], default=0.0)
+
+            # Adaptive smoother diagnostics
+            tracker_obj = getattr(self, "tracker", None)
+            prox_smoothers = getattr(tracker_obj, "_scale_smoothers", {}) if tracker_obj else {}
+            prox_alpha = next((s.current_alpha for s in prox_smoothers.values()), 0.15) if prox_smoothers else 0.15
+
+            pred_obj = getattr(self, "predictor", None)
+            ttc_smoothers = getattr(pred_obj, "_ttc_smoothers", {}) if pred_obj else {}
+            ttc_alpha = next((s.current_alpha for s in ttc_smoothers.values()), 0.15) if ttc_smoothers else 0.15
 
             if use_sidebars and left_sidebar_rect and right_sidebar_rect:
                 # LEFT SIDEBAR: Motion & Sensors
@@ -713,9 +723,12 @@ class PredictionViewer:
                     f"Ego-Fallback: {motion.fallback_active}",
                     f"Flow Quality: {fq:.2f}",
                     f"FOE Conf: {foe_c:.2f}",
+                    f"Proximity Scale: {max_proximity_scale:.2f}",
                     f"Adapt Thresh: {l_thresh:.2f}/s",
                     f"Noise Floor: {n_floor:.2f}/s",
                     f"Max Expansion: {max_exp:+.2f}/s",
+                    f"Prox Smooth \u03b1: {prox_alpha:.2f}",
+                    f"TTC Smooth \u03b1: {ttc_alpha:.2f}",
                 ]
                 for i, line in enumerate(left_lines):
                     if ly1 + 42 + i * 18 > ly2 - 6:
@@ -734,6 +747,7 @@ class PredictionViewer:
                     f"View Mode: {self.view_mode}",
                     f"State: {risk.state}",
                     f"Global Risk: {risk.global_risk:.2f}",
+                    f"Proximity Scale: {max_proximity_scale:.2f}",
                     f"Proximity Risk: {max_prox:.2f}",
                     f"Confidence: {risk.confidence*100:.0f}%",
                     f"Corridor Left: {l_risk:.2f}",
@@ -751,7 +765,7 @@ class PredictionViewer:
             else:
                 # Floating overlay card when in MAX_VIDEO mode or compact window
                 panel_w = 250
-                panel_h = 175
+                panel_h = 195
                 px1 = target_w - panel_w - 12
                 py1 = top_bar_h + 12
                 px2 = px1 + panel_w
@@ -772,6 +786,7 @@ class PredictionViewer:
                         f"Canvas: {vw}x{vh} (scale: {scale:.2f})",
                         f"Active Tracks: {len(tracks)} | Preds: {len(predictions)}",
                         f"State: {risk.state} (Risk: {risk.global_risk:.2f})",
+                        f"Proximity Scale: {max_proximity_scale:.2f}",
                         f"Proximity Risk: {max_prox:.2f}",
                         f"Adapt Thresh: {l_thresh:.2f}/s",
                         f"Guidance: {cmd.direction} [{cmd.pattern_id}]",

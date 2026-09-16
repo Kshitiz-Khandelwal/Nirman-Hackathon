@@ -5,6 +5,7 @@ from typing import Optional, Union
 import numpy as np
 
 from .schemas import Frame, Detection, Track
+from spatialvector.motion.temporal_smoother import AdaptiveEMA
 
 logger = logging.getLogger(__name__)
 
@@ -43,6 +44,7 @@ class MultiObjectTracker:
         # Internal active track records
         # track_id -> dict with track history, age, last_seen, etc.
         self._tracks: dict[int, dict] = {}
+        self._scale_smoothers: dict[int, AdaptiveEMA] = {}
         self.current_frame_id = 0
         self.status = "OK"
 
@@ -174,11 +176,21 @@ class MultiObjectTracker:
                     t_record["bbox_history"], t_record["timestamps"]
                 )
                 
-                # Fraction of frame height occupied by latest bbox
+                # Fraction of frame height occupied by latest bbox (smoothed via AdaptiveEMA)
                 latest_b = t_record["bbox_history"][-1]
                 b_h = abs(latest_b[3] - latest_b[1])
                 f_h = float(img.shape[0]) if hasattr(img, "shape") else 480.0
-                bbox_scale = float(np.clip(b_h / max(f_h, 1.0), 0.0, 1.0))
+                raw_bbox_scale = float(np.clip(b_h / max(f_h, 1.0), 0.0, 1.0))
+
+                if track_id not in self._scale_smoothers:
+                    self._scale_smoothers[track_id] = AdaptiveEMA(
+                        alpha_slow=0.15,
+                        alpha_fast=0.60,
+                        window_size=30,
+                        rising_is_dangerous=True,
+                        initial_value=raw_bbox_scale,
+                    )
+                bbox_scale = float(self._scale_smoothers[track_id].update(raw_bbox_scale))
 
                 current_tracks.append(
                     Track(
@@ -203,32 +215,49 @@ class MultiObjectTracker:
         ]
         for tid in dead_tracks:
             del self._tracks[tid]
+            self._scale_smoothers.pop(tid, None)
 
         return current_tracks
 
     def _compute_velocity(
         self, centers: list[tuple[float, float]], timestamps: list[float]
     ) -> tuple[float, float]:
-        """Compute finite-difference image velocity in pixels per second."""
-        if len(centers) < 2 or len(timestamps) < 2:
+        """Compute least-squares linear-regression image velocity in pixels per second over history."""
+        n = min(len(centers), len(timestamps))
+        if n < 2:
             return (0.0, 0.0)
 
         dt = timestamps[-1] - timestamps[0]
         if dt <= 1e-6:
             return (0.0, 0.0)
 
-        dx = centers[-1][0] - centers[0][0]
-        dy = centers[-1][1] - centers[0][1]
+        if n == 2:
+            dx = centers[-1][0] - centers[0][0]
+            dy = centers[-1][1] - centers[0][1]
+            return (float(dx / dt), float(dy / dt))
 
-        vx = dx / dt
-        vy = dy / dt
+        # Least-squares fit of x(t) and y(t) across all samples in rolling window
+        t0 = timestamps[0]
+        t_arr = np.array([t - t0 for t in timestamps[:n]], dtype=np.float64)
+        x_arr = np.array([c[0] for c in centers[:n]], dtype=np.float64)
+        y_arr = np.array([c[1] for c in centers[:n]], dtype=np.float64)
+
+        t_mean = np.mean(t_arr)
+        t_diff = t_arr - t_mean
+        denom = np.sum(t_diff * t_diff)
+        if denom <= 1e-12:
+            return (0.0, 0.0)
+
+        vx = np.sum(t_diff * (x_arr - np.mean(x_arr))) / denom
+        vy = np.sum(t_diff * (y_arr - np.mean(y_arr))) / denom
         return (float(vx), float(vy))
 
     def _compute_expansion_rate(
         self, bboxes: list[tuple[float, float, float, float]], timestamps: list[float]
     ) -> float:
-        """Compute relative scale expansion rate (1/sec) from bounding box diagonals."""
-        if len(bboxes) < 2 or len(timestamps) < 2:
+        """Compute relative scale expansion rate (1/sec) using linear regression on diagonals."""
+        n = min(len(bboxes), len(timestamps))
+        if n < 2:
             return 0.0
 
         dt = timestamps[-1] - timestamps[0]
@@ -240,14 +269,29 @@ class MultiObjectTracker:
             h = abs(b[3] - b[1])
             return math.sqrt(w * w + h * h)
 
-        s_init = get_size(bboxes[0])
-        s_final = get_size(bboxes[-1])
-
-        if s_init <= 1.0 or s_final <= 1.0:
+        sizes = [get_size(b) for b in bboxes[:n]]
+        s_final = sizes[-1]
+        if s_final <= 1.0:
             return 0.0
 
-        # Rate of relative scale growth d(s)/dt / s_final
-        rate = (s_final - s_init) / (s_final * dt)
+        if n == 2:
+            rate = (sizes[-1] - sizes[0]) / (s_final * dt)
+            return float(np.clip(rate, -5.0, 5.0))
+
+        # Least-squares fit of diagonal size(t) vs t
+        t0 = timestamps[0]
+        t_arr = np.array([t - t0 for t in timestamps[:n]], dtype=np.float64)
+        s_arr = np.array(sizes, dtype=np.float64)
+
+        t_mean = np.mean(t_arr)
+        t_diff = t_arr - t_mean
+        denom = np.sum(t_diff * t_diff)
+        if denom <= 1e-12:
+            return 0.0
+
+        slope = np.sum(t_diff * (s_arr - np.mean(s_arr))) / denom
+        # Fitted rate relative to current size
+        rate = slope / max(s_final, 1.0)
         return float(np.clip(rate, -5.0, 5.0))
 
     def _detect_potential_id_switch(

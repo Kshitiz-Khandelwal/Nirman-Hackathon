@@ -51,6 +51,8 @@ from typing import Any, Dict, Optional, Union
 import numpy as np
 
 from spatialvector.decision.schemas import Prediction, RiskState
+from spatialvector.decision.corridor_constants import CORRIDOR_CENTER_BEARING_RAD
+from spatialvector.motion.temporal_smoother import AdaptiveEMA
 
 logger = logging.getLogger(__name__)
 
@@ -66,11 +68,10 @@ _DEFAULT_HYSTERESIS_DOWN = 5
 _DEFAULT_DEGRADED_CONF_THRESHOLD = 0.25
 _DEFAULT_HORIZON_S = 5.0
 
-# Corridor bearing boundaries (fraction of abs(bearing) / (pi/2))
-# bearing in M06 ranges roughly -pi/2 to +pi/2
-# We map: left = bearing < -pi/6, center = -pi/6..pi/6, right = bearing > pi/6
-_LEFT_BOUNDARY = -math.pi / 6   # -30 degrees
-_RIGHT_BOUNDARY = math.pi / 6   #  30 degrees
+# Corridor bearing boundaries (radians)
+# We map: left < -CORRIDOR_CENTER_BEARING_RAD, center -CORRIDOR_CENTER_BEARING_RAD..+CORRIDOR_CENTER_BEARING_RAD, right > +CORRIDOR_CENTER_BEARING_RAD
+_LEFT_BOUNDARY = -CORRIDOR_CENTER_BEARING_RAD   # -30 degrees (-0.5236 rad)
+_RIGHT_BOUNDARY = CORRIDOR_CENTER_BEARING_RAD   #  30 degrees ( 0.5236 rad)
 
 
 @dataclass(frozen=True)
@@ -149,6 +150,14 @@ class RiskEngine:
 
         # Recent risk history for trend analysis (used by M09)
         self._risk_history: deque[float] = deque(maxlen=30)
+
+        # Adaptive smoothers for continuous telemetry and hysteresis inputs
+        self._global_risk_smoother = AdaptiveEMA(alpha_slow=0.20, alpha_fast=0.65, window_size=30, rising_is_dangerous=True)
+        self._corridor_smoothers = {
+            "left": AdaptiveEMA(alpha_slow=0.20, alpha_fast=0.65, window_size=30, rising_is_dangerous=True),
+            "center": AdaptiveEMA(alpha_slow=0.20, alpha_fast=0.65, window_size=30, rising_is_dangerous=True),
+            "right": AdaptiveEMA(alpha_slow=0.20, alpha_fast=0.65, window_size=30, rising_is_dangerous=True),
+        }
 
         # Previous state for transition logging
         self._prev_state = "SAFE"
@@ -305,22 +314,29 @@ class RiskEngine:
                     for p in parts:
                         reason_codes.append(f"{p}:track_{tid}")
 
-        self._risk_history.append(global_risk)
-
         # --- Corridor risk ---
         corridor_risks = self._compute_corridor_risks(predictions, object_risks)
 
-        # --- State machine with hysteresis ---
-        raw_state = self._raw_state_for_risk(global_risk, cfg=cfg)
-        state = self._apply_hysteresis(raw_state, global_risk, cfg=cfg)
+        # Smooth continuous risk metrics with AdaptiveEMA
+        smoothed_global_risk = float(self._global_risk_smoother.update(global_risk))
+        smoothed_corridor_risks = {
+            corr: float(self._corridor_smoothers[corr].update(score))
+            for corr, score in corridor_risks.items()
+        }
+
+        self._risk_history.append(smoothed_global_risk)
+
+        # --- State machine with hysteresis on smoothed signal ---
+        raw_state = self._raw_state_for_risk(smoothed_global_risk, cfg=cfg)
+        state = self._apply_hysteresis(raw_state, smoothed_global_risk, cfg=cfg)
         self._log_transition(state)
 
         return RiskState(
             timestamp=ts,
-            global_risk=float(global_risk),
+            global_risk=float(smoothed_global_risk),
             state=state,
             reason_codes=reason_codes,
-            corridor_risks=corridor_risks,
+            corridor_risks=smoothed_corridor_risks,
             confidence=float(system_confidence),
             recommended_horizon_s=cfg.horizon_s,
         )
