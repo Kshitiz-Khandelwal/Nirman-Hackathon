@@ -77,6 +77,8 @@ class PredictionViewer:
         self.paused = False
         self.show_hud = True
         self.show_telemetry = False   # Clean by default; press [T] to toggle
+        self.is_fullscreen = False
+        self.win_name = "SpatialVector-HMI — Camera Perception & Prediction Engine"
         self.current_source_label = str(source_str)
         self.primary_source = source_str
 
@@ -123,8 +125,9 @@ class PredictionViewer:
         self.current_source_label = label
 
     def run(self):
-        win_name = "SpatialVector-HMI — Camera Perception & Prediction Engine"
+        win_name = self.win_name
         cv2.namedWindow(win_name, cv2.WINDOW_NORMAL)
+        cv2.setWindowProperty(win_name, cv2.WND_PROP_ASPECT_RATIO, cv2.WINDOW_FREERATIO)
         cv2.resizeWindow(win_name, 1280, 720)
 
         print("\n" + "=" * 74)
@@ -133,6 +136,7 @@ class PredictionViewer:
         print(f"[*] Input Source: {self.current_source_label}")
         print("[*] Hotkeys:")
         print("    [SPACE]   Pause / Resume")
+        print("    [F]       Toggle Fullscreen Mode")
         print("    [H]       Toggle HUD Overlay")
         print("    [T]       Toggle Telemetry Panel")
         print("    [1] - [5] Benchmark Scenes S1–S5")
@@ -243,6 +247,15 @@ class PredictionViewer:
         elif key == ord(' '):
             self.paused = not self.paused
             print(f"[*] {'PAUSED' if self.paused else 'RESUMED'}")
+        elif key in (ord('f'), ord('F')):
+            self.is_fullscreen = not self.is_fullscreen
+            if self.is_fullscreen:
+                cv2.setWindowProperty(self.win_name, cv2.WND_PROP_FULLSCREEN, cv2.WINDOW_FULLSCREEN)
+                print("[*] Fullscreen: ON")
+            else:
+                cv2.setWindowProperty(self.win_name, cv2.WND_PROP_FULLSCREEN, cv2.WINDOW_NORMAL)
+                cv2.resizeWindow(self.win_name, 1280, 720)
+                print("[*] Fullscreen: OFF (1280x720)")
         elif key in (ord('h'), ord('H')):
             self.show_hud = not self.show_hud
             print(f"[*] HUD Overlay: {'ON' if self.show_hud else 'OFF'}")
