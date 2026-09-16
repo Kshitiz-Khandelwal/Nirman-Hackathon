@@ -31,4 +31,6 @@ class Track:
     track_age: int             # frames since first seen
     track_confidence: float
     last_seen_frame_id: int
+    expansion_rate: float = 0.0                             # 1/sec rate of scale change (looming cue)
+    bbox_scale: float = 0.0                                 # 0..1 fraction of frame height occupied by bbox
 

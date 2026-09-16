@@ -376,6 +376,12 @@ class RiskEngine:
             + c.weight_miss_distance * miss_score
             + c.weight_intersection_confidence * int_conf_score
         )
+        # Factor in proximity risk directly (person/obstacle right in front of user)
+        prox_score = getattr(pred, "proximity_risk", 0.0)
+        if prox_score > 0.25:
+            reasons.append(f"proximity:{prox_score:.2f}")
+            risk = max(risk, prox_score)
+
         risk = float(np.clip(risk, 0.0, 1.0))
 
         return risk, reasons

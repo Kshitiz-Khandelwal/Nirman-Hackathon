@@ -108,3 +108,5 @@ class ObjectGeometry:
     motion_vector: tuple[float, float]                       # normalized direction
     foe_containment: bool
     geometry_confidence: float                               # 0..1
+    expansion_rate: float = 0.0                              # 1/sec rate of scale growth (optical looming)
+    proximity_scale: float = 0.0                             # 0..1 fraction of frame height occupied by bbox

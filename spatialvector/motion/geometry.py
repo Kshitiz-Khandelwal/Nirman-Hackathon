@@ -114,7 +114,17 @@ def compute_object_geometry(
         foe_containment = dist_to_foe < foe_containment_radius_norm
 
     # ----------------------------------------------------------------
-    # 5. Geometry confidence — aggregate signal quality
+    # 5. Proximity scale & expansion rate (Looming cues)
+    # ----------------------------------------------------------------
+    expansion_rate = getattr(track, "expansion_rate", 0.0)
+    proximity_scale = getattr(track, "bbox_scale", 0.0)
+    if proximity_scale <= 0.0 and track.bbox_history:
+        latest_bbox = track.bbox_history[-1]
+        bh = abs(latest_bbox[3] - latest_bbox[1])
+        proximity_scale = float(np.clip(bh / max(frame_h, 1.0), 0.0, 1.0))
+
+    # ----------------------------------------------------------------
+    # 6. Geometry confidence — aggregate signal quality
     # ----------------------------------------------------------------
     confidence = _compute_confidence(
         track=track,
@@ -131,6 +141,8 @@ def compute_object_geometry(
         motion_vector=(mv_x, mv_y),
         foe_containment=foe_containment,
         geometry_confidence=confidence,
+        expansion_rate=expansion_rate,
+        proximity_scale=proximity_scale,
     )
 
 

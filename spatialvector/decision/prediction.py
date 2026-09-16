@@ -54,6 +54,7 @@ import numpy as np
 from spatialvector.motion.schemas import ObjectGeometry
 from spatialvector.perception.schemas import Track
 from spatialvector.decision.schemas import Prediction
+from spatialvector.decision.adaptive_calibrator import SelfAdaptingLoomingCalibrator
 
 logger = logging.getLogger(__name__)
 
@@ -101,6 +102,7 @@ class CollisionPredictor:
         self.horizon_s = horizon_s
         self.contact_threshold = contact_threshold_normalized
         self.corridor_width = corridor_width_normalized
+        self.calibrator = SelfAdaptingLoomingCalibrator()
 
     def predict(
         self,
@@ -119,45 +121,83 @@ class CollisionPredictor:
             Prediction with ttc_s, cpa_normalized, miss_distance_normalized,
             intersection_flag, and prediction_confidence.
         """
-        # User position is (0, 0) in normalized image space — stationary reference.
-        # Object position: bearing (horizontal) + normalized velocity from M06.
-        # We work in a 2D normalized plane: x = horizontal (bearing proxy), y = depth proxy.
-        #
-        # Position: use bearing as x, approximate y from velocity direction (objects
-        # coming toward image center are "ahead"). For a prototype, bearing and
-        # the x-component of relative_image_velocity are sufficient for left/center/right
-        # corridor decisions.
-        #
-        # rel_pos = object_position - user_position = (bearing_x, approach_y)
-        # rel_vel = object_velocity - user_velocity = object_velocity (user is stationary)
+        bearing = geometry.bearing
+        obj_x = math.sin(bearing)
 
-        # Object position in normalized 2D plane
-        bearing = geometry.bearing          # horizontal offset, radians (~= normalized x)
-        # Convert bearing to an approximate normalized horizontal offset
-        obj_x = math.sin(bearing)           # ranges -1..1, ~= normalized x position
-        obj_y = 0.5                         # objects are treated as "in front" at fixed depth
+        # Dynamic depth estimation from proximity scale (bounding box height fraction)
+        proximity_scale = getattr(geometry, "proximity_scale", 0.0)
+        if proximity_scale <= 0.0:
+            proximity_scale = getattr(track, "bbox_scale", 0.0)
+
+        # In perspective projection, large nearby obstacles have smaller forward distance
+        if proximity_scale > 0.03:
+            obj_y = float(np.clip(0.35 / proximity_scale, 0.15, 2.5))
+        else:
+            obj_y = 0.5  # Standard baseline for unit tests
 
         # User at origin
         user_x, user_y = 0.0, 0.0
-
-        # Relative position (object relative to user)
         rel_pos = np.array([obj_x - user_x, obj_y - user_y], dtype=np.float64)
 
-        # Object velocity in normalized units/second from M06
+        # Lateral and approach velocity
         vx, vy = geometry.relative_image_velocity
-        # Sign convention: positive vy = moving down in image = moving away (receding)
-        # negative vy = moving up in image = approaching
-        rel_vel = np.array([vx, -vy], dtype=np.float64)   # flip vy: up = approaching = negative depth
+
+        # Extract expansion rate (looming cue)
+        raw_expansion = getattr(geometry, "expansion_rate", 0.0)
+        if raw_expansion == 0.0:
+            raw_expansion = getattr(track, "expansion_rate", 0.0)
+
+        eff_expansion, is_looming = self.calibrator.evaluate_expansion(raw_expansion)
+
+        # Forward approach velocity:
+        # If looming expansion is detected, it is the primary physical depth approach signal
+        v_approach = obj_y * eff_expansion if is_looming else 0.0
+
+        # Also incorporate centroid vertical motion (vy > 0 indicates approach in test fixtures)
+        if vy > 0.02:
+            v_approach = max(v_approach, float(vy))
+        elif vy < -0.05 and not is_looming:
+            v_approach = float(vy)  # negative = receding
+
+        # rel_vel: [vx, -v_approach] (negative y means moving towards user at origin)
+        rel_vel = np.array([vx, -v_approach], dtype=np.float64)
 
         # --- CPA computation ---
         ttc_s, cpa_norm, miss_norm, intersection_flag = self._compute_cpa_ttc_intersection(
             rel_pos, rel_vel
         )
 
+        # If head-on looming was detected with direct expansion:
+        if is_looming and eff_expansion > 0.05:
+            looming_ttc = float(np.clip(1.0 / eff_expansion, 0.1, self.horizon_s))
+            if abs(obj_x) < self.corridor_width:
+                intersection_flag = True
+                cpa_norm = min(cpa_norm, abs(obj_x))
+                miss_norm = min(miss_norm, abs(obj_x))
+                ttc_s = min(ttc_s, looming_ttc) if ttc_s is not None else looming_ttc
+
+        # --- Direct Static Proximity Hazard ---
+        proximity_risk = 0.0
+        in_center_corridor = abs(bearing) < 0.35  # ~20 degrees
+        if in_center_corridor and proximity_scale > 0.30:
+            # Person or obstacle occupying > 30% of height dead center
+            proximity_risk = float(np.clip((proximity_scale - 0.25) / 0.45, 0.0, 1.0))
+        elif proximity_scale > 0.45:
+            proximity_risk = float(np.clip((proximity_scale - 0.35) / 0.45, 0.0, 0.8))
+
+        if proximity_risk >= 0.50:
+            # Direct path obstruction
+            intersection_flag = True
+            cpa_norm = min(cpa_norm, 0.05)
+            miss_norm = min(miss_norm, 0.05)
+            if ttc_s is None or ttc_s > 2.0:
+                ttc_s = float(np.clip(1.2 / max(proximity_scale, 0.1), 0.4, 2.5))
+
         # --- Prediction confidence ---
-        # Derived from geometry_confidence (M06) and track stability.
-        # Young tracks and low geometry confidence both reduce prediction confidence.
         pred_conf = self._compute_prediction_confidence(geometry, track)
+        if proximity_risk > 0.3:
+            # Boost confidence for direct proximity hazards
+            pred_conf = max(pred_conf, float(np.clip(proximity_risk * 0.9, 0.4, 1.0)))
 
         prediction = Prediction(
             track_id=track.track_id,
@@ -168,12 +208,14 @@ class CollisionPredictor:
             intersection_flag=intersection_flag,
             prediction_confidence=pred_conf,
             bearing=geometry.bearing,
+            proximity_risk=proximity_risk,
+            expansion_rate=raw_expansion,
         )
 
         logger.debug(
             f"[M07] track={track.track_id} frame={frame_id} "
             f"ttc={ttc_s} cpa={cpa_norm:.4f} intersect={intersection_flag} "
-            f"conf={pred_conf:.3f}"
+            f"conf={pred_conf:.3f} prox={proximity_risk:.2f}"
         )
         return prediction
 
@@ -184,12 +226,21 @@ class CollisionPredictor:
         frame_id: int,
     ) -> list[Prediction]:
         """Predict for all active tracks. Convenience wrapper."""
+        # Update adaptive looming calibrator with observed expansion rates
+        exp_rates = [
+            getattr(g, "expansion_rate", 0.0)
+            for g in geometries
+            if getattr(g, "expansion_rate", 0.0) != 0.0
+        ]
+        if exp_rates:
+            self.calibrator.update(exp_rates)
+
         track_by_id = {t.track_id: t for t in tracks}
         results = []
         for geom in geometries:
             track = track_by_id.get(geom.track_id)
             if track is None:
-                continue   # track disappeared between M06 and M07; skip silently
+                continue
             results.append(self.predict(geom, track, frame_id))
         return results
 

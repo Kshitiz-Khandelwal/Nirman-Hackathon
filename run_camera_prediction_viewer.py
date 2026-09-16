@@ -388,11 +388,13 @@ class PredictionViewer:
             is_intersect = bool(pred and pred.intersection_flag)
             ttc = pred.ttc_s if pred else None
             cpa = pred.cpa_normalized if pred else None
+            prox_risk = getattr(pred, "proximity_risk", 0.0) if pred else 0.0
+            exp_rate = getattr(pred, "expansion_rate", 0.0) if pred else 0.0
 
-            # Color scheme: Red (Threat), Amber (Caution), Emerald (Safe)
-            if is_intersect or (pred and getattr(pred, 'is_threat', False)):
+            # Color scheme: Red (Threat/Proximity), Amber (Caution), Emerald (Safe)
+            if is_intersect or prox_risk > 0.40 or (pred and getattr(pred, 'is_threat', False)):
                 box_color = (30, 30, 235)      # Red
-            elif cpa is not None and cpa < 0.25:
+            elif (cpa is not None and cpa < 0.25) or prox_risk > 0.20 or exp_rate > 0.15:
                 box_color = (0, 145, 255)      # Amber
             else:
                 box_color = (0, 210, 120)      # Emerald
@@ -422,7 +424,14 @@ class PredictionViewer:
             # Structured Badge Label
             ttc_str = f"TTC:{ttc:.1f}s" if ttc is not None else "TTC:--"
             cpa_str = f"CPA:{cpa:.2f}" if cpa is not None else ""
-            hazard_tag = " !HAZARD!" if is_intersect else ""
+            hazard_tag = ""
+            if is_intersect:
+                hazard_tag = " !COLLISION!"
+            elif prox_risk > 0.35:
+                hazard_tag = " !PROXIMITY!"
+            elif exp_rate > 0.20:
+                hazard_tag = " !LOOMING!"
+
             label = f"#{t.track_id} {t.class_name.upper()} | {ttc_str} | {cpa_str}{hazard_tag}".strip(" |")
 
             (tw, th), _ = cv2.getTextSize(label, cv2.FONT_HERSHEY_SIMPLEX, 0.44, 1)
@@ -522,6 +531,9 @@ class PredictionViewer:
 
                 fq = getattr(motion, 'flow_quality', 0.0)
                 foe_c = getattr(motion, 'foe_confidence', 0.0)
+                calib = getattr(self.predictor, "calibrator", None)
+                l_thresh = calib.current_threshold if calib else 0.05
+                max_exp = max([getattr(p, "expansion_rate", 0.0) for p in predictions], default=0.0)
                 left_lines = [
                     f"Resolution: {orig_w}x{orig_h}",
                     f"Tracker: {self.tracker_type.upper()}",
@@ -530,10 +542,11 @@ class PredictionViewer:
                     f"Ego-Fallback: {motion.fallback_active}",
                     f"Flow Quality: {fq:.2f}",
                     f"FOE Conf: {foe_c:.2f}",
-                    f"Paused: {self.paused}",
+                    f"Adapt Thresh: {l_thresh:.2f}/s",
+                    f"Max Expansion: {max_exp:+.2f}/s",
                 ]
                 for i, line in enumerate(left_lines):
-                    cv2.putText(canvas, line, (lx1 + 10, ly1 + 50 + i * 20), cv2.FONT_HERSHEY_SIMPLEX, 0.40, (215, 220, 230), 1, cv2.LINE_AA)
+                    cv2.putText(canvas, line, (lx1 + 10, ly1 + 46 + i * 19), cv2.FONT_HERSHEY_SIMPLEX, 0.39, (215, 220, 230), 1, cv2.LINE_AA)
 
                 # RIGHT SIDEBAR: Risk & Haptic Decision Engine
                 rw = ox - 16
@@ -545,9 +558,11 @@ class PredictionViewer:
                 cv2.putText(canvas, "DECISION & RISK ENGINE", (rx1 + 10, ry1 + 22), cv2.FONT_HERSHEY_SIMPLEX, 0.44, (0, 220, 255), 1, cv2.LINE_AA)
                 cv2.line(canvas, (rx1 + 10, ry1 + 28), (rx2 - 10, ry1 + 28), (45, 50, 60), 1)
 
+                max_prox = max([getattr(p, "proximity_risk", 0.0) for p in predictions], default=0.0)
                 right_lines = [
                     f"State: {risk.state}",
                     f"Global Risk: {risk.global_risk:.2f}",
+                    f"Proximity Risk: {max_prox:.2f}",
                     f"Confidence: {risk.confidence*100:.0f}%",
                     f"Corridor Left: {l_risk:.2f}",
                     f"Corridor Center: {c_risk:.2f}",
@@ -557,7 +572,7 @@ class PredictionViewer:
                     f"Urgency: {cmd.urgency}/5 ({cmd.duration_ms}ms)",
                 ]
                 for i, line in enumerate(right_lines):
-                    cv2.putText(canvas, line, (rx1 + 10, ry1 + 50 + i * 20), cv2.FONT_HERSHEY_SIMPLEX, 0.40, (215, 220, 230), 1, cv2.LINE_AA)
+                    cv2.putText(canvas, line, (rx1 + 10, ry1 + 46 + i * 19), cv2.FONT_HERSHEY_SIMPLEX, 0.39, (215, 220, 230), 1, cv2.LINE_AA)
 
             else:
                 # Floating overlay card when video fills entire width

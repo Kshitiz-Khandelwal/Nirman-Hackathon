@@ -302,6 +302,67 @@ def test_t16b_near_zero_relative_velocity_no_crash():
     print(f"  T16b: near-zero velocity handled cleanly. cpa={pred.cpa_normalized:.4f}. PASSED.")
 
 
+def test_t16c_looming_approach_pure_expansion_detected():
+    """T16c: Pure head-on approach where centroid doesn't move (vx=0, vy=0) but bbox expands."""
+    predictor = CollisionPredictor(
+        horizon_s=5.0,
+        contact_threshold_normalized=0.05,
+        corridor_width_normalized=0.15,
+    )
+
+    track = _make_track(track_id=1, centers=[(320.0, 240.0)], velocity=(0.0, 0.0), track_age=10)
+    track.expansion_rate = 0.45  # expanding at 45%/sec
+    track.bbox_scale = 0.35
+
+    geom = _make_geometry(
+        track_id=1,
+        bearing=0.0,
+        vx_norm=0.0,
+        vy_norm=0.0,  # Zero centroid velocity
+        foe_containment=True,
+        geometry_confidence=0.9,
+    )
+    geom.expansion_rate = 0.45
+    geom.proximity_scale = 0.35
+
+    pred = predictor.predict(geom, track, frame_id=1)
+
+    assert pred.intersection_flag is True, "Pure looming expansion must trigger intersection_flag=True"
+    assert pred.ttc_s is not None, "Pure looming expansion must produce finite TTC"
+    assert pred.ttc_s < 4.0, f"Expected TTC < 4.0s for 45%/s expansion, got {pred.ttc_s}s"
+    assert pred.cpa_normalized < 0.15, f"Expected small CPA for head-on looming, got {pred.cpa_normalized}"
+
+
+def test_t16d_static_large_obstacle_center_proximity():
+    """T16d: Static large obstacle occupying center corridor produces immediate proximity risk."""
+    predictor = CollisionPredictor(
+        horizon_s=5.0,
+        contact_threshold_normalized=0.05,
+        corridor_width_normalized=0.15,
+    )
+
+    track = _make_track(track_id=2, centers=[(320.0, 240.0)], velocity=(0.0, 0.0), track_age=15)
+    track.expansion_rate = 0.0
+    track.bbox_scale = 0.55  # Fills 55% of height right in front of chest
+
+    geom = _make_geometry(
+        track_id=2,
+        bearing=0.0,
+        vx_norm=0.0,
+        vy_norm=0.0,
+        foe_containment=False,
+        geometry_confidence=0.9,
+    )
+    geom.expansion_rate = 0.0
+    geom.proximity_scale = 0.55
+
+    pred = predictor.predict(geom, track, frame_id=1)
+
+    assert pred.proximity_risk > 0.50, f"Expected proximity_risk > 0.50 for 55% height object, got {pred.proximity_risk}"
+    assert pred.intersection_flag is True, "Large static center obstacle must block the path"
+    assert pred.ttc_s is not None, "Proximity obstacle must provide finite warning horizon"
+
+
 # ---------------------------------------------------------------------------
 # Standalone runner
 # ---------------------------------------------------------------------------
@@ -327,5 +388,13 @@ if __name__ == "__main__":
     print("[TEST] T16b: Near-zero velocity → no crash...")
     test_t16b_near_zero_relative_velocity_no_crash()
     print("  -> T16b PASSED")
+
+    print("[TEST] T16c: Looming pure expansion detected...")
+    test_t16c_looming_approach_pure_expansion_detected()
+    print("  -> T16c PASSED")
+
+    print("[TEST] T16d: Static large obstacle center proximity...")
+    test_t16d_static_large_obstacle_center_proximity()
+    print("  -> T16d PASSED")
 
     print("\nALL M07 TESTS PASSED (Gate C verified — no camera/YOLO required).")

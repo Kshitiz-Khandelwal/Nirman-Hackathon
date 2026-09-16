@@ -1,4 +1,5 @@
 import logging
+import math
 import time
 from typing import Optional, Union
 import numpy as np
@@ -169,6 +170,15 @@ class MultiObjectTracker:
                 image_velocity = self._compute_velocity(
                     t_record["center_history"], t_record["timestamps"]
                 )
+                expansion_rate = self._compute_expansion_rate(
+                    t_record["bbox_history"], t_record["timestamps"]
+                )
+                
+                # Fraction of frame height occupied by latest bbox
+                latest_b = t_record["bbox_history"][-1]
+                b_h = abs(latest_b[3] - latest_b[1])
+                f_h = float(img.shape[0]) if hasattr(img, "shape") else 480.0
+                bbox_scale = float(np.clip(b_h / max(f_h, 1.0), 0.0, 1.0))
 
                 current_tracks.append(
                     Track(
@@ -180,6 +190,8 @@ class MultiObjectTracker:
                         track_age=t_record["track_age"],
                         track_confidence=conf,
                         last_seen_frame_id=frame_id,
+                        expansion_rate=expansion_rate,
+                        bbox_scale=bbox_scale,
                     )
                 )
 
@@ -211,6 +223,32 @@ class MultiObjectTracker:
         vx = dx / dt
         vy = dy / dt
         return (float(vx), float(vy))
+
+    def _compute_expansion_rate(
+        self, bboxes: list[tuple[float, float, float, float]], timestamps: list[float]
+    ) -> float:
+        """Compute relative scale expansion rate (1/sec) from bounding box diagonals."""
+        if len(bboxes) < 2 or len(timestamps) < 2:
+            return 0.0
+
+        dt = timestamps[-1] - timestamps[0]
+        if dt <= 1e-6:
+            return 0.0
+
+        def get_size(b):
+            w = abs(b[2] - b[0])
+            h = abs(b[3] - b[1])
+            return math.sqrt(w * w + h * h)
+
+        s_init = get_size(bboxes[0])
+        s_final = get_size(bboxes[-1])
+
+        if s_init <= 1.0 or s_final <= 1.0:
+            return 0.0
+
+        # Rate of relative scale growth d(s)/dt / s_final
+        rate = (s_final - s_init) / (s_final * dt)
+        return float(np.clip(rate, -5.0, 5.0))
 
     def _detect_potential_id_switch(
         self, frame_id: int, new_track_id: int, class_name: str, center: tuple[float, float]
