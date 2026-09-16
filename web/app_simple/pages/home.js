@@ -36,6 +36,28 @@ window.HomePage = (function () {
                 <div id="home-alert-dir" class="alert-dir-arrow">↑</div>
             </div>
 
+            <!-- 3 Separate Distinct White Rounded Tiles (Metrics Triplet) -->
+            <div class="metrics-triplet">
+                <div class="metric-cell">
+                    <div class="gauge-ring-wrap">
+                        <svg width="44" height="44" viewBox="0 0 36 36">
+                            <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="#f1f5f9" stroke-width="3.5" />
+                            <path id="home-gauge-circle-stroke" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="#10b981" stroke-dasharray="0, 100" stroke-linecap="round" stroke-width="3.5" />
+                        </svg>
+                        <span id="home-val-risk-score" class="gauge-number mono">0.00</span>
+                    </div>
+                    <span class="metric-tag">Risk Score</span>
+                </div>
+                <div class="metric-cell">
+                    <span id="home-val-ttc" class="metric-big-num mono">—</span>
+                    <span class="metric-tag">TTC</span>
+                </div>
+                <div class="metric-cell">
+                    <span id="home-val-cpa" class="metric-big-num mono">—</span>
+                    <span class="metric-tag">CPA</span>
+                </div>
+            </div>
+
             <!-- Live Camera View with AR Bounding Box HUD -->
             <div class="video-card">
                 <div class="video-toolbar">
@@ -43,7 +65,26 @@ window.HomePage = (function () {
                     <button class="tool-chip" onclick="HomePage.toggleHud()">HUD</button>
                 </div>
                 <iframe id="home-vdo-frame" class="video-frame" allow="autoplay; camera; microphone" src="about:blank"></iframe>
-                <canvas id="home-hud-canvas" class="hud-canvas"></canvas>
+                <canvas id="home-hud-canvas" class="hud-canvas" width="400" height="224"></canvas>
+            </div>
+
+            <!-- 3 Corridor Risk Boxes (Corridor Triad) -->
+            <div class="corridor-triad">
+                <div id="home-box-corr-left" class="corridor-box safe">
+                    <span class="corridor-name">Left</span>
+                    <span id="home-txt-corr-left" class="corridor-score mono">0.00</span>
+                    <span id="home-lbl-corr-left" class="corridor-status-tag">CLEAR</span>
+                </div>
+                <div id="home-box-corr-center" class="corridor-box safe">
+                    <span class="corridor-name">Center</span>
+                    <span id="home-txt-corr-center" class="corridor-score mono">0.00</span>
+                    <span id="home-lbl-corr-center" class="corridor-status-tag">CLEAR</span>
+                </div>
+                <div id="home-box-corr-right" class="corridor-box safe">
+                    <span class="corridor-name">Right</span>
+                    <span id="home-txt-corr-right" class="corridor-score mono">0.00</span>
+                    <span id="home-lbl-corr-right" class="corridor-status-tag">CLEAR</span>
+                </div>
             </div>
 
             <!-- Directional Guidance Callout Line -->
@@ -126,10 +167,47 @@ window.HomePage = (function () {
             }
         }
 
-        // 2. Video HUD Bounding Boxes
+        // 1b. Metrics Triplet (Risk Score, TTC, CPA)
+        const scoreEl = document.getElementById("home-val-risk-score");
+        const gaugeEl = document.getElementById("home-gauge-circle-stroke");
+        const ttcEl = document.getElementById("home-val-ttc");
+        const cpaEl = document.getElementById("home-val-cpa");
+
+        if (scoreEl) scoreEl.textContent = Number(globalRisk).toFixed(2);
+        if (gaugeEl) {
+            const pct = Math.min(100, Math.max(0, Math.round(globalRisk * 100)));
+            gaugeEl.setAttribute("stroke-dasharray", `${pct}, 100`);
+            const strokeColor = state === "SAFE" ? "#10b981" : (state === "CAUTION" ? "#f59e0b" : (state === "WARNING" ? "#f97316" : "#ef4444"));
+            gaugeEl.setAttribute("stroke", strokeColor);
+        }
+
+        let minTtc = null;
+        let minCpa = null;
+        for (const t of tracks) {
+            if (t.ttc_s !== null && t.ttc_s !== undefined) {
+                if (minTtc === null || t.ttc_s < minTtc) minTtc = t.ttc_s;
+            }
+            if (t.cpa !== null && t.cpa !== undefined) {
+                if (minCpa === null || t.cpa < minCpa) minCpa = t.cpa;
+            }
+        }
+        if (ttcEl) ttcEl.textContent = minTtc !== null ? `${Number(minTtc).toFixed(1)}s` : "—";
+        if (cpaEl) cpaEl.textContent = minCpa !== null ? `${Number(minCpa).toFixed(2)}m` : "—";
+
+        // 2. Video HUD Bounding Boxes & Perspective Corridor
         if (vdoManager) {
             vdoManager.drawBoundingBoxes(tracks, msg.frame_width || 640, msg.frame_height || 480, null, globalRisk);
         }
+
+        // 2b. 3 Corridor Risk Boxes (Corridor Triad)
+        const cr = risk.corridor_risks || {};
+        const lRisk = typeof cr.left === "number" ? cr.left : 0.0;
+        const cRisk = typeof cr.center === "number" ? cr.center : 0.0;
+        const rRisk = typeof cr.right === "number" ? cr.right : 0.0;
+
+        updateCorridorBox("left", lRisk);
+        updateCorridorBox("center", cRisk);
+        updateCorridorBox("right", rRisk);
 
         // 3. Safer Side Guidance Line (derived from haptic.direction)
         const saferLine = document.getElementById("home-safer-line");
@@ -160,6 +238,29 @@ window.HomePage = (function () {
 
         // 6. Recent Actions History
         updateRecentActions(haptic);
+    }
+
+    function updateCorridorBox(side, score) {
+        const box = document.getElementById(`home-box-corr-${side}`);
+        const txt = document.getElementById(`home-txt-corr-${side}`);
+        const lbl = document.getElementById(`home-lbl-corr-${side}`);
+
+        if (!box || !txt || !lbl) return;
+
+        txt.textContent = Number(score).toFixed(2);
+
+        let cls = "safe";
+        let tag = "CLEAR";
+        if (score > 0.60) {
+            cls = "risky";
+            tag = "BLOCKED";
+        } else if (score > 0.30) {
+            cls = "caution";
+            tag = "CAUTION";
+        }
+
+        box.className = `corridor-box ${cls}`;
+        lbl.textContent = tag;
     }
 
     const recentHistory = [];

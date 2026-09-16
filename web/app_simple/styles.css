@@ -774,3 +774,120 @@ button, input, select {
 .pill-badge.blue { background: #eff6ff; color: #1d4ed8; }
 .pill-badge.purple { background: #f5f3ff; color: #5b21b6; }
 
+/* ------------------------------------------------------------- */
+/* 3 Separate Distinct White Rounded Tiles (Metrics Triplet)     */
+/* ------------------------------------------------------------- */
+.metrics-triplet {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 8px;
+    margin-bottom: 12px;
+}
+
+.metric-cell {
+    background: #ffffff;
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-md);
+    padding: 10px 8px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    box-shadow: var(--shadow-sm);
+    min-height: 74px;
+}
+
+.gauge-ring-wrap {
+    position: relative;
+    width: 44px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.gauge-number {
+    position: absolute;
+    font-size: 11px;
+    font-weight: 800;
+    color: var(--text-primary);
+}
+
+.metric-big-num {
+    font-size: 18px;
+    font-weight: 800;
+    line-height: 1.1;
+    color: var(--text-primary);
+}
+
+.metric-tag {
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    letter-spacing: 0.04em;
+}
+
+/* ------------------------------------------------------------- */
+/* 3 Corridor Risk Boxes (Corridor Triad)                        */
+/* ------------------------------------------------------------- */
+.corridor-triad {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 8px;
+    margin-bottom: 12px;
+}
+
+.corridor-box {
+    border-radius: var(--radius-md);
+    padding: 10px 6px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    border: 1px solid var(--border-subtle);
+    background: #ffffff;
+    box-shadow: var(--shadow-sm);
+    transition: all 0.2s ease;
+}
+
+.corridor-box.safe {
+    background: var(--signal-safe-soft);
+    border-color: #a7f3d0;
+    color: #065f46;
+}
+
+.corridor-box.caution {
+    background: var(--signal-caution-soft);
+    border-color: #fde68a;
+    color: #92400e;
+}
+
+.corridor-box.risky {
+    background: var(--signal-critical-soft);
+    border-color: #fecaca;
+    color: #991b1b;
+}
+
+.corridor-name {
+    font-size: 11px;
+    font-weight: 700;
+    opacity: 0.85;
+}
+
+.corridor-score {
+    font-size: 16px;
+    font-weight: 800;
+    line-height: 1.1;
+}
+
+.corridor-status-tag {
+    font-size: 9px;
+    font-weight: 800;
+    text-transform: uppercase;
+    margin-top: 1px;
+}
+
+

@@ -114,11 +114,71 @@
 
         drawBoundingBoxes(tracks, frameW = 640, frameH = 480, selectedTrackId = null, globalRisk = 0.0) {
             if (!this.canvasEl || !this.hudEnabled) return;
+
+            // Sync canvas coordinate resolution with rendered CSS display dimensions
+            const clientW = this.canvasEl.clientWidth || 400;
+            const clientH = this.canvasEl.clientHeight || 224;
+            if (this.canvasEl.width !== clientW || this.canvasEl.height !== clientH) {
+                this.canvasEl.width = clientW;
+                this.canvasEl.height = clientH;
+            }
+
             const ctx = this.canvasEl.getContext("2d");
             const w = this.canvasEl.width;
             const h = this.canvasEl.height;
 
             ctx.clearRect(0, 0, w, h);
+
+            // Ground Perspective Corridor Trapezoids (lower 44% of frame)
+            const vanishY = h * 0.56;
+            const vanishX = w * 0.50;
+
+            // Center Corridor (Hazard corridor)
+            ctx.save();
+            ctx.beginPath();
+            ctx.moveTo(vanishX - 24, vanishY);
+            ctx.lineTo(vanishX + 24, vanishY);
+            ctx.lineTo(w * 0.68, h);
+            ctx.lineTo(w * 0.32, h);
+            ctx.closePath();
+
+            if (globalRisk > 0.5) {
+                ctx.fillStyle = "rgba(239, 68, 68, 0.16)";
+                ctx.strokeStyle = "rgba(239, 68, 68, 0.75)";
+            } else {
+                ctx.fillStyle = "rgba(16, 185, 129, 0.10)";
+                ctx.strokeStyle = "rgba(16, 185, 129, 0.55)";
+            }
+            ctx.fill();
+            ctx.lineWidth = 1.5;
+            ctx.setLineDash([5, 4]);
+            ctx.stroke();
+            ctx.restore();
+
+            // Left Corridor
+            ctx.save();
+            ctx.beginPath();
+            ctx.moveTo(vanishX - 60, vanishY);
+            ctx.lineTo(vanishX - 24, vanishY);
+            ctx.lineTo(w * 0.32, h);
+            ctx.lineTo(w * 0.04, h);
+            ctx.closePath();
+            ctx.fillStyle = "rgba(16, 185, 129, 0.08)";
+            ctx.fill();
+            ctx.restore();
+
+            // Right Corridor
+            ctx.save();
+            ctx.beginPath();
+            ctx.moveTo(vanishX + 24, vanishY);
+            ctx.lineTo(vanishX + 60, vanishY);
+            ctx.lineTo(w * 0.96, h);
+            ctx.lineTo(w * 0.68, h);
+            ctx.closePath();
+            ctx.fillStyle = "rgba(16, 185, 129, 0.08)";
+            ctx.fill();
+            ctx.restore();
+
             if (!tracks || tracks.length === 0) return;
 
             const scaleX = w / (frameW || 640);
@@ -140,6 +200,7 @@
                 ctx.save();
                 ctx.strokeStyle = strokeColor;
                 ctx.lineWidth = isSelected ? 2.5 : 1.5;
+                ctx.setLineDash([]);
 
                 // Technical corner brackets
                 const len = Math.min(12, Math.min(bw, bh) / 3);
@@ -154,7 +215,7 @@
 
                 // Telemetry Badge Tag
                 const ttcTxt = (track.ttc_s !== null && track.ttc_s !== undefined)
-                    ? ` | ${Number(track.ttc_s).toFixed(1)}s`
+                    ? ` | TTC: ${Number(track.ttc_s).toFixed(1)}s`
                     : "";
                 const tag = `${track.class_name || 'Obstacle'} #${track.track_id}${ttcTxt}`;
                 ctx.font = "bold 10px 'JetBrains Mono', monospace";

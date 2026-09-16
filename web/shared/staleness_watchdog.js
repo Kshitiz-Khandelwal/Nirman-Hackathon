@@ -27,6 +27,7 @@
             this.onStale = options.onStale || null;
             this.onOffline = options.onOffline || null;
             this.onHealthy = options.onHealthy || null;
+            this.onStaleChange = options.onStaleChange || null;
             this.statusBannerEl = options.statusBannerEl || null;
             this.statusPillEl = options.statusPillEl || null;
             this.statusTextEl = options.statusTextEl || null;
@@ -46,6 +47,11 @@
 
         heartbeat() {
             this.lastMessageTimestamp = Date.now();
+            if (this.onStaleChange) this.onStaleChange(false, 0);
+        }
+
+        onMessageReceived() {
+            this.heartbeat();
         }
 
         check() {
@@ -77,6 +83,7 @@
             if (this.statusPillEl) this.statusPillEl.className = "conn-pill disconnected";
             if (this.statusTextEl) this.statusTextEl.textContent = "Pipeline Offline";
             if (this.onOffline) this.onOffline(elapsedMs);
+            if (this.onStaleChange) this.onStaleChange(true, elapsedMs);
         }
 
         _triggerStale(elapsedMs) {
@@ -88,6 +95,7 @@
             if (this.statusPillEl) this.statusPillEl.className = "conn-pill disconnected";
             if (this.statusTextEl) this.statusTextEl.textContent = "Pipeline Stalled";
             if (this.onStale) this.onStale(elapsedMs);
+            if (this.onStaleChange) this.onStaleChange(true, elapsedMs);
         }
 
         _triggerHealthy() {
@@ -95,10 +103,12 @@
             if (this.statusPillEl) this.statusPillEl.className = "conn-pill connected";
             if (this.statusTextEl) this.statusTextEl.textContent = "Connected (15 FPS)";
             if (this.onHealthy) this.onHealthy();
+            if (this.onStaleChange) this.onStaleChange(false, 0);
         }
     }
 
     return {
         create: (opts) => new Watchdog(opts),
+        createWatchdog: (opts) => new Watchdog(opts),
     };
 }));
