@@ -6,4 +6,6 @@ __pycache__/
 detections_dump.json
 sessions/
 camera_source.txt
+*.patch
+step604_prompt.txt
 

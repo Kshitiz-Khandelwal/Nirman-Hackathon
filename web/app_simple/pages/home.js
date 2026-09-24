@@ -1,5 +1,6 @@
 /**
  * SpatialVector-HMI — Tab 1: Home Page (Live Navigation View)
+ * Redesigned: Human-readable labels, clean info hierarchy, no raw session IDs.
  */
 
 window.HomePage = (function () {
@@ -7,6 +8,7 @@ window.HomePage = (function () {
 
     let vdoManager = null;
     let containerEl = null;
+    const recentHistory = [];
 
     function init(container) {
         containerEl = container;
@@ -19,7 +21,7 @@ window.HomePage = (function () {
             iframeEl: iframe,
             canvasEl: canvas,
             onSourceResolved: (url) => {
-                console.log("[Home] VDO.Ninja loaded:", url);
+                console.log("[Home] Camera loaded:", url);
             }
         });
         vdoManager.init();
@@ -27,16 +29,16 @@ window.HomePage = (function () {
 
     function renderShell() {
         containerEl.innerHTML = `
-            <!-- Top Status Alert Banner -->
+            <!-- Primary Risk Status Banner -->
             <div id="home-status-banner" class="status-alert-card safe">
                 <div class="alert-headline-box">
                     <span id="home-alert-tag" class="alert-state-tag">SAFE</span>
-                    <span id="home-alert-msg" class="alert-text-main">Path Clear · Safe Navigation</span>
+                    <span id="home-alert-msg" class="alert-text-main">Path Clear · Safe to Navigate</span>
                 </div>
                 <div id="home-alert-dir" class="alert-dir-arrow">↑</div>
             </div>
 
-            <!-- 3 Separate Distinct White Rounded Tiles (Metrics Triplet) -->
+            <!-- 3 Key Metrics -->
             <div class="metrics-triplet">
                 <div class="metric-cell">
                     <div class="gauge-ring-wrap">
@@ -46,15 +48,15 @@ window.HomePage = (function () {
                         </svg>
                         <span id="home-val-risk-score" class="gauge-number mono">0.00</span>
                     </div>
-                    <span class="metric-tag">Risk Score</span>
+                    <span class="metric-tag">Risk</span>
                 </div>
                 <div class="metric-cell">
                     <span id="home-val-ttc" class="metric-big-num mono">—</span>
-                    <span class="metric-tag">TTC</span>
+                    <span class="metric-tag">Time to Impact</span>
                 </div>
                 <div class="metric-cell">
                     <span id="home-val-cpa" class="metric-big-num mono">—</span>
-                    <span class="metric-tag">CPA</span>
+                    <span class="metric-tag">Closest Approach</span>
                 </div>
             </div>
 
@@ -68,7 +70,7 @@ window.HomePage = (function () {
                 <canvas id="home-hud-canvas" class="hud-canvas" width="400" height="224"></canvas>
             </div>
 
-            <!-- 3 Corridor Risk Boxes (Corridor Triad) -->
+            <!-- 3 Corridor Risk Boxes -->
             <div class="corridor-triad">
                 <div id="home-box-corr-left" class="corridor-box safe">
                     <span class="corridor-name">Left</span>
@@ -87,7 +89,7 @@ window.HomePage = (function () {
                 </div>
             </div>
 
-            <!-- Directional Guidance Callout Line -->
+            <!-- Directional Guidance Callout -->
             <div class="guidance-prompt-card">
                 <span class="guidance-icon">🧭</span>
                 <span id="home-safer-line" class="guidance-text">Forward corridor is clear to navigate.</span>
@@ -104,15 +106,15 @@ window.HomePage = (function () {
                 </div>
             </div>
 
-            <!-- Recent Guidance (Last 3 Actions) -->
+            <!-- Recent Guidance History (Last 3 haptic events) -->
             <div class="expand-panel open">
                 <div class="expand-header" style="cursor: default;">
                     <span>Recent Guidance</span>
-                    <span class="pill-badge blue">Live History</span>
+                    <span class="pill-badge blue">Live</span>
                 </div>
                 <div class="expand-body" style="display: block;">
-                    <div id="home-recent-actions-list" class="recent-actions-list" style="display: flex; flex-direction: column; gap: 6px;">
-                        <span style="font-size: 11px; color: var(--text-muted);">Waiting for motor commands...</span>
+                    <div id="home-recent-actions-list" style="display: flex; flex-direction: column; gap: 6px;">
+                        <span style="font-size: 11px; color: var(--text-muted);">No guidance events yet — path is clear.</span>
                     </div>
                 </div>
             </div>
@@ -143,31 +145,30 @@ window.HomePage = (function () {
             banner.className = `status-alert-card ${state.toLowerCase()}`;
             tag.textContent = state;
 
-            // Direction arrow mapping
             let arrowChar = "↑";
             if (dir === "LEFT") arrowChar = "←";
             else if (dir === "RIGHT") arrowChar = "→";
             else if (dir === "STOP") arrowChar = "⏹";
             dirEl.textContent = arrowChar;
 
-            // Text copy
+            // Human-readable situation description
             const primaryTrack = tracks[0];
-            if (primaryTrack && primaryTrack.intersect) {
-                mainMsg.textContent = `${primaryTrack.class_name || "Obstacle"} approaching your path`;
-            } else if (state === "CRITICAL") {
-                mainMsg.textContent = "Imminent Collision Hazard · Stop!";
+            if (state === "CRITICAL") {
+                mainMsg.textContent = "⚠ Imminent Collision — Stop Immediately!";
             } else if (state === "WARNING") {
-                mainMsg.textContent = "Obstacle detected ahead · Prepare to steer";
+                const cls = (primaryTrack && primaryTrack.class_name) || "Obstacle";
+                mainMsg.textContent = `${cls} approaching your path — Steer ${dir !== "STOP" ? dir : "carefully"}`;
             } else if (state === "CAUTION") {
-                mainMsg.textContent = "Nearby obstacle in corridor";
+                const cls = (primaryTrack && primaryTrack.class_name) || "Object";
+                mainMsg.textContent = `${cls} nearby — Stay alert`;
             } else if (state === "DEGRADED") {
-                mainMsg.textContent = "Sensor Confidence Degraded · Fallback Active";
+                mainMsg.textContent = "Sensor confidence low — Proceeding cautiously";
             } else {
-                mainMsg.textContent = "Path Clear · Safe Navigation";
+                mainMsg.textContent = "Path Clear · Safe to Navigate";
             }
         }
 
-        // 1b. Metrics Triplet (Risk Score, TTC, CPA)
+        // 2. Metrics Triplet (Risk, Time-to-Impact, Closest Approach)
         const scoreEl = document.getElementById("home-val-risk-score");
         const gaugeEl = document.getElementById("home-gauge-circle-stroke");
         const ttcEl = document.getElementById("home-val-ttc");
@@ -177,7 +178,10 @@ window.HomePage = (function () {
         if (gaugeEl) {
             const pct = Math.min(100, Math.max(0, Math.round(globalRisk * 100)));
             gaugeEl.setAttribute("stroke-dasharray", `${pct}, 100`);
-            const strokeColor = state === "SAFE" ? "#10b981" : (state === "CAUTION" ? "#f59e0b" : (state === "WARNING" ? "#f97316" : "#ef4444"));
+            const strokeColor =
+                state === "SAFE" ? "#10b981" :
+                state === "CAUTION" ? "#f59e0b" :
+                state === "WARNING" ? "#f97316" : "#ef4444";
             gaugeEl.setAttribute("stroke", strokeColor);
         }
 
@@ -194,41 +198,37 @@ window.HomePage = (function () {
         if (ttcEl) ttcEl.textContent = minTtc !== null ? `${Number(minTtc).toFixed(1)}s` : "—";
         if (cpaEl) cpaEl.textContent = minCpa !== null ? `${Number(minCpa).toFixed(2)}m` : "—";
 
-        // 2. Video HUD Bounding Boxes & Perspective Corridor
+        // 3. Camera HUD Bounding Boxes
         if (vdoManager) {
             vdoManager.drawBoundingBoxes(tracks, msg.frame_width || 640, msg.frame_height || 480, null, globalRisk);
         }
 
-        // 2b. 3 Corridor Risk Boxes (Corridor Triad)
+        // 4. Corridor Risk Boxes
         const cr = risk.corridor_risks || {};
-        const lRisk = typeof cr.left === "number" ? cr.left : 0.0;
-        const cRisk = typeof cr.center === "number" ? cr.center : 0.0;
-        const rRisk = typeof cr.right === "number" ? cr.right : 0.0;
+        updateCorridorBox("left", typeof cr.left === "number" ? cr.left : 0.0);
+        updateCorridorBox("center", typeof cr.center === "number" ? cr.center : 0.0);
+        updateCorridorBox("right", typeof cr.right === "number" ? cr.right : 0.0);
 
-        updateCorridorBox("left", lRisk);
-        updateCorridorBox("center", cRisk);
-        updateCorridorBox("right", rRisk);
-
-        // 3. Safer Side Guidance Line (derived from haptic.direction)
+        // 5. Guidance Text
         const saferLine = document.getElementById("home-safer-line");
         if (saferLine) {
             if (dir === "LEFT") {
-                saferLine.innerHTML = `<span class="guidance-highlight">Left side</span> is currently safer to navigate.`;
+                saferLine.innerHTML = `<span class="guidance-highlight">Move Left</span> — safer path is to your left.`;
             } else if (dir === "RIGHT") {
-                saferLine.innerHTML = `<span class="guidance-highlight">Right side</span> is currently safer to navigate.`;
+                saferLine.innerHTML = `<span class="guidance-highlight">Move Right</span> — safer path is to your right.`;
             } else if (dir === "STOP") {
                 saferLine.innerHTML = state === "SAFE"
                     ? `Forward corridor is clear to navigate.`
-                    : `<span style="color: #ef4444; font-weight: 700;">Forward corridor obstructed. Stop and assess path.</span>`;
+                    : `<span style="color: #ef4444; font-weight: 700;">⚠ Forward blocked — Stop and reassess.</span>`;
             } else {
                 saferLine.textContent = `Center corridor is clear.`;
             }
         }
 
-        // 4. Quick Details
+        // 6. Quick Details
         QuickDetailsPage.update(tracks[0], risk);
 
-        // 5. Nearby Count
+        // 7. Nearby Count
         const nearbyBadge = document.getElementById("home-nearby-badge");
         if (nearbyBadge) {
             const count = tracks.length;
@@ -236,51 +236,48 @@ window.HomePage = (function () {
             nearbyBadge.className = count > 0 ? "pill-badge yellow" : "pill-badge gray";
         }
 
-        // 6. Recent Actions History
-        updateRecentActions(haptic);
+        // 8. Recent Guidance (only real haptic events, deduped)
+        updateRecentGuidance(haptic, state);
     }
 
     function updateCorridorBox(side, score) {
         const box = document.getElementById(`home-box-corr-${side}`);
         const txt = document.getElementById(`home-txt-corr-${side}`);
         const lbl = document.getElementById(`home-lbl-corr-${side}`);
-
         if (!box || !txt || !lbl) return;
 
         txt.textContent = Number(score).toFixed(2);
 
         let cls = "safe";
         let tag = "CLEAR";
-        if (score > 0.60) {
-            cls = "risky";
-            tag = "BLOCKED";
-        } else if (score > 0.30) {
-            cls = "caution";
-            tag = "CAUTION";
-        }
+        if (score > 0.60) { cls = "risky"; tag = "BLOCKED"; }
+        else if (score > 0.30) { cls = "caution"; tag = "CAUTION"; }
 
         box.className = `corridor-box ${cls}`;
         lbl.textContent = tag;
     }
 
-    const recentHistory = [];
-    function updateRecentActions(haptic) {
-        if (!haptic || !haptic.pattern_id || haptic.pattern_id === "ALL_CLEAR") return;
+    function updateRecentGuidance(haptic, state) {
+        // Only record meaningful haptic events (skip ALL_CLEAR / DEGRADED_WARN noise)
+        if (!haptic || !haptic.pattern_id) return;
+        const pattern = haptic.pattern_id;
+        if (pattern === "ALL_CLEAR" || pattern === "DEGRADED_WARN") return;
 
-        const timeStr = new Date().toTimeString().split(" ")[0];
-        const item = {
-            time: timeStr,
-            pattern: haptic.pattern_id,
-            dir: haptic.direction || "STOP",
-            urgency: haptic.urgency || 1,
-        };
+        const dir = (haptic.direction || "STOP").toUpperCase();
+        const timeStr = new Date().toLocaleTimeString("en-IN", { hour: "2-digit", minute: "2-digit", second: "2-digit" });
 
-        // Don't duplicate consecutive identical entries
+        // Human-readable description
+        let description = "Guidance issued";
+        if (dir === "LEFT") description = "← Move Left — obstacle on right";
+        else if (dir === "RIGHT") description = "→ Move Right — obstacle on left";
+        else if (dir === "STOP") description = "⏹ Stop — path blocked";
+
+        const item = { time: timeStr, dir, description, state };
+
+        // Deduplicate consecutive identical events
         if (recentHistory.length > 0) {
             const last = recentHistory[0];
-            if (last.pattern === item.pattern && last.dir === item.dir) {
-                return;
-            }
+            if (last.dir === dir && last.state === state) return;
         }
 
         recentHistory.unshift(item);
@@ -289,9 +286,9 @@ window.HomePage = (function () {
         const listEl = document.getElementById("home-recent-actions-list");
         if (listEl) {
             listEl.innerHTML = recentHistory.map(h => `
-                <div style="display: flex; justify-content: space-between; font-size: 11px; padding: 4px 0; border-bottom: 1px dashed #e2e8f0;">
-                    <span style="font-family: var(--font-mono); font-weight: 600; color: #2563eb;">${h.dir} · ${h.pattern}</span>
-                    <span style="font-family: var(--font-mono); color: var(--text-muted);">${h.time}</span>
+                <div style="display: flex; justify-content: space-between; align-items: center; padding: 6px 0; border-bottom: 1px dashed #e2e8f0;">
+                    <span style="font-size: 12px; font-weight: 600; color: var(--text-primary);">${h.description}</span>
+                    <span style="font-family: var(--font-mono); font-size: 10px; color: var(--text-muted);">${h.time}</span>
                 </div>
             `).join("");
         }

@@ -1,5 +1,6 @@
 /**
  * SpatialVector-HMI — Tab 2: Haptics Page
+ * Redesigned: 2-motor hardware, clean status, no battery, no motor count mismatch
  */
 
 window.HapticsPage = (function () {
@@ -18,10 +19,10 @@ window.HapticsPage = (function () {
 
     function renderShell() {
         containerEl.innerHTML = `
-            <!-- Vest Diagram Card -->
+            <!-- Active Status Card -->
             <div class="expand-panel open" style="margin-bottom: 14px;">
                 <div class="expand-header" style="cursor: default;">
-                    <span>Active Haptic Feedback</span>
+                    <span>Haptic Feedback Status</span>
                     <span id="haptic-status-chip" class="pill-badge gray">○ Standby</span>
                 </div>
                 <div class="expand-body" style="display: block; background: #ffffff; padding: 14px 10px;">
@@ -32,103 +33,111 @@ window.HapticsPage = (function () {
             <!-- Current Command Card -->
             <div class="expand-panel open" style="margin-bottom: 14px;">
                 <div class="expand-header" style="cursor: default;">
-                    <span>Current Command</span>
-                    <span id="haptic-urg-badge" class="pill-badge blue">1 / 5 Urgency</span>
+                    <span>Active Motor Command</span>
+                    <span id="haptic-urg-badge" class="pill-badge blue">Urgency 1/5</span>
                 </div>
                 <div class="expand-body" style="display: block; background: #ffffff;">
+
+                    <!-- Big direction display -->
+                    <div id="haptic-direction-display" style="
+                        text-align: center;
+                        padding: 14px 0 10px;
+                        font-size: 32px;
+                        font-weight: 800;
+                        color: var(--brand-primary);
+                        letter-spacing: 0.04em;
+                    ">—</div>
+
                     <div class="kv-row">
-                        <span class="kv-key">Tactile Direction</span>
-                        <span id="haptic-dir-val" class="kv-val" style="color: #2563eb; font-weight: 700;">STOP</span>
+                        <span class="kv-key">What this means</span>
+                        <span id="haptic-meaning-val" style="font-size: 12px; font-weight: 600; color: var(--text-primary); text-align: right; max-width: 60%;">
+                            No obstacle — path is clear.
+                        </span>
                     </div>
                     <div class="kv-row">
-                        <span class="kv-key">Active Pattern ID</span>
+                        <span class="kv-key">Motor Pattern</span>
                         <span id="haptic-pattern-val" class="kv-val">ALL_CLEAR</span>
                     </div>
                     <div class="kv-row">
                         <span class="kv-key">Pulse Duration</span>
                         <span id="haptic-dur-val" class="kv-val">200 ms</span>
                     </div>
-                    <div class="kv-row" style="flex-direction: column; align-items: flex-start; gap: 4px; margin-top: 4px;">
-                        <span class="kv-key">Guidance Interpretation</span>
-                        <span id="haptic-meaning-val" style="font-size: 12px; font-weight: 600; color: var(--text-primary);">
-                            Safe navigation path; all motors idle.
-                        </span>
+                </div>
+            </div>
+
+            <!-- 2-Motor Hardware Status -->
+            <div class="expand-panel open" style="margin-bottom: 14px;">
+                <div class="expand-header" style="cursor: default;">
+                    <span>Hardware — 2 Vibration Motors</span>
+                    <span id="dev-hw-status" class="pill-badge green">Connected</span>
+                </div>
+                <div class="expand-body" style="display: block; background: #ffffff;">
+                    <div class="haptic-motor-grid">
+                        <div class="haptic-motor-card" id="motor-left-card">
+                            <div class="motor-icon">📳</div>
+                            <div class="motor-name">Left Motor</div>
+                            <div id="motor-left-state" class="motor-state idle">Idle</div>
+                        </div>
+                        <div class="haptic-motor-card" id="motor-right-card">
+                            <div class="motor-icon">📳</div>
+                            <div class="motor-name">Right Motor</div>
+                            <div id="motor-right-state" class="motor-state idle">Idle</div>
+                        </div>
+                    </div>
+                    <div class="kv-row" style="margin-top: 8px;">
+                        <span class="kv-key">Interface</span>
+                        <span id="dev-link-status" class="kv-val">Arduino Uno Q · Serial</span>
+                    </div>
+                    <div class="kv-row">
+                        <span class="kv-key">Command Latency</span>
+                        <span id="dev-latency-val" class="kv-val">< 4 ms</span>
                     </div>
                 </div>
             </div>
 
-            <!-- Intuitive Sensory Help Prompt -->
+            <!-- Haptic Language Guide -->
             <div class="guidance-prompt-card" style="margin-bottom: 14px;">
                 <span class="guidance-icon">💡</span>
                 <span class="guidance-text">
-                    <strong>Quick Reminder:</strong> Feeling a vibration pulse on the left? It means <em>steer left</em> into the open corridor.
+                    <strong>How to read vibrations:</strong> Left motor = steer left. Right motor = steer right. Both motors = stop.
                 </span>
             </div>
 
-            <!-- Haptic Language Guide (Expandable) -->
+            <!-- Pattern Reference (Expandable) -->
             <div class="expand-panel" id="panel-haptic-patterns">
                 <button class="expand-header" onclick="HapticsPage.togglePanel('panel-haptic-patterns')">
-                    <span>Haptic Language Guide</span>
+                    <span>Haptic Pattern Reference</span>
                     <span class="expand-chevron">▼</span>
                 </button>
                 <div class="expand-body">
                     <div class="kv-row">
                         <span class="kv-key"><code>ALL_CLEAR</code></span>
-                        <span style="font-size: 11px; color: var(--text-secondary);">Silent / idle pulse. Corridor is safe.</span>
+                        <span style="font-size: 11px; color: var(--text-secondary);">Silent — both motors idle. Path is safe.</span>
                     </div>
                     <div class="kv-row">
                         <span class="kv-key"><code>LEFT_MED</code></span>
-                        <span style="font-size: 11px; color: var(--text-secondary);">Cadenced pulse on left motor. Steer left.</span>
+                        <span style="font-size: 11px; color: var(--text-secondary);">Left motor pulses — steer left.</span>
                     </div>
                     <div class="kv-row">
                         <span class="kv-key"><code>RIGHT_MED</code></span>
-                        <span style="font-size: 11px; color: var(--text-secondary);">Cadenced pulse on right motor. Steer right.</span>
+                        <span style="font-size: 11px; color: var(--text-secondary);">Right motor pulses — steer right.</span>
+                    </div>
+                    <div class="kv-row">
+                        <span class="kv-key"><code>LEFT_FAST</code></span>
+                        <span style="font-size: 11px; color: var(--text-secondary);">Left motor rapid — urgent, move left now.</span>
+                    </div>
+                    <div class="kv-row">
+                        <span class="kv-key"><code>RIGHT_FAST</code></span>
+                        <span style="font-size: 11px; color: var(--text-secondary);">Right motor rapid — urgent, move right now.</span>
                     </div>
                     <div class="kv-row">
                         <span class="kv-key"><code>STOP_CRITICAL</code></span>
-                        <span style="font-size: 11px; color: var(--text-secondary);">Rapid triple pulse across all 3 motors. Halt.</span>
+                        <span style="font-size: 11px; color: var(--text-secondary);">Both motors rapid — halt immediately.</span>
                     </div>
                     <div class="kv-row">
                         <span class="kv-key"><code>DEGRADED_WARN</code></span>
-                        <span style="font-size: 11px; color: var(--text-secondary);">Slow recurring warning pulse. Sensor dropout.</span>
+                        <span style="font-size: 11px; color: var(--text-secondary);">Slow alternating pulse — sensor issue, use caution.</span>
                     </div>
-                </div>
-            </div>
-
-            <!-- Device Status (Expandable) -->
-            <div class="expand-panel" id="panel-haptic-device">
-                <button class="expand-header" onclick="HapticsPage.togglePanel('panel-haptic-device')">
-                    <span>Haptic Belt Hardware Status</span>
-                    <span class="expand-chevron">▼</span>
-                </button>
-                <div class="expand-body">
-                    <div class="kv-row">
-                        <span class="kv-key">Actuator Interface</span>
-                        <span id="dev-hw-status" class="pill-badge green">Simulated Arduino (OK)</span>
-                    </div>
-                    <div class="kv-row">
-                        <span class="kv-key">Actuator Link</span>
-                        <span id="dev-link-status" class="kv-val">Online</span>
-                    </div>
-                    <div class="kv-row">
-                        <span class="kv-key">Command Latency</span>
-                        <span id="dev-latency-val" class="kv-val">&lt; 4 ms</span>
-                    </div>
-                    <div class="kv-row">
-                        <span class="kv-key">Motor Diagnostic</span>
-                        <span id="dev-diag-val" class="kv-val">3/3 Operational</span>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Calibration Card (Honest Notice per Section 7) -->
-            <div class="expand-panel" style="background: #fafafa; border-style: dashed;">
-                <div class="expand-header" style="cursor: default;">
-                    <span>Haptic Calibration</span>
-                    <span class="pill-badge gray">Fixed Baseline</span>
-                </div>
-                <div class="expand-body" style="display: block; font-size: 11px; color: var(--text-muted); line-height: 1.6;">
-                    Motor intensity is calibrated to the standardized 5-tier ISO-9241 assistive vibration profile (1.0x baseline gain). Custom per-user sensory sensitivity calibration will be enabled in v2.0 firmware.
                 </div>
             </div>
         `;
@@ -152,37 +161,64 @@ window.HapticsPage = (function () {
         const pattern = haptic.pattern_id || "ALL_CLEAR";
         const urgency = haptic.urgency || 1;
         const dur = haptic.duration_ms || 200;
-        const isVibrating = pattern !== "ALL_CLEAR";
+        const isVibrating = pattern !== "ALL_CLEAR" && pattern !== "DEGRADED_WARN";
 
         // Status Chip
         const statusChip = document.getElementById("haptic-status-chip");
         if (statusChip) {
-            statusChip.textContent = isVibrating ? "● Vibrating" : "○ Standby";
+            statusChip.textContent = isVibrating ? "● Active" : "○ Standby";
             statusChip.className = isVibrating ? "pill-badge blue" : "pill-badge gray";
         }
 
-        // Urgency
+        // Urgency Badge
         const urgBadge = document.getElementById("haptic-urg-badge");
         if (urgBadge) {
-            urgBadge.textContent = `${urgency} / 5 Urgency`;
+            urgBadge.textContent = `Urgency ${urgency}/5`;
             urgBadge.className = urgency >= 4 ? "pill-badge red" : (urgency >= 3 ? "pill-badge orange" : "pill-badge blue");
         }
 
-        // Values
-        const dirVal = document.getElementById("haptic-dir-val");
+        // Big Direction Display
+        const dirDisplay = document.getElementById("haptic-direction-display");
+        if (dirDisplay) {
+            if (dir === "LEFT") dirDisplay.innerHTML = `<span style="color:#2563eb">← Left</span>`;
+            else if (dir === "RIGHT") dirDisplay.innerHTML = `<span style="color:#2563eb">Right →</span>`;
+            else if (dir === "STOP" && isVibrating) dirDisplay.innerHTML = `<span style="color:#ef4444">⏹ Stop</span>`;
+            else dirDisplay.innerHTML = `<span style="color:#10b981">✓ Clear</span>`;
+        }
+
+        // Text fields
         const patVal = document.getElementById("haptic-pattern-val");
         const durVal = document.getElementById("haptic-dur-val");
         const meaningVal = document.getElementById("haptic-meaning-val");
 
-        if (dirVal) dirVal.textContent = dir;
         if (patVal) patVal.textContent = pattern;
         if (durVal) durVal.textContent = `${dur} ms`;
         if (meaningVal) meaningVal.textContent = HapticBodyDiagram.getDescription(pattern);
 
-        // Hardware Status
+        // 2-Motor state display
+        const leftCard = document.getElementById("motor-left-card");
+        const rightCard = document.getElementById("motor-right-card");
+        const leftState = document.getElementById("motor-left-state");
+        const rightState = document.getElementById("motor-right-state");
+
+        const leftActive = dir === "LEFT" || (dir === "STOP" && isVibrating);
+        const rightActive = dir === "RIGHT" || (dir === "STOP" && isVibrating);
+
+        if (leftState) {
+            leftState.textContent = leftActive ? "● Active" : "Idle";
+            leftState.className = leftActive ? "motor-state active" : "motor-state idle";
+        }
+        if (rightState) {
+            rightState.textContent = rightActive ? "● Active" : "Idle";
+            rightState.className = rightActive ? "motor-state active" : "motor-state idle";
+        }
+        if (leftCard) leftCard.classList.toggle("motor-firing", leftActive);
+        if (rightCard) rightCard.classList.toggle("motor-firing", rightActive);
+
+        // Hardware Link
         const hwStatus = document.getElementById("dev-hw-status");
         if (hwStatus && health.arduino) {
-            hwStatus.textContent = health.arduino;
+            hwStatus.textContent = health.arduino.includes("OK") ? "Connected" : "Check Connection";
             hwStatus.className = health.arduino.includes("OK") ? "pill-badge green" : "pill-badge red";
         }
     }

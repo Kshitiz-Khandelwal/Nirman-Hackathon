@@ -221,6 +221,9 @@ window.App = (function () {
         if (window.SystemHealthPage && typeof SystemHealthPage.updateTelemetry === "function") {
             SystemHealthPage.updateTelemetry(msg);
         }
+        if (window.TestReplayPage && typeof TestReplayPage.updateTelemetry === "function") {
+            TestReplayPage.updateTelemetry(msg);
+        }
     }
 
     function startClock() {

@@ -33,7 +33,7 @@ from spatialvector.decision.corridor_policy import CorridorPolicy
 from spatialvector.decision.prediction import CollisionPredictor
 from spatialvector.decision.risk_engine import RiskEngine
 from spatialvector.decision.schemas import HapticCommand, Prediction, RiskState
-from spatialvector.hmi.arduino_interface import SimulatedArduinoInterface
+from spatialvector.hmi.arduino_interface import ArduinoInterface, SimulatedArduinoInterface
 from spatialvector.hmi.schemas import TelemetryMessage, build_track_telemetry
 from spatialvector.hmi.telemetry_server import TelemetryServer
 from spatialvector.motion.schemas import ObjectGeometry
@@ -52,7 +52,9 @@ def parse_args():
     p = argparse.ArgumentParser(description="SpatialVector-HMI — Master System Launcher")
     p.add_argument("--port", type=int, default=8081, help="Port for dashboard & telemetry (default: 8081)")
     p.add_argument("--host", default="0.0.0.0", help="Host address (default: 0.0.0.0)")
-    p.add_argument("--source", default=None, help="Camera index, video file, or VDO.Ninja URL")
+    p.add_argument("--source", default=None, help="Camera index, video file, or VDO.Ninja URL (default: reads camera_source.txt)")
+    p.add_argument("--arduino-port", default=None, help="Arduino serial port (e.g. /dev/ttyACM0 or COM3). If not set, uses simulated interface.")
+    p.add_argument("--sim-arduino", action="store_true", help="Force simulated Arduino even if port is set")
     p.add_argument("--synthetic", action="store_true", help="Run in synthetic demo mode (no camera needed)")
     p.add_argument("--fps", type=float, default=15.0, help="Target pipeline FPS (default: 15.0)")
     p.add_argument("--delay", type=float, default=0.03, help="Pacing delay in seconds (default: 0.03s)")
@@ -208,7 +210,16 @@ def main():
     )
     telemetry_server.set_risk_engine(engine)
     policy = CorridorPolicy(all_unsafe_risk_threshold=0.70, trend_window_frames=5)
-    arduino = SimulatedArduinoInterface()
+    # Use real ArduinoInterface if --arduino-port is given, else simulated
+    if not args.sim_arduino and args.arduino_port:
+        arduino = ArduinoInterface(port=args.arduino_port, baud_rate=115200)
+        print(f"[*] Arduino: REAL hardware on {args.arduino_port}")
+    else:
+        arduino = SimulatedArduinoInterface()
+        if args.sim_arduino:
+            print("[*] Arduino: SIMULATED (--sim-arduino flag set)")
+        else:
+            print("[*] Arduino: SIMULATED (no --arduino-port given; use --arduino-port /dev/ttyACM0 for real hardware)")
     arduino.start()
 
     simple_url = f"http://localhost:{args.port}/app_simple/"

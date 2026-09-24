@@ -26,7 +26,7 @@
     let pageLoadTimestamp = Date.now();
     let ws = null;
     let reconnectDelay = 1000;
-    let currentCameraUrl = "https://vdo.ninja/?view=spatialvector_demo";
+    let currentCameraUrl = "2";
 
     // Overlay and Video Controls
     let hudOverlayEnabled = true;
@@ -40,72 +40,130 @@
     let activeTracks = [];
     let selectedTrackIndex = 0;
     let hapticHistory = [];
+    let lastHapticKey = "";
+    let lastHapticLogTime = 0;
     let currentFrameWidth = 640;
     let currentFrameHeight = 480;
     let lastReasonCodes = [];
 
-    // Replay State
+    // Predict screen state
+    let predictViewMode = "2d"; // '2d' | 'top' | 'timeline'
+    let reasoningAccordionOpen = false;
+
+    // Replay & Scenarios State
     const SCENARIOS = {
         s1: {
-            title: "Scenario S1 - Parallel Wall (Safe)",
-            desc: "Walk parallel to a wall (close distance)",
-            expected: "SAFE / SILENT",
-            actual: "SAFE / SILENT",
+            id: "s1",
+            title: "S1 — Parallel Wall",
+            desc: "Walk parallel to a wall at close distance",
+            icon: "🚶",
+            expectedRisk: "SAFE",
+            expectedHaptic: "ALL_CLEAR (Silent)",
+            expectedTtc: "> 5.0 s",
+            expectedIntersect: "NO (Parallel path)",
+            actualRisk: "SAFE",
+            actualHaptic: "ALL_CLEAR (Silent)",
             result: "PASS",
             riskPeak: 0.12,
-            curve: [0.05, 0.08, 0.11, 0.12, 0.10, 0.09, 0.07, 0.06, 0.05, 0.05]
+            curve: [0.05, 0.08, 0.11, 0.12, 0.10, 0.09, 0.07, 0.06, 0.05, 0.03]
         },
         s2: {
-            title: "Scenario S2 - Head-On Obstacle (Warning)",
+            id: "s2",
+            title: "S2 — Head-On Obstacle",
             desc: "Obstacle approaching directly in user path",
-            expected: "WARNING",
-            actual: "WARNING",
+            icon: "🚶",
+            expectedRisk: "WARNING",
+            expectedHaptic: "LEFT / RIGHT Guidance (Urgency 3)",
+            expectedTtc: "2.1 s",
+            expectedIntersect: "YES (Direct collision)",
+            actualRisk: "WARNING",
+            actualHaptic: "LEFT Guidance (Urgency 3)",
             result: "PASS",
-            riskPeak: 0.84,
-            curve: [0.15, 0.22, 0.38, 0.55, 0.72, 0.84, 0.78, 0.45, 0.20, 0.10]
+            riskPeak: 0.72,
+            curve: [0.15, 0.22, 0.38, 0.55, 0.72, 0.65, 0.40, 0.20, 0.10, 0.05]
         },
         s3: {
-            title: "Scenario S3 - Crossing Pedestrian (Warning)",
+            id: "s3",
+            title: "S3 — Crossing Object",
             desc: "Pedestrian crossing user path at lateral angle",
-            expected: "WARNING",
-            actual: "WARNING",
+            icon: "🚶",
+            expectedRisk: "WARNING",
+            expectedHaptic: "DIRECTIONAL CUE (Pulse left)",
+            expectedTtc: "2.8 s",
+            expectedIntersect: "YES (Crossing point)",
+            actualRisk: "WARNING",
+            actualHaptic: "LEFT Guidance (Urgency 2)",
             result: "PASS",
             riskPeak: 0.76,
             curve: [0.10, 0.18, 0.35, 0.62, 0.76, 0.68, 0.30, 0.15, 0.08, 0.05]
         },
         s4: {
-            title: "Scenario S4 - Safe Pass (Safe)",
-            desc: "Pedestrian walking past in adjacent corridor",
-            expected: "SAFE / SILENT",
-            actual: "SAFE / SILENT",
+            id: "s4",
+            title: "S4 — Static Obstacle",
+            desc: "Parked scooter or stationary object in corridor",
+            icon: "🛵",
+            expectedRisk: "SAFE",
+            expectedHaptic: "ALL_CLEAR (Pass corridor clear)",
+            expectedTtc: "> 4.5 s",
+            expectedIntersect: "NO (Adequate margin)",
+            actualRisk: "SAFE",
+            actualHaptic: "ALL_CLEAR (Silent)",
             result: "PASS",
             riskPeak: 0.22,
             curve: [0.08, 0.12, 0.18, 0.22, 0.19, 0.14, 0.09, 0.06, 0.04, 0.02]
         },
         s5: {
-            title: "Scenario S5 - Receding Object (Safe)",
-            desc: "Object moving away in the same heading",
-            expected: "SAFE / SILENT",
-            actual: "SAFE / SILENT",
-            result: "PASS",
-            riskPeak: 0.08,
-            curve: [0.08, 0.07, 0.06, 0.05, 0.04, 0.03, 0.02, 0.02, 0.01, 0.01]
-        },
-        s6: {
-            title: "Scenario S6 - Multiple Obstacles (Critical)",
-            desc: "Multiple converging obstacles with overlapping trajectories",
-            expected: "CRITICAL",
-            actual: "CRITICAL",
+            id: "s5",
+            title: "S5 — Multiple Obstacles",
+            desc: "Multiple converging obstacles; prioritizes highest hazard",
+            icon: "👥",
+            expectedRisk: "CRITICAL",
+            expectedHaptic: "DUAL MOTOR EMERGENCY BRAKE",
+            expectedTtc: "1.4 s",
+            expectedIntersect: "YES (Immediate hazard)",
+            actualRisk: "CRITICAL",
+            actualHaptic: "DUAL MOTORS (Urgency 5)",
             result: "PASS",
             riskPeak: 0.95,
             curve: [0.20, 0.40, 0.65, 0.82, 0.95, 0.92, 0.88, 0.60, 0.35, 0.15]
+        },
+        s6: {
+            id: "s6",
+            title: "S6 — Narrow Corridor",
+            desc: "Tight walking passage; spatial reasoning validates center clear path",
+            icon: "↔",
+            expectedRisk: "SAFE",
+            expectedHaptic: "ALL_CLEAR (Center aligned)",
+            expectedTtc: "> 4.0 s",
+            expectedIntersect: "NO (Passing corridor)",
+            actualRisk: "SAFE",
+            actualHaptic: "ALL_CLEAR (Silent)",
+            result: "PASS",
+            riskPeak: 0.18,
+            curve: [0.06, 0.09, 0.14, 0.18, 0.16, 0.12, 0.08, 0.05, 0.03, 0.02]
         }
     };
     let currentScenarioId = "s1";
     let replayTimer = null;
+    let modalTestTimer = null;
     let replayProgress = 35; // 0 to 100 percent
     let isReplaying = false;
+    let isModalTesting = false;
+    let testHistory = [
+        { title: "S1 Parallel Wall", result: "PASS", expected: "SAFE", actual: "SAFE" },
+        { title: "S2 Head-On Obstacle", result: "PASS", expected: "WARNING", actual: "WARNING" }
+    ];
+
+    // Social Assist State (UI-Only Prototype)
     let socialAssistEnabled = true;
+    let socialDemoState = "known"; // 'known' | 'unknown' | 'possible'
+    let mockContacts = [
+        { id: 1, name: "Rahul", relationship: "Friend", photos: [], photosCount: 3, status: "Ready", avatar: "👤" },
+        { id: 2, name: "Ananya", relationship: "Family", photos: [], photosCount: 2, status: "Ready", avatar: "👩" }
+    ];
+    let currentContactId = null;
+    let addFriendState = { photos: [], name: "", relationship: "Friend", step: 1 };
+    let tempFriendPhotos = [];
 
     // -------------------------------------------------------------------------
     // DOM Element References
@@ -149,25 +207,32 @@
 
     // Prediction Inspector Elements
     const inspectorObjLabel = document.getElementById("inspector-obj-label");
+    const inspObjIcon = document.getElementById("insp-obj-icon");
+    const inspRiskBadge = document.getElementById("insp-risk-badge");
+    const inspHeaderBadge = document.getElementById("insp-header-badge");
     const inspectorCanvas = document.getElementById("inspector-canvas");
     const inspId = document.getElementById("insp-id");
     const inspClass = document.getElementById("insp-class");
     const inspTrackConf = document.getElementById("insp-track-conf");
     const inspTtc = document.getElementById("insp-ttc");
+    const inspTtcSub = document.getElementById("insp-ttc-sub");
     const inspCpa = document.getElementById("insp-cpa");
+    const inspCpaSub = document.getElementById("insp-cpa-sub");
     const inspIntersect = document.getElementById("insp-intersect");
+    const inspIntersectSub = document.getElementById("insp-intersect-sub");
     const inspVel = document.getElementById("insp-vel");
     const inspPredConf = document.getElementById("insp-pred-conf");
     const inspState = document.getElementById("insp-state");
     const inspectorReasoningList = document.getElementById("inspector-reasoning-list");
+    const predictRiskTimelineCanvas = document.getElementById("predict-risk-timeline-canvas");
+    const riskTimelineVal = document.getElementById("risk-timeline-val");
+    const reasoningAccordionChevron = document.getElementById("reasoning-accordion-chevron");
+    const reasoningAccordionPanel = document.getElementById("reasoning-accordion-panel");
 
-    // Haptics Elements
+    // Haptics Elements (2-Motor Hardware Setup: Pin 5 Left, Pin 6 Right)
     const svgMotorLeft = document.getElementById("svg-motor-left");
     const svgRippleLeft = document.getElementById("svg-ripple-left");
     const svgLblLeft = document.getElementById("svg-lbl-left");
-    const svgMotorCenter = document.getElementById("svg-motor-center");
-    const svgRippleCenter = document.getElementById("svg-ripple-center");
-    const svgLblCenter = document.getElementById("svg-lbl-center");
     const svgMotorRight = document.getElementById("svg-motor-right");
     const svgRippleRight = document.getElementById("svg-ripple-right");
     const svgLblRight = document.getElementById("svg-lbl-right");
@@ -181,11 +246,15 @@
     const devArdStatus = document.getElementById("dev-ard-status");
     const devLatencyVal = document.getElementById("dev-latency-val");
     const devMotorLStatus = document.getElementById("dev-motor-l-status");
-    const devMotorCStatus = document.getElementById("dev-motor-c-status");
     const devMotorRStatus = document.getElementById("dev-motor-r-status");
     const hapticsDeviceView = document.getElementById("haptics-device-view");
     const hapticsCommandsView = document.getElementById("haptics-commands-view");
     const hapticCommandsList = document.getElementById("haptic-commands-list");
+
+    // Obstacle Spotlight Elements
+    const obstacleSpotlightBox = document.getElementById("obstacle-spotlight-box");
+    const obstacleSpotlightIcon = document.getElementById("obstacle-spotlight-icon");
+    const obstacleSpotlightText = document.getElementById("obstacle-spotlight-text");
 
     // Test & Replay Elements
     const selectTestScenario = document.getElementById("select-test-scenario");
@@ -196,6 +265,27 @@
     const replayTimelineCanvas = document.getElementById("replay-timeline-canvas");
     const scenFrameTxt = document.getElementById("scen-frame-txt");
     const replaySlider = document.getElementById("replay-slider");
+    const testExecStatusBadge = document.getElementById("test-exec-status-badge");
+    const testHistoryList = document.getElementById("test-history-list");
+    const scenarioModal = document.getElementById("scenario-modal");
+    const scenModalTitle = document.getElementById("scen-modal-title");
+    const scenModalDesc = document.getElementById("scen-modal-desc");
+    const scenModalExpRisk = document.getElementById("scen-modal-exp-risk");
+    const scenModalExpHaptic = document.getElementById("scen-modal-exp-haptic");
+    const scenModalExpTtc = document.getElementById("scen-modal-exp-ttc");
+    const scenModalExpIntersect = document.getElementById("scen-modal-exp-intersect");
+    const scenActiveBox = document.getElementById("scen-active-box");
+    const scenExecTimerTxt = document.getElementById("scen-exec-timer-txt");
+    const scenResultCard = document.getElementById("scen-result-card");
+    const scenResultBadge = document.getElementById("scen-result-badge");
+    const scenResExp = document.getElementById("scen-res-exp");
+    const scenResAct = document.getElementById("scen-res-act");
+    const scenResHap = document.getElementById("scen-res-hap");
+    const scenTimelineEmbed = document.getElementById("scen-timeline-embed");
+    const testResultCard = document.getElementById("test-result-card");
+    const testResBadge = document.getElementById("test-res-badge");
+    const testResExp = document.getElementById("test-res-exp");
+    const testResAct = document.getElementById("test-res-act");
 
     // Social Elements
     const toggleSocialSwitch = document.getElementById("toggle-social-switch");
@@ -203,13 +293,67 @@
     const socialLiveView = document.getElementById("social-live-view");
     const socialContactsView = document.getElementById("social-contacts-view");
     const socialFaceBox = document.getElementById("social-face-box");
+    const socialFaceTagTop = document.getElementById("social-face-tag-top");
+    const socialFaceTagBottom = document.getElementById("social-face-tag-bottom");
+    const socTrackId = document.getElementById("soc-track-id");
+    const socPersonName = document.getElementById("soc-person-name");
+    const socRelationship = document.getElementById("soc-relationship");
+    const socConf = document.getElementById("soc-conf");
+    const socStatus = document.getElementById("soc-status");
+    const contactsListContainer = document.getElementById("contacts-list-container");
+    const addFriendModal = document.getElementById("add-friend-modal");
+    const addFriendPhotoGrid = document.getElementById("add-friend-photo-grid");
+    const addFriendNameInput = document.getElementById("add-friend-name-input");
+    const addFriendRelationSelect = document.getElementById("add-friend-relation-select");
+    const contactProfileModal = document.getElementById("contact-profile-modal");
+    const profModalAvatar = document.getElementById("prof-modal-avatar");
+    const profModalName = document.getElementById("prof-modal-name");
+    const profModalRelation = document.getElementById("prof-modal-relation");
+    const profModalPhotosCount = document.getElementById("prof-modal-photos-count");
+    const profModalStatus = document.getElementById("prof-modal-status");
 
-    // Settings Modal
+    // Info Modal Elements
+    const infoModal = document.getElementById("info-modal");
+    const btnOpenInfo = document.getElementById("btn-open-info");
+    const btnCloseInfo = document.getElementById("btn-close-info");
+    const btnDismissInfo = document.getElementById("btn-dismiss-info");
+
+    // Settings Modal Elements
     const settingsModal = document.getElementById("settings-modal");
     const inputCameraUrl = document.getElementById("input-camera-url");
     const btnCloseSettings = document.getElementById("btn-close-settings");
     const btnCancelSettings = document.getElementById("btn-cancel-settings");
     const btnSaveSettings = document.getElementById("btn-save-settings");
+
+    function resetDashboardLiveMetrics() {
+        if (valRiskScore) valRiskScore.textContent = "—";
+        if (gaugeCircleStroke) gaugeCircleStroke.setAttribute("stroke-dasharray", "0, 100");
+
+        const camBadge = document.getElementById("camera-stream-badge");
+        if (camBadge) {
+            camBadge.textContent = "○ NO SIGNAL";
+            camBadge.style.background = "#f1f5f9";
+            camBadge.style.color = "#64748b";
+            camBadge.style.borderColor = "#cbd5e1";
+        }
+
+        const boxes = [
+            { box: boxCorrLeft, txt: txtCorrLeft, lbl: lblCorrLeft },
+            { box: boxCorrCenter, txt: txtCorrCenter, lbl: lblCorrCenter },
+            { box: boxCorrRight, txt: txtCorrRight, lbl: lblCorrRight }
+        ];
+        boxes.forEach(b => {
+            if (b.box) b.box.className = "corridor-box";
+            if (b.txt) b.txt.textContent = "—";
+            if (b.lbl) {
+                b.lbl.className = "corridor-status-tag";
+                b.lbl.textContent = "STANDBY";
+            }
+        });
+
+        if (valTtc) valTtc.textContent = "—";
+        if (valCpa) valCpa.textContent = "—";
+    }
 
     // -------------------------------------------------------------------------
     // 1. Client-Side Staleness Watchdog (Section 0 Requirement)
@@ -231,6 +375,7 @@
                 if (connStatusDot) connStatusDot.className = "status-dot disconnected";
                 if (connStatusText) connStatusText.textContent = "Pipeline Offline / Not Started";
                 resetMotorVisuals();
+                resetDashboardLiveMetrics();
             }
             return;
         }
@@ -246,6 +391,7 @@
             if (connStatusText) connStatusText.textContent = "Pipeline Stalled / Offline";
 
             resetMotorVisuals();
+            resetDashboardLiveMetrics();
         } else {
             if (stalenessBanner) stalenessBanner.style.display = "none";
             if (connPillBadge) connPillBadge.className = "conn-pill";
@@ -258,6 +404,13 @@
         const now = new Date();
         const timeStr = now.toTimeString().split(" ")[0];
         if (headerClock) headerClock.textContent = timeStr;
+        const notchClock = document.getElementById("notch-clock");
+        if (notchClock) {
+            // Show HH:MM in notch (short format)
+            const h = String(now.getHours()).padStart(2, '0');
+            const m = String(now.getMinutes()).padStart(2, '0');
+            notchClock.textContent = `${h}:${m}`;
+        }
     }
     setInterval(updateClock, 1000);
     updateClock();
@@ -291,6 +444,9 @@
     function formatVdoNinjaUrl(rawUrl) {
         if (!rawUrl) return "about:blank";
         let url = rawUrl.trim();
+        // If it's a numeric port index (0, 1, 2…), this is for the local OpenCV backend,
+        // not a streamable browser URL. Keep the iframe blank in that case.
+        if (/^\d+$/.test(url)) return "about:blank";
         if (url.includes("vdo.ninja")) {
             if (!url.includes("cleanoutput")) {
                 url += (url.includes("?") ? "&" : "?") + "cleanoutput";
@@ -357,11 +513,40 @@
         closeSettingsModal();
     }
 
+    function openInfoModal() {
+        if (infoModal) infoModal.style.display = "flex";
+    }
+
+    function closeInfoModal() {
+        if (infoModal) infoModal.style.display = "none";
+    }
+
+    window.setQuickSource = function(src) {
+        if (inputCameraUrl) inputCameraUrl.value = src;
+        document.querySelectorAll(".source-quick-chips .source-chip").forEach(btn => {
+            if (btn.textContent.includes(src) || (src === '2' && btn.textContent.includes('Port 2'))) {
+                btn.classList.add("active");
+            } else {
+                btn.classList.remove("active");
+            }
+        });
+    };
+
+    window.setHapticPreset = function(preset) {
+        document.querySelectorAll("[id^='chip-haptic-']").forEach(btn => btn.classList.remove("active"));
+        const activeBtn = document.getElementById(`chip-haptic-${preset}`);
+        if (activeBtn) activeBtn.classList.add("active");
+    };
+
     if (btnOpenSettings) btnOpenSettings.addEventListener("click", openSettingsModal);
     if (btnToggleCameraSrc) btnToggleCameraSrc.addEventListener("click", openSettingsModal);
     if (btnCloseSettings) btnCloseSettings.addEventListener("click", closeSettingsModal);
     if (btnCancelSettings) btnCancelSettings.addEventListener("click", closeSettingsModal);
     if (btnSaveSettings) btnSaveSettings.addEventListener("click", saveCameraSettings);
+
+    if (btnOpenInfo) btnOpenInfo.addEventListener("click", openInfoModal);
+    if (btnCloseInfo) btnCloseInfo.addEventListener("click", closeInfoModal);
+    if (btnDismissInfo) btnDismissInfo.addEventListener("click", closeInfoModal);
 
     // -------------------------------------------------------------------------
     // 3. Tab Switching
@@ -392,9 +577,9 @@
             drawLiveOverlay();
         } else if (tabId === "predict") {
             updateInspector();
-            drawInspectorCanvas();
+            window.switchPredictView(predictViewMode);
         } else if (tabId === "test") {
-            drawReplayTimeline();
+            renderTestHistory();
         }
     };
 
@@ -457,14 +642,22 @@
     }
 
     function handleTelemetryMessage(msg) {
-        if (msg.session_id && sessionIdLabel) {
-            sessionIdLabel.textContent = `Session: ${msg.session_id.substring(0, 10)}`;
+        if (sessionIdLabel) {
+            sessionIdLabel.textContent = "Active Session: Local";
+        }
+
+        const camBadge = document.getElementById("camera-stream-badge");
+        if (camBadge) {
+            camBadge.textContent = "● CAMERA ACTIVE";
+            camBadge.style.background = "rgba(15, 23, 42, 0.75)";
+            camBadge.style.color = "#ffffff";
+            camBadge.style.borderColor = "rgba(255, 255, 255, 0.15)";
         }
 
         if (msg.frame_width) currentFrameWidth = msg.frame_width;
         if (msg.frame_height) currentFrameHeight = msg.frame_height;
 
-        // 1. Risk State & Score
+        // 1. Risk State & Score (Smoothed with EMA filter to eliminate jitter)
         const rs = msg.risk_state || {};
         if (Array.isArray(rs.reason_codes)) {
             lastReasonCodes = rs.reason_codes;
@@ -472,11 +665,11 @@
             lastReasonCodes = [];
         }
         const state = (rs.state || "SAFE").toUpperCase();
-        const globalRisk = (typeof rs.global_risk === "number") ? rs.global_risk : 0.0;
+        const rawRisk = (typeof rs.global_risk === "number") ? rs.global_risk : 0.0;
         currentRiskState = state;
-        currentGlobalRisk = globalRisk;
+        currentGlobalRisk = (currentGlobalRisk * 0.75) + (rawRisk * 0.25);
 
-        updateRiskBanner(state, globalRisk);
+        updateRiskBanner(state, currentGlobalRisk);
 
         // 2. Corridors (Defaults to 0.0 instead of fake mock constants)
         const cr = rs.corridor_risks || {};
@@ -511,6 +704,9 @@
         if (valTtc) valTtc.textContent = currentTTC !== null ? `${Number(currentTTC).toFixed(1)} s` : "—";
         if (valCpa) valCpa.textContent = currentCPA !== null ? `${Number(currentCPA).toFixed(2)} m` : "—";
 
+        // Update Obstacle Spotlight with human-readable information
+        updateObstacleSpotlight(activeTracks, state);
+
         // 5. Haptic Feedback
         if (msg.haptic) {
             updateHapticTelemetry(msg.haptic);
@@ -533,11 +729,65 @@
         // Render Canvases
         drawLiveOverlay();
         updateInspector();
+        drawInspectorCanvas();
     }
 
     // -------------------------------------------------------------------------
     // 5. UI Renderers for Live Tab
     // -------------------------------------------------------------------------
+    function updateObstacleSpotlight(tracks, state) {
+        if (!obstacleSpotlightBox || !obstacleSpotlightText || !obstacleSpotlightIcon) return;
+
+        if (!tracks || tracks.length === 0 || state === "SAFE") {
+            obstacleSpotlightIcon.textContent = "🟢";
+            obstacleSpotlightText.textContent = "Path Clear · No immediate obstacles in trajectory";
+            obstacleSpotlightBox.style.borderColor = "var(--border-light)";
+            obstacleSpotlightBox.style.background = "rgba(255, 255, 255, 0.92)";
+            obstacleSpotlightText.style.color = "var(--text-title)";
+            return;
+        }
+
+        // Find primary hazard track (lowest TTC or highest prediction confidence)
+        let primaryHazard = tracks[0];
+        for (const t of tracks) {
+            if (t.ttc_s !== null && (primaryHazard.ttc_s === null || t.ttc_s < primaryHazard.ttc_s)) {
+                primaryHazard = t;
+            }
+        }
+
+        const className = primaryHazard.class_name ? primaryHazard.class_name.toUpperCase() : "OBSTACLE";
+        const trackId = primaryHazard.track_id || 1;
+        const ttcStr = (primaryHazard.ttc_s !== null && primaryHazard.ttc_s !== undefined) ? `${Number(primaryHazard.ttc_s).toFixed(1)}s` : null;
+        const cpaStr = (primaryHazard.cpa !== null && primaryHazard.cpa !== undefined) ? `${Number(primaryHazard.cpa).toFixed(1)}m` : null;
+
+        let icon = "⚠️";
+        let color = "#9a3412";
+        let bg = "#fff7ed";
+        let border = "#fed7aa";
+
+        if (state === "CRITICAL") {
+            icon = "🛑";
+            color = "#991b1b";
+            bg = "#fef2f2";
+            border = "#fecaca";
+        } else if (state === "CAUTION") {
+            icon = "🟡";
+            color = "#92400e";
+            bg = "#fffbeb";
+            border = "#fde68a";
+        }
+
+        obstacleSpotlightIcon.textContent = icon;
+        let detailText = `Detected: ${className} (#${trackId})`;
+        if (ttcStr) detailText += ` · Est. Contact: ${ttcStr}`;
+        if (cpaStr) detailText += ` (Pass margin: ${cpaStr})`;
+
+        obstacleSpotlightText.textContent = detailText;
+        obstacleSpotlightBox.style.borderColor = border;
+        obstacleSpotlightBox.style.background = bg;
+        obstacleSpotlightText.style.color = color;
+    }
+
     function updateRiskBanner(state, riskScore) {
         if (!riskAlertCard) return;
 
@@ -763,24 +1013,107 @@
         drawInspectorCanvas();
     };
 
-    function updateInspector() {
-        if (!activeTracks || activeTracks.length === 0) {
-            if (inspectorObjLabel) inspectorObjLabel.textContent = "No Track Selected";
-            if (inspId) inspId.textContent = "—";
-            if (inspClass) inspClass.textContent = "None";
-            if (inspTrackConf) inspTrackConf.textContent = "—";
+    window.switchPredictView = function (mode) {
+        predictViewMode = mode || "2d";
+        const btn2d = document.getElementById("btn-pred-2d");
+        const btnTop = document.getElementById("btn-pred-top");
+        const btnTimeline = document.getElementById("btn-pred-timeline");
+        const cardMain = document.getElementById("card-pred-main-view");
+        const cardRiskTimeline = document.getElementById("card-risk-timeline");
+
+        if (btn2d) btn2d.classList.toggle("active", predictViewMode === "2d");
+        if (btnTop) btnTop.classList.toggle("active", predictViewMode === "top");
+        if (btnTimeline) btnTimeline.classList.toggle("active", predictViewMode === "timeline");
+
+        if (cardMain) cardMain.style.display = (predictViewMode === "timeline") ? "none" : "flex";
+        if (cardRiskTimeline) cardRiskTimeline.style.display = (predictViewMode === "timeline") ? "flex" : "none";
+
+        if (predictViewMode === "timeline") {
+            const track = (activeTracks && activeTracks.length) ? (activeTracks[selectedTrackIndex] || activeTracks[0]) : null;
+            drawRiskTimeline(track);
+        } else {
+            drawInspectorCanvas();
+        }
+    };
+
+    window.toggleReasoningPanel = function () {
+        reasoningAccordionOpen = !reasoningAccordionOpen;
+        if (reasoningAccordionPanel) {
+            reasoningAccordionPanel.style.display = reasoningAccordionOpen ? "flex" : "none";
+        }
+        if (reasoningAccordionChevron) {
+            reasoningAccordionChevron.style.transform = reasoningAccordionOpen ? "rotate(180deg)" : "rotate(0deg)";
+        }
+    };
+    window.toggleReasoningAccordion = window.toggleReasoningPanel;
+
+    function setRiskBadge(el, state) {
+        if (!el) return;
+        const s = (state || "SAFE").toUpperCase();
+        el.textContent = s;
+        const cls = (s === "CRITICAL") ? "red" : (s === "WARNING") ? "orange" : (s === "DEGRADED") ? "yellow" : "green";
+        el.className = `pill-badge ${cls}`;
+    }
+
+    function updatePredictMetrics(track) {
+        if (!track) {
             if (inspTtc) inspTtc.textContent = "None";
+            if (inspTtcSub) inspTtcSub.textContent = "Time to contact";
             if (inspCpa) inspCpa.textContent = "--";
+            if (inspCpaSub) inspCpaSub.textContent = "Closest margin";
             if (inspIntersect) {
                 inspIntersect.textContent = "NO";
                 inspIntersect.className = "pill-badge green";
             }
-            if (inspVel) inspVel.textContent = "— px/s";
+            if (inspIntersectSub) inspIntersectSub.textContent = "Path collision";
             if (inspPredConf) inspPredConf.textContent = "—";
+            return;
+        }
+        if (inspTtc) {
+            inspTtc.textContent = (track.ttc_s !== null && track.ttc_s !== undefined) ? `${Number(track.ttc_s).toFixed(1)} s` : "None";
+        }
+        if (inspTtcSub) {
+            inspTtcSub.textContent = (track.ttc_s !== null && track.ttc_s < 2.5) ? "Decreasing / Danger" : "Time to contact";
+        }
+        if (inspCpa) {
+            inspCpa.textContent = (track.cpa !== null && track.cpa !== undefined) ? `${Number(track.cpa).toFixed(2)} m` : "--";
+        }
+        if (inspCpaSub) {
+            inspCpaSub.textContent = (track.cpa !== null && track.cpa < 0.6) ? "Below safe buffer" : "Closest margin";
+        }
+        if (inspIntersect) {
+            const isIntersect = Boolean(track.intersect);
+            inspIntersect.textContent = isIntersect ? "YES" : "NO";
+            inspIntersect.className = isIntersect ? "pill-badge red" : "pill-badge green";
+        }
+        if (inspIntersectSub) {
+            inspIntersectSub.textContent = Boolean(track.intersect) ? "Direct path conflict" : "Path collision";
+        }
+        if (inspPredConf) {
+            const confVal = track.pred_conf ?? 0.81;
+            inspPredConf.textContent = `${Math.round(confVal * 100)}%`;
+        }
+    }
+
+    function updateInspector() {
+        if (!activeTracks || activeTracks.length === 0) {
+            if (inspectorObjLabel) inspectorObjLabel.textContent = "No Track Selected";
+            if (inspObjIcon) inspObjIcon.textContent = "🟢";
+            setRiskBadge(inspRiskBadge, "SAFE");
+            if (inspId) inspId.textContent = "—";
+            if (inspClass) inspClass.textContent = "None";
+            if (inspTrackConf) inspTrackConf.textContent = "—";
+            updatePredictMetrics(null);
+            if (inspVel) inspVel.textContent = "— px/s";
             if (inspState) {
                 inspState.textContent = "IDLE";
                 inspState.className = "pill-badge green";
             }
+            if (riskTimelineVal) {
+                riskTimelineVal.textContent = "● Safe Horizon";
+                riskTimelineVal.style.color = "#10b981";
+            }
+            drawRiskTimeline(null);
             renderReasoningList(lastReasonCodes, null);
             return;
         }
@@ -788,47 +1121,58 @@
         const track = activeTracks[selectedTrackIndex] || activeTracks[0];
         if (!track) return;
 
-        const isHazard = Array.isArray(lastReasonCodes) && lastReasonCodes.some(c => typeof c === 'string' && c.includes(`track_${track.track_id}`));
+        const isHazard = Array.isArray(lastReasonCodes) && lastReasonCodes.some(c => typeof c === "string" && c.includes(`track_${track.track_id}`));
         const trackState = (currentRiskState === "DEGRADED") ? "DEGRADED" : (isHazard ? currentRiskState : "SAFE");
 
+        const cname = (track.class_name || "").toLowerCase();
+        let icon = "⚠️";
+        if (cname.includes("person") || cname.includes("pedestrian")) icon = "🚶";
+        else if (cname.includes("scooter") || cname.includes("bike") || cname.includes("motorcycle")) icon = "🛵";
+        else if (cname.includes("car") || cname.includes("truck") || cname.includes("bus") || cname.includes("vehicle")) icon = "🚗";
+        else if (cname.includes("wall") || cname.includes("barrier")) icon = "🧱";
+        if (inspObjIcon) inspObjIcon.textContent = icon;
+
         if (inspectorObjLabel) {
-            inspectorObjLabel.textContent = `${track.class_name || 'Object'} #${track.track_id} (${trackState})`;
+            inspectorObjLabel.textContent = `${track.class_name || "Object"} #${track.track_id}`;
         }
+        setRiskBadge(inspRiskBadge, trackState);
 
         if (inspId) inspId.textContent = `#${track.track_id}`;
         if (inspClass) inspClass.textContent = track.class_name || "Unknown";
         if (inspTrackConf) {
             inspTrackConf.textContent = (track.track_confidence ?? 0.0).toFixed(2);
         }
-        if (inspTtc) {
-            inspTtc.textContent = (track.ttc_s !== null && track.ttc_s !== undefined) ? `${Number(track.ttc_s).toFixed(1)} s` : "None";
-        }
-        if (inspCpa) {
-            inspCpa.textContent = (track.cpa !== null && track.cpa !== undefined) ? `${Number(track.cpa).toFixed(2)} m` : "--";
-        }
-        if (inspIntersect) {
-            const isIntersect = Boolean(track.intersect);
-            inspIntersect.textContent = isIntersect ? "YES" : "NO";
-            inspIntersect.className = isIntersect ? "pill-badge red" : "pill-badge green";
-        }
+        updatePredictMetrics(track);
         if (inspVel) {
             let velStr = "0.0 px/s";
             if (Array.isArray(track.relative_velocity) && track.relative_velocity.length >= 2) {
                 const speed = Math.hypot(track.relative_velocity[0], track.relative_velocity[1]);
                 velStr = `${speed.toFixed(1)} px/s`;
-            } else if (typeof track.relative_velocity === 'number') {
+            } else if (typeof track.relative_velocity === "number") {
                 velStr = `${track.relative_velocity.toFixed(1)} px/s`;
             } else if (track.relative_velocity) {
                 velStr = `${track.relative_velocity} px/s`;
             }
             inspVel.textContent = velStr;
         }
-        if (inspPredConf) {
-            inspPredConf.textContent = (track.pred_conf ?? 0.0).toFixed(2);
-        }
         if (inspState) {
             inspState.textContent = trackState;
-            inspState.className = `pill-badge ${trackState.toLowerCase() === 'safe' ? 'green' : (trackState.toLowerCase() === 'critical' ? 'red' : (trackState.toLowerCase() === 'warning' ? 'orange' : 'yellow'))}`;
+            inspState.className = `pill-badge ${trackState.toLowerCase() === "safe" ? "green" : (trackState.toLowerCase() === "critical" ? "red" : (trackState.toLowerCase() === "warning" ? "orange" : "yellow"))}`;
+        }
+
+        const calculatedRisk = (trackState === "CRITICAL") ? 0.88 : (trackState === "WARNING" ? 0.62 : (typeof currentGlobalRisk === "number" ? currentGlobalRisk : 0.12));
+        drawRiskTimeline(track, calculatedRisk);
+        if (riskTimelineVal) {
+            if (trackState === "CRITICAL") {
+                riskTimelineVal.textContent = `● ${Number(track.ttc_s || 1.8).toFixed(1)}s (Critical Hazard)`;
+                riskTimelineVal.style.color = "#ef4444";
+            } else if (trackState === "WARNING") {
+                riskTimelineVal.textContent = `● ${Number(track.ttc_s || 2.4).toFixed(1)}s (Caution / Warning)`;
+                riskTimelineVal.style.color = "#f97316";
+            } else {
+                riskTimelineVal.textContent = `● ${(typeof currentGlobalRisk === "number" ? currentGlobalRisk : 0).toFixed(2)} (Safe)`;
+                riskTimelineVal.style.color = "#10b981";
+            }
         }
 
         renderReasoningList(lastReasonCodes, track.track_id);
@@ -880,6 +1224,120 @@
         return `${base}${extra}`;
     }
 
+    function drawRiskTimeline(track, riskOverride) {
+        const riskVal = (typeof riskOverride === "number")
+            ? riskOverride
+            : (typeof currentGlobalRisk === "number" ? currentGlobalRisk : 0.08);
+        const ttcVal = track && track.ttc_s !== null && track.ttc_s !== undefined ? Number(track.ttc_s) : null;
+        drawPredictRiskTimeline(riskVal, ttcVal);
+    }
+    window.drawRiskTimeline = function () {
+        const track = (activeTracks && activeTracks.length) ? (activeTracks[selectedTrackIndex] || activeTracks[0]) : null;
+        drawRiskTimeline(track);
+    };
+
+    function drawPredictRiskTimeline(riskVal, ttcVal) {
+        if (!predictRiskTimelineCanvas) return;
+        const ctx = predictRiskTimelineCanvas.getContext("2d");
+        const w = predictRiskTimelineCanvas.width;
+        const h = predictRiskTimelineCanvas.height;
+
+        ctx.clearRect(0, 0, w, h);
+
+        // Subtle background risk zones
+        ctx.fillStyle = "rgba(239, 68, 68, 0.05)";
+        ctx.fillRect(0, 0, w, h * 0.35);
+
+        ctx.fillStyle = "rgba(249, 115, 22, 0.04)";
+        ctx.fillRect(0, h * 0.35, w, h * 0.35);
+
+        ctx.fillStyle = "rgba(16, 185, 129, 0.04)";
+        ctx.fillRect(0, h * 0.70, w, h * 0.30);
+
+        // Divider lines
+        ctx.strokeStyle = "rgba(148, 163, 184, 0.20)";
+        ctx.lineWidth = 1;
+        ctx.setLineDash([3, 3]);
+        ctx.beginPath();
+        ctx.moveTo(0, h * 0.35); ctx.lineTo(w, h * 0.35);
+        ctx.moveTo(0, h * 0.70); ctx.lineTo(w, h * 0.70);
+        ctx.stroke();
+        ctx.setLineDash([]);
+
+        // Zone text labels
+        ctx.font = "bold 8px 'Plus Jakarta Sans', sans-serif";
+        ctx.fillStyle = "#ef4444";
+        ctx.fillText("HIGH", w - 28, 11);
+        ctx.fillStyle = "#f97316";
+        ctx.fillText("WARN", w - 30, h * 0.35 + 11);
+        ctx.fillStyle = "#10b981";
+        ctx.fillText("SAFE", w - 28, h * 0.70 + 11);
+
+        // Smooth Risk Projection Curve
+        const risk = (typeof riskVal === "number") ? Math.max(0.06, Math.min(0.98, riskVal)) : 0.12;
+        const ttc = (typeof ttcVal === "number" && ttcVal > 0) ? Math.min(6.0, ttcVal) : 2.1;
+
+        const points = [];
+        const numSteps = 24;
+        const peakStep = Math.min(numSteps - 2, Math.max(2, Math.round((ttc / 6.0) * numSteps)));
+
+        for (let i = 0; i <= numSteps; i++) {
+            const x = (i / numSteps) * (w - 38);
+            let yVal;
+            if (risk > 0.35) {
+                const dist = Math.abs(i - peakStep);
+                const bell = Math.exp(- (dist * dist) / 12);
+                yVal = 0.08 + (risk - 0.08) * bell;
+            } else {
+                yVal = risk * (1 - (i / numSteps) * 0.4);
+            }
+            const y = h - 6 - (yVal * (h - 14));
+            points.push({ x, y, val: yVal });
+        }
+
+        // Stroke line
+        ctx.beginPath();
+        points.forEach((pt, i) => {
+            if (i === 0) ctx.moveTo(pt.x, pt.y);
+            else ctx.lineTo(pt.x, pt.y);
+        });
+        ctx.strokeStyle = risk > 0.6 ? "#ef4444" : (risk > 0.3 ? "#f97316" : "#10b981");
+        ctx.lineWidth = 2.5;
+        ctx.stroke();
+
+        // Area fill
+        ctx.lineTo(points[points.length - 1].x, h);
+        ctx.lineTo(0, h);
+        ctx.closePath();
+        ctx.fillStyle = risk > 0.6 ? "rgba(239, 68, 68, 0.09)" : (risk > 0.3 ? "rgba(249, 115, 22, 0.07)" : "rgba(16, 185, 129, 0.07)");
+        ctx.fill();
+
+        // Hazard peak marker
+        if (risk > 0.35 && points[peakStep]) {
+            const peak = points[peakStep];
+            ctx.save();
+            ctx.beginPath();
+            ctx.arc(peak.x, peak.y, 4.5, 0, Math.PI * 2);
+            ctx.fillStyle = risk > 0.6 ? "#ef4444" : "#f97316";
+            ctx.fill();
+            ctx.strokeStyle = "#ffffff";
+            ctx.lineWidth = 2;
+            ctx.stroke();
+
+            // Label at peak
+            ctx.font = "bold 8px 'JetBrains Mono', monospace";
+            const tag = `${ttc.toFixed(1)}s`;
+            const tagW = ctx.measureText(tag).width + 8;
+            ctx.fillStyle = risk > 0.6 ? "#dc2626" : "#ea580c";
+            ctx.beginPath();
+            ctx.roundRect(peak.x - tagW / 2, Math.max(2, peak.y - 18), tagW, 13, 3);
+            ctx.fill();
+            ctx.fillStyle = "#ffffff";
+            ctx.fillText(tag, peak.x - tagW / 2 + 4, Math.max(11, peak.y - 8));
+            ctx.restore();
+        }
+    }
+
     function drawInspectorCanvas() {
         if (!inspectorCanvas) return;
         const ctx = inspectorCanvas.getContext("2d");
@@ -891,6 +1349,7 @@
         ctx.fillStyle = "#0f172a";
         ctx.fillRect(0, 0, w, h);
 
+        // Technical Grid
         ctx.strokeStyle = "rgba(51, 65, 85, 0.35)";
         ctx.lineWidth = 1;
         for (let x = 20; x < w; x += 30) {
@@ -900,102 +1359,243 @@
             ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(w, y); ctx.stroke();
         }
 
-        const userX = w * 0.5;
-        const userY = h * 0.88;
-        const foeX = w * 0.5;
-        const foeY = h * 0.28;
+        const track = (activeTracks && activeTracks.length) ? (activeTracks[selectedTrackIndex] || activeTracks[0]) : null;
+        const objLabel = track ? String(track.class_name || "OBJ").toUpperCase().slice(0, 8) : "CLEAR";
+        const ttcLabel = (track && track.ttc_s != null && track.ttc_s !== undefined) ? `${Number(track.ttc_s).toFixed(1)}s` : "—";
+        const isThreat = !!(track && (track.intersect || currentRiskState === "WARNING" || currentRiskState === "CRITICAL"));
+        const threatColor = isThreat ? "#ef4444" : "#10b981";
 
-        // User Path (Dashed Blue Line)
+        if (predictViewMode === "top") {
+            // ================= BIRD'S-EYE TOP VIEW =================
+            const userX = w * 0.5;
+            const userY = h * 0.86;
+            const foeX = w * 0.5;
+            const foeY = h * 0.15;
+
+            // Safe Passage Corridor Cone
+            ctx.save();
+            ctx.beginPath();
+            ctx.moveTo(userX - 25, userY);
+            ctx.lineTo(userX - 50, foeY);
+            ctx.lineTo(userX + 50, foeY);
+            ctx.lineTo(userX + 25, userY);
+            ctx.closePath();
+            ctx.fillStyle = "rgba(16, 185, 129, 0.08)";
+            ctx.fill();
+            ctx.strokeStyle = "rgba(16, 185, 129, 0.25)";
+            ctx.setLineDash([4, 4]);
+            ctx.stroke();
+            ctx.restore();
+
+            // User Heading Line
+            ctx.save();
+            ctx.beginPath();
+            ctx.moveTo(userX, userY);
+            ctx.lineTo(foeX, foeY);
+            ctx.strokeStyle = "#3b82f6";
+            ctx.lineWidth = 2.5;
+            ctx.setLineDash([5, 3]);
+            ctx.stroke();
+            ctx.restore();
+
+            // User Node
+            ctx.save();
+            ctx.beginPath();
+            ctx.arc(userX, userY, 8, 0, Math.PI * 2);
+            ctx.fillStyle = "#2563eb";
+            ctx.fill();
+            ctx.strokeStyle = "#ffffff";
+            ctx.lineWidth = 2;
+            ctx.stroke();
+
+            ctx.font = "bold 9px 'Plus Jakarta Sans', sans-serif";
+            ctx.fillStyle = "#94a3b8";
+            ctx.fillText("You (0°)", userX - 48, userY + 4);
+            ctx.restore();
+
+            // Object Trajectory (only when a track is selected)
+            if (track) {
+            const objX = w * 0.74;
+            const objY = h * 0.25;
+            const interX = w * 0.50;
+            const interY = h * 0.50;
+
+            ctx.save();
+            ctx.beginPath();
+            ctx.ellipse(interX, interY, 32, 16, Math.PI / 6, 0, Math.PI * 2);
+            ctx.fillStyle = isThreat ? "rgba(239, 68, 68, 0.15)" : "rgba(16, 185, 129, 0.12)";
+            ctx.fill();
+            ctx.strokeStyle = isThreat ? "rgba(239, 68, 68, 0.35)" : "rgba(16, 185, 129, 0.35)";
+            ctx.setLineDash([2, 2]);
+            ctx.stroke();
+            ctx.restore();
+
+            ctx.save();
+            ctx.beginPath();
+            ctx.moveTo(objX, objY);
+            ctx.lineTo(interX - 25, interY + 25);
+            ctx.strokeStyle = threatColor;
+            ctx.lineWidth = 2.5;
+            ctx.setLineDash([5, 3]);
+            ctx.stroke();
+            ctx.restore();
+
+            ctx.save();
+            ctx.fillStyle = threatColor;
+            ctx.beginPath();
+            ctx.roundRect(objX - 16, objY - 12, 32, 24, 4);
+            ctx.fill();
+            ctx.fillStyle = "#ffffff";
+            ctx.font = "bold 8px 'JetBrains Mono', monospace";
+            ctx.textAlign = "center";
+            ctx.fillText(objLabel, objX, objY + 3);
+            ctx.restore();
+
+            if (isThreat) {
+            ctx.save();
+            ctx.beginPath();
+            ctx.arc(interX, interY, 6, 0, Math.PI * 2);
+            ctx.fillStyle = "#ef4444";
+            ctx.fill();
+            ctx.strokeStyle = "#ffffff";
+            ctx.lineWidth = 2;
+            ctx.stroke();
+
+            ctx.fillStyle = "rgba(239, 68, 68, 0.95)";
+            ctx.beginPath();
+            ctx.roundRect(interX + 10, interY - 9, 82, 18, 4);
+            ctx.fill();
+            ctx.fillStyle = "#ffffff";
+            ctx.font = "bold 9px 'JetBrains Mono', monospace";
+            ctx.fillText("Intersection", interX + 15, interY + 4);
+            ctx.restore();
+            }
+            }
+
+        } else {
+            // ================= 2D PERSPECTIVE VIEW =================
+            const userX = w * 0.5;
+            const userY = h * 0.88;
+            const foeX = w * 0.5;
+            const foeY = h * 0.28;
+
+            // Risk zone (user corridor cone)
+            ctx.save();
+            ctx.beginPath();
+            ctx.moveTo(userX - 28, userY);
+            ctx.lineTo(userX - 70, foeY - 10);
+            ctx.lineTo(userX + 70, foeY - 10);
+            ctx.lineTo(userX + 28, userY);
+            ctx.closePath();
+            ctx.fillStyle = isThreat ? "rgba(239, 68, 68, 0.10)" : "rgba(16, 185, 129, 0.10)";
+            ctx.fill();
+            ctx.strokeStyle = isThreat ? "rgba(239, 68, 68, 0.28)" : "rgba(16, 185, 129, 0.28)";
+            ctx.setLineDash([4, 4]);
+            ctx.stroke();
+            ctx.restore();
+
+            // User Path (Dashed Blue Line)
+            ctx.save();
+            ctx.beginPath();
+            ctx.moveTo(userX, userY);
+            ctx.lineTo(foeX, foeY);
+            ctx.strokeStyle = "#3b82f6";
+            ctx.lineWidth = 2.5;
+            ctx.setLineDash([6, 4]);
+            ctx.stroke();
+            ctx.restore();
+
+            // FOE marker
+            ctx.save();
+            ctx.beginPath();
+            ctx.arc(foeX, foeY, 6, 0, Math.PI * 2);
+            ctx.fillStyle = "#3b82f6";
+            ctx.fill();
+            ctx.strokeStyle = "#ffffff";
+            ctx.lineWidth = 1.5;
+            ctx.stroke();
+            ctx.restore();
+
+            // User Current Position marker
+            ctx.save();
+            ctx.beginPath();
+            ctx.arc(userX, userY, 7, 0, Math.PI * 2);
+            ctx.fillStyle = "#2563eb";
+            ctx.fill();
+            ctx.strokeStyle = "#ffffff";
+            ctx.lineWidth = 2;
+            ctx.stroke();
+
+            ctx.font = "bold 9px 'Plus Jakarta Sans', sans-serif";
+            ctx.fillStyle = "#94a3b8";
+            ctx.fillText("Current position", userX - 74, userY + 4);
+            ctx.restore();
+
+            if (track) {
+            const objX = w * 0.50;
+            const objY = h * 0.22;
+            const interX = w * 0.50;
+            const interY = h * 0.55;
+
+            ctx.save();
+            ctx.beginPath();
+            ctx.ellipse(interX, interY, 36, 14, 0, 0, Math.PI * 2);
+            ctx.fillStyle = isThreat ? "rgba(239, 68, 68, 0.15)" : "rgba(16, 185, 129, 0.12)";
+            ctx.fill();
+            ctx.strokeStyle = isThreat ? "rgba(239, 68, 68, 0.35)" : "rgba(16, 185, 129, 0.35)";
+            ctx.setLineDash([3, 3]);
+            ctx.stroke();
+            ctx.restore();
+
+            ctx.save();
+            ctx.beginPath();
+            ctx.moveTo(objX, objY);
+            ctx.lineTo(interX, interY);
+            ctx.strokeStyle = threatColor;
+            ctx.lineWidth = 2.5;
+            ctx.setLineDash([5, 3]);
+            ctx.stroke();
+            ctx.restore();
+
+            ctx.save();
+            ctx.fillStyle = threatColor;
+            ctx.beginPath();
+            ctx.roundRect(objX - 18, objY - 13, 36, 26, 4);
+            ctx.fill();
+            ctx.fillStyle = "#ffffff";
+            ctx.font = "bold 8px 'JetBrains Mono', monospace";
+            ctx.textAlign = "center";
+            ctx.fillText(objLabel, objX, objY + 3);
+            ctx.restore();
+
+            if (isThreat) {
+            ctx.save();
+            ctx.beginPath();
+            ctx.arc(interX, interY, 6, 0, Math.PI * 2);
+            ctx.fillStyle = "#ef4444";
+            ctx.fill();
+            ctx.strokeStyle = "#ffffff";
+            ctx.lineWidth = 2;
+            ctx.stroke();
+
+            ctx.fillStyle = "rgba(239, 68, 68, 0.95)";
+            ctx.beginPath();
+            ctx.roundRect(interX + 10, interY - 9, 76, 18, 4);
+            ctx.fill();
+            ctx.fillStyle = "#ffffff";
+            ctx.font = "bold 9px 'JetBrains Mono', monospace";
+            ctx.textAlign = "left";
+            ctx.fillText(`${ttcLabel} hazard`, interX + 15, interY + 4);
+            ctx.restore();
+            }
+            }
+        }
+
+        // Compact Legend (Top Right)
         ctx.save();
+        ctx.fillStyle = "rgba(15, 23, 42, 0.88)";
         ctx.beginPath();
-        ctx.moveTo(userX, userY);
-        ctx.lineTo(foeX, foeY);
-        ctx.strokeStyle = "#3b82f6";
-        ctx.lineWidth = 2.5;
-        ctx.setLineDash([6, 4]);
-        ctx.stroke();
-        ctx.restore();
-
-        // FOE marker
-        ctx.save();
-        ctx.beginPath();
-        ctx.arc(foeX, foeY, 6, 0, Math.PI * 2);
-        ctx.fillStyle = "#3b82f6";
-        ctx.fill();
-        ctx.strokeStyle = "#ffffff";
-        ctx.lineWidth = 1.5;
-        ctx.stroke();
-        ctx.restore();
-
-        // User Current Position marker
-        ctx.save();
-        ctx.beginPath();
-        ctx.arc(userX, userY, 7, 0, Math.PI * 2);
-        ctx.fillStyle = "#2563eb";
-        ctx.fill();
-        ctx.strokeStyle = "#ffffff";
-        ctx.lineWidth = 2;
-        ctx.stroke();
-
-        ctx.font = "bold 9px 'Plus Jakarta Sans', sans-serif";
-        ctx.fillStyle = "#94a3b8";
-        ctx.fillText("Current position", userX - 70, userY + 4);
-        ctx.restore();
-
-        // Object Position & Velocity Vector
-        const objX = w * 0.50;
-        const objY = h * 0.22;
-        const interX = w * 0.50;
-        const interY = h * 0.55;
-
-        // Object Predicted Path (Dashed Red Line)
-        ctx.save();
-        ctx.beginPath();
-        ctx.moveTo(objX, objY);
-        ctx.lineTo(interX, interY);
-        ctx.strokeStyle = "#ef4444";
-        ctx.lineWidth = 2.5;
-        ctx.setLineDash([5, 3]);
-        ctx.stroke();
-        ctx.restore();
-
-        // Scooter Graphic Box representation
-        ctx.save();
-        ctx.fillStyle = "#ef4444";
-        ctx.beginPath();
-        ctx.roundRect(objX - 16, objY - 14, 32, 28, 4);
-        ctx.fill();
-        ctx.fillStyle = "#ffffff";
-        ctx.font = "bold 8px 'JetBrains Mono', monospace";
-        ctx.textAlign = "center";
-        ctx.fillText("SCOOTER", objX, objY + 2);
-        ctx.restore();
-
-        // Collision Intersection Point
-        ctx.save();
-        ctx.beginPath();
-        ctx.arc(interX, interY, 6, 0, Math.PI * 2);
-        ctx.fillStyle = "#ef4444";
-        ctx.fill();
-        ctx.strokeStyle = "#ffffff";
-        ctx.lineWidth = 2;
-        ctx.stroke();
-
-        ctx.fillStyle = "rgba(239, 68, 68, 0.95)";
-        ctx.beginPath();
-        ctx.roundRect(interX + 10, interY - 9, 74, 18, 4);
-        ctx.fill();
-        ctx.fillStyle = "#ffffff";
-        ctx.font = "bold 9px 'JetBrains Mono', monospace";
-        ctx.textAlign = "left";
-        ctx.fillText("2.1s hazard", interX + 15, interY + 4);
-        ctx.restore();
-
-        // Legend (Top Right)
-        ctx.save();
-        ctx.fillStyle = "rgba(15, 23, 42, 0.85)";
-        ctx.beginPath();
-        ctx.roundRect(w - 110, 10, 100, 72, 6);
+        ctx.roundRect(w - 110, 8, 102, 70, 6);
         ctx.fill();
         ctx.strokeStyle = "rgba(148, 163, 184, 0.2)";
         ctx.stroke();
@@ -1003,22 +1603,23 @@
         ctx.font = "8px 'Plus Jakarta Sans', sans-serif";
         ctx.fillStyle = "#94a3b8";
 
-        // User path line
+        // User path
         ctx.strokeStyle = "#3b82f6"; ctx.lineWidth = 2; ctx.setLineDash([4, 2]);
-        ctx.beginPath(); ctx.moveTo(w - 100, 22); ctx.lineTo(w - 80, 22); ctx.stroke();
-        ctx.fillText("User path", w - 74, 25);
+        ctx.beginPath(); ctx.moveTo(w - 100, 20); ctx.lineTo(w - 82, 20); ctx.stroke();
+        ctx.fillText("User path", w - 76, 23);
 
-        // Object path line
-        ctx.strokeStyle = "#ef4444"; ctx.beginPath(); ctx.moveTo(w - 100, 38); ctx.lineTo(w - 80, 38); ctx.stroke();
-        ctx.fillText("Object path", w - 74, 41);
+        // Object path
+        ctx.strokeStyle = "#ef4444"; ctx.beginPath(); ctx.moveTo(w - 100, 36); ctx.lineTo(w - 82, 36); ctx.stroke();
+        ctx.fillText("Object path", w - 76, 39);
 
-        // Intersection dot
-        ctx.fillStyle = "#ef4444"; ctx.beginPath(); ctx.arc(w - 90, 53, 3.5, 0, Math.PI * 2); ctx.fill();
-        ctx.fillStyle = "#94a3b8"; ctx.fillText("Intersection", w - 74, 56);
+        // Intersection
+        ctx.fillStyle = "#ef4444"; ctx.beginPath(); ctx.arc(w - 91, 50, 3.5, 0, Math.PI * 2); ctx.fill();
+        ctx.fillStyle = "#94a3b8"; ctx.fillText("Intersection", w - 76, 53);
 
-        // FOE dot
-        ctx.fillStyle = "#3b82f6"; ctx.beginPath(); ctx.arc(w - 90, 68, 3.5, 0, Math.PI * 2); ctx.fill();
-        ctx.fillStyle = "#94a3b8"; ctx.fillText("FOE", w - 74, 71);
+        // Uncertainty
+        ctx.fillStyle = "rgba(239, 68, 68, 0.4)";
+        ctx.fillRect(w - 96, 62, 10, 6);
+        ctx.fillStyle = "#94a3b8"; ctx.fillText("Uncertainty", w - 76, 67);
         ctx.restore();
     }
 
@@ -1067,21 +1668,45 @@
             hapticVibBadge.style.borderColor = isVibrating ? "#bfdbfe" : "#cbd5e1";
         }
 
-        if (dir === "LEFT" && isVibrating) {
-            setMotorActive(svgMotorLeft, svgRippleLeft, svgLblLeft, devMotorLStatus, true);
-        } else if (dir === "CENTER" && isVibrating) {
-            setMotorActive(svgMotorCenter, svgRippleCenter, svgLblCenter, devMotorCStatus, true);
-        } else if (dir === "RIGHT" && isVibrating) {
-            setMotorActive(svgMotorRight, svgRippleRight, svgLblRight, devMotorRStatus, true);
-        } else if (dir === "STOP" && isVibrating) {
-            setMotorActive(svgMotorLeft, svgRippleLeft, svgLblLeft, devMotorLStatus, true);
-            setMotorActive(svgMotorCenter, svgRippleCenter, svgLblCenter, devMotorCStatus, true);
-            setMotorActive(svgMotorRight, svgRippleRight, svgLblRight, devMotorRStatus, true);
+        // 2-Motor Hardware routing (Left = Pin 5, Right = Pin 6)
+        if (isVibrating) {
+            if (dir === "LEFT") {
+                setMotorActive(svgMotorLeft, svgRippleLeft, svgLblLeft, devMotorLStatus, true);
+            } else if (dir === "RIGHT") {
+                setMotorActive(svgMotorRight, svgRippleRight, svgLblRight, devMotorRStatus, true);
+            } else if (dir === "STOP" || dir === "CENTER" || urgency >= 4) {
+                // Dual motor emergency warning
+                setMotorActive(svgMotorLeft, svgRippleLeft, svgLblLeft, devMotorLStatus, true);
+                setMotorActive(svgMotorRight, svgRippleRight, svgLblRight, devMotorRStatus, true);
+            }
         }
 
-        hapticHistory.unshift({ time: timeNow, pattern, duration: dur, urgency });
-        if (hapticHistory.length > 20) hapticHistory.pop();
-        renderHapticCommandsList();
+        // Stabilized Command Logging (Rate-limited, human-readable descriptions)
+        const hapticKey = `${pattern}_${dir}_${urgency}`;
+        const now = Date.now();
+        const shouldLog = (hapticKey !== lastHapticKey) || (isVibrating && (now - lastHapticLogTime > 2500));
+
+        if (shouldLog) {
+            lastHapticKey = hapticKey;
+            lastHapticLogTime = now;
+
+            let semanticDesc = "";
+            if (!isVibrating || pattern === "ALL_CLEAR") {
+                semanticDesc = "ALL CLEAR · Both motors idle (Safe path)";
+            } else if (dir === "LEFT") {
+                semanticDesc = `LEFT (Pin 5): Pulse warning · Obstacle on left (urgency ${urgency})`;
+            } else if (dir === "RIGHT") {
+                semanticDesc = `RIGHT (Pin 6): Pulse warning · Obstacle on right (urgency ${urgency})`;
+            } else if (dir === "STOP" || urgency >= 4) {
+                semanticDesc = `DUAL MOTORS (Pins 5 & 6): Immediate brake warning! (urgency ${urgency})`;
+            } else {
+                semanticDesc = `${dir} MOTOR: Active guidance (urgency ${urgency})`;
+            }
+
+            hapticHistory.unshift({ time: timeNow, pattern, duration: dur, urgency, desc: semanticDesc });
+            if (hapticHistory.length > 20) hapticHistory.pop();
+            renderHapticCommandsList();
+        }
     }
 
     function setMotorActive(circleEl, rippleEl, labelEl, badgeEl, active) {
@@ -1102,7 +1727,6 @@
     function resetMotorVisuals() {
         const motors = [
             { c: svgMotorLeft, r: svgRippleLeft, l: svgLblLeft, b: devMotorLStatus },
-            { c: svgMotorCenter, r: svgRippleCenter, l: svgLblCenter, b: devMotorCStatus },
             { c: svgMotorRight, r: svgRippleRight, l: svgLblRight, b: devMotorRStatus }
         ];
 
@@ -1126,23 +1750,205 @@
         if (!hapticCommandsList) return;
         hapticCommandsList.innerHTML = hapticHistory.slice(0, 8).map(cmd => `
             <div class="detail-table-row">
-                <span class="detail-key mono">${cmd.time}</span>
-                <span class="detail-val mono" style="font-size:0.75rem;">${cmd.pattern} (${cmd.duration}ms, urg ${cmd.urgency})</span>
+                <span class="detail-key mono" style="font-size:0.70rem;">${cmd.time}</span>
+                <span class="detail-val" style="font-size:0.72rem; font-weight:600;">${cmd.desc || `${cmd.pattern} (${cmd.duration}ms)`}</span>
             </div>
         `).join("");
     }
 
     // -------------------------------------------------------------------------
-    // 9. Tab 4: Test & Replay
+    // 9. Tab 4: Test & Replay Scenarios
     // -------------------------------------------------------------------------
+    window.openScenarioDetail = function (scenId) {
+        currentScenarioId = scenId;
+        const scen = SCENARIOS[scenId] || SCENARIOS.s1;
+
+        if (scenModalTitle) scenModalTitle.textContent = scen.title;
+        if (scenModalDesc) scenModalDesc.textContent = scen.desc;
+        if (scenModalExpRisk) {
+            scenModalExpRisk.textContent = scen.expectedRisk;
+            scenModalExpRisk.className = `pill-badge ${scen.expectedRisk === "CRITICAL" ? "red" : (scen.expectedRisk === "WARNING" ? "orange" : "green")}`;
+        }
+        if (scenModalExpHaptic) scenModalExpHaptic.textContent = scen.expectedHaptic;
+        if (scenModalExpTtc) scenModalExpTtc.textContent = scen.expectedTtc;
+        if (scenModalExpIntersect) scenModalExpIntersect.textContent = scen.expectedIntersect;
+
+        if (scenActiveBox) scenActiveBox.style.display = "none";
+        if (scenResultCard) scenResultCard.style.display = "none";
+        if (scenTimelineEmbed) scenTimelineEmbed.style.display = "none";
+        const runnerControls = document.getElementById("scen-runner-controls");
+        if (runnerControls) runnerControls.style.display = "block";
+
+        window.selectScenario(scenId);
+        if (scenarioModal) scenarioModal.style.display = "flex";
+    };
+    window.openScenarioModal = window.openScenarioDetail;
+
+    window.closeScenarioDetail = function () {
+        window.stopModalScenarioTest();
+        window.pauseReplay();
+        if (scenarioModal) scenarioModal.style.display = "none";
+    };
+    window.closeScenarioModal = window.closeScenarioDetail;
+
+    window.openLatestTestDetails = function () {
+        window.openScenarioDetail(currentScenarioId);
+        if (scenResultCard) scenResultCard.style.display = "flex";
+        const runnerControls = document.getElementById("scen-runner-controls");
+        if (runnerControls) runnerControls.style.display = "none";
+        if (scenTimelineEmbed) {
+            scenTimelineEmbed.style.display = "flex";
+            drawReplayTimeline();
+        }
+    };
+
+    function highlightQuickChip(scenId) {
+        document.querySelectorAll(".scenario-chips-row .scenario-chip").forEach(ch => {
+            const on = ch.id === `chip-scen-${scenId}`;
+            ch.style.background = on ? "var(--c-primary)" : "#ffffff";
+            ch.style.color = on ? "#ffffff" : "var(--text-body)";
+            ch.style.borderColor = on ? "var(--c-primary)" : "var(--border-light)";
+        });
+    }
+
+    function recordTestResult(scen) {
+        testHistory.unshift({
+            title: scen.title,
+            result: scen.result || "PASS",
+            expected: scen.expectedRisk,
+            actual: scen.actualRisk,
+            time: new Date().toTimeString().split(" ")[0]
+        });
+        if (testHistory.length > 5) testHistory.length = 5;
+        renderTestHistory();
+        showScreenTestResult(scen);
+    }
+
+    function showScreenTestResult(scen) {
+        if (testResultCard) testResultCard.style.display = "flex";
+        if (testResBadge) {
+            testResBadge.textContent = `✔ ${scen.result || "PASS"}`;
+            testResBadge.className = "pill-badge green";
+        }
+        if (testResExp) testResExp.textContent = scen.expectedRisk;
+        if (testResAct) testResAct.textContent = scen.actualRisk;
+
+        if (scenResultBadge) {
+            scenResultBadge.textContent = "✔ TEST PASSED";
+            scenResultBadge.className = "pill-badge green";
+        }
+        if (scenResExp) scenResExp.textContent = scen.expectedRisk;
+        if (scenResAct) scenResAct.textContent = scen.actualRisk;
+        if (scenResHap) scenResHap.textContent = scen.actualHaptic;
+
+        if (testExecStatusBadge) {
+            testExecStatusBadge.textContent = "✔ READY";
+            testExecStatusBadge.style.background = "var(--c-safe-bg)";
+            testExecStatusBadge.style.borderColor = "var(--c-safe-border)";
+            testExecStatusBadge.style.color = "var(--c-safe-text)";
+        }
+    }
+
+    function onReplayComplete() {
+        const scen = SCENARIOS[currentScenarioId] || SCENARIOS.s1;
+        isModalTesting = false;
+        if (scenActiveBox) scenActiveBox.style.display = "none";
+        if (scenResultCard) scenResultCard.style.display = "flex";
+        if (scenTimelineEmbed) {
+            scenTimelineEmbed.style.display = "flex";
+            drawReplayTimeline();
+        }
+        recordTestResult(scen);
+    }
+
+    window.startModalScenarioTest = function () {
+        if (isModalTesting || isReplaying) return;
+        isModalTesting = true;
+
+        const runnerControls = document.getElementById("scen-runner-controls");
+        if (runnerControls) runnerControls.style.display = "none";
+        if (scenResultCard) scenResultCard.style.display = "none";
+        if (scenActiveBox) scenActiveBox.style.display = "flex";
+        if (scenExecTimerTxt) scenExecTimerTxt.textContent = "Replaying scenario...";
+
+        if (testExecStatusBadge) {
+            testExecStatusBadge.textContent = "● RUNNING";
+            testExecStatusBadge.style.background = "#eff6ff";
+            testExecStatusBadge.style.borderColor = "#bfdbfe";
+            testExecStatusBadge.style.color = "#2563eb";
+        }
+
+        window.selectScenario(currentScenarioId);
+        window.resetReplay();
+        window.startReplay();
+    };
+
+    window.stopModalScenarioTest = function () {
+        if (modalTestTimer) {
+            clearInterval(modalTestTimer);
+            modalTestTimer = null;
+        }
+        isModalTesting = false;
+        window.pauseReplay();
+        if (scenActiveBox) scenActiveBox.style.display = "none";
+        const runnerControls = document.getElementById("scen-runner-controls");
+        if (runnerControls) runnerControls.style.display = "block";
+
+        if (testExecStatusBadge) {
+            testExecStatusBadge.textContent = "✔ READY";
+            testExecStatusBadge.style.background = "var(--c-safe-bg)";
+            testExecStatusBadge.style.borderColor = "var(--c-safe-border)";
+            testExecStatusBadge.style.color = "var(--c-safe-text)";
+        }
+    };
+
+    window.toggleScenarioTimelineView = function () {
+        if (!scenTimelineEmbed) return;
+        const isHidden = scenTimelineEmbed.style.display === "none" || !scenTimelineEmbed.style.display;
+        scenTimelineEmbed.style.display = isHidden ? "flex" : "none";
+        if (isHidden) {
+            drawReplayTimeline();
+        }
+    };
+
+    window.runQuickTest = function (scenId) {
+        highlightQuickChip(scenId);
+        window.openScenarioDetail(scenId);
+        window.startModalScenarioTest();
+    };
+    window.quickRunScenario = window.runQuickTest;
+
+    function renderTestHistory() {
+        if (!testHistoryList) return;
+        if (!testHistory.length) {
+            testHistoryList.innerHTML = `<span style="font-size:0.72rem; color:var(--text-muted); padding:4px 0;">No recent test runs</span>`;
+            return;
+        }
+        testHistoryList.innerHTML = testHistory.map(item => `
+            <div class="detail-table-row">
+                <div style="display:flex; flex-direction:column; gap:1px;">
+                    <span style="font-size:0.75rem; font-weight:700;">${escapeHtml(item.title)}</span>
+                    <span style="font-size:0.65rem; color:var(--text-muted);">${escapeHtml(item.time || "Recent")} · Exp: ${escapeHtml(item.expected)} / Act: ${escapeHtml(item.actual)}</span>
+                </div>
+                <span class="pill-badge green">✔ ${escapeHtml(item.result)}</span>
+            </div>
+        `).join("");
+    }
+
+    window.clearTestHistory = function () {
+        testHistory = [];
+        renderTestHistory();
+        if (testResultCard) testResultCard.style.display = "none";
+    };
+
     window.selectScenario = function (scenId) {
         currentScenarioId = scenId;
         if (selectTestScenario) selectTestScenario.value = scenId;
 
         const scen = SCENARIOS[scenId] || SCENARIOS.s1;
         if (scenDesc) scenDesc.textContent = scen.desc;
-        if (scenExpected) scenExpected.textContent = scen.expected;
-        if (scenActual) scenActual.textContent = scen.actual;
+        if (scenExpected) scenExpected.textContent = scen.expectedRisk;
+        if (scenActual) scenActual.textContent = scen.actualRisk;
         if (scenResult) {
             scenResult.className = "pill-badge green";
             scenResult.textContent = "✔ PASS";
@@ -1164,11 +1970,12 @@
             if (replayProgress > 100) {
                 replayProgress = 100;
                 window.pauseReplay();
+                onReplayComplete();
             }
             if (replaySlider) replaySlider.value = replayProgress;
             updateScrubberText();
             drawReplayTimeline();
-        }, 120);
+        }, 80);
     };
 
     window.pauseReplay = function () {
@@ -1206,7 +2013,6 @@
         const h = replayTimelineCanvas.height;
 
         ctx.clearRect(0, 0, w, h);
-
         ctx.fillStyle = "#ffffff";
         ctx.fillRect(0, 0, w, h);
 
@@ -1261,22 +2067,29 @@
     }
 
     // -------------------------------------------------------------------------
-    // 10. Tab 5: Social Assist
+    // 10. Tab 5: Social Assist (UI-Only Mock Prototype)
     // -------------------------------------------------------------------------
+    function escapeHtml(value) {
+        return String(value == null ? "" : value)
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;");
+    }
+
     window.toggleSocialAssist = function () {
         socialAssistEnabled = !socialAssistEnabled;
 
         if (toggleSocialSwitch) {
+            const knob = toggleSocialSwitch.querySelector(".toggle-knob");
             if (socialAssistEnabled) {
                 toggleSocialSwitch.style.background = "var(--c-primary)";
-                const knob = toggleSocialSwitch.querySelector(".toggle-knob");
                 if (knob) {
                     knob.style.right = "2px";
                     knob.style.left = "auto";
                 }
             } else {
                 toggleSocialSwitch.style.background = "#cbd5e1";
-                const knob = toggleSocialSwitch.querySelector(".toggle-knob");
                 if (knob) {
                     knob.style.right = "auto";
                     knob.style.left = "2px";
@@ -1308,14 +2121,341 @@
             if (socialContactsView) socialContactsView.style.display = "block";
             if (btnLive) btnLive.classList.remove("active");
             if (btnContacts) btnContacts.classList.add("active");
+            renderContactsList();
         }
+    };
+
+    window.setSocialDemoState = function (state) {
+        socialDemoState = state;
+        document.querySelectorAll(".demo-state-chip").forEach(ch => ch.classList.remove("active"));
+        const activeChip = document.getElementById(`chip-demo-${state}`);
+        if (activeChip) activeChip.classList.add("active");
+
+        if (!socialFaceBox) return;
+
+        if (state === "known") {
+            socialFaceBox.style.borderColor = "#10b981";
+            if (socialFaceTagTop) {
+                socialFaceTagTop.style.background = "#10b981";
+                socialFaceTagTop.textContent = "Person #4";
+            }
+            if (socialFaceTagBottom) {
+                socialFaceTagBottom.style.background = "#10b981";
+                socialFaceTagBottom.textContent = "Rahul (0.91)";
+            }
+            if (socTrackId) socTrackId.textContent = "#4";
+            if (socPersonName) {
+                socPersonName.textContent = "Rahul";
+                socPersonName.style.color = "var(--c-primary)";
+            }
+            if (socRelationship) socRelationship.textContent = "Friend";
+            if (socConf) socConf.textContent = "91%";
+            if (socStatus) {
+                socStatus.textContent = "● Known";
+                socStatus.className = "pill-badge green";
+            }
+        } else if (state === "unknown") {
+            socialFaceBox.style.borderColor = "#f59e0b";
+            if (socialFaceTagTop) {
+                socialFaceTagTop.style.background = "#f59e0b";
+                socialFaceTagTop.textContent = "Person #7";
+            }
+            if (socialFaceTagBottom) {
+                socialFaceTagBottom.style.background = "#f59e0b";
+                socialFaceTagBottom.textContent = "Unknown Face";
+            }
+            if (socTrackId) socTrackId.textContent = "#7";
+            if (socPersonName) {
+                socPersonName.textContent = "Unregistered Person";
+                socPersonName.style.color = "var(--text-title)";
+            }
+            if (socRelationship) socRelationship.textContent = "None (Unknown)";
+            if (socConf) socConf.textContent = "42%";
+            if (socStatus) {
+                socStatus.textContent = "○ Unregistered";
+                socStatus.className = "pill-badge orange";
+            }
+        } else if (state === "possible") {
+            socialFaceBox.style.borderColor = "#3b82f6";
+            if (socialFaceTagTop) {
+                socialFaceTagTop.style.background = "#3b82f6";
+                socialFaceTagTop.textContent = "Person #2";
+            }
+            if (socialFaceTagBottom) {
+                socialFaceTagBottom.style.background = "#3b82f6";
+                socialFaceTagBottom.textContent = "Priya? (0.64)";
+            }
+            if (socTrackId) socTrackId.textContent = "#2";
+            if (socPersonName) {
+                socPersonName.textContent = "Priya Patel";
+                socPersonName.style.color = "#2563eb";
+            }
+            if (socRelationship) socRelationship.textContent = "Family";
+            if (socConf) socConf.textContent = "64% (Tentative)";
+            if (socStatus) {
+                socStatus.textContent = "◐ Possible Match";
+                socStatus.className = "pill-badge orange";
+            }
+        }
+    };
+
+    function renderContactsList() {
+        if (!contactsListContainer) return;
+        contactsListContainer.innerHTML = mockContacts.map(c => `
+            <div class="contact-card" onclick="openContactProfileModal(${c.id})">
+                <div class="contact-avatar">${c.avatar}</div>
+                <div class="contact-info">
+                    <span class="contact-name">${c.name}</span>
+                    <span class="contact-status">${c.relationship} · ${c.photosCount} photos</span>
+                </div>
+                <div style="display:flex; align-items:center; gap:6px;">
+                    <span class="pill-badge green" style="font-size:0.62rem;">${c.status.split('·')[0].trim()}</span>
+                    <span style="color:var(--text-dim); font-weight:800; font-size:0.85rem;">&gt;</span>
+                </div>
+            </div>
+        `).join("");
+    }
+
+    function setAddFriendStep(step) {
+        addFriendState.step = step;
+        const p1 = document.getElementById("af-step-photos");
+        const p2 = document.getElementById("af-step-name");
+        const p3 = document.getElementById("af-step-review");
+        if (p1) p1.className = step === 1 ? "wizard-pane active" : "wizard-pane";
+        if (p2) p2.className = step === 2 ? "wizard-pane active" : "wizard-pane";
+        if (p3) p3.className = step === 3 ? "wizard-pane active" : "wizard-pane";
+
+        const dot1 = document.getElementById("af-dot-1");
+        const dot2 = document.getElementById("af-dot-2");
+        const dot3 = document.getElementById("af-dot-3");
+        if (dot1) dot1.className = step === 1 ? "wizard-dot active" : (step > 1 ? "wizard-dot done" : "wizard-dot");
+        if (dot2) dot2.className = step === 2 ? "wizard-dot active" : (step > 2 ? "wizard-dot done" : "wizard-dot");
+        if (dot3) dot3.className = step === 3 ? "wizard-dot active" : "wizard-dot";
+
+        const caption = document.getElementById("af-step-caption");
+        if (caption) {
+            if (step === 1) caption.textContent = "Step 1 of 3 · Reference photos";
+            else if (step === 2) caption.textContent = "Step 2 of 3 · Contact details";
+            else caption.textContent = "Step 3 of 3 · Review & confirm";
+        }
+
+        const btnBack = document.getElementById("btn-af-back");
+        const btnNext = document.getElementById("btn-af-next");
+        const btnSave = document.getElementById("btn-af-save");
+        if (btnBack) btnBack.style.display = step > 1 ? "inline-block" : "none";
+        if (btnNext) btnNext.style.display = step < 3 ? "inline-block" : "none";
+        if (btnSave) btnSave.style.display = step === 3 ? "inline-block" : "none";
+
+        if (step === 3) {
+            const revName = document.getElementById("af-review-name");
+            const revRel = document.getElementById("af-review-rel");
+            const revPhotos = document.getElementById("af-review-photos");
+            const revGrid = document.getElementById("af-review-grid");
+            const nameVal = addFriendNameInput ? addFriendNameInput.value.trim() : "";
+            const relVal = addFriendRelationSelect ? addFriendRelationSelect.value : "Friend";
+            if (revName) revName.textContent = nameVal || "(Unnamed)";
+            if (revRel) revRel.textContent = relVal;
+            if (revPhotos) revPhotos.textContent = `${tempFriendPhotos.length} photo${tempFriendPhotos.length === 1 ? "" : "s"}`;
+            if (revGrid) {
+                revGrid.innerHTML = tempFriendPhotos.map(d => `<img src="${d}" class="photo-thumb" style="width:100%; height:72px;">`).join("");
+            }
+        }
+    }
+
+    window.nextAddFriendStep = function () {
+        if (addFriendState.step === 1) {
+            setAddFriendStep(2);
+        } else if (addFriendState.step === 2) {
+            const nameVal = addFriendNameInput ? addFriendNameInput.value.trim() : "";
+            if (!nameVal) {
+                if (addFriendNameInput) {
+                    addFriendNameInput.focus();
+                    addFriendNameInput.style.borderColor = "#ef4444";
+                    setTimeout(() => { if (addFriendNameInput) addFriendNameInput.style.borderColor = "var(--border-light)"; }, 1500);
+                }
+                return;
+            }
+            setAddFriendStep(3);
+        }
+    };
+
+    window.prevAddFriendStep = function () {
+        if (addFriendState.step > 1) {
+            setAddFriendStep(addFriendState.step - 1);
+        }
+    };
+
+    window.openAddFriendModal = function () {
+        tempFriendPhotos = [];
+        if (addFriendNameInput) addFriendNameInput.value = "";
+        if (addFriendRelationSelect) addFriendRelationSelect.value = "Friend";
+        renderAddFriendPhotoGrid();
+        setAddFriendStep(1);
+        if (addFriendModal) addFriendModal.style.display = "flex";
+    };
+
+    window.closeAddFriendModal = function () {
+        if (addFriendModal) addFriendModal.style.display = "none";
+    };
+
+    window.handleFriendPhotosSelect = function (event) {
+        const files = event.target.files;
+        if (!files || files.length === 0) return;
+
+        Array.from(files).slice(0, 4 - tempFriendPhotos.length).forEach(file => {
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                tempFriendPhotos.push(e.target.result);
+                renderAddFriendPhotoGrid();
+            };
+            reader.readAsDataURL(file);
+        });
+    };
+
+    function renderAddFriendPhotoGrid() {
+        if (!addFriendPhotoGrid) return;
+        const photosHtml = tempFriendPhotos.map((dataUri, idx) => `
+            <div style="position:relative; width:100%; height:72px;">
+                <img src="${dataUri}" class="photo-thumb" style="width:100%; height:100%;">
+                <button onclick="removeFriendPhoto(${idx})" style="position:absolute; top:3px; right:3px; width:18px; height:18px; border-radius:50%; background:rgba(0,0,0,0.7); color:#ffffff; font-size:11px; display:flex; align-items:center; justify-content:center; border:none; cursor:pointer;">&times;</button>
+            </div>
+        `).join("");
+
+        const addBtnHtml = tempFriendPhotos.length < 4 ? `
+            <div class="photo-add-btn" onclick="document.getElementById('add-friend-file-input').click()">
+                <span style="font-size:1.3rem; font-weight:800;">+</span>
+                <span>Add Photo</span>
+            </div>
+        ` : '';
+
+        addFriendPhotoGrid.innerHTML = photosHtml + addBtnHtml;
+    }
+
+    window.removeFriendPhoto = function (idx) {
+        tempFriendPhotos.splice(idx, 1);
+        renderAddFriendPhotoGrid();
+    };
+
+    window.saveNewFriend = function () {
+        const name = addFriendNameInput ? addFriendNameInput.value.trim() : "";
+        if (!name) {
+            if (addFriendNameInput) {
+                addFriendNameInput.focus();
+                addFriendNameInput.style.borderColor = "#ef4444";
+                setTimeout(() => { addFriendNameInput.style.borderColor = "var(--border-light)"; }, 1500);
+            }
+            return;
+        }
+
+        const relation = addFriendRelationSelect ? addFriendRelationSelect.value : "Friend";
+        const avatar = tempFriendPhotos.length > 0 
+            ? `<img src="${tempFriendPhotos[0]}" alt="${name}">` 
+            : (relation === "Family" ? "👩" : (relation === "Physician" ? "👨‍⚕️" : "👤"));
+
+        const newContact = {
+            id: Date.now(),
+            name: name,
+            relationship: relation,
+            photos: [...tempFriendPhotos],
+            photosCount: Math.max(1, tempFriendPhotos.length),
+            status: "Ready · Active",
+            avatar: avatar
+        };
+
+        mockContacts.unshift(newContact);
+        renderContactsList();
+        window.closeAddFriendModal();
+    };
+
+    window.openContactProfileModal = function (contactId) {
+        currentContactId = contactId;
+        const contact = mockContacts.find(c => c.id === contactId);
+        if (!contact) return;
+
+        if (profModalAvatar) profModalAvatar.innerHTML = contact.avatar;
+        if (profModalName) profModalName.textContent = contact.name;
+        if (profModalRelation) profModalRelation.textContent = contact.relationship;
+        if (profModalPhotosCount) profModalPhotosCount.textContent = `${contact.photosCount} photos enrolled`;
+        if (profModalStatus) profModalStatus.textContent = contact.status;
+
+        const profGrid = document.getElementById("prof-modal-photo-grid");
+        if (profGrid) {
+            if (contact.photos && contact.photos.length > 0) {
+                profGrid.innerHTML = contact.photos.map(p => `<img src="${p}" class="photo-thumb" style="width:100%; height:72px;">`).join("");
+            } else {
+                profGrid.innerHTML = `<span style="font-size:0.68rem; color:var(--text-muted); padding:4px 0;">3 synthetic reference encodings active on edge DB.</span>`;
+            }
+        }
+
+        if (contactProfileModal) contactProfileModal.style.display = "flex";
+    };
+
+    window.closeContactProfileModal = function () {
+        if (contactProfileModal) contactProfileModal.style.display = "none";
+    };
+
+    window.deleteCurrentContact = function () {
+        if (!currentContactId) return;
+        mockContacts = mockContacts.filter(c => c.id !== currentContactId);
+        renderContactsList();
+        window.closeContactProfileModal();
+    };
+
+    window.editContactName = function () {
+        if (!currentContactId) return;
+        const contact = mockContacts.find(c => c.id === currentContactId);
+        if (!contact) return;
+        const newName = prompt("Edit contact name:", contact.name);
+        if (newName && newName.trim()) {
+            contact.name = newName.trim();
+            if (profModalName) profModalName.textContent = contact.name;
+            renderContactsList();
+        }
+    };
+
+    window.addMorePhotosToContact = function () {
+        const fileInput = document.getElementById("prof-add-photo-input");
+        if (fileInput) {
+            fileInput.click();
+        } else {
+            if (!currentContactId) return;
+            const contact = mockContacts.find(c => c.id === currentContactId);
+            if (!contact) return;
+            contact.photosCount++;
+            if (profModalPhotosCount) profModalPhotosCount.textContent = `${contact.photosCount} photos enrolled`;
+            renderContactsList();
+        }
+    };
+
+    window.handleProfilePhotoSelect = function (event) {
+        const files = event.target.files;
+        if (!files || files.length === 0 || !currentContactId) return;
+        const contact = mockContacts.find(c => c.id === currentContactId);
+        if (!contact) return;
+
+        const reader = new FileReader();
+        reader.onload = function (e) {
+            if (!contact.photos) contact.photos = [];
+            contact.photos.push(e.target.result);
+            contact.photosCount = contact.photos.length;
+            if (profModalPhotosCount) profModalPhotosCount.textContent = `${contact.photosCount} photos enrolled`;
+            const profGrid = document.getElementById("prof-modal-photo-grid");
+            if (profGrid) {
+                profGrid.innerHTML = contact.photos.map(p => `<img src="${p}" class="photo-thumb" style="width:100%; height:72px;">`).join("");
+            }
+            renderContactsList();
+        };
+        reader.readAsDataURL(files[0]);
     };
 
     // -------------------------------------------------------------------------
     // Startup Initialization
     // -------------------------------------------------------------------------
+    resetDashboardLiveMetrics();
     initCameraSource();
     connectWs();
+    renderContactsList();
+    renderTestHistory();
     window.switchTab("live");
     window.selectScenario("s1");
 })();

@@ -890,4 +890,194 @@ button, input, select {
     margin-top: 1px;
 }
 
+/* ==========================================================================
+   NEW COMPONENT STYLES — Haptics, Test Scenarios, Social Assist Redesign
+   ========================================================================== */
 
+/* 2-Motor Grid (Haptics page) */
+.haptic-motor-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 8px;
+}
+
+.haptic-motor-card {
+    background: #f8fafc;
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-md);
+    padding: 12px;
+    text-align: center;
+    transition: all 0.2s ease;
+}
+
+.haptic-motor-card.motor-firing {
+    background: #eff6ff;
+    border-color: #93c5fd;
+    box-shadow: 0 0 10px rgba(37, 99, 235, 0.15);
+}
+
+.motor-icon { font-size: 22px; margin-bottom: 4px; }
+
+.motor-name {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--text-secondary);
+    margin-bottom: 4px;
+}
+
+.motor-state {
+    font-size: 11px;
+    font-weight: 700;
+    font-family: var(--font-mono);
+    border-radius: var(--radius-full);
+    padding: 2px 8px;
+    display: inline-block;
+}
+
+.motor-state.idle { background: #f1f5f9; color: #64748b; }
+.motor-state.active { background: #eff6ff; color: #1d4ed8; }
+
+/* Scenario Cards (Test Scenarios page) */
+.scenario-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.scenario-card {
+    background: #ffffff;
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-md);
+    padding: 12px 14px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.scenario-card:hover {
+    border-color: #cbd5e1;
+    background: #fcfcfd;
+    transform: translateX(2px);
+}
+
+.scenario-card:active { transform: scale(0.98); }
+
+.scenario-card-icon {
+    font-size: 26px;
+    width: 36px;
+    text-align: center;
+    flex-shrink: 0;
+}
+
+.scenario-card-body { flex: 1; min-width: 0; }
+
+.scenario-card-title {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--text-primary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.scenario-card-desc {
+    font-size: 11px;
+    color: var(--text-muted);
+    margin-top: 2px;
+}
+
+.scenario-card-right {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-shrink: 0;
+}
+
+/* Quick Test Chips */
+.quick-test-chip {
+    padding: 6px 12px;
+    background: #f1f5f9;
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-full);
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    color: var(--text-primary);
+    transition: all 0.15s ease;
+}
+
+.quick-test-chip:hover, .quick-test-chip.active {
+    background: #eff6ff;
+    border-color: #93c5fd;
+    color: #1d4ed8;
+}
+
+.quick-test-chip:active { transform: scale(0.95); }
+
+/* Segmented Control (Social Assist tabs) */
+.segmented-control {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    background: #f1f5f9;
+    border-radius: var(--radius-md);
+    padding: 3px;
+    border: 1px solid var(--border-subtle);
+}
+
+.seg-btn {
+    padding: 8px 10px;
+    border-radius: 9px;
+    border: none;
+    background: transparent;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.seg-btn.active {
+    background: #ffffff;
+    color: var(--brand-primary);
+    box-shadow: 0 1px 4px rgba(15, 23, 42, 0.08);
+}
+
+/* Toggle Button */
+.toggle-btn {
+    padding: 5px 14px;
+    border-radius: var(--radius-full);
+    border: none;
+    font-size: 12px;
+    font-weight: 800;
+    cursor: pointer;
+    font-family: var(--font-mono);
+    transition: all 0.15s ease;
+}
+
+.toggle-btn.on { background: #ecfdf5; color: #065f46; border: 1px solid #a7f3d0; }
+.toggle-btn.off { background: #f1f5f9; color: #64748b; border: 1px solid var(--border-subtle); }
+
+/* Add Photo Slot */
+.add-photo-slot {
+    background: #f8fafc;
+    border: 2px dashed #cbd5e1;
+    border-radius: 10px;
+    height: 70px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2px;
+    cursor: pointer;
+    color: var(--text-muted);
+    transition: all 0.15s ease;
+}
+
+.add-photo-slot:hover {
+    background: #eff6ff;
+    border-color: #93c5fd;
+    color: #1d4ed8;
+}
