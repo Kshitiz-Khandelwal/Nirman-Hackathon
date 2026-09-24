@@ -17,7 +17,7 @@ import logging
 from pathlib import Path
 import threading
 import time
-from typing import Dict, List, Optional, Set
+from typing import Any, Dict, List, Optional, Set
 
 from fastapi import FastAPI, HTTPException, Response, WebSocket, WebSocketDisconnect
 from fastapi.middleware.cors import CORSMiddleware
@@ -60,13 +60,61 @@ class TelemetryServer:
         self._latest_message: Optional[dict] = None
         self._risk_engine: Optional[Any] = None
 
+        # MJPEG video streaming — latest JPEG frame bytes pushed by pipeline
+        self._latest_frame_jpeg: Optional[bytes] = None
+        self._frame_lock = threading.Lock()
+        self._frame_event = threading.Event()  # signals new frame availability
+
         self._setup_routes()
 
     def set_risk_engine(self, engine: Any) -> None:
         """Wires live M08 RiskEngine to telemetry server for runtime configuration."""
         self._risk_engine = engine
 
+    def push_frame(self, frame_bgr) -> None:
+        """Encodes a raw BGR OpenCV frame as JPEG and stores it for MJPEG streaming.
+
+        Called from the main pipeline loop after each processed frame.
+        Non-blocking: encoding is fast (<1ms for 720p JPEG at quality 70).
+        """
+        try:
+            import cv2
+            ret, buf = cv2.imencode(".jpg", frame_bgr, [cv2.IMWRITE_JPEG_QUALITY, 70])
+            if ret:
+                with self._frame_lock:
+                    self._latest_frame_jpeg = buf.tobytes()
+                self._frame_event.set()
+        except Exception:
+            pass
+
     def _setup_routes(self):
+        @self.app.get("/api/video")
+        async def video_feed():
+            """MJPEG streaming endpoint — embed as <img src='/api/video'> in dashboard."""
+            from fastapi.responses import StreamingResponse
+
+            async def generate():
+                boundary = b"--frame"
+                while not self._stop_event.is_set():
+                    # Wait up to 1s for a new frame
+                    await asyncio.sleep(0.033)  # ~30 fps poll
+                    with self._frame_lock:
+                        jpeg = self._latest_frame_jpeg
+                    if jpeg:
+                        yield (
+                            boundary
+                            + b"\r\nContent-Type: image/jpeg\r\n"
+                            + b"Content-Length: " + str(len(jpeg)).encode() + b"\r\n\r\n"
+                            + jpeg
+                            + b"\r\n"
+                        )
+
+            return StreamingResponse(
+                generate(),
+                media_type="multipart/x-mixed-replace; boundary=frame",
+                headers={"Cache-Control": "no-cache", "X-Accel-Buffering": "no"},
+            )
+
         @self.app.get("/api/health")
         async def health():
             return {

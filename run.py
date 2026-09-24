@@ -346,6 +346,9 @@ def main():
                     frame_height=h,
                 ))
 
+                # Push current frame to MJPEG endpoint so dashboard can show /api/video
+                telemetry_server.push_frame(img)
+
                 if frame_count % 30 == 0:
                     print(
                         f"[Frame {f_obj.frame_id:4d}] State: {risk_state.state:<8} | "

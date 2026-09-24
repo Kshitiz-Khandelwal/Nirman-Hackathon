@@ -187,6 +187,7 @@
     const valCpa = document.getElementById("val-cpa");
 
     const vdoNinjaFrame = document.getElementById("vdo-ninja-frame");
+    const mjpegStream = document.getElementById("mjpeg-video-stream");
     const liveOverlayCanvas = document.getElementById("live-overlay-canvas");
     const btnToggleCameraSrc = document.getElementById("btn-toggle-camera-src");
     const btnOpenSettings = document.getElementById("btn-open-settings");
