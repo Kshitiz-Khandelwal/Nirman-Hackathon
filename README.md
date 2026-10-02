@@ -63,6 +63,30 @@ M10 Arduino Haptic Interface  →  3× Vibration Motors (L/C/R)
 M12 Logger + Replay + Evaluation Harness
 ```
 
+## System Architecture
+
+SpatialVector follows a **Sense → Perceive → Understand → Predict → Decide → Assist** pipeline. This view reflects the implemented M01–M12 modules. See [`docs/ARCHITECTURE_README.md`](docs/ARCHITECTURE_README.md) for module responsibilities and failure handling, and [`docs/spatialvector_architecture.mmd`](docs/spatialvector_architecture.mmd) for the editable Mermaid source.
+
+```mermaid
+flowchart LR
+    CAM["Chest-mounted camera"] --> M01["M01 Frame acquisition"]
+    M01 --> M02["M02 YOLO detection"] --> M03["M03 Object tracking"]
+    M01 --> M04["M04 Optical flow / FOE"]
+    M04 --> M05["M05 IMU / ego-motion"]
+    IMU["IMU / gyroscope"] --> M05
+    M03 --> M06["M06 Motion / geometry"]
+    M05 --> M06 --> M07["M07 Collision prediction<br/>TTC / CPA"]
+    M03 --> M07 --> M08["M08 Risk engine"]
+    M08 --> M09["M09 Safe corridor / policy"]
+    M09 --> M10["M10 Arduino haptics"] --> MOTORS["Directional vibration motors"]
+    M08 --> M11["M11 Dashboard / telemetry"]
+    M01 --> M12["M12 Logger / replay"]
+    M08 --> M12
+    M09 --> M12
+```
+
+The dashboard observes telemetry; safety decisions are made locally. Audio feedback is not shown because an audio backend is not currently implemented. SpatialVector is a prototype, not a certified mobility aid.
+
 ---
 
 ## Hardware Components

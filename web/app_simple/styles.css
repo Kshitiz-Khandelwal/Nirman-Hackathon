@@ -1081,3 +1081,28 @@ button, input, select {
     border-color: #93c5fd;
     color: #1d4ed8;
 }
+
+/* ── Proximity Buzzer & Social Live cam ───────────────────────────────── */
+@keyframes pulse-dot {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50%       { opacity: .4; transform: scale(.7); }
+}
+
+.buzzer-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+    color: #f1f5f9;
+    border: 1px solid #334155;
+    border-radius: 12px;
+    padding: 11px 16px;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    width: 100%;
+    transition: background .15s, transform .1s;
+}
+.buzzer-btn:active { transform: scale(.97); }
+.buzzer-btn:hover  { background: linear-gradient(135deg, #1e293b 0%, #334155 100%); }
+

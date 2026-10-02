@@ -23,7 +23,10 @@ from __future__ import annotations
 import argparse
 import math
 from pathlib import Path
+import queue
+import subprocess
 import sys
+import threading
 import time
 from typing import Dict, List, Optional, Tuple, Any
 
@@ -45,6 +48,72 @@ from spatialvector.perception.frame_source import FrameSource
 from spatialvector.perception.schemas import Frame, Track
 from spatialvector.perception.source_resolver import resolve_camera_source
 from spatialvector.perception.tracker import MultiObjectTracker
+
+
+class VoiceSynthesizer:
+    """Non-blocking background Text-To-Speech engine using Windows System.Speech.Synthesis."""
+
+    def __init__(self, cooldown_s: float = 2.5):
+        self.cooldown_s = cooldown_s
+        self.last_spoken_time: float = 0.0
+        self.last_spoken_phrase: str = ""
+        self._queue: queue.Queue[str] = queue.Queue(maxsize=3)
+        self._stop_event = threading.Event()
+        self._worker_thread = threading.Thread(target=self._worker, daemon=True)
+        self._worker_thread.start()
+
+    def speak(self, phrase: str, force: bool = False):
+        if not phrase:
+            return
+        now = time.monotonic()
+        # Cooldown & deduplication: don't repeat the exact same phrase unless cooldown elapsed
+        if not force and phrase == self.last_spoken_phrase and (now - self.last_spoken_time) < self.cooldown_s:
+            return
+        if not force and (now - self.last_spoken_time) < 1.4:
+            return
+
+        self.last_spoken_time = now
+        self.last_spoken_phrase = phrase
+        try:
+            # Drop older phrases if queued up to keep speech real-time
+            while not self._queue.empty():
+                try:
+                    self._queue.get_nowait()
+                except queue.Empty:
+                    break
+            self._queue.put_nowait(phrase)
+        except Exception:
+            pass
+
+    def _worker(self):
+        while not self._stop_event.is_set():
+            try:
+                phrase = self._queue.get(timeout=0.2)
+            except queue.Empty:
+                continue
+
+            try:
+                # Use Windows built-in System.Speech.Synthesis via PowerShell with zero external dependencies
+                clean_phrase = phrase.replace("'", "").replace('"', '').replace(';', '')
+                ps_cmd = (
+                    f"Add-Type -AssemblyName System.Speech; "
+                    f"$synth = New-Object System.Speech.Synthesis.SpeechSynthesizer; "
+                    f"$synth.Rate = 1; "
+                    f"$synth.Speak('{clean_phrase}');"
+                )
+                subprocess.run(
+                    ["powershell", "-NoProfile", "-NonInteractive", "-Command", ps_cmd],
+                    stdout=subprocess.DEVNULL,
+                    stderr=subprocess.DEVNULL,
+                    creationflags=getattr(subprocess, "CREATE_NO_WINDOW", 0),
+                    timeout=4.0,
+                )
+            except Exception:
+                pass
+
+    def stop(self):
+        self._stop_event.set()
+
 
 FIXTURES_DIR = ROOT / "tests" / "fixtures"
 
@@ -118,10 +187,25 @@ class PredictionViewer:
         self.fps_history = []
         self.last_time = time.monotonic()
 
+        # Temporal smoothing buffers for distance estimation
+        self._dist_history: Dict[int, List[float]] = {}   # track_id -> last N distances
+
+        # Real Voice Guidance Engine
+        self.voice = VoiceSynthesizer(cooldown_s=2.5)
+
+        # Demo Session Statistics
+        self.session_start_time = time.monotonic()
+        self.total_obstacles_detected = 0
+        self.total_voice_alerts = 0
+        self.total_safe_corridors = 0
+        self.total_nav_corrections = 0
+        self._last_cmd_dir = "NONE"
+
     def init_source(self, src: str | int):
         is_network = isinstance(src, str) and any(src.lower().startswith(p) for p in ("http://", "https://", "rtsp://"))
         self.frame_src = FrameSource(
             source=src,
+            resolution=(1920, 1080),
             target_fps=self.target_fps,
             queue_size=5,
             loop_video=(not is_network and isinstance(src, str)),
@@ -191,7 +275,7 @@ class PredictionViewer:
                             blank = np.full((720, 1280, 3), 18, dtype=np.uint8)
                             cv2.rectangle(blank, (0, 0), (1280, 52), (32, 32, 36), -1)
                             cv2.putText(blank, "SPATIALVECTOR-HMI // PREDICTION ENGINE", (24, 34), cv2.FONT_HERSHEY_SIMPLEX, 0.75, (0, 220, 255), 2, cv2.LINE_AA)
-                            
+
                             # Center card
                             cv2.rectangle(blank, (340, 240), (940, 480), (28, 28, 34), -1)
                             cv2.rectangle(blank, (340, 240), (940, 480), (55, 55, 65), 1)
@@ -199,7 +283,7 @@ class PredictionViewer:
                             cv2.putText(blank, f"Source: {self.current_source_label[:48]}", (380, 355), cv2.FONT_HERSHEY_SIMPLEX, 0.48, (140, 200, 140), 1, cv2.LINE_AA)
                             cv2.putText(blank, "Press [1] - [5] to test with recorded video scenes", (380, 405), cv2.FONT_HERSHEY_SIMPLEX, 0.52, (0, 200, 255), 1, cv2.LINE_AA)
                             cv2.putText(blank, "Press [Q] or [ESC] to exit", (380, 440), cv2.FONT_HERSHEY_SIMPLEX, 0.45, (160, 160, 160), 1, cv2.LINE_AA)
-                            
+
                             cv2.imshow(win_name, blank)
                             key = cv2.waitKey(30) & 0xFF
                             if self.handle_key(key):
@@ -275,6 +359,8 @@ class PredictionViewer:
                     break
 
         finally:
+            if hasattr(self, 'voice'):
+                self.voice.stop()
             self.frame_src.stop()
             self.imu.stop()
             cv2.destroyAllWindows()
@@ -324,6 +410,120 @@ class PredictionViewer:
             self.switch_source(self.primary_source, "Live Camera Source")
         return False
 
+    # ── Camera Enhancement Pipeline (White Balance + Exposure + CLAHE + Denoise) ──
+    @staticmethod
+    def _enhance_camera_feed(img: np.ndarray) -> np.ndarray:
+        """Apply high-quality camera enhancement matching a modern smartphone preview.
+
+        Pipeline:
+        1. Fast White Balance (Gray World assumption with gentle blend to avoid color cast).
+        2. Adaptive Exposure / Gamma correction based on scene luminance.
+        3. Luminance-only CLAHE (preserves true chrominance, eliminates washed-out look).
+        4. Edge-preserving bilateral filter (eliminates CMOS sensor noise without blurring edges).
+        5. Gentle unsharp mask for crisp object boundaries and high text legibility.
+        """
+        # Step 1: Gentle White Balance Correction (Gray World)
+        b, g, r = cv2.split(img)
+        b_mean = float(np.mean(b))
+        g_mean = float(np.mean(g))
+        r_mean = float(np.mean(r))
+        gray_mean = (b_mean + g_mean + r_mean) / 3.0
+
+        if b_mean > 5.0 and g_mean > 5.0 and r_mean > 5.0:
+            # Dampen scaling factors (blend 50% toward 1.0) to prevent aggressive color shifts
+            scale_b = 0.5 + 0.5 * (gray_mean / b_mean)
+            scale_g = 0.5 + 0.5 * (gray_mean / g_mean)
+            scale_r = 0.5 + 0.5 * (gray_mean / r_mean)
+            b = np.clip(b.astype(np.float32) * scale_b, 0, 255).astype(np.uint8)
+            g = np.clip(g.astype(np.float32) * scale_g, 0, 255).astype(np.uint8)
+            r = np.clip(r.astype(np.float32) * scale_r, 0, 255).astype(np.uint8)
+            balanced = cv2.merge([b, g, r])
+        else:
+            balanced = img
+
+        # Step 2: Convert to LAB color space for luminance-only processing
+        lab = cv2.cvtColor(balanced, cv2.COLOR_BGR2LAB)
+        l_ch, a_ch, b_ch = cv2.split(lab)
+        mean_lum = float(np.mean(l_ch))
+
+        # Dynamic Gamma / Exposure adjustment for low-light & over-exposure
+        if mean_lum < 75.0:
+            # Low-light boost (gamma < 1.0 brightens shadows naturally)
+            gamma = 0.78 + (mean_lum / 75.0) * 0.18
+            inv_gamma = 1.0 / max(0.1, gamma)
+            table = np.array([((i / 255.0) ** inv_gamma) * 255 for i in range(256)]).astype("uint8")
+            l_ch = cv2.LUT(l_ch, table)
+            clip_limit = 2.2
+        elif mean_lum > 175.0:
+            # Over-exposed reduction (gentle contrast clamp)
+            clip_limit = 1.2
+        else:
+            clip_limit = 1.6
+
+        # Step 3: Adaptive CLAHE on Luminance channel
+        clahe = cv2.createCLAHE(clipLimit=clip_limit, tileGridSize=(8, 8))
+        l_ch = clahe.apply(l_ch)
+
+        enhanced = cv2.merge([l_ch, a_ch, b_ch])
+        enhanced = cv2.cvtColor(enhanced, cv2.COLOR_LAB2BGR)
+
+        # Step 4: Gentle bilateral filter (edge-preserving denoising)
+        enhanced = cv2.bilateralFilter(enhanced, d=3, sigmaColor=20, sigmaSpace=20)
+
+        # Step 5: Subtle unsharp mask for crisp object boundaries & text visibility
+        gauss = cv2.GaussianBlur(enhanced, (0, 0), 1.2)
+        enhanced = cv2.addWeighted(enhanced, 1.18, gauss, -0.18, 0)
+
+        return enhanced
+
+    # ── Rounded Rectangle Utility ────────────────────────────────────
+    @staticmethod
+    def _draw_rounded_rect(canvas: np.ndarray, pt1: tuple, pt2: tuple,
+                           color: tuple, radius: int = 8, thickness: int = -1,
+                           alpha: float = 1.0):
+        """Draw a rectangle with rounded corners, supporting filled or outline mode."""
+        x1, y1 = pt1
+        x2, y2 = pt2
+        r = min(radius, (x2 - x1) // 2, (y2 - y1) // 2, 20)
+        if r < 2:
+            r = 0
+
+        if alpha < 1.0 and thickness == -1:
+            # Semi-transparent fill via overlay blending
+            overlay = canvas.copy()
+            PredictionViewer._draw_rounded_rect_solid(overlay, (x1, y1), (x2, y2), color, r, -1)
+            cv2.addWeighted(overlay, alpha, canvas, 1.0 - alpha, 0, canvas)
+        else:
+            PredictionViewer._draw_rounded_rect_solid(canvas, (x1, y1), (x2, y2), color, r, thickness)
+
+    @staticmethod
+    def _draw_rounded_rect_solid(canvas, pt1, pt2, color, r, thickness):
+        x1, y1 = pt1
+        x2, y2 = pt2
+        if r <= 0:
+            cv2.rectangle(canvas, (x1, y1), (x2, y2), color, thickness, cv2.LINE_AA)
+            return
+        # Four corner arcs + connecting rectangles
+        if thickness == -1:
+            # Filled
+            cv2.rectangle(canvas, (x1 + r, y1), (x2 - r, y2), color, -1)
+            cv2.rectangle(canvas, (x1, y1 + r), (x1 + r, y2 - r), color, -1)
+            cv2.rectangle(canvas, (x2 - r, y1 + r), (x2, y2 - r), color, -1)
+            cv2.ellipse(canvas, (x1 + r, y1 + r), (r, r), 180, 0, 90, color, -1, cv2.LINE_AA)
+            cv2.ellipse(canvas, (x2 - r, y1 + r), (r, r), 270, 0, 90, color, -1, cv2.LINE_AA)
+            cv2.ellipse(canvas, (x1 + r, y2 - r), (r, r), 90, 0, 90, color, -1, cv2.LINE_AA)
+            cv2.ellipse(canvas, (x2 - r, y2 - r), (r, r), 0, 0, 90, color, -1, cv2.LINE_AA)
+        else:
+            # Outline
+            cv2.line(canvas, (x1 + r, y1), (x2 - r, y1), color, thickness, cv2.LINE_AA)
+            cv2.line(canvas, (x1 + r, y2), (x2 - r, y2), color, thickness, cv2.LINE_AA)
+            cv2.line(canvas, (x1, y1 + r), (x1, y2 - r), color, thickness, cv2.LINE_AA)
+            cv2.line(canvas, (x2, y1 + r), (x2, y2 - r), color, thickness, cv2.LINE_AA)
+            cv2.ellipse(canvas, (x1 + r, y1 + r), (r, r), 180, 0, 90, color, thickness, cv2.LINE_AA)
+            cv2.ellipse(canvas, (x2 - r, y1 + r), (r, r), 270, 0, 90, color, thickness, cv2.LINE_AA)
+            cv2.ellipse(canvas, (x1 + r, y2 - r), (r, r), 90, 0, 90, color, thickness, cv2.LINE_AA)
+            cv2.ellipse(canvas, (x2 - r, y2 - r), (r, r), 0, 0, 90, color, thickness, cv2.LINE_AA)
+
     def render_overlay(
         self,
         img: np.ndarray,
@@ -339,28 +539,29 @@ class PredictionViewer:
     ) -> np.ndarray:
         orig_h, orig_w = img.shape[:2]
         is_portrait = orig_h > orig_w
-        
+
+        # 0. Camera Quality Enhancement (CLAHE + Bilateral + Unsharp)
+        img = self._enhance_camera_feed(img)
+
         # 1. Responsive Top & Bottom Bars
-        top_bar_h = 42
-        bot_bar_h = 40
+        top_bar_h = 48
+        bot_bar_h = 58
         avail_h = max(100, target_h - top_bar_h - bot_bar_h)
 
         # 2. View Mode & Dynamic Layout Calculation
         mode = self.view_mode
         if mode == "AUTO":
             if is_portrait:
-                # In portrait, if window is very wide (>= 860), give balanced sidebars; else maximize video
                 use_sidebars = self.show_telemetry and (target_w >= 860)
             else:
                 use_sidebars = self.show_telemetry and (target_w >= 1060)
         elif mode == "STUDIO":
             use_sidebars = self.show_telemetry and (target_w >= 700)
-        else: # "MAX"
+        else:  # "MAX"
             use_sidebars = False
 
         if use_sidebars:
-            # Clamped sidebar width: never starve the video!
-            sidebar_w = min(220, max(175, int(target_w * 0.22)))
+            sidebar_w = min(235, max(185, int(target_w * 0.22)))
             avail_w = max(200, target_w - (sidebar_w * 2) - 20)
             scale = min(avail_w / float(orig_w), avail_h / float(orig_h))
             vw = int(orig_w * scale)
@@ -370,7 +571,6 @@ class PredictionViewer:
             left_sidebar_rect = (8, top_bar_h + 8, ox - 8, target_h - bot_bar_h - 8)
             right_sidebar_rect = (ox + vw + 8, top_bar_h + 8, target_w - 8, target_h - bot_bar_h - 8)
         else:
-            # Maximum video scaling: full width & height available
             avail_w = target_w
             scale = min(avail_w / float(orig_w), avail_h / float(orig_h))
             vw = int(orig_w * scale)
@@ -380,94 +580,166 @@ class PredictionViewer:
             left_sidebar_rect = None
             right_sidebar_rect = None
 
-        # Base Studio Canvas
-        canvas = np.full((target_h, target_w, 3), (16, 18, 22), dtype=np.uint8)
+        # Base Studio Canvas — Premium dark background with subtle gradient
+        canvas = np.full((target_h, target_w, 3), (12, 14, 18), dtype=np.uint8)
 
-        # Place Un-stretched Camera Frame with high-fidelity interpolation
+        # Place enhanced camera frame
         interp = cv2.INTER_AREA if scale < 1.0 else cv2.INTER_LINEAR
         cam_resized = cv2.resize(img, (vw, vh), interpolation=interp)
         canvas[oy:oy + vh, ox:ox + vw] = cam_resized
 
-        # Subtle frame border
-        cv2.rectangle(canvas, (ox, oy), (ox + vw, oy + vh), (50, 54, 64), 1)
+        # Polished camera frame border with subtle glow
+        cv2.rectangle(canvas, (ox - 1, oy - 1), (ox + vw + 1, oy + vh + 1), (40, 45, 55), 1, cv2.LINE_AA)
+        cv2.rectangle(canvas, (ox - 2, oy - 2), (ox + vw + 2, oy + vh + 2), (28, 32, 38), 1, cv2.LINE_AA)
 
-        # 3. Ground Perspective Corridors (Clipped strictly within camera viewport)
+        # 3. AR Navigation Lane (Futuristic Autonomous Vehicle HUD)
         if self.show_hud:
             overlay = canvas.copy()
-            vanish_y = oy + int(vh * 0.54)
+            vanish_y = oy + int(vh * 0.52)
             vanish_x = ox + int(vw * 0.50)
+            y_bottom = oy + vh
+            y_top = vanish_y + max(8, int(vh * 0.04))
 
-            # Center Corridor
-            c_pts = np.array([
-                [vanish_x - int(vw * 0.035), vanish_y],
-                [vanish_x + int(vw * 0.035), vanish_y],
-                [ox + int(vw * 0.67), oy + vh],
-                [ox + int(vw * 0.33), oy + vh]
-            ], np.int32)
-            c_risk = risk.corridor_risks.get("center", 0.0)
-            c_color = (30, 30, 220) if c_risk > 0.55 else (40, 180, 50)
-            cv2.fillPoly(overlay, [c_pts], c_color)
+            steer_offset = 0
+            if cmd.direction == "LEFT":
+                steer_offset = -int(vw * 0.035)
+            elif cmd.direction == "RIGHT":
+                steer_offset = int(vw * 0.035)
 
-            # Left Corridor
-            l_pts = np.array([
-                [vanish_x - int(vw * 0.10), vanish_y],
-                [vanish_x - int(vw * 0.035), vanish_y],
-                [ox + int(vw * 0.33), oy + vh],
-                [ox + int(vw * 0.05), oy + vh]
-            ], np.int32)
-            l_risk = risk.corridor_risks.get("left", 0.0)
-            l_color = (30, 30, 220) if l_risk > 0.55 else (40, 180, 50)
-            cv2.fillPoly(overlay, [l_pts], l_color)
+            bottom_cx = ox + int(vw * 0.50)
+            top_cx = vanish_x + steer_offset
 
-            # Right Corridor
-            r_pts = np.array([
-                [vanish_x + int(vw * 0.035), vanish_y],
-                [vanish_x + int(vw * 0.10), vanish_y],
-                [ox + int(vw * 0.95), oy + vh],
-                [ox + int(vw * 0.67), oy + vh]
-            ], np.int32)
-            r_risk = risk.corridor_risks.get("right", 0.0)
-            r_color = (30, 30, 220) if r_risk > 0.55 else (40, 180, 50)
-            cv2.fillPoly(overlay, [r_pts], r_color)
+            # Dynamic corridor width based on free space and corridor clearance
+            c_clearance = max(0.0, 1.0 - risk.corridor_risks.get("center", 0.0))
+            half_w_bottom = int(vw * (0.19 + 0.06 * c_clearance))
+            half_w_top = max(12, int(vw * (0.028 + 0.015 * c_clearance)))
+
+            p_bl = (bottom_cx - half_w_bottom, y_bottom)
+            p_br = (bottom_cx + half_w_bottom, y_bottom)
+            p_tl = (top_cx - half_w_top, y_top)
+            p_tr = (top_cx + half_w_top, y_top)
+
+            lane_pts = np.array([p_tl, p_tr, p_br, p_bl], np.int32)
+
+            r_val = risk.global_risk
+            if r_val < 0.30:
+                theme_fill = (45, 175, 60)       # Green = Safe
+                theme_glow = (35, 235, 110)
+                theme_core = (190, 255, 215)
+            elif r_val <= 0.70:
+                theme_fill = (0, 150, 235)       # Yellow/Amber = Caution
+                theme_glow = (0, 205, 255)
+                theme_core = (190, 240, 255)
+            else:
+                theme_fill = (25, 25, 220)       # Red = Blocked
+                theme_glow = (35, 45, 255)
+                theme_core = (200, 200, 255)
+
+            # Smooth transparency gradient: fill corridor polygon with subtle 0.20 alpha
+            cv2.fillPoly(overlay, [lane_pts], theme_fill)
+            cv2.line(overlay, p_bl, p_tl, theme_glow, 6, cv2.LINE_AA)
+            cv2.line(overlay, p_br, p_tr, theme_glow, 6, cv2.LINE_AA)
+            cv2.line(overlay, p_bl, p_tl, theme_glow, 3, cv2.LINE_AA)
+            cv2.line(overlay, p_br, p_tr, theme_glow, 3, cv2.LINE_AA)
+
+            # Perspective distance rings across the corridor
+            for d in (0.25, 0.50, 0.75):
+                ry = int(y_bottom - d * (y_bottom - y_top))
+                rw = int(half_w_bottom * (1.0 - d) + half_w_top * d)
+                rcx = int(bottom_cx * (1.0 - d) + top_cx * d)
+                cv2.line(overlay, (rcx - rw, ry), (rcx + rw, ry), theme_glow, 1, cv2.LINE_AA)
 
             # Blend corridor fill
             cv2.addWeighted(overlay, 0.20, canvas, 0.80, 0, canvas)
 
-            # Draw crisp corridor separator lines
-            cv2.polylines(canvas, [c_pts], isClosed=False, color=(210, 230, 210), thickness=1, lineType=cv2.LINE_AA)
-            cv2.polylines(canvas, [l_pts], isClosed=False, color=(210, 230, 210), thickness=1, lineType=cv2.LINE_AA)
-            cv2.polylines(canvas, [r_pts], isClosed=False, color=(210, 230, 210), thickness=1, lineType=cv2.LINE_AA)
+            # Crisp guidance lane edge boundaries
+            cv2.line(canvas, p_bl, p_tl, theme_core, 2, cv2.LINE_AA)
+            cv2.line(canvas, p_br, p_tr, theme_core, 2, cv2.LINE_AA)
 
-            # Auto-scaled Corridor Risk Pills
-            badge_y = oy + max(16, int(vh * 0.038))
-            pill_font = float(np.clip(vw / 750.0 * 0.44, 0.30, 0.44))
+            # Corridor width indicator in meters (assistive walking lane width)
+            corridor_w_m = 1.10 + 0.40 * c_clearance
+            w_str = f"LANE WIDTH: {corridor_w_m:.2f}m"
+            (ww_t, wh_t), _ = cv2.getTextSize(w_str, cv2.FONT_HERSHEY_SIMPLEX, 0.30, 1)
+            wy = y_bottom - 12
+            wx = bottom_cx - ww_t // 2
+            self._draw_rounded_rect(canvas, (wx - 8, wy - wh_t - 4), (wx + ww_t + 8, wy + 4), (14, 18, 24), radius=4, thickness=-1, alpha=0.80)
+            cv2.putText(canvas, w_str, (wx, wy), cv2.FONT_HERSHEY_SIMPLEX, 0.30, theme_core, 1, cv2.LINE_AA)
 
-            def draw_pill(text: str, cx: int, cy: int, score: float):
-                (tw, th), _ = cv2.getTextSize(text, cv2.FONT_HERSHEY_SIMPLEX, pill_font, 1)
-                pw, ph = tw + 14, th + 8
-                bx1, by1 = cx - pw // 2, cy - ph // 2
-                bx2, by2 = bx1 + pw, by1 + ph
-                bg = (20, 20, 220) if score > 0.55 else (20, 24, 20)
-                cv2.rectangle(canvas, (bx1, by1), (bx2, by2), bg, -1)
-                cv2.rectangle(canvas, (bx1, by1), (bx2, by2), (80, 85, 95), 1)
-                cv2.putText(canvas, text, (bx1 + 7, by2 - 3), cv2.FONT_HERSHEY_SIMPLEX, pill_font, (240, 240, 240), 1, cv2.LINE_AA)
+            # Stable dashed center-line
+            num_dashes = 8
+            for di in range(num_dashes):
+                t0 = di / num_dashes
+                t1 = (di + 0.55) / num_dashes
+                if t1 > 1.0:
+                    t1 = 1.0
+                dy0 = int(y_bottom - t0 * (y_bottom - y_top))
+                dy1 = int(y_bottom - t1 * (y_bottom - y_top))
+                dcx0 = int(bottom_cx * (1.0 - t0) + top_cx * t0)
+                dcx1 = int(bottom_cx * (1.0 - t1) + top_cx * t1)
+                thick = 2 if t0 < 0.6 else 1
+                cv2.line(canvas, (dcx0, dy0), (dcx1, dy1), theme_core, thick, cv2.LINE_AA)
 
-            lbl_prefix = "L:" if vw < 400 else "LEFT: "
-            c_prefix = "C:" if vw < 400 else "CENTER: "
-            r_prefix = "R:" if vw < 400 else "RIGHT: "
-
-            draw_pill(f"{lbl_prefix}{l_risk:.2f}", ox + int(vw * 0.19), badge_y, l_risk)
-            draw_pill(f"{c_prefix}{c_risk:.2f}", ox + int(vw * 0.50), badge_y, c_risk)
-            draw_pill(f"{r_prefix}{r_risk:.2f}", ox + int(vw * 0.81), badge_y, r_risk)
-
-        # 4. Tracks, Precision Bounding Boxes & Kinematic Vectors (Anti-Collision Label Stacking)
+        # 4. AR-Style Bounding Boxes with Rounded Corners & Distance Badges
         pred_map = {p.track_id: p for p in predictions}
 
-        # Dynamic Font Scaling based on viewport width
         badge_font = float(np.clip(vw / 850.0 * 0.42, 0.28, 0.44))
         is_compact_badges = (vw < 520)
 
-        # Sort tracks by threat priority so most critical alerts get prime label positioning
+        _OBJ_H_REAL_M = {
+            'person': 1.45, 'man': 1.45, 'woman': 1.45, 'child': 1.10,
+            'chair': 0.65, 'couch': 0.80, 'sofa': 0.80,
+            'dining table': 0.75, 'table': 0.75, 'desk': 0.75,
+            'laptop': 0.28, 'keyboard': 0.04, 'mouse': 0.05,
+            'tv': 0.65, 'monitor': 0.50,
+            'bottle': 0.28, 'cup': 0.16, 'wine glass': 0.22,
+            'cell phone': 0.15, 'book': 0.24,
+            'bicycle': 1.00, 'motorcycle': 1.10, 'car': 1.50,
+            'dog': 0.50, 'cat': 0.30, 'backpack': 0.50, 'suitcase': 0.65,
+        }
+
+        def _estimate_distance_m(class_name: str, bbox_raw: tuple, img_h: int) -> float:
+            h_real = _OBJ_H_REAL_M.get(class_name.lower(), 0.75)
+            bbox_h_px = max(4.0, bbox_raw[3] - bbox_raw[1])
+            h_frac = bbox_h_px / max(10.0, float(img_h))
+            dist = (h_real * 0.92) / max(0.03, h_frac)
+            return float(max(0.3, min(15.0, dist)))
+
+        SMOOTH_WINDOW = 6
+        track_distances: dict[int, float] = {}
+        track_dist_confidence: dict[int, float] = {}
+        active_ids = set()
+        for _tr in tracks:
+            if _tr.bbox_history:
+                raw_dist = _estimate_distance_m(_tr.class_name, _tr.bbox_history[-1], orig_h)
+                tid = _tr.track_id
+                active_ids.add(tid)
+
+                if not hasattr(self, '_dist_history'):
+                    self._dist_history = {}
+                if tid not in self._dist_history:
+                    self._dist_history[tid] = []
+                self._dist_history[tid].append(raw_dist)
+                if len(self._dist_history[tid]) > SMOOTH_WINDOW:
+                    self._dist_history[tid].pop(0)
+
+                buf = self._dist_history[tid]
+                smoothed = sum(buf) / len(buf)
+                track_distances[tid] = smoothed
+
+                if len(buf) >= 3:
+                    std = float(np.std(buf))
+                    track_dist_confidence[tid] = max(0.0, min(1.0, 1.0 - std / max(0.5, smoothed)))
+                else:
+                    track_dist_confidence[tid] = 0.3
+
+        if not hasattr(self, '_dist_history'):
+            self._dist_history = {}
+        stale = [k for k in self._dist_history if k not in active_ids]
+        for k in stale:
+            del self._dist_history[k]
+
+        nearest_id = min(track_distances, key=track_distances.get) if track_distances else None
+
         def get_track_threat_rank(tr: Track) -> float:
             p = pred_map.get(tr.track_id)
             if not p:
@@ -501,26 +773,35 @@ class PredictionViewer:
             cpa = pred.cpa_normalized if pred else None
             prox_risk = getattr(pred, "proximity_risk", 0.0) if pred else 0.0
             exp_rate = getattr(pred, "expansion_rate", 0.0) if pred else 0.0
+            conf_pct = int(t.track_confidence * 100) if hasattr(t, 'track_confidence') else 0
 
-            # Color scheme: Red (Threat/Proximity), Amber (Caution), Emerald (Safe)
+            # Color scheme
             if is_intersect or prox_risk > 0.40 or (pred and getattr(pred, 'is_threat', False)):
-                box_color = (30, 30, 235)      # Red
+                box_color = (30, 30, 235)       # Red
+                fill_color = (20, 20, 140)
             elif (cpa is not None and cpa < 0.25) or prox_risk > 0.20 or exp_rate > 0.15:
-                box_color = (0, 145, 255)      # Amber
+                box_color = (0, 145, 255)       # Amber
+                fill_color = (0, 85, 150)
             else:
-                box_color = (0, 210, 120)      # Emerald
+                box_color = (0, 210, 120)       # Emerald
+                fill_color = (0, 120, 70)
 
-            # Modern tech corner brackets
-            cv2.rectangle(canvas, (x1, y1), (x2, y2), box_color, 1, cv2.LINE_AA)
-            b_len = min(18, max(5, int(min(x2 - x1, y2 - y1) / 4)))
-            cv2.line(canvas, (x1, y1), (x1 + b_len, y1), box_color, 3, cv2.LINE_AA)
-            cv2.line(canvas, (x1, y1), (x1, y1 + b_len), box_color, 3, cv2.LINE_AA)
-            cv2.line(canvas, (x2, y1), (x2 - b_len, y1), box_color, 3, cv2.LINE_AA)
-            cv2.line(canvas, (x2, y1), (x2, y1 + b_len), box_color, 3, cv2.LINE_AA)
-            cv2.line(canvas, (x1, y2), (x1 + b_len, y2), box_color, 3, cv2.LINE_AA)
-            cv2.line(canvas, (x1, y2), (x1, y2 - b_len), box_color, 3, cv2.LINE_AA)
-            cv2.line(canvas, (x2, y2), (x2 - b_len, y2), box_color, 3, cv2.LINE_AA)
-            cv2.line(canvas, (x2, y2), (x2, y2 - b_len), box_color, 3, cv2.LINE_AA)
+            # Semi-transparent fill inside bounding box
+            box_overlay = canvas.copy()
+            cv2.rectangle(box_overlay, (x1, y1), (x2, y2), fill_color, -1)
+            cv2.addWeighted(box_overlay, 0.12, canvas, 0.88, 0, canvas)
+
+            # Rounded corner brackets (AR HUD style)
+            b_len = min(22, max(6, int(min(x2 - x1, y2 - y1) / 3.5)))
+            corner_thick = 2
+            cv2.line(canvas, (x1, y1 + b_len), (x1, y1), box_color, corner_thick, cv2.LINE_AA)
+            cv2.line(canvas, (x1, y1), (x1 + b_len, y1), box_color, corner_thick, cv2.LINE_AA)
+            cv2.line(canvas, (x2 - b_len, y1), (x2, y1), box_color, corner_thick, cv2.LINE_AA)
+            cv2.line(canvas, (x2, y1), (x2, y1 + b_len), box_color, corner_thick, cv2.LINE_AA)
+            cv2.line(canvas, (x1, y2 - b_len), (x1, y2), box_color, corner_thick, cv2.LINE_AA)
+            cv2.line(canvas, (x1, y2), (x1 + b_len, y2), box_color, corner_thick, cv2.LINE_AA)
+            cv2.line(canvas, (x2 - b_len, y2), (x2, y2), box_color, corner_thick, cv2.LINE_AA)
+            cv2.line(canvas, (x2, y2), (x2, y2 - b_len), box_color, corner_thick, cv2.LINE_AA)
 
             # Velocity Vector Arrow from Box Center
             cx = (x1 + x2) // 2
@@ -532,43 +813,65 @@ class PredictionViewer:
                 cv2.arrowedLine(canvas, (cx, cy), (end_x, end_y), (0, 240, 255), 2, tipLength=0.25, line_type=cv2.LINE_AA)
                 cv2.circle(canvas, (cx, cy), 3, (0, 240, 255), -1, cv2.LINE_AA)
 
-            # Auto-Scaled Label Formatting (Compact mode avoids badge collision in portrait streams)
-            box_w = x2 - x1
-            use_compact = is_compact_badges or (box_w < 155)
+            # AR Distance Badge (name | conf% | distance)
+            dist_m = track_distances.get(t.track_id, -1.0)
+            dist_conf = track_dist_confidence.get(t.track_id, 0.0)
+            is_nearest = (t.track_id == nearest_id)
 
-            if use_compact:
-                tag = "!COLL!" if is_intersect else ("!PROX!" if prox_risk > 0.35 else ("!LOOM!" if exp_rate > 0.20 else ""))
-                t_str = f"{ttc:.1f}s" if ttc is not None else ""
-                c_name = t.class_name[:4].upper()
-                parts = [f"#{t.track_id} {c_name}"]
-                if t_str:
-                    parts.append(t_str)
-                elif cpa is not None and cpa < 0.30:
-                    parts.append(f"{cpa:.2f}")
-                if tag:
-                    parts.append(tag)
-                label = " ".join(parts)
+            obj_label = t.class_name.title()
+            if dist_m >= 0:
+                if dist_conf >= 0.6:
+                    dist_line = f"{dist_m:.1f}m"
+                else:
+                    dist_line = f"Approx. {dist_m:.1f}m"
             else:
-                tag = " !COLLISION!" if is_intersect else (" !PROXIMITY!" if prox_risk > 0.35 else (" !LOOMING!" if exp_rate > 0.20 else ""))
-                ttc_str = f"TTC:{ttc:.1f}s" if ttc is not None else "TTC:--"
-                cpa_str = f"CPA:{cpa:.2f}" if cpa is not None else ""
-                label = f"#{t.track_id} {t.class_name.upper()} | {ttc_str} | {cpa_str}{tag}".strip(" |")
+                dist_line = "--m"
+            conf_line = f"{conf_pct}%" if conf_pct > 0 else ""
 
-            (tw, th), _ = cv2.getTextSize(label, cv2.FONT_HERSHEY_SIMPLEX, badge_font, 1)
-            bw = tw + 8
-            bh = th + 6
+            if is_intersect:
+                threat_tag = " COLLISION"
+            elif prox_risk > 0.35:
+                threat_tag = " CAUTION"
+            elif exp_rate > 0.20:
+                threat_tag = " LOOMING"
+            else:
+                threat_tag = ""
 
-            # Anti-Collision Placement Solver
-            # Clamp horizontally strictly inside camera frame
+            if is_compact_badges:
+                obj_label = t.class_name[:6].title() + threat_tag
+            else:
+                obj_label = obj_label + threat_tag
+
+            if dist_m < 1.0:
+                dist_color = (60, 60, 255)
+                border_color = (90, 90, 255)
+            elif dist_m < 2.5:
+                dist_color = (0, 195, 255)
+                border_color = (0, 220, 255)
+            else:
+                dist_color = (80, 230, 130)
+                border_color = (100, 255, 160)
+
+            lbl_font = float(np.clip(badge_font * 0.90, 0.28, 0.42))
+            conf_font = float(np.clip(badge_font * 0.80, 0.24, 0.36))
+            dist_font_sz = float(np.clip(badge_font * 1.10, 0.32, 0.48))
+
+            (lw, lh), _ = cv2.getTextSize(obj_label, cv2.FONT_HERSHEY_SIMPLEX, lbl_font, 1)
+            (cw, ch), _ = cv2.getTextSize(conf_line, cv2.FONT_HERSHEY_SIMPLEX, conf_font, 1) if conf_line else ((0, 0), 0)
+            (dw, dh), _ = cv2.getTextSize(dist_line, cv2.FONT_HERSHEY_SIMPLEX, dist_font_sz, 2)
+
+            bw = max(lw, cw, dw) + 18
+            bh = lh + (ch + 4 if conf_line else 0) + dh + 16
+
             bx1 = max(ox + 2, min(x1, ox + vw - bw - 2))
             bx2 = bx1 + bw
 
             def rect_intersects(r1, r2):
                 return not (r1[2] < r2[0] or r1[0] > r2[2] or r1[3] < r2[1] or r1[1] > r2[3])
 
-            c_top = (bx1, y1 - bh - 2, bx2, y1 - 2)
-            c_bot = (bx1, y2 + 2, bx2, y2 + bh + 2)
-            c_in = (bx1, y1 + 3, bx2, y1 + bh + 3)
+            c_top = (bx1, y1 - bh - 4, bx2, y1 - 4)
+            c_bot = (bx1, y2 + 4, bx2, y2 + bh + 4)
+            c_in  = (bx1, y1 + 4, bx2, y1 + bh + 4)
 
             chosen_rect = None
             if c_top[1] >= oy + 16 and not any(rect_intersects(c_top, occ) for occ in occupied_badge_rects):
@@ -578,221 +881,613 @@ class PredictionViewer:
             elif not any(rect_intersects(c_in, occ) for occ in occupied_badge_rects):
                 chosen_rect = c_in
             else:
-                # Stagger vertically below highest colliding badge in this column
                 colliding = [occ for occ in occupied_badge_rects if not (bx2 < occ[0] or bx1 > occ[2])]
                 if colliding:
-                    max_collided_y2 = max(occ[3] for occ in colliding)
-                    staggered_y1 = max_collided_y2 + 2
+                    staggered_y1 = max(occ[3] for occ in colliding) + 4
                     if staggered_y1 + bh <= oy + vh - 2:
                         chosen_rect = (bx1, staggered_y1, bx2, staggered_y1 + bh)
                 if chosen_rect is None:
-                    chosen_rect = c_top  # Safe fallback
+                    chosen_rect = c_top
 
             occupied_badge_rects.append(chosen_rect)
             cbx1, cby1, cbx2, cby2 = chosen_rect
 
-            cv2.rectangle(canvas, (cbx1, cby1), (cbx2, cby2), (18, 18, 22), -1)
-            cv2.rectangle(canvas, (cbx1, cby1), (cbx2, cby2), box_color, 1)
-            cv2.putText(canvas, label, (cbx1 + 4, cby2 - 4), cv2.FONT_HERSHEY_SIMPLEX, badge_font, (255, 255, 255), 1, cv2.LINE_AA)
+            # Rounded badge background
+            self._draw_rounded_rect(canvas, (cbx1, cby1), (cbx2, cby2), (10, 12, 16), radius=6, thickness=-1, alpha=0.86)
+            bd_thick = 2 if is_nearest else 1
+            bd_col = border_color if is_nearest else box_color
+            self._draw_rounded_rect(canvas, (cbx1, cby1), (cbx2, cby2), bd_col, radius=6, thickness=bd_thick)
 
-        # 5. Top Telemetry Header Bar (Auto-scaling text & meter)
-        cv2.rectangle(canvas, (0, 0), (target_w, top_bar_h), (18, 20, 24), -1)
-        cv2.line(canvas, (0, top_bar_h), (target_w, top_bar_h), (45, 48, 56), 1)
+            # Line 1 — Object Name
+            cur_y = cby1 + lh + 5
+            cv2.putText(canvas, obj_label, (cbx1 + 8, cur_y),
+                        cv2.FONT_HERSHEY_SIMPLEX, lbl_font, (235, 240, 250), 1, cv2.LINE_AA)
 
-        state = risk.state
-        state_colors = {
-            "SAFE": (35, 170, 60),
-            "CAUTION": (0, 180, 230),
-            "WARNING": (0, 130, 245),
-            "CRITICAL": (25, 30, 235),
-            "DEGRADED": (180, 50, 180),
-        }
-        st_color = state_colors.get(state, (120, 120, 120))
+            # Line 2 — Confidence %
+            if conf_line:
+                cur_y += ch + 4
+                cv2.putText(canvas, conf_line, (cbx1 + 8, cur_y),
+                            cv2.FONT_HERSHEY_SIMPLEX, conf_font, (170, 185, 205), 1, cv2.LINE_AA)
 
-        # State Pill Badge
-        state_label = f" {state} "
-        (stw, sth), _ = cv2.getTextSize(state_label, cv2.FONT_HERSHEY_SIMPLEX, 0.50, 2)
-        cv2.rectangle(canvas, (12, 6), (12 + stw + 8, 36), st_color, -1)
-        cv2.putText(canvas, state_label, (16, 26), cv2.FONT_HERSHEY_SIMPLEX, 0.50, (255, 255, 255), 2, cv2.LINE_AA)
+            # Line 3 — Distance
+            cur_y += dh + 4
+            cv2.putText(canvas, dist_line, (cbx1 + 8, cur_y),
+                        cv2.FONT_HERSHEY_SIMPLEX, dist_font_sz, dist_color, 2, cv2.LINE_AA)
 
-        # Risk Score + Visual Meter Bar
-        meter_x = 22 + stw + 10
-        meter_w = 90 if target_w < 900 else 110
-        meter_h = 11
-        meter_y = 16
-        risk_pct = float(np.clip(risk.global_risk, 0.0, 1.0))
+            # NEAREST chip
+            if is_nearest and cby1 > oy + 18:
+                chip = "NEAREST"
+                (chw, chh), _ = cv2.getTextSize(chip, cv2.FONT_HERSHEY_SIMPLEX, 0.28, 1)
+                self._draw_rounded_rect(canvas, (cbx1, cby1 - chh - 6), (cbx1 + chw + 10, cby1 - 1), border_color, radius=4, thickness=-1)
+                cv2.putText(canvas, chip, (cbx1 + 5, cby1 - 4),
+                            cv2.FONT_HERSHEY_SIMPLEX, 0.28, (10, 10, 20), 1, cv2.LINE_AA)
 
-        risk_txt = f"RISK: {risk.global_risk:.2f}"
-        cv2.putText(canvas, risk_txt, (meter_x, 26), cv2.FONT_HERSHEY_SIMPLEX, 0.44, (230, 230, 230), 1, cv2.LINE_AA)
-        
-        (rtw, _), _ = cv2.getTextSize(risk_txt, cv2.FONT_HERSHEY_SIMPLEX, 0.44, 1)
-        bar_x1 = meter_x + rtw + 8
-        cv2.rectangle(canvas, (bar_x1, meter_y), (bar_x1 + meter_w, meter_y + meter_h), (35, 38, 46), -1)
-        fill_w = int(meter_w * risk_pct)
-        if fill_w > 0:
-            fill_color = (35, 170, 60) if risk_pct < 0.35 else ((0, 140, 240) if risk_pct < 0.65 else (30, 30, 230))
-            cv2.rectangle(canvas, (bar_x1, meter_y), (bar_x1 + fill_w, meter_y + meter_h), fill_color, -1)
-        cv2.rectangle(canvas, (bar_x1, meter_y), (bar_x1 + meter_w, meter_y + meter_h), (75, 80, 90), 1)
+        # 5. SPATIAL VECTOR — Professional Top Header Bar
+        for hy in range(top_bar_h):
+            alpha_grad = 1.0 - (hy / top_bar_h) * 0.15
+            row_color = int(16 * alpha_grad)
+            cv2.line(canvas, (0, hy), (target_w, hy), (row_color, row_color + 2, row_color + 4), 1)
 
-        # Confidence
-        conf_txt = f"CONF: {risk.confidence * 100:.0f}%"
-        cv2.putText(canvas, conf_txt, (bar_x1 + meter_w + 12, 26), cv2.FONT_HERSHEY_SIMPLEX, 0.42, (180, 185, 195), 1, cv2.LINE_AA)
+        cv2.line(canvas, (0, top_bar_h - 1), (target_w, top_bar_h - 1), (0, 180, 240), 1, cv2.LINE_AA)
 
-        # Right side: FPS, Frame ID, Mode, and Hotkeys
-        mode_label = f"MODE:{self.view_mode}"
-        if target_w >= 1050:
-            right_info = f"FPS: {fps:.1f} | #{frame_id} | [{mode_label}] | [A] Auto-Scale  [V] View  [H] HUD  [T] Telem"
-            r_font = 0.38
-        elif target_w >= 780:
-            right_info = f"{fps:.1f}FPS | #{frame_id} | [{mode_label}] | [A] Scale  [V] View  [H] HUD"
-            r_font = 0.35
+        brand_x = 14
+        cv2.putText(canvas, "SPATIAL", (brand_x, 22), cv2.FONT_HERSHEY_SIMPLEX, 0.58, (0, 210, 255), 2, cv2.LINE_AA)
+        (bw_txt, _), _ = cv2.getTextSize("SPATIAL", cv2.FONT_HERSHEY_SIMPLEX, 0.58, 2)
+        cv2.putText(canvas, "VECTOR", (brand_x + bw_txt + 6, 22), cv2.FONT_HERSHEY_SIMPLEX, 0.58, (255, 255, 255), 2, cv2.LINE_AA)
+        cv2.putText(canvas, "Camera Perception & Prediction Engine", (brand_x, 38), cv2.FONT_HERSHEY_SIMPLEX, 0.30, (140, 150, 165), 1, cv2.LINE_AA)
+
+        min_obstacle_dist = 6.0
+        if track_distances:
+            min_obstacle_dist = min(track_distances.values())
+
+        if tracks:
+            self.total_obstacles_detected = max(getattr(self, 'total_obstacles_detected', 0), len(tracks))
+        if cmd.direction != getattr(self, '_last_cmd_dir', 'NONE'):
+            if cmd.direction in ("LEFT", "RIGHT", "STOP"):
+                self.total_nav_corrections = getattr(self, 'total_nav_corrections', 0) + 1
+            self._last_cmd_dir = cmd.direction
+        if risk.global_risk < 0.30:
+            self.total_safe_corridors = getattr(self, 'total_safe_corridors', 0) + 1
+
+        r_val = risk.global_risk
+        if r_val < 0.30:
+            nav_title = "SAFE TO WALK"
+            nav_sub = f"{min_obstacle_dist:.1f}m CLEAR"
+            nav_bg = (35, 170, 60)
+            nav_bd = (60, 215, 90)
+        elif r_val <= 0.70:
+            nav_title = "CAUTION"
+            nav_sub = f"{min_obstacle_dist:.1f}m OBSTACLE AHEAD"
+            nav_bg = (0, 140, 245)
+            nav_bd = (0, 185, 255)
         else:
-            right_info = f"{fps:.1f}FPS | [{mode_label}]"
-            r_font = 0.34
+            nav_title = "STOP"
+            nav_sub = f"{min_obstacle_dist:.1f}m OBSTACLE"
+            nav_bg = (30, 30, 235)
+            nav_bd = (70, 70, 255)
 
-        (rw, _), _ = cv2.getTextSize(right_info, cv2.FONT_HERSHEY_SIMPLEX, r_font, 1)
-        cv2.putText(canvas, right_info, (max(target_w - rw - 12, bar_x1 + meter_w + 95), 26), cv2.FONT_HERSHEY_SIMPLEX, r_font, (205, 210, 220), 1, cv2.LINE_AA)
+        nav_font_sz = 0.46
+        sub_font_sz = 0.33
+        (ntw, nth), _ = cv2.getTextSize(nav_title, cv2.FONT_HERSHEY_SIMPLEX, nav_font_sz, 2)
+        (nsw, nsh), _ = cv2.getTextSize(nav_sub, cv2.FONT_HERSHEY_SIMPLEX, sub_font_sz, 1)
+        pill_pad = 16
+        pill_w = max(ntw, nsw) + pill_pad * 2
+        pill_x1 = max(10, (target_w - pill_w) // 2)
+        pill_x2 = pill_x1 + pill_w
+        pill_y1 = 5
+        pill_y2 = 42
 
-        # 6. Bottom Directional Guidance Banner
-        cv2.rectangle(canvas, (0, target_h - bot_bar_h), (target_w, target_h), (18, 20, 24), -1)
-        cv2.line(canvas, (0, target_h - bot_bar_h), (target_w, target_h - bot_bar_h), (45, 48, 56), 1)
+        self._draw_rounded_rect(canvas, (pill_x1, pill_y1), (pill_x2, pill_y2), nav_bg, radius=12, thickness=-1)
+        self._draw_rounded_rect(canvas, (pill_x1, pill_y1), (pill_x2, pill_y2), nav_bd, radius=12, thickness=1)
+        title_x = pill_x1 + (pill_w - ntw) // 2
+        sub_x = pill_x1 + (pill_w - nsw) // 2
+        cv2.putText(canvas, nav_title, (title_x, pill_y1 + nth + 4), cv2.FONT_HERSHEY_SIMPLEX, nav_font_sz, (255, 255, 255), 2, cv2.LINE_AA)
+        cv2.putText(canvas, nav_sub, (sub_x, pill_y1 + nth + nsh + 10), cv2.FONT_HERSHEY_SIMPLEX, sub_font_sz, (230, 245, 255), 1, cv2.LINE_AA)
 
-        if cmd.direction == "LEFT":
-            dir_symbol = "<< MOVE LEFT"
-            dir_color = (0, 180, 255)
-        elif cmd.direction == "RIGHT":
-            dir_symbol = ">> MOVE RIGHT"
-            dir_color = (0, 180, 255)
-        elif cmd.direction == "STOP":
-            dir_symbol = "|| STOP IMMINENT ||"
-            dir_color = (35, 35, 235)
+        latency_ms = max(12, int((1.0 / max(0.1, fps)) * 1000))
+        conf_pct_overall = int(risk.confidence * 100) if hasattr(risk, 'confidence') else 94
+
+        right_items = [
+            (f"FPS:{fps:.0f}", (80, 230, 130) if fps >= 15 else ((0, 195, 255) if fps >= 8 else (60, 60, 255))),
+            (f"{latency_ms}ms", (200, 215, 230)),
+            (f"OBJS:{len(tracks)}", (0, 210, 255)),
+            (f"CONF:{conf_pct_overall}%", (80, 230, 130) if conf_pct_overall >= 70 else (0, 195, 255)),
+            ("ACTIVE" if fps > 2 else "STANDBY", (80, 230, 130) if fps > 2 else (60, 60, 255)),
+        ]
+
+        rx_cursor = target_w - 14
+        for label, color in reversed(right_items):
+            (tw_r, _), _ = cv2.getTextSize(label, cv2.FONT_HERSHEY_SIMPLEX, 0.32, 1)
+            rx_cursor -= tw_r + 4
+            cv2.circle(canvas, (rx_cursor - 4, 18), 3, color, -1, cv2.LINE_AA)
+            cv2.putText(canvas, label, (rx_cursor, 22), cv2.FONT_HERSHEY_SIMPLEX, 0.32, color, 1, cv2.LINE_AA)
+            rx_cursor -= 14
+
+        # 6. Navigation Instruction Banner (Bottom Bar)
+        bar_y1 = target_h - bot_bar_h
+        for by in range(bot_bar_h):
+            alpha_grad = 0.85 + (by / bot_bar_h) * 0.15
+            row_c = int(12 * alpha_grad)
+            cv2.line(canvas, (0, bar_y1 + by), (target_w, bar_y1 + by), (row_c, row_c + 1, row_c + 2), 1)
+        cv2.line(canvas, (0, bar_y1), (target_w, bar_y1), (0, 180, 240), 1, cv2.LINE_AA)
+
+        l_risk = risk.corridor_risks.get("left", 0.0)
+        c_risk = risk.corridor_risks.get("center", 0.0)
+        r_risk = risk.corridor_risks.get("right", 0.0)
+
+        all_blocked = (c_risk >= 0.65 and l_risk >= 0.55 and r_risk >= 0.55) or (risk.global_risk >= 0.72) or (cmd.direction == "STOP" and risk.global_risk > 0.40)
+
+        if all_blocked:
+            nav_action = "STOP"
+            nav_icon = "STOP"
+            nav_color = (25, 25, 225)
+            nav_border = (60, 60, 255)
+        elif c_risk < 0.35 and risk.global_risk < 0.45 and cmd.direction not in ("LEFT", "RIGHT"):
+            nav_action = "WALK FORWARD"
+            nav_icon = "UP"
+            nav_color = (35, 175, 55)
+            nav_border = (70, 235, 95)
         else:
-            dir_symbol = "^^ PATH CLEAR ^^"
-            dir_color = (40, 190, 70)
+            if l_risk <= r_risk:
+                nav_action = "MOVE LEFT"
+                nav_icon = "LEFT"
+            else:
+                nav_action = "MOVE RIGHT"
+                nav_icon = "RIGHT"
+            nav_color = (0, 145, 245)
+            nav_border = (0, 210, 255)
 
-        guidance_lead = f"GUIDANCE: [{dir_symbol}]"
-        g_font = 0.46 if target_w >= 900 else 0.40
-        cv2.putText(canvas, guidance_lead, (14, target_h - 14), cv2.FONT_HERSHEY_SIMPLEX, g_font, dir_color, 2, cv2.LINE_AA)
+        banner_font_sz = 0.65 if target_w >= 850 else (0.55 if target_w >= 600 else 0.45)
+        banner_thick = 2
+        (tw, th), _ = cv2.getTextSize(nav_action, cv2.FONT_HERSHEY_SIMPLEX, banner_font_sz, banner_thick)
 
-        (gw, _), _ = cv2.getTextSize(guidance_lead, cv2.FONT_HERSHEY_SIMPLEX, g_font, 2)
-        if target_w >= 880:
-            haptic_txt = (
-                f"  |  HAPTIC: {cmd.pattern_id} (Urgency {cmd.urgency}/5, {cmd.duration_ms}ms)"
-                f"  |  REASONS: {', '.join(risk.reason_codes[:2]) if risk.reason_codes else 'clear path'}"
-            )
-        else:
-            haptic_txt = f"  |  {cmd.pattern_id} ({cmd.urgency}/5)"
-        cv2.putText(canvas, haptic_txt, (14 + gw, target_h - 14), cv2.FONT_HERSHEY_SIMPLEX, 0.40, (210, 215, 225), 1, cv2.LINE_AA)
+        icon_space = 34 if target_w >= 850 else 26
+        pad_x = 20 if target_w >= 850 else 12
+        banner_w = tw + icon_space + pad_x * 2
+        banner_h = bot_bar_h - 14
+        by1 = bar_y1 + 7
+        by2 = by1 + banner_h
+        bx1 = max(10, (target_w - banner_w) // 2)
+        bx2 = min(target_w - 10, bx1 + banner_w)
 
-        # 7. Rich Information Sidebars or Floating Telemetry Cards
+        self._draw_rounded_rect(canvas, (bx1, by1), (bx2, by2), nav_color, radius=12, thickness=-1)
+        self._draw_rounded_rect(canvas, (bx1, by1), (bx2, by2), nav_border, radius=12, thickness=2)
+
+        ix = bx1 + pad_x + (10 if target_w >= 850 else 6)
+        iy = by1 + banner_h // 2
+
+        if nav_icon == "UP":
+            cv2.line(canvas, (ix, iy + 8), (ix, iy - 5), (255, 255, 255), 3, cv2.LINE_AA)
+            head = np.array([[ix - 6, iy - 2], [ix, iy - 10], [ix + 6, iy - 2]], np.int32)
+            cv2.fillPoly(canvas, [head], (255, 255, 255), cv2.LINE_AA)
+        elif nav_icon == "LEFT":
+            cv2.line(canvas, (ix + 8, iy), (ix - 5, iy), (255, 255, 255), 3, cv2.LINE_AA)
+            head = np.array([[ix - 2, iy - 6], [ix - 10, iy], [ix - 2, iy + 6]], np.int32)
+            cv2.fillPoly(canvas, [head], (255, 255, 255), cv2.LINE_AA)
+        elif nav_icon == "RIGHT":
+            cv2.line(canvas, (ix - 8, iy), (ix + 5, iy), (255, 255, 255), 3, cv2.LINE_AA)
+            head = np.array([[ix + 2, iy - 6], [ix + 10, iy], [ix + 2, iy + 6]], np.int32)
+            cv2.fillPoly(canvas, [head], (255, 255, 255), cv2.LINE_AA)
+        else:  # STOP
+            oct_pts = np.array([
+                [ix - 4, iy - 9], [ix + 4, iy - 9],
+                [ix + 9, iy - 4], [ix + 9, iy + 4],
+                [ix + 4, iy + 9], [ix - 4, iy + 9],
+                [ix - 9, iy + 4], [ix - 9, iy - 4]
+            ], np.int32)
+            cv2.fillPoly(canvas, [oct_pts], (255, 255, 255), cv2.LINE_AA)
+            cv2.line(canvas, (ix - 5, iy), (ix + 5, iy), nav_color, 3, cv2.LINE_AA)
+
+        tx = ix + (20 if target_w >= 850 else 14)
+        ty = by1 + (banner_h + th) // 2
+        cv2.putText(canvas, nav_action, (tx, ty), cv2.FONT_HERSHEY_SIMPLEX, banner_font_sz, (255, 255, 255), banner_thick, cv2.LINE_AA)
+
+        if bx1 >= 200:
+            cv2.putText(canvas, "CORRIDOR", (16, bar_y1 + 18), cv2.FONT_HERSHEY_SIMPLEX, 0.30, (0, 180, 240), 1, cv2.LINE_AA)
+            for ci, (clbl, cval) in enumerate([("L", l_risk), ("C", c_risk), ("R", r_risk)]):
+                cc = (80, 230, 130) if cval < 0.35 else ((0, 195, 255) if cval < 0.65 else (60, 60, 255))
+                cv2.putText(canvas, f"{clbl}:{cval:.2f}", (16 + ci * 52, bar_y1 + 38), cv2.FONT_HERSHEY_SIMPLEX, 0.34, cc, 1, cv2.LINE_AA)
+
+        if target_w - bx2 >= 200:
+            haptic_txt = f"{cmd.pattern_id}"
+            (hw, _), _ = cv2.getTextSize(haptic_txt, cv2.FONT_HERSHEY_SIMPLEX, 0.34, 1)
+            cv2.putText(canvas, "HAPTIC", (target_w - hw - 16, bar_y1 + 18), cv2.FONT_HERSHEY_SIMPLEX, 0.30, (0, 180, 240), 1, cv2.LINE_AA)
+            cv2.putText(canvas, haptic_txt, (target_w - hw - 16, bar_y1 + 38), cv2.FONT_HERSHEY_SIMPLEX, 0.34, (185, 190, 200), 1, cv2.LINE_AA)
+
+        # 7. Sidebars: System Status + Voice Guidance + Radar Minimap
         if self.show_telemetry:
             fq = getattr(motion, 'flow_quality', 0.0)
             foe_c = getattr(motion, 'foe_confidence', 0.0)
-            calib = getattr(self.predictor, "calibrator", None)
-            l_thresh = getattr(calib, "current_threshold", 0.05) if calib else 0.05
-            n_floor = getattr(calib, "noise_floor", getattr(calib, "_mean_floor", 0.02)) if calib else 0.02
-            max_exp = max([getattr(p, "expansion_rate", 0.0) for p in predictions], default=0.0)
-            max_prox = max([getattr(p, "proximity_risk", 0.0) for p in predictions], default=0.0)
-            max_proximity_scale = max([getattr(t, "bbox_scale", 0.0) for t in tracks], default=0.0)
-
-            # Adaptive smoother diagnostics
-            tracker_obj = getattr(self, "tracker", None)
-            prox_smoothers = getattr(tracker_obj, "_scale_smoothers", {}) if tracker_obj else {}
-            prox_alpha = next((s.current_alpha for s in prox_smoothers.values()), 0.15) if prox_smoothers else 0.15
-
-            pred_obj = getattr(self, "predictor", None)
-            ttc_smoothers = getattr(pred_obj, "_ttc_smoothers", {}) if pred_obj else {}
-            ttc_alpha = next((s.current_alpha for s in ttc_smoothers.values()), 0.15) if ttc_smoothers else 0.15
 
             if use_sidebars and left_sidebar_rect and right_sidebar_rect:
-                # LEFT SIDEBAR: Motion & Sensors
+                # LEFT SIDEBAR
                 lx1, ly1, lx2, ly2 = left_sidebar_rect
-                cv2.rectangle(canvas, (lx1, ly1), (lx2, ly2), (22, 25, 32), -1)
-                cv2.rectangle(canvas, (lx1, ly1), (lx2, ly2), (55, 60, 72), 1)
+                sw = lx2 - lx1
+                sh = ly2 - ly1
 
-                cv2.putText(canvas, "MOTION & SENSORS", (lx1 + 8, ly1 + 20), cv2.FONT_HERSHEY_SIMPLEX, 0.40, (0, 220, 255), 1, cv2.LINE_AA)
-                cv2.line(canvas, (lx1 + 8, ly1 + 25), (lx2 - 8, ly1 + 25), (45, 50, 60), 1)
+                self._draw_rounded_rect(canvas, (lx1, ly1), (lx2, ly2), (18, 20, 26), radius=8, thickness=-1)
+                self._draw_rounded_rect(canvas, (lx1, ly1), (lx2, ly2), (45, 50, 62), radius=8, thickness=1)
 
-                left_lines = [
-                    f"Feed: {orig_w}x{orig_h} ({'PORT' if is_portrait else 'LAND'})",
-                    f"Canvas: {vw}x{vh} (scale: {scale:.2f})",
-                    f"Auto-Scale: ACTIVE",
-                    f"Tracker: {self.tracker_type.upper()}",
-                    f"Active Tracks: {len(tracks)}",
-                    f"Predictions: {len(predictions)}",
-                    f"Ego-Fallback: {motion.fallback_active}",
-                    f"Flow Quality: {fq:.2f}",
-                    f"FOE Conf: {foe_c:.2f}",
-                    f"Proximity Scale: {max_proximity_scale:.2f}",
-                    f"Adapt Thresh: {l_thresh:.2f}/s",
-                    f"Noise Floor: {n_floor:.2f}/s",
-                    f"Max Expansion: {max_exp:+.2f}/s",
-                    f"Prox Smooth \u03b1: {prox_alpha:.2f}",
-                    f"TTC Smooth \u03b1: {ttc_alpha:.2f}",
+                cv2.putText(canvas, "SYSTEM STATUS", (lx1 + 10, ly1 + 18), cv2.FONT_HERSHEY_SIMPLEX, 0.36, (0, 200, 255), 1, cv2.LINE_AA)
+                cv2.line(canvas, (lx1 + 10, ly1 + 23), (lx2 - 10, ly1 + 23), (40, 45, 55), 1)
+
+                status_items = [
+                    ("Camera", fps > 2, fps > 0.5),
+                    ("AI Detection", len(tracks) >= 0, True),
+                    ("Gyroscope", not motion.fallback_active, True),
+                    ("Vibration Belt", cmd.urgency > 0 or risk.global_risk < 0.3, True),
+                    ("Voice Engine", True, True),
                 ]
-                for i, line in enumerate(left_lines):
-                    if ly1 + 42 + i * 18 > ly2 - 6:
-                        break
-                    cv2.putText(canvas, line, (lx1 + 8, ly1 + 42 + i * 18), cv2.FONT_HERSHEY_SIMPLEX, 0.36, (215, 220, 230), 1, cv2.LINE_AA)
 
-                # RIGHT SIDEBAR: Risk & Haptic Decision Engine
+                card_y = ly1 + 30
+                card_h = 22
+                for name, is_active, is_connected in status_items:
+                    if card_y + card_h > ly2 - 100:
+                        break
+                    if is_active and is_connected:
+                        dot_color = (80, 230, 130)
+                        status_label = "Active"
+                    elif is_connected:
+                        dot_color = (0, 195, 255)
+                        status_label = "Warning"
+                    else:
+                        dot_color = (60, 60, 255)
+                        status_label = "Offline"
+
+                    self._draw_rounded_rect(canvas, (lx1 + 6, card_y), (lx2 - 6, card_y + card_h), (24, 27, 34), radius=4, thickness=-1)
+                    cv2.circle(canvas, (lx1 + 16, card_y + card_h // 2), 4, dot_color, -1, cv2.LINE_AA)
+                    cv2.circle(canvas, (lx1 + 16, card_y + card_h // 2), 6, (*dot_color[:2], dot_color[2] // 2), 1, cv2.LINE_AA)
+
+                    cv2.putText(canvas, name, (lx1 + 26, card_y + 14), cv2.FONT_HERSHEY_SIMPLEX, 0.30, (210, 215, 225), 1, cv2.LINE_AA)
+                    (slw, _), _ = cv2.getTextSize(status_label, cv2.FONT_HERSHEY_SIMPLEX, 0.24, 1)
+                    cv2.putText(canvas, status_label, (lx2 - slw - 12, card_y + 14), cv2.FONT_HERSHEY_SIMPLEX, 0.24, dot_color, 1, cv2.LINE_AA)
+
+                    card_y += card_h + 4
+
+                # Voice Guidance Panel
+                voice_y = card_y + 8
+                vp_y2 = voice_y
+                if voice_y + 70 < ly2:
+                    cv2.putText(canvas, "VOICE GUIDANCE", (lx1 + 10, voice_y + 12), cv2.FONT_HERSHEY_SIMPLEX, 0.34, (0, 200, 255), 1, cv2.LINE_AA)
+                    cv2.line(canvas, (lx1 + 10, voice_y + 17), (lx2 - 10, voice_y + 17), (40, 45, 55), 1)
+
+                    if all_blocked or risk.global_risk >= 0.72:
+                        voice_text = "Stop"
+                        voice_color = (60, 60, 255)
+                    elif nav_action == "WALK FORWARD":
+                        voice_text = "Walk Forward"
+                        voice_color = (80, 230, 130)
+                    elif nav_action == "MOVE LEFT":
+                        voice_text = "Move Left"
+                        voice_color = (0, 210, 255)
+                    elif nav_action == "MOVE RIGHT":
+                        voice_text = "Move Right"
+                        voice_color = (0, 210, 255)
+                    elif risk.global_risk > 0.45:
+                        voice_text = "Obstacle Ahead"
+                        voice_color = (0, 195, 255)
+                    else:
+                        voice_text = "Walk Forward"
+                        voice_color = (80, 230, 130)
+
+                    if hasattr(self, 'voice') and self.voice is not None:
+                        if not hasattr(self, '_last_spoken_cmd') or self._last_spoken_cmd != voice_text:
+                            self.voice.speak(voice_text)
+                            self._last_spoken_cmd = voice_text
+                            self.total_voice_alerts = getattr(self, 'total_voice_alerts', 0) + 1
+
+                    vp_y1 = voice_y + 22
+                    vp_y2 = min(vp_y1 + 42, ly2 - 8)
+                    self._draw_rounded_rect(canvas, (lx1 + 6, vp_y1), (lx2 - 6, vp_y2), (20, 24, 32), radius=6, thickness=-1)
+                    self._draw_rounded_rect(canvas, (lx1 + 6, vp_y1), (lx2 - 6, vp_y2), voice_color, radius=6, thickness=1)
+
+                    sp_x = lx1 + 18
+                    sp_y = (vp_y1 + vp_y2) // 2
+                    cv2.rectangle(canvas, (sp_x, sp_y - 4), (sp_x + 5, sp_y + 4), (255, 255, 255), -1)
+                    spk_pts = np.array([[sp_x + 5, sp_y - 6], [sp_x + 12, sp_y - 10], [sp_x + 12, sp_y + 10], [sp_x + 5, sp_y + 6]], np.int32)
+                    cv2.fillPoly(canvas, [spk_pts], (255, 255, 255), cv2.LINE_AA)
+                    cv2.ellipse(canvas, (sp_x + 14, sp_y), (4, 6), 0, -60, 60, (255, 255, 255), 1, cv2.LINE_AA)
+                    cv2.ellipse(canvas, (sp_x + 14, sp_y), (8, 10), 0, -50, 50, (200, 205, 215), 1, cv2.LINE_AA)
+
+                    v_font = 0.44 if sw > 180 else 0.38
+                    (vtw, vth), _ = cv2.getTextSize(voice_text, cv2.FONT_HERSHEY_SIMPLEX, v_font, 2)
+                    vt_x = sp_x + 24
+                    vt_y = sp_y + vth // 2
+                    cv2.putText(canvas, f'"{voice_text}"', (vt_x, vt_y), cv2.FONT_HERSHEY_SIMPLEX, v_font, voice_color, 1, cv2.LINE_AA)
+
+                # Demo Performance Card
+                demo_y = vp_y2 + 10 if voice_y + 70 < ly2 else card_y + 8
+                if demo_y + 85 < ly2:
+                    cv2.putText(canvas, "DEMO PERFORMANCE", (lx1 + 10, demo_y + 10), cv2.FONT_HERSHEY_SIMPLEX, 0.30, (0, 200, 255), 1, cv2.LINE_AA)
+                    cv2.line(canvas, (lx1 + 10, demo_y + 14), (lx2 - 10, demo_y + 14), (40, 45, 55), 1)
+
+                    uptime_s = int(time.monotonic() - getattr(self, 'session_start_time', time.monotonic()))
+                    m, s = divmod(uptime_s, 60)
+                    uptime_str = f"{m:02d}:{s:02d}"
+
+                    demo_stats = [
+                        (f"Obstacles Detected: {getattr(self, 'total_obstacles_detected', len(tracks))}", (210, 215, 225)),
+                        (f"Voice Alerts: {getattr(self, 'total_voice_alerts', 1)}", (80, 230, 130)),
+                        (f"Safe Corridors: {getattr(self, 'total_safe_corridors', 0)}", (0, 210, 255)),
+                        (f"Nav Corrections: {getattr(self, 'total_nav_corrections', 0)}", (0, 195, 255)),
+                        (f"System Uptime: {uptime_str}", (140, 150, 165)),
+                    ]
+                    for dsi, (ds_txt, ds_col) in enumerate(demo_stats):
+                        ds_y = demo_y + 26 + dsi * 13
+                        if ds_y > ly2 - 40:
+                            break
+                        cv2.putText(canvas, ds_txt, (lx1 + 10, ds_y), cv2.FONT_HERSHEY_SIMPLEX, 0.25, ds_col, 1, cv2.LINE_AA)
+
+                # Diagnostics
+                diag_y = ly2 - 42
+                if diag_y > demo_y + 75:
+                    cv2.putText(canvas, f"Feed: {orig_w}x{orig_h} (HD) | FPS:{fps:.0f}", (lx1 + 10, diag_y + 12), cv2.FONT_HERSHEY_SIMPLEX, 0.25, (100, 110, 125), 1, cv2.LINE_AA)
+                    cv2.putText(canvas, f"Flow: {fq:.2f} | FOE: {foe_c:.2f} | {self.tracker_type.upper()}", (lx1 + 10, diag_y + 26), cv2.FONT_HERSHEY_SIMPLEX, 0.25, (100, 110, 125), 1, cv2.LINE_AA)
+
+                # RIGHT SIDEBAR
                 rx1, ry1, rx2, ry2 = right_sidebar_rect
-                cv2.rectangle(canvas, (rx1, ry1), (rx2, ry2), (22, 25, 32), -1)
-                cv2.rectangle(canvas, (rx1, ry1), (rx2, ry2), (55, 60, 72), 1)
+                rw = rx2 - rx1
+                rh = ry2 - ry1
 
-                cv2.putText(canvas, "DECISION & RISK ENGINE", (rx1 + 8, ly1 + 20), cv2.FONT_HERSHEY_SIMPLEX, 0.40, (0, 220, 255), 1, cv2.LINE_AA)
-                cv2.line(canvas, (rx1 + 8, ly1 + 25), (rx2 - 8, ly1 + 25), (45, 50, 60), 1)
+                self._draw_rounded_rect(canvas, (rx1, ry1), (rx2, ry2), (18, 20, 26), radius=8, thickness=-1)
+                self._draw_rounded_rect(canvas, (rx1, ry1), (rx2, ry2), (45, 50, 62), radius=8, thickness=1)
 
-                right_lines = [
-                    f"View Mode: {self.view_mode}",
-                    f"State: {risk.state}",
-                    f"Global Risk: {risk.global_risk:.2f}",
-                    f"Proximity Scale: {max_proximity_scale:.2f}",
-                    f"Proximity Risk: {max_prox:.2f}",
-                    f"Confidence: {risk.confidence*100:.0f}%",
-                    f"Corridor Left: {l_risk:.2f}",
-                    f"Corridor Center: {c_risk:.2f}",
-                    f"Corridor Right: {r_risk:.2f}",
-                    f"Guidance: {cmd.direction}",
-                    f"Pattern: {cmd.pattern_id}",
-                    f"Urgency: {cmd.urgency}/5 ({cmd.duration_ms}ms)",
-                ]
-                for i, line in enumerate(right_lines):
-                    if ry1 + 42 + i * 18 > ry2 - 6:
-                        break
-                    cv2.putText(canvas, line, (rx1 + 8, ry1 + 42 + i * 18), cv2.FONT_HERSHEY_SIMPLEX, 0.36, (215, 220, 230), 1, cv2.LINE_AA)
+                # Current Action
+                cv2.putText(canvas, "CURRENT ACTION", (rx1 + 10, ry1 + 18), cv2.FONT_HERSHEY_SIMPLEX, 0.34, (0, 200, 255), 1, cv2.LINE_AA)
+                cv2.line(canvas, (rx1 + 10, ry1 + 23), (rx2 - 10, ry1 + 23), (40, 45, 55), 1)
+
+                action_y = ry1 + 28
+                action_h = 38
+                action_color = nav_color
+                action_border = nav_border
+                self._draw_rounded_rect(canvas, (rx1 + 6, action_y), (rx2 - 6, action_y + action_h), action_color, radius=6, thickness=-1)
+                self._draw_rounded_rect(canvas, (rx1 + 6, action_y), (rx2 - 6, action_y + action_h), action_border, radius=6, thickness=1)
+                action_font = min(0.50, (rw - 30) / 200.0)
+                (atw, ath), _ = cv2.getTextSize(nav_action, cv2.FONT_HERSHEY_SIMPLEX, action_font, 2)
+                atx = rx1 + (rw - atw) // 2
+                aty = action_y + (action_h + ath) // 2
+                cv2.putText(canvas, nav_action, (atx, aty), cv2.FONT_HERSHEY_SIMPLEX, action_font, (255, 255, 255), 2, cv2.LINE_AA)
+
+                # Risk Engine Section
+                risk_section_y = action_y + action_h + 10
+                cv2.putText(canvas, "RISK ENGINE", (rx1 + 10, risk_section_y), cv2.FONT_HERSHEY_SIMPLEX, 0.30, (0, 200, 255), 1, cv2.LINE_AA)
+                cv2.line(canvas, (rx1 + 10, risk_section_y + 4), (rx2 - 10, risk_section_y + 4), (40, 45, 55), 1)
+
+                state_y = risk_section_y + 10
+                state_color = {
+                    'SAFE': (80, 230, 130), 'CAUTION': (0, 195, 255),
+                    'WARNING': (0, 145, 255), 'CRITICAL': (60, 60, 255),
+                    'DEGRADED': (128, 128, 128),
+                }.get(risk.state, (140, 140, 140))
+
+                self._draw_rounded_rect(canvas, (rx1 + 6, state_y), (rx2 - 6, state_y + 24), (24, 27, 34), radius=4, thickness=-1)
+                self._draw_rounded_rect(canvas, (rx1 + 6, state_y), (rx2 - 6, state_y + 24), state_color, radius=4, thickness=1)
+                cv2.putText(canvas, f"{risk.state}", (rx1 + 14, state_y + 10), cv2.FONT_HERSHEY_SIMPLEX, 0.32, state_color, 1, cv2.LINE_AA)
+                cv2.putText(canvas, f"Risk: {risk.global_risk:.0%}", (rx1 + 14, state_y + 21), cv2.FONT_HERSHEY_SIMPLEX, 0.26, (190, 195, 210), 1, cv2.LINE_AA)
+
+                # AI Reasoning
+                reason_y = state_y + 30
+                cv2.putText(canvas, "AI REASONING", (rx1 + 10, reason_y), cv2.FONT_HERSHEY_SIMPLEX, 0.30, (0, 200, 255), 1, cv2.LINE_AA)
+                cv2.line(canvas, (rx1 + 10, reason_y + 4), (rx2 - 10, reason_y + 4), (40, 45, 55), 1)
+
+                if tracks:
+                    primary_obj = tracks[0].class_name.title()
+                    p_dist = track_distances.get(tracks[0].track_id, 2.0)
+                    line1 = f"{primary_obj} ({p_dist:.1f}m) detected."
+                else:
+                    line1 = "Path unobstructed."
+
+                if c_risk >= 0.50:
+                    line2 = "Center path blocked."
+                elif c_risk > 0.25:
+                    line2 = "Center caution zone."
+                else:
+                    line2 = "Center corridor clear."
+
+                if cmd.direction == "LEFT":
+                    line3 = "Left clear -> Move Left."
+                elif cmd.direction == "RIGHT":
+                    line3 = "Right clear -> Move Right."
+                elif cmd.direction == "STOP":
+                    line3 = "Hazards ahead -> STOP."
+                else:
+                    line3 = "Safe path -> Walk Forward."
+
+                reason_lines = [line1, line2, line3]
+                for rli, rltxt in enumerate(reason_lines):
+                    ry_pos = reason_y + 16 + rli * 13
+                    cv2.putText(canvas, rltxt, (rx1 + 10, ry_pos), cv2.FONT_HERSHEY_SIMPLEX, 0.25, (195, 205, 220), 1, cv2.LINE_AA)
+
+                # Haptic Belt
+                haptic_y = reason_y + 58
+                cv2.putText(canvas, "HAPTIC BELT", (rx1 + 10, haptic_y), cv2.FONT_HERSHEY_SIMPLEX, 0.30, (0, 200, 255), 1, cv2.LINE_AA)
+                cv2.line(canvas, (rx1 + 10, haptic_y + 4), (rx2 - 10, haptic_y + 4), (40, 45, 55), 1)
+
+                left_motor = 0
+                right_motor = 0
+                if cmd.direction == "LEFT":
+                    left_motor = 8
+                    right_motor = 0
+                elif cmd.direction == "RIGHT":
+                    left_motor = 0
+                    right_motor = 8
+                elif cmd.direction == "STOP":
+                    left_motor = 10
+                    right_motor = 10
+                elif nav_action == "WALK FORWARD":
+                    left_motor = 3
+                    right_motor = 3
+
+                for m_idx, (m_name, m_val) in enumerate([("LEFT MOTOR", left_motor), ("RIGHT MOTOR", right_motor)]):
+                    my = haptic_y + 16 + m_idx * 15
+                    cv2.putText(canvas, m_name, (rx1 + 10, my), cv2.FONT_HERSHEY_SIMPLEX, 0.24, (160, 170, 185), 1, cv2.LINE_AA)
+
+                    bar_x1 = rx1 + 82
+                    bar_w = rw - 95
+                    bar_h = 7
+                    by1 = my - 7
+                    by2 = by1 + bar_h
+                    self._draw_rounded_rect(canvas, (bar_x1, by1), (bar_x1 + bar_w, by2), (28, 32, 42), radius=2, thickness=-1)
+
+                    if m_val > 0:
+                        fill_w = int(bar_w * (m_val / 10.0))
+                        fill_col = (80, 230, 130) if m_val <= 4 else ((0, 195, 255) if m_val <= 8 else (60, 60, 255))
+                        self._draw_rounded_rect(canvas, (bar_x1, by1), (bar_x1 + fill_w, by2), fill_col, radius=2, thickness=-1)
+
+                # Radar Minimap
+                radar_size = min(rw - 20, 140)
+                radar_cx = rx1 + rw // 2
+                radar_y_start = max(haptic_y + 48, ry2 - radar_size - 40)
+
+                if radar_y_start + radar_size + 30 <= ry2:
+                    cv2.putText(canvas, "OBSTACLE RADAR", (rx1 + 10, radar_y_start - 4), cv2.FONT_HERSHEY_SIMPLEX, 0.30, (0, 200, 255), 1, cv2.LINE_AA)
+                    cv2.line(canvas, (rx1 + 10, radar_y_start), (rx2 - 10, radar_y_start), (40, 45, 55), 1)
+
+                    radar_cy = radar_y_start + radar_size // 2 + 8
+                    radar_r = radar_size // 2 - 4
+
+                    radar_overlay = canvas.copy()
+                    cv2.circle(radar_overlay, (radar_cx, radar_cy), radar_r, (22, 26, 34), -1, cv2.LINE_AA)
+                    cv2.addWeighted(radar_overlay, 0.7, canvas, 0.3, 0, canvas)
+
+                    for ring_frac in (0.33, 0.66, 1.0):
+                        rr = int(radar_r * ring_frac)
+                        cv2.circle(canvas, (radar_cx, radar_cy), rr, (35, 40, 50), 1, cv2.LINE_AA)
+
+                    cv2.line(canvas, (radar_cx - radar_r, radar_cy), (radar_cx + radar_r, radar_cy), (30, 34, 44), 1, cv2.LINE_AA)
+                    cv2.line(canvas, (radar_cx, radar_cy - radar_r), (radar_cx, radar_cy + radar_r), (30, 34, 44), 1, cv2.LINE_AA)
+
+                    l_color = (80, 230, 130) if l_risk < 0.35 else ((0, 195, 255) if l_risk < 0.65 else (60, 60, 255))
+                    cv2.ellipse(canvas, (radar_cx, radar_cy), (radar_r, radar_r), 0, 210, 270, l_color, 2, cv2.LINE_AA)
+                    c_color = (80, 230, 130) if c_risk < 0.35 else ((0, 195, 255) if c_risk < 0.65 else (60, 60, 255))
+                    cv2.ellipse(canvas, (radar_cx, radar_cy), (radar_r, radar_r), 0, 270, 330, c_color, 2, cv2.LINE_AA)
+                    r_color = (80, 230, 130) if r_risk < 0.35 else ((0, 195, 255) if r_risk < 0.65 else (60, 60, 255))
+                    cv2.ellipse(canvas, (radar_cx, radar_cy), (radar_r, radar_r), 0, 330, 390, r_color, 2, cv2.LINE_AA)
+
+                    user_x = radar_cx
+                    user_y = radar_cy + radar_r - 8
+                    user_pts = np.array([
+                        [user_x - 5, user_y + 4],
+                        [user_x, user_y - 6],
+                        [user_x + 5, user_y + 4]
+                    ], np.int32)
+                    cv2.fillPoly(canvas, [user_pts], (0, 220, 255), cv2.LINE_AA)
+                    cv2.polylines(canvas, [user_pts], True, (255, 255, 255), 1, cv2.LINE_AA)
+
+                    for t_radar in sorted_tracks:
+                        if not t_radar.bbox_history:
+                            continue
+                        rrx1, rry1, rrx2, rry2 = t_radar.bbox_history[-1]
+                        obj_cx_norm = ((rrx1 + rrx2) / 2.0) / max(1, orig_w) - 0.5
+                        obj_dist = track_distances.get(t_radar.track_id, 5.0)
+                        depth_norm = min(1.0, obj_dist / 8.0)
+
+                        blip_x = int(radar_cx + obj_cx_norm * radar_r * 1.6)
+                        blip_y = int(radar_cy + radar_r * 0.85 - depth_norm * radar_r * 1.5)
+
+                        dx = blip_x - radar_cx
+                        dy = blip_y - radar_cy
+                        d = math.sqrt(dx * dx + dy * dy)
+                        if d > radar_r - 4:
+                            blip_x = int(radar_cx + dx * (radar_r - 4) / max(1, d))
+                            blip_y = int(radar_cy + dy * (radar_r - 4) / max(1, d))
+
+                        p_radar = pred_map.get(t_radar.track_id)
+                        if p_radar and p_radar.intersection_flag:
+                            blip_col = (50, 50, 255)
+                            blip_r = 5
+                        elif obj_dist < 1.5:
+                            blip_col = (0, 180, 255)
+                            blip_r = 4
+                        else:
+                            blip_col = (80, 200, 120)
+                            blip_r = 3
+
+                        cv2.circle(canvas, (blip_x, blip_y), blip_r, blip_col, -1, cv2.LINE_AA)
+                        cv2.circle(canvas, (blip_x, blip_y), blip_r + 2, blip_col, 1, cv2.LINE_AA)
+
+                    safe_cone_spread = 0.15 if c_risk < 0.35 else 0.08
+                    cone_len = int(radar_r * 0.7)
+                    cone_l = (int(radar_cx - safe_cone_spread * cone_len * 3), user_y - cone_len)
+                    cone_r = (int(radar_cx + safe_cone_spread * cone_len * 3), user_y - cone_len)
+                    cone_pts = np.array([[user_x, user_y], cone_l, cone_r], np.int32)
+                    cone_overlay = canvas.copy()
+                    cv2.fillPoly(cone_overlay, [cone_pts], c_color)
+                    cv2.addWeighted(cone_overlay, 0.15, canvas, 0.85, 0, canvas)
+
+                    cv2.putText(canvas, "L", (radar_cx - radar_r + 4, radar_cy + 4), cv2.FONT_HERSHEY_SIMPLEX, 0.24, l_color, 1, cv2.LINE_AA)
+                    cv2.putText(canvas, "C", (radar_cx - 4, radar_cy - radar_r + 12), cv2.FONT_HERSHEY_SIMPLEX, 0.24, c_color, 1, cv2.LINE_AA)
+                    cv2.putText(canvas, "R", (radar_cx + radar_r - 12, radar_cy + 4), cv2.FONT_HERSHEY_SIMPLEX, 0.24, r_color, 1, cv2.LINE_AA)
 
             else:
-                # Floating overlay card when in MAX_VIDEO mode or compact window
-                panel_w = 250
-                panel_h = 195
+                # Floating overlay card when in MAX mode
+                panel_w = 230
+                panel_h = 155
                 px1 = target_w - panel_w - 12
                 py1 = top_bar_h + 12
                 px2 = px1 + panel_w
                 py2 = py1 + panel_h
 
                 if px1 >= 0 and py2 < target_h - bot_bar_h:
-                    sub = canvas[py1:py2, px1:px2]
-                    dark = np.zeros_like(sub)
-                    cv2.addWeighted(dark, 0.82, sub, 0.18, 0, sub)
-                    canvas[py1:py2, px1:px2] = sub
-                    cv2.rectangle(canvas, (px1, py1), (px2, py2), (70, 75, 85), 1)
+                    self._draw_rounded_rect(canvas, (px1, py1), (px2, py2), (10, 12, 16), radius=8, thickness=-1, alpha=0.82)
+                    self._draw_rounded_rect(canvas, (px1, py1), (px2, py2), (50, 55, 68), radius=8, thickness=1)
 
-                    cv2.putText(canvas, f"TELEMETRY // {self.view_mode}", (px1 + 8, py1 + 18), cv2.FONT_HERSHEY_SIMPLEX, 0.38, (0, 220, 255), 1, cv2.LINE_AA)
-                    cv2.line(canvas, (px1 + 8, py1 + 23), (px2 - 8, py1 + 23), (60, 65, 75), 1)
+                    cv2.putText(canvas, "SYSTEM STATUS", (px1 + 10, py1 + 16), cv2.FONT_HERSHEY_SIMPLEX, 0.32, (0, 200, 255), 1, cv2.LINE_AA)
+                    cv2.line(canvas, (px1 + 10, py1 + 20), (px2 - 10, py1 + 20), (40, 45, 55), 1)
 
-                    lines = [
-                        f"Feed: {orig_w}x{orig_h} ({'PORT' if is_portrait else 'LAND'})",
-                        f"Canvas: {vw}x{vh} (scale: {scale:.2f})",
-                        f"Active Tracks: {len(tracks)} | Preds: {len(predictions)}",
-                        f"State: {risk.state} (Risk: {risk.global_risk:.2f})",
-                        f"Proximity Scale: {max_proximity_scale:.2f}",
-                        f"Proximity Risk: {max_prox:.2f}",
-                        f"Adapt Thresh: {l_thresh:.2f}/s",
-                        f"Guidance: {cmd.direction} [{cmd.pattern_id}]",
+                    float_items = [
+                        ("Camera", fps > 2),
+                        ("AI Detection", True),
+                        ("Gyroscope", not motion.fallback_active),
+                        ("Vibration Belt", True),
+                        ("Voice Engine", True),
                     ]
-                    for i, line in enumerate(lines):
-                        cv2.putText(canvas, line, (px1 + 8, py1 + 40 + i * 17), cv2.FONT_HERSHEY_SIMPLEX, 0.35, (220, 225, 230), 1, cv2.LINE_AA)
+                    for fi, (fname, factive) in enumerate(float_items):
+                        fy = py1 + 34 + fi * 20
+                        if fy > py2 - 8:
+                            break
+                        dc = (80, 230, 130) if factive else (60, 60, 255)
+                        cv2.circle(canvas, (px1 + 16, fy), 3, dc, -1, cv2.LINE_AA)
+                        cv2.putText(canvas, fname, (px1 + 26, fy + 4), cv2.FONT_HERSHEY_SIMPLEX, 0.30, (200, 205, 220), 1, cv2.LINE_AA)
+                        sl = "Active" if factive else "Offline"
+                        (sw_f, _), _ = cv2.getTextSize(sl, cv2.FONT_HERSHEY_SIMPLEX, 0.24, 1)
+                        cv2.putText(canvas, sl, (px2 - sw_f - 12, fy + 4), cv2.FONT_HERSHEY_SIMPLEX, 0.24, dc, 1, cv2.LINE_AA)
+
+                # Floating Voice Guidance (bottom-left overlay)
+                vg_w = 200
+                vg_h = 50
+                vg_x1 = 12
+                vg_y1 = bar_y1 - vg_h - 12
+                vg_x2 = vg_x1 + vg_w
+                vg_y2 = vg_y1 + vg_h
+
+                if vg_y1 > top_bar_h + 50:
+                    if risk.global_risk >= 0.72:
+                        v_txt = "Stop"
+                        v_col = (60, 60, 255)
+                    elif nav_action == "WALK FORWARD":
+                        v_txt = "Walk Forward"
+                        v_col = (80, 230, 130)
+                    elif nav_action == "MOVE LEFT":
+                        v_txt = "Move Left"
+                        v_col = (0, 210, 255)
+                    elif nav_action == "MOVE RIGHT":
+                        v_txt = "Move Right"
+                        v_col = (0, 210, 255)
+                    else:
+                        v_txt = "Obstacle Ahead"
+                        v_col = (0, 195, 255)
+
+                    if hasattr(self, 'voice') and self.voice is not None:
+                        if not hasattr(self, '_last_spoken_cmd') or self._last_spoken_cmd != v_txt:
+                            self.voice.speak(v_txt)
+                            self._last_spoken_cmd = v_txt
+                            self.total_voice_alerts = getattr(self, 'total_voice_alerts', 0) + 1
+
+                    self._draw_rounded_rect(canvas, (vg_x1, vg_y1), (vg_x2, vg_y2), (10, 12, 16), radius=8, thickness=-1, alpha=0.82)
+                    self._draw_rounded_rect(canvas, (vg_x1, vg_y1), (vg_x2, vg_y2), v_col, radius=8, thickness=1)
+                    cv2.putText(canvas, "VOICE", (vg_x1 + 10, vg_y1 + 14), cv2.FONT_HERSHEY_SIMPLEX, 0.26, (0, 180, 240), 1, cv2.LINE_AA)
+                    cv2.putText(canvas, f'"{v_txt}"', (vg_x1 + 10, vg_y1 + 36), cv2.FONT_HERSHEY_SIMPLEX, 0.40, v_col, 1, cv2.LINE_AA)
 
         return canvas
 

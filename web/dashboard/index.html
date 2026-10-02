@@ -1542,8 +1542,32 @@
 
                 <!-- Main Trajectory Visualization Hero -->
                 <div class="card" id="card-pred-main-view" style="padding:10px;">
-                    <div class="video-viewport" style="height: 220px; background: #0f172a; border-radius:12px; position:relative; overflow:hidden;">
-                        <canvas id="inspector-canvas" width="400" height="220" style="width:100%; height:100%;"></canvas>
+                    <!-- Interactive Top View Controls Toolbar -->
+                    <div id="topview-toolbar" style="display:none; justify-content:space-between; align-items:center; margin-bottom:6px; flex-wrap:wrap; gap:6px;">
+                        <!-- Filter Pills -->
+                        <div style="display:flex; gap:4px;">
+                            <button id="topview-filter-all" onclick="setTopViewFilter('all')" class="vdo-pill-badge" style="background:#2563eb; color:#ffffff; border-color:#3b82f6;">All</button>
+                            <button id="topview-filter-selected" onclick="setTopViewFilter('selected')" class="vdo-pill-badge">Selected</button>
+                            <button id="topview-filter-risk" onclick="setTopViewFilter('risk')" class="vdo-pill-badge">High Risk</button>
+                        </div>
+                        <!-- Zoom & AutoScale Controls -->
+                        <div style="display:flex; gap:4px; align-items:center;">
+                            <button onclick="zoomTopView(0.2)" class="vdo-pill-badge" title="Zoom In">+</button>
+                            <button onclick="zoomTopView(-0.2)" class="vdo-pill-badge" title="Zoom Out">−</button>
+                            <button onclick="resetTopViewZoom()" class="vdo-pill-badge" title="Reset View">Reset</button>
+                            <button id="btn-autoscale" onclick="toggleTopViewAutoScale()" class="vdo-pill-badge" style="background:rgba(16, 185, 129, 0.2); color:#10b981; border-color:#10b981;">Auto Scale: ON</button>
+                        </div>
+                    </div>
+
+                    <div class="video-viewport" style="height: 250px; background: #0b1329; border-radius:12px; position:relative; overflow:hidden;">
+                        <canvas id="inspector-canvas" width="400" height="250" style="width:100%; height:100%; cursor:pointer;"></canvas>
+                    </div>
+
+                    <!-- Time Scrubbing Controls for Trajectory Inspection -->
+                    <div id="topview-time-scrubber" style="display:none; align-items:center; gap:8px; margin-top:8px; background:#0f172a; padding:6px 10px; border-radius:8px; border:1px solid #1e293b;">
+                        <span class="mono" style="font-size:0.68rem; color:#94a3b8; font-weight:700; width:45px;">TIME: <span id="scrubber-val" style="color:#60a5fa;">NOW</span></span>
+                        <input type="range" id="topview-scrubber-input" min="0" max="5.0" step="0.2" value="0" style="flex:1; accent-color:#3b82f6; cursor:pointer;" oninput="onTopViewScrub(this.value)" />
+                        <button onclick="resetTopViewScrub()" class="vdo-pill-badge" style="font-size:0.60rem; padding:2px 6px;">LIVE</button>
                     </div>
                 </div>
 
@@ -1647,24 +1671,23 @@
                 </div>
 
                 <div id="haptics-device-view">
-                    <!-- Chest Harness Graphic (2 Motors: Left Pin 5, Right Pin 6) -->
-                    <div class="chest-harness-display">
-                        <svg class="harness-svg" viewBox="0 0 200 200">
-                            <!-- T-shirt / Vest Outline -->
-                            <path d="M 60,30 L 80,45 Q 100,55 120,45 L 140,30 L 175,55 L 155,80 L 145,72 L 145,175 L 55,175 L 55,72 L 45,80 L 25,55 Z" fill="#ffffff" stroke="#cbd5e1" stroke-width="2.5" stroke-linejoin="round" />
-                            <!-- Chest Edge Processing Unit -->
-                            <rect x="80" y="70" width="40" height="32" rx="5" fill="#f1f5f9" stroke="#94a3b8" stroke-width="1.5" />
-                            <text x="100" y="89" font-size="8" font-weight="700" fill="#64748b" text-anchor="middle">ARDUINO</text>
+                    <!-- Chest Harness Graphic with 3D Human Vest Overlay (2 Motors: Left Pin 5, Right Pin 6) -->
+                    <div class="chest-harness-display" style="position:relative; overflow:hidden; background:#f8fafc;">
+                        <img src="haptic_vest_3d.jpg" alt="3D Human Haptic Vest" style="position:absolute; width:100%; height:100%; object-fit:contain; opacity:0.85; z-index:1;" />
+                        <svg class="harness-svg" viewBox="0 0 200 200" style="position:relative; z-index:2;">
+                            <!-- Edge Processing Unit Tag -->
+                            <rect x="80" y="55" width="40" height="24" rx="4" fill="rgba(15, 23, 42, 0.85)" stroke="#60a5fa" stroke-width="1.5" />
+                            <text x="100" y="70" font-size="8" font-weight="800" fill="#ffffff" text-anchor="middle">ARDUINO</text>
                             
                             <!-- Left Vibro-Motor (Pin 5) -->
-                            <circle id="svg-motor-left" cx="68" cy="115" r="15" fill="#eff6ff" stroke="#3b82f6" stroke-width="2.5" />
-                            <circle id="svg-ripple-left" cx="68" cy="115" r="15" fill="none" stroke="#3b82f6" stroke-width="2" opacity="0" class="motor-node-circle" />
-                            <text id="svg-lbl-left" x="68" y="145" font-size="9" font-weight="700" fill="#3b82f6" text-anchor="middle">LEFT (P5)</text>
+                            <circle id="svg-motor-left" cx="55" cy="125" r="16" fill="rgba(239, 246, 255, 0.9)" stroke="#3b82f6" stroke-width="3" />
+                            <circle id="svg-ripple-left" cx="55" cy="125" r="16" fill="none" stroke="#3b82f6" stroke-width="2" opacity="0" class="motor-node-circle" />
+                            <text id="svg-lbl-left" x="55" y="156" font-size="9" font-weight="800" fill="#1d4ed8" text-anchor="middle">LEFT (P5)</text>
 
                             <!-- Right Vibro-Motor (Pin 6) -->
-                            <circle id="svg-motor-right" cx="132" cy="115" r="15" fill="#f8fafc" stroke="#94a3b8" stroke-width="2" />
-                            <circle id="svg-ripple-right" cx="132" cy="115" r="15" fill="none" stroke="#3b82f6" stroke-width="2" opacity="0" class="motor-node-circle" />
-                            <text id="svg-lbl-right" x="132" y="145" font-size="9" font-weight="700" fill="#64748b" text-anchor="middle">RIGHT (P6)</text>
+                            <circle id="svg-motor-right" cx="145" cy="125" r="16" fill="rgba(248, 250, 252, 0.9)" stroke="#94a3b8" stroke-width="2.5" />
+                            <circle id="svg-ripple-right" cx="145" cy="125" r="16" fill="none" stroke="#3b82f6" stroke-width="2" opacity="0" class="motor-node-circle" />
+                            <text id="svg-lbl-right" x="145" y="156" font-size="9" font-weight="800" fill="#475569" text-anchor="middle">RIGHT (P6)</text>
                         </svg>
                     </div>
 

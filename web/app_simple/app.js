@@ -9,6 +9,117 @@
  * - Shared Telemetry Dispatcher across all loaded page modules
  */
 
+/* ============================================================
+   PROXIMITY BUZZER  — Web Audio API
+   Generates real beep tones when an obstacle is too close.
+   No external files needed.
+   ============================================================ */
+window.ProximityBuzzer = (function () {
+    "use strict";
+
+    let audioCtx = null;
+    let enabled  = true;
+    let buzzing  = false;          // true while critical-rate beep loop is running
+    let warnedOnce = false;        // one-shot for caution beep
+    let beepTimer = null;
+    let lastTtc = Infinity;
+    const CRITICAL_TTC = 2.0;      // seconds — urgent rapid beep
+    const CAUTION_TTC  = 4.0;      // seconds — single warning beep
+
+    function ensureCtx() {
+        if (!audioCtx) {
+            try { audioCtx = new (window.AudioContext || window.webkitAudioContext)(); } catch(e) {}
+        }
+        // Browsers may suspend context until a user gesture
+        if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
+        return !!audioCtx;
+    }
+
+    /**
+     * Play a single beep tone.
+     * @param {number} freq   Frequency in Hz (440 = warning, 880 = critical)
+     * @param {number} dur    Duration in seconds
+     * @param {number} vol    Volume 0–1
+     */
+    function beep(freq, dur, vol) {
+        if (!ensureCtx()) return;
+        try {
+            const osc   = audioCtx.createOscillator();
+            const gain  = audioCtx.createGain();
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+            osc.type      = 'sine';
+            osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+            gain.gain.setValueAtTime(vol, audioCtx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + dur);
+            osc.start(audioCtx.currentTime);
+            osc.stop(audioCtx.currentTime + dur);
+        } catch(e) {}
+    }
+
+    /** Start the rapid critical beep loop (rate depends on TTC). */
+    function startCriticalLoop(ttc) {
+        if (buzzing) return;
+        buzzing = true;
+        function loop() {
+            if (!buzzing || !enabled) return;
+            const currentTtc = lastTtc;
+            if (currentTtc >= CRITICAL_TTC) { stopCriticalLoop(); return; }
+            // The closer the object, the faster and higher the beep
+            const urgency  = Math.max(0, 1 - currentTtc / CRITICAL_TTC); // 0–1
+            const freq     = 660 + urgency * 660;                          // 660–1320 Hz
+            const interval = 600 - urgency * 480;                          // 600–120 ms
+            beep(freq, 0.12, 0.7);
+            beepTimer = setTimeout(loop, interval);
+        }
+        loop();
+    }
+
+    function stopCriticalLoop() {
+        buzzing = false;
+        if (beepTimer) { clearTimeout(beepTimer); beepTimer = null; }
+    }
+
+    /**
+     * Call this every time new telemetry arrives.
+     * @param {number} ttc  Time-to-collision in seconds (Infinity if no threat)
+     */
+    function onTelemetry(ttc) {
+        if (!enabled) return;
+        lastTtc = (ttc === null || ttc === undefined) ? Infinity : ttc;
+
+        if (lastTtc < CRITICAL_TTC) {
+            warnedOnce = false;          // reset caution flag when critical
+            startCriticalLoop(lastTtc);
+        } else {
+            stopCriticalLoop();
+            if (lastTtc < CAUTION_TTC && !warnedOnce) {
+                warnedOnce = true;
+                beep(440, 0.18, 0.5);    // single mid-tone caution beep
+            } else if (lastTtc >= CAUTION_TTC) {
+                warnedOnce = false;      // reset when clear
+            }
+        }
+    }
+
+    /** Manual test — play three increasing beeps. */
+    function testBeep() {
+        ensureCtx();
+        beep(440, 0.15, 0.6);
+        setTimeout(() => beep(660, 0.15, 0.7), 250);
+        setTimeout(() => beep(880, 0.2,  0.8), 500);
+    }
+
+    function setEnabled(val) {
+        enabled = val;
+        if (!val) stopCriticalLoop();
+    }
+    function isEnabled() { return enabled; }
+
+    return { onTelemetry, testBeep, setEnabled, isEnabled };
+})();
+
+
 window.App = (function () {
     "use strict";
 
@@ -209,6 +320,17 @@ window.App = (function () {
     }
 
     function dispatchTelemetry(msg) {
+        // ── Proximity Buzzer ──────────────────────────────────────────────
+        if (window.ProximityBuzzer) {
+            // Accept TTC from various telemetry shapes
+            const ttc = (msg.ttc !== undefined)    ? msg.ttc
+                      : (msg.threat && msg.threat.ttc !== undefined) ? msg.threat.ttc
+                      : (msg.risk  && msg.risk.ttc  !== undefined)   ? msg.risk.ttc
+                      : Infinity;
+            ProximityBuzzer.onTelemetry(ttc);
+        }
+
+        // ── Page modules ─────────────────────────────────────────────────
         if (window.HomePage && typeof HomePage.updateTelemetry === "function") {
             HomePage.updateTelemetry(msg);
         }

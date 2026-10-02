@@ -1029,12 +1029,77 @@
         if (cardMain) cardMain.style.display = (predictViewMode === "timeline") ? "none" : "flex";
         if (cardRiskTimeline) cardRiskTimeline.style.display = (predictViewMode === "timeline") ? "flex" : "none";
 
+        const toolbarEl = document.getElementById("topview-toolbar");
+        const scrubberEl = document.getElementById("topview-time-scrubber");
+        if (toolbarEl) toolbarEl.style.display = (predictViewMode === "top") ? "flex" : "none";
+        if (scrubberEl) scrubberEl.style.display = (predictViewMode === "top") ? "flex" : "none";
+
         if (predictViewMode === "timeline") {
             const track = (activeTracks && activeTracks.length) ? (activeTracks[selectedTrackIndex] || activeTracks[0]) : null;
             drawRiskTimeline(track);
         } else {
             drawInspectorCanvas();
         }
+    };
+
+    // Top View Interactive Spatial State & Global Helpers
+    window.topViewZoom = 1.0;
+    window.topViewFilterMode = "all";
+    window.topViewScrubTime = 0.0;
+    window.topViewAutoScale = true;
+
+    window.zoomTopView = function (delta) {
+        window.topViewZoom = Math.max(0.5, Math.min(2.5, window.topViewZoom + delta));
+        drawInspectorCanvas();
+    };
+
+    window.resetTopViewZoom = function () {
+        window.topViewZoom = 1.0;
+        drawInspectorCanvas();
+    };
+
+    window.toggleTopViewAutoScale = function () {
+        window.topViewAutoScale = !window.topViewAutoScale;
+        const btn = document.getElementById("btn-autoscale");
+        if (btn) {
+            btn.textContent = window.topViewAutoScale ? "Auto Scale: ON" : "Auto Scale: OFF";
+            btn.style.background = window.topViewAutoScale ? "rgba(16, 185, 129, 0.2)" : "rgba(148, 163, 184, 0.2)";
+            btn.style.color = window.topViewAutoScale ? "#10b981" : "#94a3b8";
+            btn.style.borderColor = window.topViewAutoScale ? "#10b981" : "#64748b";
+        }
+        drawInspectorCanvas();
+    };
+
+    window.setTopViewFilter = function (mode) {
+        window.topViewFilterMode = mode || "all";
+        ["all", "selected", "risk"].forEach(m => {
+            const btn = document.getElementById(`topview-filter-${m}`);
+            if (btn) {
+                const isActive = (m === window.topViewFilterMode);
+                btn.style.background = isActive ? "#2563eb" : "rgba(15, 23, 42, 0.85)";
+                btn.style.color = isActive ? "#ffffff" : "#cbd5e1";
+                btn.style.borderColor = isActive ? "#3b82f6" : "rgba(255, 255, 255, 0.15)";
+            }
+        });
+        drawInspectorCanvas();
+    };
+
+    window.onTopViewScrub = function (val) {
+        window.topViewScrubTime = parseFloat(val) || 0.0;
+        const txt = document.getElementById("scrubber-val");
+        if (txt) {
+            txt.textContent = (window.topViewScrubTime === 0.0) ? "NOW" : `+${window.topViewScrubTime.toFixed(1)}s`;
+        }
+        drawInspectorCanvas();
+    };
+
+    window.resetTopViewScrub = function () {
+        window.topViewScrubTime = 0.0;
+        const input = document.getElementById("topview-scrubber-input");
+        const txt = document.getElementById("scrubber-val");
+        if (input) input.value = 0;
+        if (txt) txt.textContent = "NOW";
+        drawInspectorCanvas();
     };
 
     window.toggleReasoningPanel = function () {
@@ -1347,8 +1412,23 @@
 
         ctx.clearRect(0, 0, w, h);
 
-        ctx.fillStyle = "#0f172a";
-        ctx.fillRect(0, 0, w, h);
+        // Live Video Stream Background in 2D perspective mode
+        const videoImg = document.getElementById("mjpeg-video-stream");
+        if (predictViewMode === "2d" && videoImg && videoImg.complete && videoImg.naturalWidth > 0 && videoImg.style.display !== "none") {
+            ctx.save();
+            ctx.globalAlpha = 0.45;
+            ctx.drawImage(videoImg, 0, 0, w, h);
+            ctx.restore();
+            // Subtle dark gradient vignette over video to keep HUD crisp
+            const grad = ctx.createLinearGradient(0, 0, 0, h);
+            grad.addColorStop(0, "rgba(15, 23, 42, 0.4)");
+            grad.addColorStop(1, "rgba(15, 23, 42, 0.75)");
+            ctx.fillStyle = grad;
+            ctx.fillRect(0, 0, w, h);
+        } else {
+            ctx.fillStyle = "#0f172a";
+            ctx.fillRect(0, 0, w, h);
+        }
 
         // Technical Grid
         ctx.strokeStyle = "rgba(51, 65, 85, 0.35)";
@@ -1367,111 +1447,242 @@
         const threatColor = isThreat ? "#ef4444" : "#10b981";
 
         if (predictViewMode === "top") {
-            // ================= BIRD'S-EYE TOP VIEW =================
+            // ================= BIRD'S-EYE TOP VIEW (RADAR SPATIAL ENGINE) =================
+            const zoom = topViewZoom || 1.0;
+            const scrubberTime = topViewScrubTime || 0.0;
+            
+            // Base user anchor position
             const userX = w * 0.5;
-            const userY = h * 0.86;
-            const foeX = w * 0.5;
-            const foeY = h * 0.15;
-
-            // Safe Passage Corridor Cone
+            const userY = h * 0.88;
+            
+            // 1. Adaptive Distance Rings (1m, 2m, 3m, 5m)
+            const meterScale = 35 * zoom; // pixels per meter
+            const distanceRings = [1, 2, 3, 5];
+            
             ctx.save();
-            ctx.beginPath();
-            ctx.moveTo(userX - 25, userY);
-            ctx.lineTo(userX - 50, foeY);
-            ctx.lineTo(userX + 50, foeY);
-            ctx.lineTo(userX + 25, userY);
-            ctx.closePath();
-            ctx.fillStyle = "rgba(16, 185, 129, 0.08)";
-            ctx.fill();
-            ctx.strokeStyle = "rgba(16, 185, 129, 0.25)";
-            ctx.setLineDash([4, 4]);
-            ctx.stroke();
+            ctx.setLineDash([2, 4]);
+            ctx.strokeStyle = "rgba(148, 163, 184, 0.25)";
+            ctx.lineWidth = 1;
+            ctx.font = "bold 9px 'JetBrains Mono', monospace";
+            ctx.fillStyle = "#64748b";
+            
+            distanceRings.forEach(m => {
+                const r = m * meterScale;
+                if (userY - r > 10) {
+                    ctx.beginPath();
+                    ctx.arc(userX, userY, r, Math.PI, 0); // semi-circle forward
+                    ctx.stroke();
+                    ctx.fillText(`${m}m`, userX + r + 4, userY - 2);
+                }
+            });
             ctx.restore();
 
-            // User Heading Line
+            // 2. Field-of-View (FOV) Sensing Cone
             ctx.save();
             ctx.beginPath();
             ctx.moveTo(userX, userY);
-            ctx.lineTo(foeX, foeY);
-            ctx.strokeStyle = "#3b82f6";
-            ctx.lineWidth = 2.5;
-            ctx.setLineDash([5, 3]);
+            ctx.arc(userX, userY, 5.5 * meterScale, -Math.PI * 0.70, -Math.PI * 0.30);
+            ctx.closePath();
+            ctx.fillStyle = "rgba(59, 130, 246, 0.05)";
+            ctx.fill();
+            ctx.strokeStyle = "rgba(59, 130, 246, 0.20)";
+            ctx.setLineDash([3, 3]);
             ctx.stroke();
             ctx.restore();
 
-            // User Node
+            // 3. 3D User Avatar Marker & Heading
             ctx.save();
+            // Heading direction line
             ctx.beginPath();
-            ctx.arc(userX, userY, 8, 0, Math.PI * 2);
-            ctx.fillStyle = "#2563eb";
-            ctx.fill();
-            ctx.strokeStyle = "#ffffff";
+            ctx.moveTo(userX, userY);
+            ctx.lineTo(userX, userY - 4.5 * meterScale);
+            ctx.strokeStyle = "#3b82f6";
             ctx.lineWidth = 2;
+            ctx.setLineDash([5, 3]);
             ctx.stroke();
 
+            // Render 3D User Avatar Image
+            if (!window.userAvatarImg) {
+                window.userAvatarImg = new Image();
+                window.userAvatarImg.src = "user_avatar_3d.jpg";
+            }
+
+            const avatarSize = 32;
+            if (window.userAvatarImg.complete && window.userAvatarImg.naturalWidth > 0) {
+                ctx.save();
+                ctx.beginPath();
+                ctx.arc(userX, userY, avatarSize / 2 + 2, 0, Math.PI * 2);
+                ctx.fillStyle = "#2563eb";
+                ctx.fill();
+                ctx.strokeStyle = "#ffffff";
+                ctx.lineWidth = 2;
+                ctx.stroke();
+                ctx.clip();
+                ctx.drawImage(window.userAvatarImg, userX - avatarSize / 2, userY - avatarSize / 2, avatarSize, avatarSize);
+                ctx.restore();
+            } else {
+                // Fallback blue avatar node if image loading
+                ctx.save();
+                ctx.beginPath();
+                ctx.arc(userX, userY, 12, 0, Math.PI * 2);
+                ctx.fillStyle = "#2563eb";
+                ctx.fill();
+                ctx.strokeStyle = "#ffffff";
+                ctx.lineWidth = 2;
+                ctx.stroke();
+                ctx.restore();
+            }
+            
             ctx.font = "bold 9px 'Plus Jakarta Sans', sans-serif";
             ctx.fillStyle = "#94a3b8";
-            ctx.fillText("You (0°)", userX - 48, userY + 4);
-            ctx.restore();
-
-            // Object Trajectory (only when a track is selected)
-            if (track) {
-            const objX = w * 0.74;
-            const objY = h * 0.25;
-            const interX = w * 0.50;
-            const interY = h * 0.50;
-
-            ctx.save();
-            ctx.beginPath();
-            ctx.ellipse(interX, interY, 32, 16, Math.PI / 6, 0, Math.PI * 2);
-            ctx.fillStyle = isThreat ? "rgba(239, 68, 68, 0.15)" : "rgba(16, 185, 129, 0.12)";
-            ctx.fill();
-            ctx.strokeStyle = isThreat ? "rgba(239, 68, 68, 0.35)" : "rgba(16, 185, 129, 0.35)";
-            ctx.setLineDash([2, 2]);
-            ctx.stroke();
-            ctx.restore();
-
-            ctx.save();
-            ctx.beginPath();
-            ctx.moveTo(objX, objY);
-            ctx.lineTo(interX - 25, interY + 25);
-            ctx.strokeStyle = threatColor;
-            ctx.lineWidth = 2.5;
-            ctx.setLineDash([5, 3]);
-            ctx.stroke();
-            ctx.restore();
-
-            ctx.save();
-            ctx.fillStyle = threatColor;
-            ctx.beginPath();
-            ctx.roundRect(objX - 16, objY - 12, 32, 24, 4);
-            ctx.fill();
-            ctx.fillStyle = "#ffffff";
-            ctx.font = "bold 8px 'JetBrains Mono', monospace";
             ctx.textAlign = "center";
-            ctx.fillText(objLabel, objX, objY + 3);
+            ctx.fillText("You (Heading 0°)", userX, userY + 24);
             ctx.restore();
 
-            if (isThreat) {
+            // 4. Compass / Orientation Indicator (Top-Left)
             ctx.save();
+            ctx.translate(24, 24);
             ctx.beginPath();
-            ctx.arc(interX, interY, 6, 0, Math.PI * 2);
-            ctx.fillStyle = "#ef4444";
+            ctx.arc(0, 0, 14, 0, Math.PI * 2);
+            ctx.fillStyle = "rgba(15, 23, 42, 0.85)";
             ctx.fill();
-            ctx.strokeStyle = "#ffffff";
-            ctx.lineWidth = 2;
+            ctx.strokeStyle = "rgba(148, 163, 184, 0.3)";
             ctx.stroke();
-
-            ctx.fillStyle = "rgba(239, 68, 68, 0.95)";
-            ctx.beginPath();
-            ctx.roundRect(interX + 10, interY - 9, 82, 18, 4);
-            ctx.fill();
-            ctx.fillStyle = "#ffffff";
             ctx.font = "bold 9px 'JetBrains Mono', monospace";
-            ctx.fillText("Intersection", interX + 15, interY + 4);
+            ctx.fillStyle = "#ef4444";
+            ctx.textAlign = "center";
+            ctx.fillText("N", 0, -4);
+            ctx.fillStyle = "#94a3b8";
+            ctx.fillText("▲", 0, 6);
             ctx.restore();
+
+            // 5. Render Detected Objects & Trajectories
+            let tracksToDraw = activeTracks || [];
+            if (topViewFilterMode === "selected" && track) {
+                tracksToDraw = [track];
+            } else if (topViewFilterMode === "risk") {
+                tracksToDraw = (activeTracks || []).filter(t => t.intersect || (t.ttc_s !== null && t.ttc_s < 3.0));
             }
-            }
+
+            tracksToDraw.forEach((t, idx) => {
+                const isSelected = track && t.track_id === track.track_id;
+                const tBearing = Number(t.bearing || 0.0);
+                const tTtc = (t.ttc_s !== null && t.ttc_s !== undefined) ? Number(t.ttc_s) : 4.0;
+                const tCpa = (t.cpa !== null && t.cpa !== undefined) ? Number(t.cpa) : 1.2;
+                const isThreatTrack = Boolean(t.intersect || (t.ttc_s !== null && t.ttc_s < 2.5));
+                const strokeColor = isThreatTrack ? "#ef4444" : "#10b981";
+
+                // Position calculation relative to user
+                const initialDistMeter = Math.max(0.6, tTtc * 1.2);
+                const objX = userX + Math.sin(tBearing) * (initialDistMeter * meterScale);
+                const objY = userY - Math.cos(tBearing) * (initialDistMeter * meterScale);
+
+                // Scrubber-adjusted position over time (+1s, +2s, +3s)
+                const scrubRatio = Math.min(1.0, scrubberTime / Math.max(0.1, tTtc));
+                const interX = userX + (tBearing * 20);
+                const interY = userY - (tCpa * meterScale);
+
+                const currentObjX = objX + (interX - objX) * scrubRatio;
+                const currentObjY = objY + (interY - objY) * scrubRatio;
+
+                // 5a. Translucent Expanding Uncertainty Region
+                ctx.save();
+                ctx.beginPath();
+                ctx.moveTo(objX, objY);
+                ctx.lineTo(interX - 18, interY);
+                ctx.lineTo(interX + 18, interY);
+                ctx.closePath();
+                ctx.fillStyle = isThreatTrack ? "rgba(239, 68, 68, 0.12)" : "rgba(16, 185, 129, 0.08)";
+                ctx.fill();
+                ctx.restore();
+
+                // 5b. Curved Predicted Trajectory Path
+                ctx.save();
+                ctx.beginPath();
+                ctx.moveTo(objX, objY);
+                ctx.quadraticCurveTo((objX + interX) / 2 + 10, (objY + interY) / 2, interX, interY);
+                ctx.strokeStyle = strokeColor;
+                ctx.lineWidth = isSelected ? 3.5 : 2.0;
+                ctx.setLineDash(isSelected ? [] : [4, 3]);
+                ctx.stroke();
+                ctx.restore();
+
+                // 5c. Time Progression Milestones (+1s, +2s, +3s)
+                [1.0, 2.0, 3.0].forEach(sec => {
+                    if (sec < tTtc) {
+                        const ratio = sec / tTtc;
+                        const mx = objX + (interX - objX) * ratio;
+                        const my = objY + (interY - objY) * ratio;
+                        ctx.save();
+                        ctx.beginPath();
+                        ctx.arc(mx, my, 2.5, 0, Math.PI * 2);
+                        ctx.fillStyle = strokeColor;
+                        ctx.fill();
+                        ctx.font = "bold 8px 'JetBrains Mono', monospace";
+                        ctx.fillStyle = "#94a3b8";
+                        ctx.fillText(`+${sec}s`, mx + 4, my + 3);
+                        ctx.restore();
+                    }
+                });
+
+                // 5d. Predicted Intersection & Danger Zone
+                if (isThreatTrack) {
+                    ctx.save();
+                    // Danger zone aura
+                    ctx.beginPath();
+                    ctx.arc(interX, interY, 18, 0, Math.PI * 2);
+                    ctx.fillStyle = "rgba(239, 68, 68, 0.22)";
+                    ctx.fill();
+                    ctx.strokeStyle = "rgba(239, 68, 68, 0.6)";
+                    ctx.lineWidth = 1.5;
+                    ctx.setLineDash([2, 2]);
+                    ctx.stroke();
+
+                    // Intersection core point
+                    ctx.beginPath();
+                    ctx.arc(interX, interY, 5, 0, Math.PI * 2);
+                    ctx.fillStyle = "#ef4444";
+                    ctx.fill();
+                    ctx.strokeStyle = "#ffffff";
+                    ctx.lineWidth = 2;
+                    ctx.stroke();
+
+                    // Threat callout badge
+                    ctx.fillStyle = "#dc2626";
+                    ctx.beginPath();
+                    ctx.roundRect(interX + 8, interY - 10, 78, 18, 4);
+                    ctx.fill();
+                    ctx.fillStyle = "#ffffff";
+                    ctx.font = "bold 9px 'JetBrains Mono', monospace";
+                    ctx.fillText(`TTC ${tTtc.toFixed(1)}s`, interX + 13, interY + 3);
+                    ctx.restore();
+                }
+
+                // 5e. Distinct Interactive Object Marker
+                ctx.save();
+                ctx.translate(currentObjX, currentObjY);
+                if (isSelected) {
+                    ctx.beginPath();
+                    ctx.arc(0, 0, 16, 0, Math.PI * 2);
+                    ctx.strokeStyle = "#3b82f6";
+                    ctx.lineWidth = 2;
+                    ctx.stroke();
+                }
+
+                ctx.fillStyle = strokeColor;
+                ctx.beginPath();
+                ctx.roundRect(-16, -11, 32, 22, 5);
+                ctx.fill();
+                ctx.strokeStyle = "#ffffff";
+                ctx.lineWidth = 1.5;
+                ctx.stroke();
+
+                ctx.fillStyle = "#ffffff";
+                ctx.font = "bold 8px 'JetBrains Mono', monospace";
+                ctx.textAlign = "center";
+                ctx.fillText(`#${t.track_id}`, 0, 3);
+                ctx.restore();
+            });
 
         } else {
             // ================= 2D PERSPECTIVE VIEW =================
@@ -1533,62 +1744,78 @@
             ctx.restore();
 
             if (track) {
-            const objX = w * 0.50;
-            const objY = h * 0.22;
-            const interX = w * 0.50;
-            const interY = h * 0.55;
+                // Compute real trajectory from track telemetry
+                const trackBearing = Number(track.bearing || 0.0);
+                const trackTtc = (track.ttc_s !== null && track.ttc_s !== undefined) ? Number(track.ttc_s) : 4.0;
+                
+                // Map bearing (-0.5 rad to +0.5 rad) to screen X coordinate
+                // -0.5 rad (Left) -> w * 0.25, 0 rad (Center) -> w * 0.50, +0.5 rad (Right) -> w * 0.75
+                const objX = Math.max(w * 0.15, Math.min(w * 0.85, w * 0.50 + (trackBearing / 0.5236) * (w * 0.30)));
+                
+                // Map TTC/Distance to perspective screen Y coordinate (0s = near userY, >5s = horizon foeY)
+                const normDist = Math.max(0.0, Math.min(1.0, trackTtc / 5.0));
+                const objY = foeY + normDist * (userY - foeY - 30);
+                
+                // Predicted Intersection Point on user path
+                const interX = w * 0.50;
+                const interY = userY - (1.0 - Math.min(1.0, trackTtc / 5.0)) * (userY - foeY);
 
-            ctx.save();
-            ctx.beginPath();
-            ctx.ellipse(interX, interY, 36, 14, 0, 0, Math.PI * 2);
-            ctx.fillStyle = isThreat ? "rgba(239, 68, 68, 0.15)" : "rgba(16, 185, 129, 0.12)";
-            ctx.fill();
-            ctx.strokeStyle = isThreat ? "rgba(239, 68, 68, 0.35)" : "rgba(16, 185, 129, 0.35)";
-            ctx.setLineDash([3, 3]);
-            ctx.stroke();
-            ctx.restore();
+                ctx.save();
+                ctx.beginPath();
+                ctx.ellipse(interX, interY, 36, 14, 0, 0, Math.PI * 2);
+                ctx.fillStyle = isThreat ? "rgba(239, 68, 68, 0.20)" : "rgba(16, 185, 129, 0.15)";
+                ctx.fill();
+                ctx.strokeStyle = isThreat ? "rgba(239, 68, 68, 0.50)" : "rgba(16, 185, 129, 0.40)";
+                ctx.setLineDash([3, 3]);
+                ctx.stroke();
+                ctx.restore();
 
-            ctx.save();
-            ctx.beginPath();
-            ctx.moveTo(objX, objY);
-            ctx.lineTo(interX, interY);
-            ctx.strokeStyle = threatColor;
-            ctx.lineWidth = 2.5;
-            ctx.setLineDash([5, 3]);
-            ctx.stroke();
-            ctx.restore();
+                // Object Projected Path Trajectory Line
+                ctx.save();
+                ctx.beginPath();
+                ctx.moveTo(objX, objY);
+                ctx.lineTo(interX, interY);
+                ctx.strokeStyle = threatColor;
+                ctx.lineWidth = 2.5;
+                ctx.setLineDash([5, 3]);
+                ctx.stroke();
+                ctx.restore();
 
-            ctx.save();
-            ctx.fillStyle = threatColor;
-            ctx.beginPath();
-            ctx.roundRect(objX - 18, objY - 13, 36, 26, 4);
-            ctx.fill();
-            ctx.fillStyle = "#ffffff";
-            ctx.font = "bold 8px 'JetBrains Mono', monospace";
-            ctx.textAlign = "center";
-            ctx.fillText(objLabel, objX, objY + 3);
-            ctx.restore();
+                // Object Tag Node
+                ctx.save();
+                ctx.fillStyle = threatColor;
+                ctx.beginPath();
+                ctx.roundRect(objX - 22, objY - 12, 44, 24, 5);
+                ctx.fill();
+                ctx.strokeStyle = "#ffffff";
+                ctx.lineWidth = 1.5;
+                ctx.stroke();
+                ctx.fillStyle = "#ffffff";
+                ctx.font = "bold 9px 'JetBrains Mono', monospace";
+                ctx.textAlign = "center";
+                ctx.fillText(objLabel, objX, objY + 3);
+                ctx.restore();
 
-            if (isThreat) {
-            ctx.save();
-            ctx.beginPath();
-            ctx.arc(interX, interY, 6, 0, Math.PI * 2);
-            ctx.fillStyle = "#ef4444";
-            ctx.fill();
-            ctx.strokeStyle = "#ffffff";
-            ctx.lineWidth = 2;
-            ctx.stroke();
+                if (isThreat) {
+                    ctx.save();
+                    ctx.beginPath();
+                    ctx.arc(interX, interY, 6, 0, Math.PI * 2);
+                    ctx.fillStyle = "#ef4444";
+                    ctx.fill();
+                    ctx.strokeStyle = "#ffffff";
+                    ctx.lineWidth = 2;
+                    ctx.stroke();
 
-            ctx.fillStyle = "rgba(239, 68, 68, 0.95)";
-            ctx.beginPath();
-            ctx.roundRect(interX + 10, interY - 9, 76, 18, 4);
-            ctx.fill();
-            ctx.fillStyle = "#ffffff";
-            ctx.font = "bold 9px 'JetBrains Mono', monospace";
-            ctx.textAlign = "left";
-            ctx.fillText(`${ttcLabel} hazard`, interX + 15, interY + 4);
-            ctx.restore();
-            }
+                    ctx.fillStyle = "rgba(239, 68, 68, 0.95)";
+                    ctx.beginPath();
+                    ctx.roundRect(interX + 10, interY - 9, 84, 18, 4);
+                    ctx.fill();
+                    ctx.fillStyle = "#ffffff";
+                    ctx.font = "bold 9px 'JetBrains Mono', monospace";
+                    ctx.textAlign = "left";
+                    ctx.fillText(`${ttcLabel} hazard`, interX + 15, interY + 4);
+                    ctx.restore();
+                }
             }
         }
 

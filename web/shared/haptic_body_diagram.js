@@ -47,37 +47,30 @@
         render() {
             if (!this.containerEl) return;
             this.containerEl.innerHTML = `
-                <div class="haptic-body-wrap">
-                    <svg viewBox="0 0 280 200" class="haptic-vest-svg" style="width: 100%; height: 180px; max-width: 320px; display: block; margin: 0 auto;">
-                        <!-- Vest Outline -->
-                        <path d="M 60,30 C 90,15 190,15 220,30 L 250,85 L 230,175 C 230,185 200,190 140,190 C 80,190 50,185 50,175 L 30,85 Z"
-                              fill="#f8fafc" stroke="#cbd5e1" stroke-width="2.5" stroke-linejoin="round" />
-
-                        <!-- Center Spine Guideline -->
-                        <line x1="140" y1="40" x2="140" y2="180" stroke="#e2e8f0" stroke-width="1.5" stroke-dasharray="4,4" />
-
-                        <!-- Left Motor -->
-                        <g id="haptic-motor-left" transform="translate(75, 110)">
+                <div class="haptic-body-wrap" style="position: relative; width: 100%; height: 180px; max-width: 320px; margin: 0 auto; overflow: hidden; border-radius: 12px; background: #f8fafc;">
+                    <img src="haptic_vest_3d.jpg" alt="3D Human Haptic Vest" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: contain; opacity: 0.85; z-index: 1;" />
+                    <svg viewBox="0 0 280 200" class="haptic-vest-svg" style="position: relative; z-index: 2; width: 100%; height: 100%;">
+                        <!-- Left Motor (Pin 5) -->
+                        <g id="haptic-motor-left" transform="translate(68, 115)">
                             <circle class="motor-ripple" r="26" fill="none" stroke="#3b82f6" stroke-width="2" opacity="0" />
-                            <circle class="motor-base" r="18" fill="#ffffff" stroke="#94a3b8" stroke-width="2.5" />
-                            <circle class="motor-core" r="9" fill="#cbd5e1" />
-                            <text x="0" y="32" text-anchor="middle" font-size="10" font-weight="700" fill="#64748b" font-family="'JetBrains Mono', monospace">L</text>
+                            <circle class="motor-base" r="18" fill="rgba(255, 255, 255, 0.9)" stroke="#3b82f6" stroke-width="3" />
+                            <circle class="motor-core" r="9" fill="#2563eb" />
+                            <text x="0" y="32" text-anchor="middle" font-size="10" font-weight="800" fill="#1d4ed8" font-family="'JetBrains Mono', monospace">LEFT (P5)</text>
                         </g>
 
-                        <!-- Center Motor -->
-                        <g id="haptic-motor-center" transform="translate(140, 95)">
+                        <!-- Center Motor (Spine) -->
+                        <g id="haptic-motor-center" transform="translate(140, 75)" style="display:none;">
                             <circle class="motor-ripple" r="26" fill="none" stroke="#3b82f6" stroke-width="2" opacity="0" />
-                            <circle class="motor-base" r="18" fill="#ffffff" stroke="#94a3b8" stroke-width="2.5" />
+                            <circle class="motor-base" r="18" fill="rgba(255, 255, 255, 0.9)" stroke="#94a3b8" stroke-width="2.5" />
                             <circle class="motor-core" r="9" fill="#cbd5e1" />
-                            <text x="0" y="32" text-anchor="middle" font-size="10" font-weight="700" fill="#64748b" font-family="'JetBrains Mono', monospace">C</text>
                         </g>
 
-                        <!-- Right Motor -->
-                        <g id="haptic-motor-right" transform="translate(205, 110)">
+                        <!-- Right Motor (Pin 6) -->
+                        <g id="haptic-motor-right" transform="translate(212, 115)">
                             <circle class="motor-ripple" r="26" fill="none" stroke="#3b82f6" stroke-width="2" opacity="0" />
-                            <circle class="motor-base" r="18" fill="#ffffff" stroke="#94a3b8" stroke-width="2.5" />
+                            <circle class="motor-base" r="18" fill="rgba(255, 255, 255, 0.9)" stroke="#94a3b8" stroke-width="2.5" />
                             <circle class="motor-core" r="9" fill="#cbd5e1" />
-                            <text x="0" y="32" text-anchor="middle" font-size="10" font-weight="700" fill="#64748b" font-family="'JetBrains Mono', monospace">R</text>
+                            <text x="0" y="32" text-anchor="middle" font-size="10" font-weight="800" fill="#475569" font-family="'JetBrains Mono', monospace">RIGHT (P6)</text>
                         </g>
                     </svg>
                 </div>

@@ -40,6 +40,8 @@ Config values (from config/default.yaml, section "risk_engine"):
   corridor_width_right:             [0.67, 1.0]  — right (by abs(bearing/pi))
 """
 
+from __future__ import annotations
+
 from dataclasses import asdict, dataclass, field
 import logging
 import math
@@ -93,7 +95,7 @@ class RiskEngineConfig:
         return asdict(self)
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> RiskEngineConfig:
+    def from_dict(cls, data: Dict[str, Any]) -> 'RiskEngineConfig':
         thresholds = data.get("state_thresholds")
         if thresholds is not None and not isinstance(thresholds, dict):
             raise ValueError("state_thresholds must be a dictionary")
