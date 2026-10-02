@@ -44,7 +44,26 @@ class HazardDetection:
     persistence_frames: int = 1   # how many consecutive frames this candidate has been seen
 
 
-# ─── Overlap utility ────────────────────────────────────────────────────────
+def _cand_overlap_with_yolo(cand_bbox: Tuple[float,float,float,float], yolo_bbox: Tuple[float,float,float,float]) -> float:
+    """Compute overlap metric between candidate box and a YOLO box.
+
+    Returns the maximum of:
+    - standard IoU
+    - containment ratio: intersection / cand_area
+    This ensures that if a candidate is inside a large YOLO box (e.g. bed, chair, desk, bag),
+    the containment ratio is high (~1.0) and triggers gating.
+    """
+    ix1 = max(cand_bbox[0], yolo_bbox[0]); iy1 = max(cand_bbox[1], yolo_bbox[1])
+    ix2 = min(cand_bbox[2], yolo_bbox[2]); iy2 = min(cand_bbox[3], yolo_bbox[3])
+    if ix2 <= ix1 or iy2 <= iy1:
+        return 0.0
+    inter = (ix2 - ix1) * (iy2 - iy1)
+    cand_area = max(1e-6, (cand_bbox[2] - cand_bbox[0]) * (cand_bbox[3] - cand_bbox[1]))
+    yolo_area = max(1e-6, (yolo_bbox[2] - yolo_bbox[0]) * (yolo_bbox[3] - yolo_bbox[1]))
+    iou = inter / max(1e-6, cand_area + yolo_area - inter)
+    containment = inter / cand_area
+    return max(iou, containment)
+
 
 def _iou(a: Tuple[float,float,float,float], b: Tuple[float,float,float,float]) -> float:
     """Compute IoU between two (x1,y1,x2,y2) boxes."""
@@ -104,8 +123,10 @@ class GroundHazardDetector:
         persistence_required: int = 2,
         # Max candidates returned per frame
         max_detections: int = 3,
-        # Optional trained ONNX model path (None = heuristic only)
+        # Optional trained ONNX/YOLO model path (None = heuristic only)
         model_path: Optional[str] = None,
+        # Whether to run heuristic fallback when a trained model is loaded
+        enable_heuristic_fallback: bool = False,
     ):
         self.roi_y_start = roi_y_start
         self.roi_y_end   = roi_y_end
@@ -126,16 +147,18 @@ class GroundHazardDetector:
         self.max_iou_with_yolo = max_iou_with_yolo
         self.persistence_required = persistence_required
         self.max_detections = max_detections
+        self.enable_heuristic_fallback = enable_heuristic_fallback
 
         # Persistence tracking: list of (bbox_xyxy, consecutive_count)
         self._persistence: List[Tuple[Tuple, int]] = []
 
-        # Optional trained model (not loaded in this iteration — placeholder)
+        # Optional trained model
         self._model = None
         if model_path:
             self._load_model(model_path)
 
-        logger.info("GroundHazardDetector (M13) initialised — heuristic mode, persistence=%d", persistence_required)
+        mode_str = "trained-model" if self._model else "heuristic"
+        logger.info("GroundHazardDetector (M13) initialised — mode=%s, persistence=%d", mode_str, persistence_required)
 
     def _load_model(self, path: str):
         """Load optional trained ONNX/YOLO pothole model."""
@@ -171,19 +194,20 @@ class GroundHazardDetector:
         if timestamp is None:
             timestamp = time.monotonic()
 
-        # Run heuristic
-        candidates = self._heuristic_detect(frame_bgr)
-
-        # If trained model available, merge its outputs too (future path)
+        # If a trained model is loaded, use it as primary detector
         if self._model is not None:
-            model_candidates = self._model_detect(frame_bgr, frame_id, timestamp)
-            candidates = self._merge_candidates(candidates, model_candidates)
+            candidates = self._model_detect(frame_bgr, frame_id, timestamp)
+            if self.enable_heuristic_fallback:
+                h_candidates = self._heuristic_detect(frame_bgr)
+                candidates = self._merge_candidates(h_candidates, candidates)
+        else:
+            candidates = self._heuristic_detect(frame_bgr)
 
-        # Gate against YOLO tracks
+        # Gate against YOLO tracks (discard if inside or heavily overlapping an object)
         if yolo_bboxes:
             candidates = [
                 c for c in candidates
-                if all(_iou(c['bbox'], yb) <= self.max_iou_with_yolo for yb in yolo_bboxes)
+                if all(_cand_overlap_with_yolo(c['bbox'], yb) <= self.max_iou_with_yolo for yb in yolo_bboxes)
             ]
 
         # Confidence filter
@@ -329,18 +353,26 @@ class GroundHazardDetector:
         if self._model is None:
             return []
         try:
-            results = self._model(frame_bgr, conf=0.40, verbose=False)
+            h, w = frame_bgr.shape[:2]
+            results = self._model(frame_bgr, conf=self.min_conf, verbose=False)
             out = []
             for r in results:
-                if r.boxes is None:
+                if r.boxes is None or len(r.boxes) == 0:
                     continue
                 for i in range(len(r.boxes)):
                     xyxy = r.boxes.xyxy[i].cpu().numpy().tolist()
                     conf = float(r.boxes.conf[i].cpu().numpy())
+                    fx1, fy1, fx2, fy2 = float(xyxy[0]), float(xyxy[1]), float(xyxy[2]), float(xyxy[3])
+
+                    # Distance approximation from ground plane vertical position
+                    fy_center_norm = (fy1 + fy2) / 2.0 / max(h, 1)
+                    t = (fy_center_norm - self.roi_y_start) / max(self.roi_y_end - self.roi_y_start, 0.01)
+                    dist_m = float(np.clip(5.0 * (1.0 - t) + 0.4 * t, 0.3, 6.0))
+
                     out.append({
-                        'bbox': (float(xyxy[0]), float(xyxy[1]), float(xyxy[2]), float(xyxy[3])),
+                        'bbox': (fx1, fy1, fx2, fy2),
                         'conf': conf,
-                        'dist_m': 2.0,  # placeholder; model should provide this
+                        'dist_m': round(dist_m, 1),
                         'source': 'model',
                     })
             return out

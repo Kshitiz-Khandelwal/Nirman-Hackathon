@@ -284,11 +284,20 @@ class PredictionViewer:
         self.policy = CorridorPolicy(all_unsafe_risk_threshold=0.70, trend_window_frames=5)
 
         # M13 — Ground Hazard Detector (potholes, surface damage)
-        # Uses fixed threshold (not Otsu), YOLO overlap gating, and persistence.
+        # Automatically loads trained YOLO pothole model if present, avoiding heuristic false positives
+        base_dir = os.path.dirname(os.path.abspath(__file__))
+        pothole_candidates = [
+            os.path.join(base_dir, "pothole_yolov8.pt"),
+            os.path.join(base_dir, "models", "pothole_yolov8.pt"),
+            "pothole_yolov8.pt",
+        ]
+        pothole_model_path = next((p for p in pothole_candidates if os.path.isfile(p)), None)
+
         self.hazard_detector = GroundHazardDetector(
             persistence_required=2,
-            min_conf=0.40,
+            min_conf=0.45,
             max_iou_with_yolo=0.15,
+            model_path=pothole_model_path,
         )
 
         # M14 — Freespace / Walkable-Ground Estimator
