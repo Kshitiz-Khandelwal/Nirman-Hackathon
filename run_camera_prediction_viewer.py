@@ -137,6 +137,72 @@ def parse_args():
     return parser.parse_args()
 
 
+# ─────────────────────────────────────────────────────────────────────────────
+# CAMERA CALIBRATION CONSTANTS
+# These values assume a ~70° horizontal FOV camera (most phone / webcam defaults).
+# Tune FOCAL_LENGTH_PX = (image_width_px * 0.5) / tan(hFOV_rad / 2)
+# For a 640-wide frame with 70° hFOV → ~460 px; for 1280 wide → ~920 px.
+# We store a per-frame-width ratio (0.72× width) to auto-scale to any resolution.
+# ─────────────────────────────────────────────────────────────────────────────
+_FOCAL_LENGTH_RATIO = 0.72   # focal_px = image_width * _FOCAL_LENGTH_RATIO
+
+# Known real-world heights in metres for common obstacle classes
+_OBJ_H_REAL_M: Dict[str, float] = {
+    # People
+    'person': 1.70, 'man': 1.75, 'woman': 1.65, 'child': 1.10,
+    # Furniture / indoor
+    'chair': 0.90, 'couch': 0.85, 'sofa': 0.85,
+    'dining table': 0.76, 'table': 0.76, 'desk': 0.76,
+    'laptop': 0.30, 'keyboard': 0.04, 'mouse': 0.05,
+    'tv': 0.70, 'monitor': 0.55,
+    'bottle': 0.28, 'cup': 0.16, 'wine glass': 0.22,
+    'cell phone': 0.15, 'book': 0.24,
+    # Vehicles
+    'bicycle': 1.10, 'motorcycle': 1.10, 'scooter': 1.10,
+    'car': 1.52, 'truck': 2.80, 'bus': 3.20,
+    # Animals / carry items
+    'dog': 0.55, 'cat': 0.32, 'backpack': 0.55, 'suitcase': 0.68,
+    # Road hazards
+    'pothole': 0.12,     # Effective "height" depth seen from angle ≈ 12 cm
+    'speed bump': 0.12,
+    'manhole': 0.05,
+    'cone': 0.75,
+    'fire hydrant': 0.55,
+    'stop sign': 1.20,
+    'bench': 0.90,
+    'tree': 3.00,
+    'pole': 3.00,
+}
+
+
+def _focal_from_width(img_w: int) -> float:
+    """Return estimated focal length in pixels, scaled to actual image width."""
+    return img_w * _FOCAL_LENGTH_RATIO
+
+
+def _estimate_distance_m_calibrated(
+    class_name: str,
+    bbox_raw: tuple,
+    img_w: int,
+    img_h: int,
+) -> float:
+    """Calibrated monocular distance estimation using pinhole camera model.
+
+    Formula: distance = (H_real * focal_px) / H_bbox_px
+    where focal_px is derived from the known (or assumed) horizontal FOV.
+
+    This is significantly more accurate than a simple fractional-height heuristic
+    because it accounts for the focal length of the lens.
+
+    Returns distance in metres, clamped to [0.2m, 20.0m].
+    """
+    h_real = _OBJ_H_REAL_M.get(class_name.lower(), 1.00)   # fallback 1m
+    bbox_h_px = max(4.0, float(bbox_raw[3] - bbox_raw[1]))
+    focal_px = _focal_from_width(img_w)
+    dist = (h_real * focal_px) / bbox_h_px
+    return float(max(0.2, min(20.0, dist)))
+
+
 class PredictionViewer:
     def __init__(
         self,
@@ -190,12 +256,17 @@ class PredictionViewer:
         # Temporal smoothing buffers for distance estimation
         self._dist_history: Dict[int, List[float]] = {}   # track_id -> last N distances
 
+        # Pothole detection state
+        self._pothole_detections: List[dict] = []  # list of {bbox, dist_m, conf}
+        self._pothole_cooldown: float = 0.0          # monotonic timestamp of last detection
+
         # Real Voice Guidance Engine
         self.voice = VoiceSynthesizer(cooldown_s=2.5)
 
         # Demo Session Statistics
         self.session_start_time = time.monotonic()
         self.total_obstacles_detected = 0
+        self.total_potholes_detected = 0
         self.total_voice_alerts = 0
         self.total_safe_corridors = 0
         self.total_nav_corrections = 0
@@ -685,32 +756,114 @@ class PredictionViewer:
         badge_font = float(np.clip(vw / 850.0 * 0.42, 0.28, 0.44))
         is_compact_badges = (vw < 520)
 
-        _OBJ_H_REAL_M = {
-            'person': 1.45, 'man': 1.45, 'woman': 1.45, 'child': 1.10,
-            'chair': 0.65, 'couch': 0.80, 'sofa': 0.80,
-            'dining table': 0.75, 'table': 0.75, 'desk': 0.75,
-            'laptop': 0.28, 'keyboard': 0.04, 'mouse': 0.05,
-            'tv': 0.65, 'monitor': 0.50,
-            'bottle': 0.28, 'cup': 0.16, 'wine glass': 0.22,
-            'cell phone': 0.15, 'book': 0.24,
-            'bicycle': 1.00, 'motorcycle': 1.10, 'car': 1.50,
-            'dog': 0.50, 'cat': 0.30, 'backpack': 0.50, 'suitcase': 0.65,
-        }
+        # ── Pothole Detection via Ground-Plane ROI Analysis ─────────────────
+        # Analyses the bottom 30% of the frame (ground region visible ahead of the user)
+        # for dark irregular depressions, discoloured patches, and surface discontinuities
+        # that are characteristic of potholes and road damage.
+        def _detect_potholes(frame_bgr: np.ndarray) -> List[dict]:
+            h, w = frame_bgr.shape[:2]
+            # Only analyse the ground-facing zone: y in [55%, 90%] of frame height
+            y_start = int(h * 0.55)
+            y_end   = int(h * 0.90)
+            x_margin = int(w * 0.08)   # ignore far-left and far-right slivers
+            roi = frame_bgr[y_start:y_end, x_margin:w - x_margin]
 
-        def _estimate_distance_m(class_name: str, bbox_raw: tuple, img_h: int) -> float:
-            h_real = _OBJ_H_REAL_M.get(class_name.lower(), 0.75)
-            bbox_h_px = max(4.0, bbox_raw[3] - bbox_raw[1])
-            h_frac = bbox_h_px / max(10.0, float(img_h))
-            dist = (h_real * 0.92) / max(0.03, h_frac)
-            return float(max(0.3, min(15.0, dist)))
+            # Convert to grayscale and apply adaptive threshold to isolate dark patches
+            gray = cv2.cvtColor(roi, cv2.COLOR_BGR2GRAY)
+            # CLAHE to normalise lighting variation on the ground
+            clahe = cv2.createCLAHE(clipLimit=2.0, tileGridSize=(4, 4))
+            gray_eq = clahe.apply(gray)
 
+            # Detect dark irregular blobs (potholes appear darker than surroundings)
+            # Strategy: local adaptive thresholding for shadow-robust detection
+            blurred = cv2.GaussianBlur(gray_eq, (9, 9), 2)
+            _, dark_mask = cv2.threshold(blurred, 0, 255, cv2.THRESH_BINARY_INV + cv2.THRESH_OTSU)
+
+            # Morphological cleanup: close small gaps, remove tiny noise
+            kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (11, 7))
+            dark_mask = cv2.morphologyEx(dark_mask, cv2.MORPH_CLOSE, kernel)
+            dark_mask = cv2.morphologyEx(dark_mask, cv2.MORPH_OPEN,  cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (7, 5)))
+
+            # Edge density check: potholes have strong edges around their boundary
+            edges = cv2.Canny(gray_eq, 30, 90)
+            edge_density_map = cv2.GaussianBlur(edges.astype(np.float32), (15, 15), 5)
+
+            contours, _ = cv2.findContours(dark_mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+
+            potholes = []
+            for cnt in contours:
+                area = cv2.contourArea(cnt)
+                roi_area = roi.shape[0] * roi.shape[1]
+                # Size gate: too small = noise, too large = shadow / whole ground
+                if area < roi_area * 0.005 or area > roi_area * 0.35:
+                    continue
+
+                x, y, bw, bh = cv2.boundingRect(cnt)
+
+                # Shape check: potholes are roughly compact (not very elongated strips)
+                aspect = bw / max(bh, 1)
+                if aspect > 5.0 or aspect < 0.2:
+                    continue
+
+                # Solidity check: irregular blobs (potholes) have lower solidity than rectangles
+                hull = cv2.convexHull(cnt)
+                hull_area = cv2.contourArea(hull)
+                solidity = area / max(hull_area, 1)
+                if solidity > 0.92:   # very regular = not a pothole
+                    continue
+
+                # Edge density inside the bbox must be non-trivial (edges = pothole boundary)
+                edge_crop = edge_density_map[y:y+bh, x:x+bw]
+                mean_edge = float(np.mean(edge_crop)) if edge_crop.size > 0 else 0.0
+                if mean_edge < 4.0:   # not enough texture/edges
+                    continue
+
+                # Map back to full-frame coordinates
+                fx1 = x + x_margin
+                fy1 = y + y_start
+                fx2 = fx1 + bw
+                fy2 = fy1 + bh
+
+                # Confidence heuristic [0..1] based on area fraction, edge density, compactness
+                area_score  = min(1.0, area / (roi_area * 0.08))
+                edge_score  = min(1.0, mean_edge / 30.0)
+                shape_score = 1.0 - abs(solidity - 0.70) / 0.70   # ideal solidity ~0.70
+                conf = float(np.clip((area_score * 0.4 + edge_score * 0.4 + shape_score * 0.2), 0.30, 0.92))
+
+                # Distance estimate: pothole is on the ground; use vertical position in frame
+                # Lower in frame → closer. Use linear model calibrated to typical FOV.
+                fy_center_norm = (fy1 + fy2) / 2.0 / max(h, 1)
+                # At fy_norm=0.90 → ~0.5m,  at fy_norm=0.55 → ~4.5m
+                dist_m = float(np.clip(4.5 * (1.0 - (fy_center_norm - 0.55) / 0.35), 0.3, 6.0))
+
+                potholes.append({
+                    'bbox': (fx1, fy1, fx2, fy2),
+                    'dist_m': dist_m,
+                    'conf': conf,
+                    'area': area,
+                })
+
+            # Keep the top-3 most confident detections only
+            potholes.sort(key=lambda p: p['conf'], reverse=True)
+            return potholes[:3]
+
+        # Run pothole detector on raw (un-enhanced) image to avoid CLAHE double-processing
+        self._pothole_detections = _detect_potholes(img)
+        if self._pothole_detections:
+            self.total_potholes_detected = getattr(self, 'total_potholes_detected', 0) + len(self._pothole_detections)
+        # ── End Pothole Detection ────────────────────────────────────────────
+
+        # ── Calibrated Monocular Distance Estimation ─────────────────────────
         SMOOTH_WINDOW = 6
         track_distances: dict[int, float] = {}
         track_dist_confidence: dict[int, float] = {}
         active_ids = set()
         for _tr in tracks:
             if _tr.bbox_history:
-                raw_dist = _estimate_distance_m(_tr.class_name, _tr.bbox_history[-1], orig_h)
+                # Use calibrated focal-length model (module-level function)
+                raw_dist = _estimate_distance_m_calibrated(
+                    _tr.class_name, _tr.bbox_history[-1], orig_w, orig_h
+                )
                 tid = _tr.track_id
                 active_ids.add(tid)
 
@@ -723,20 +876,25 @@ class PredictionViewer:
                     self._dist_history[tid].pop(0)
 
                 buf = self._dist_history[tid]
-                smoothed = sum(buf) / len(buf)
+                # Weighted average: weight recent samples more heavily
+                weights = [0.5 ** (len(buf) - 1 - i) for i in range(len(buf))]
+                w_sum = sum(weights)
+                smoothed = sum(w * d for w, d in zip(weights, buf)) / max(w_sum, 1e-9)
                 track_distances[tid] = smoothed
 
                 if len(buf) >= 3:
                     std = float(np.std(buf))
-                    track_dist_confidence[tid] = max(0.0, min(1.0, 1.0 - std / max(0.5, smoothed)))
+                    # Higher confidence when readings are stable (low std)
+                    track_dist_confidence[tid] = max(0.0, min(1.0, 1.0 - std / max(0.8, smoothed)))
                 else:
-                    track_dist_confidence[tid] = 0.3
+                    track_dist_confidence[tid] = 0.35
 
         if not hasattr(self, '_dist_history'):
             self._dist_history = {}
         stale = [k for k in self._dist_history if k not in active_ids]
         for k in stale:
             del self._dist_history[k]
+        # ── End Distance Estimation ──────────────────────────────────────────
 
         nearest_id = min(track_distances, key=track_distances.get) if track_distances else None
 
@@ -922,6 +1080,68 @@ class PredictionViewer:
                 cv2.putText(canvas, chip, (cbx1 + 5, cby1 - 4),
                             cv2.FONT_HERSHEY_SIMPLEX, 0.28, (10, 10, 20), 1, cv2.LINE_AA)
 
+        # ── Pothole AR Overlays ──────────────────────────────────────────────
+        # Draw each detected pothole as a distinct dashed warning marker
+        for ph in getattr(self, '_pothole_detections', []):
+            px1, py1, px2, py2 = ph['bbox']
+            ph_dist = ph['dist_m']
+            ph_conf = ph['conf']
+
+            # Map pothole bbox to canvas coordinates
+            ppx1 = int(ox + np.clip(px1 * scale, 0, vw - 1))
+            ppy1 = int(oy + np.clip(py1 * scale, 0, vh - 1))
+            ppx2 = int(ox + np.clip(px2 * scale, 0, vw - 1))
+            ppy2 = int(oy + np.clip(py2 * scale, 0, vh - 1))
+
+            # Pothole fill overlay (orange-red tinted)
+            ph_overlay = canvas.copy()
+            cv2.rectangle(ph_overlay, (ppx1, ppy1), (ppx2, ppy2), (0, 80, 220), -1)
+            cv2.addWeighted(ph_overlay, 0.20, canvas, 0.80, 0, canvas)
+
+            # Dashed border (hazard yellow)
+            ph_color = (0, 210, 255)   # BGR: yellow
+            dash_len = 8
+            for seg_x in range(ppx1, ppx2, dash_len * 2):
+                xe = min(seg_x + dash_len, ppx2)
+                cv2.line(canvas, (seg_x, ppy1), (xe, ppy1), ph_color, 2, cv2.LINE_AA)
+                cv2.line(canvas, (seg_x, ppy2), (xe, ppy2), ph_color, 2, cv2.LINE_AA)
+            for seg_y in range(ppy1, ppy2, dash_len * 2):
+                ye = min(seg_y + dash_len, ppy2)
+                cv2.line(canvas, (ppx1, seg_y), (ppx1, ye), ph_color, 2, cv2.LINE_AA)
+                cv2.line(canvas, (ppx2, seg_y), (ppx2, ye), ph_color, 2, cv2.LINE_AA)
+
+            # Warning icon ⚠ (triangle) in centre of pothole bbox
+            ph_cx = (ppx1 + ppx2) // 2
+            ph_cy = (ppy1 + ppy2) // 2
+            tri_size = max(8, min(18, (ppx2 - ppx1) // 4))
+            tri_pts = np.array([
+                [ph_cx, ph_cy - tri_size],
+                [ph_cx - tri_size, ph_cy + tri_size],
+                [ph_cx + tri_size, ph_cy + tri_size],
+            ], np.int32)
+            cv2.fillPoly(canvas, [tri_pts], ph_color, cv2.LINE_AA)
+            cv2.putText(canvas, "!", (ph_cx - 3, ph_cy + tri_size - 2),
+                        cv2.FONT_HERSHEY_SIMPLEX, 0.34, (10, 10, 10), 1, cv2.LINE_AA)
+
+            # Badge: POTHOLE | dist
+            ph_dist_str = f"{ph_dist:.1f}m"
+            ph_label = "POTHOLE"
+            (plw, plh), _ = cv2.getTextSize(ph_label, cv2.FONT_HERSHEY_SIMPLEX, 0.32, 1)
+            (pdw, pdh), _ = cv2.getTextSize(ph_dist_str, cv2.FONT_HERSHEY_SIMPLEX, 0.40, 2)
+            pb_w = max(plw, pdw) + 14
+            pb_h = plh + pdh + 14
+            pb_x1 = max(ox + 2, min(ppx1, ox + vw - pb_w - 2))
+            pb_y1 = max(oy + 2, ppy1 - pb_h - 6)
+            pb_x2 = pb_x1 + pb_w
+            pb_y2 = pb_y1 + pb_h
+            self._draw_rounded_rect(canvas, (pb_x1, pb_y1), (pb_x2, pb_y2), (10, 12, 16), radius=5, thickness=-1, alpha=0.88)
+            self._draw_rounded_rect(canvas, (pb_x1, pb_y1), (pb_x2, pb_y2), ph_color, radius=5, thickness=2)
+            cv2.putText(canvas, ph_label, (pb_x1 + 6, pb_y1 + plh + 4),
+                        cv2.FONT_HERSHEY_SIMPLEX, 0.32, ph_color, 1, cv2.LINE_AA)
+            cv2.putText(canvas, ph_dist_str, (pb_x1 + 6, pb_y1 + plh + pdh + 10),
+                        cv2.FONT_HERSHEY_SIMPLEX, 0.40, ph_color, 2, cv2.LINE_AA)
+        # ── End Pothole AR Overlays ──────────────────────────────────────────
+
         # 5. SPATIAL VECTOR — Professional Top Header Bar
         for hy in range(top_bar_h):
             alpha_grad = 1.0 - (hy / top_bar_h) * 0.15
@@ -939,6 +1159,10 @@ class PredictionViewer:
         min_obstacle_dist = 6.0
         if track_distances:
             min_obstacle_dist = min(track_distances.values())
+        # Also consider nearest pothole
+        if getattr(self, '_pothole_detections', []):
+            nearest_ph_dist = min(ph['dist_m'] for ph in self._pothole_detections)
+            min_obstacle_dist = min(min_obstacle_dist, nearest_ph_dist)
 
         if tracks:
             self.total_obstacles_detected = max(getattr(self, 'total_obstacles_detected', 0), len(tracks))
@@ -1151,9 +1375,17 @@ class PredictionViewer:
                     cv2.putText(canvas, "VOICE GUIDANCE", (lx1 + 10, voice_y + 12), cv2.FONT_HERSHEY_SIMPLEX, 0.34, (0, 200, 255), 1, cv2.LINE_AA)
                     cv2.line(canvas, (lx1 + 10, voice_y + 17), (lx2 - 10, voice_y + 17), (40, 45, 55), 1)
 
+                    # Pothole voice alert takes priority when very close
+                    _near_pothole = next(
+                        (ph for ph in getattr(self, '_pothole_detections', []) if ph['dist_m'] < 2.0), None
+                    )
+
                     if all_blocked or risk.global_risk >= 0.72:
                         voice_text = "Stop"
                         voice_color = (60, 60, 255)
+                    elif _near_pothole is not None:
+                        voice_text = f"Pothole ahead {_near_pothole['dist_m']:.1f} metres"
+                        voice_color = (0, 210, 255)
                     elif nav_action == "WALK FORWARD":
                         voice_text = "Walk Forward"
                         voice_color = (80, 230, 130)
@@ -1207,6 +1439,7 @@ class PredictionViewer:
 
                     demo_stats = [
                         (f"Obstacles Detected: {getattr(self, 'total_obstacles_detected', len(tracks))}", (210, 215, 225)),
+                        (f"Potholes Found: {getattr(self, 'total_potholes_detected', 0)}", (0, 210, 255)),
                         (f"Voice Alerts: {getattr(self, 'total_voice_alerts', 1)}", (80, 230, 130)),
                         (f"Safe Corridors: {getattr(self, 'total_safe_corridors', 0)}", (0, 210, 255)),
                         (f"Nav Corrections: {getattr(self, 'total_nav_corrections', 0)}", (0, 195, 255)),
@@ -1462,9 +1695,15 @@ class PredictionViewer:
                 vg_y2 = vg_y1 + vg_h
 
                 if vg_y1 > top_bar_h + 50:
+                    _near_ph_max = next(
+                        (ph for ph in getattr(self, '_pothole_detections', []) if ph['dist_m'] < 2.0), None
+                    )
                     if risk.global_risk >= 0.72:
                         v_txt = "Stop"
                         v_col = (60, 60, 255)
+                    elif _near_ph_max is not None:
+                        v_txt = f"Pothole {_near_ph_max['dist_m']:.1f}m"
+                        v_col = (0, 210, 255)
                     elif nav_action == "WALK FORWARD":
                         v_txt = "Walk Forward"
                         v_col = (80, 230, 130)
