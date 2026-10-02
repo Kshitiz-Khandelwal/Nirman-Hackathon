@@ -294,7 +294,8 @@ class PredictionViewer:
         # M14 — Freespace / Walkable-Ground Estimator
         # Defaults to UNKNOWN; requires positive confirmation for WALKABLE.
         self.freespace_estimator = FreeSpaceEstimator(
-            forward_consec_frames_required=3,   # not a param of M14 but documented here for clarity
+            min_walkable_conf=0.45,
+            smoothing_window=5,
         )
 
         # M15 — Navigation Decision Engine (single source of truth)
