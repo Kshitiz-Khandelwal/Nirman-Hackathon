@@ -1,0 +1,392 @@
+"""M13 — Ground Hazard Detector.
+
+Detects ground-level hazards (potholes, surface damage) in the lower region
+of the camera frame using a conservative rule-based CV pipeline.
+
+Design decisions:
+- Uses a FIXED absolute dark-threshold (not Otsu) to avoid firing on any image.
+- Requires minimum persistence across N frames before promoting a detection.
+- Gates against YOLO tracks: discards candidates that overlap tracked objects.
+- Can accept an optional ONNX model for trained pothole detection as primary cue.
+- Output is a list of HazardDetection dataclasses, not raw dicts.
+- All thresholds are configurable at construction time (or via YAML config dict).
+
+This module ONLY detects and outputs hazards.
+It does NOT write to the risk engine, voice engine, or haptic output.
+Those are the responsibility of the guidance layer (M15).
+"""
+
+from __future__ import annotations
+
+import logging
+import time
+from dataclasses import dataclass, field
+from typing import List, Optional, Tuple
+
+import cv2
+import numpy as np
+
+logger = logging.getLogger(__name__)
+
+
+# ─── Output Schema ──────────────────────────────────────────────────────────
+
+@dataclass
+class HazardDetection:
+    """A single confirmed ground hazard detection."""
+    hazard_class: str          # "pothole" | "manhole" | "surface_damage"
+    bbox_xyxy: Tuple[float, float, float, float]   # in original image coordinates
+    confidence: float          # 0.0 – 1.0; from heuristic scoring or model output
+    dist_m: float              # estimated distance in metres (approximate)
+    source: str                # "heuristic" | "model" | "combined"
+    frame_id: int
+    timestamp: float
+    persistence_frames: int = 1   # how many consecutive frames this candidate has been seen
+
+
+# ─── Overlap utility ────────────────────────────────────────────────────────
+
+def _iou(a: Tuple[float,float,float,float], b: Tuple[float,float,float,float]) -> float:
+    """Compute IoU between two (x1,y1,x2,y2) boxes."""
+    ix1 = max(a[0], b[0]);  iy1 = max(a[1], b[1])
+    ix2 = min(a[2], b[2]);  iy2 = min(a[3], b[3])
+    if ix2 <= ix1 or iy2 <= iy1:
+        return 0.0
+    inter = (ix2 - ix1) * (iy2 - iy1)
+    area_a = max(1e-6, (a[2]-a[0]) * (a[3]-a[1]))
+    area_b = max(1e-6, (b[2]-b[0]) * (b[3]-b[1]))
+    return inter / (area_a + area_b - inter)
+
+
+# ─── Ground Hazard Detector ─────────────────────────────────────────────────
+
+class GroundHazardDetector:
+    """M13 — Ground Hazard Detector.
+
+    Runs a conservative multi-criteria CV heuristic on the lower ground region
+    of each frame to detect pothole-like dark depressions.
+
+    Key safety properties:
+    - Fixed threshold (not Otsu): the detector does NOT fire on every image.
+    - YOLO overlap gating: any candidate overlapping a tracked object is discarded.
+    - Persistence gate: candidates must survive N consecutive frames before output.
+    - Single CLAHE pass (the caller's enhanced image is already one pass;
+      pass raw=True to receive the raw frame instead).
+    - All parameters exposed and configurable.
+    """
+
+    def __init__(
+        self,
+        # Ground ROI vertical limits (fraction of frame height)
+        roi_y_start: float = 0.58,
+        roi_y_end: float = 0.90,
+        roi_x_margin: float = 0.07,
+        # Fixed absolute dark threshold (0–255). NOT Otsu.
+        # Pixels darker than this relative to the local mean will be flagged.
+        dark_offset: int = 30,            # flag pixels darker than (mean − dark_offset)
+        dark_min_abs: int = 40,           # never flag pixels above this absolute value
+        # Shape / size gates
+        min_area_frac: float = 0.006,     # min fraction of ROI area
+        max_area_frac: float = 0.30,      # max fraction of ROI area
+        max_aspect: float = 4.5,          # max width/height ratio
+        min_aspect: float = 0.22,         # min width/height ratio
+        max_solidity: float = 0.88,       # max solidity (regular = not pothole)
+        min_solidity: float = 0.30,       # min solidity (noise / very jagged shapes)
+        min_edge_density: float = 5.0,    # minimum mean edge density inside bbox
+        # Confidence scoring weights
+        w_area: float = 0.35,
+        w_edge: float = 0.40,
+        w_shape: float = 0.25,
+        min_conf: float = 0.38,           # detections below this confidence are dropped
+        # YOLO overlap gating
+        max_iou_with_yolo: float = 0.15,  # discard if IoU with any YOLO track > this
+        # Persistence gate (consecutive frames required before promoting)
+        persistence_required: int = 2,
+        # Max candidates returned per frame
+        max_detections: int = 3,
+        # Optional trained ONNX model path (None = heuristic only)
+        model_path: Optional[str] = None,
+    ):
+        self.roi_y_start = roi_y_start
+        self.roi_y_end   = roi_y_end
+        self.roi_x_margin = roi_x_margin
+        self.dark_offset = dark_offset
+        self.dark_min_abs = dark_min_abs
+        self.min_area_frac = min_area_frac
+        self.max_area_frac = max_area_frac
+        self.max_aspect   = max_aspect
+        self.min_aspect   = min_aspect
+        self.max_solidity = max_solidity
+        self.min_solidity = min_solidity
+        self.min_edge_density = min_edge_density
+        self.w_area  = w_area
+        self.w_edge  = w_edge
+        self.w_shape = w_shape
+        self.min_conf = min_conf
+        self.max_iou_with_yolo = max_iou_with_yolo
+        self.persistence_required = persistence_required
+        self.max_detections = max_detections
+
+        # Persistence tracking: list of (bbox_xyxy, consecutive_count)
+        self._persistence: List[Tuple[Tuple, int]] = []
+
+        # Optional trained model (not loaded in this iteration — placeholder)
+        self._model = None
+        if model_path:
+            self._load_model(model_path)
+
+        logger.info("GroundHazardDetector (M13) initialised — heuristic mode, persistence=%d", persistence_required)
+
+    def _load_model(self, path: str):
+        """Load optional trained ONNX/YOLO pothole model."""
+        try:
+            from ultralytics import YOLO
+            self._model = YOLO(path)
+            logger.info("M13: Loaded trained pothole model from %s", path)
+        except Exception as e:
+            logger.warning("M13: Could not load pothole model from %s: %s. Falling back to heuristic.", path, e)
+            self._model = None
+
+    # ── Public API ────────────────────────────────────────────────────────────
+
+    def detect(
+        self,
+        frame_bgr: np.ndarray,
+        yolo_bboxes: Optional[List[Tuple[float,float,float,float]]] = None,
+        frame_id: int = 0,
+        timestamp: Optional[float] = None,
+    ) -> List[HazardDetection]:
+        """Detect ground hazards in one frame.
+
+        Args:
+            frame_bgr: Raw (un-enhanced or lightly-enhanced) BGR image.
+            yolo_bboxes: List of (x1,y1,x2,y2) boxes from YOLO tracker.
+                         Candidates overlapping these are discarded.
+            frame_id: Frame index for persistence tracking.
+            timestamp: Monotonic timestamp (defaults to time.monotonic()).
+
+        Returns:
+            List of confirmed HazardDetection objects (sorted by confidence).
+        """
+        if timestamp is None:
+            timestamp = time.monotonic()
+
+        # Run heuristic
+        candidates = self._heuristic_detect(frame_bgr)
+
+        # If trained model available, merge its outputs too (future path)
+        if self._model is not None:
+            model_candidates = self._model_detect(frame_bgr, frame_id, timestamp)
+            candidates = self._merge_candidates(candidates, model_candidates)
+
+        # Gate against YOLO tracks
+        if yolo_bboxes:
+            candidates = [
+                c for c in candidates
+                if all(_iou(c['bbox'], yb) <= self.max_iou_with_yolo for yb in yolo_bboxes)
+            ]
+
+        # Confidence filter
+        candidates = [c for c in candidates if c['conf'] >= self.min_conf]
+
+        # Persistence gate
+        candidates = self._apply_persistence(candidates)
+
+        # Sort and cap
+        candidates.sort(key=lambda c: c['conf'], reverse=True)
+        candidates = candidates[:self.max_detections]
+
+        return [
+            HazardDetection(
+                hazard_class="pothole",
+                bbox_xyxy=c['bbox'],
+                confidence=c['conf'],
+                dist_m=c['dist_m'],
+                source=c.get('source', 'heuristic'),
+                frame_id=frame_id,
+                timestamp=timestamp,
+                persistence_frames=c.get('persist', 1),
+            )
+            for c in candidates
+        ]
+
+    # ── Heuristic Pipeline ────────────────────────────────────────────────────
+
+    def _heuristic_detect(self, frame_bgr: np.ndarray) -> List[dict]:
+        """Conservative rule-based pothole detection using fixed threshold."""
+        h, w = frame_bgr.shape[:2]
+        y_start = int(h * self.roi_y_start)
+        y_end   = int(h * self.roi_y_end)
+        x_margin = int(w * self.roi_x_margin)
+
+        roi = frame_bgr[y_start:y_end, x_margin:w - x_margin]
+        if roi.size == 0:
+            return []
+
+        # Single CLAHE pass on grayscale (caller may have already done colour enhancement;
+        # we do a fresh grayscale normalisation here for the hazard detector only)
+        gray = cv2.cvtColor(roi, cv2.COLOR_BGR2GRAY)
+        clahe = cv2.createCLAHE(clipLimit=1.8, tileGridSize=(6, 6))
+        gray_eq = clahe.apply(gray)
+
+        # ── FIXED THRESHOLD (not Otsu) ────────────────────────────────────────
+        # Pixels that are significantly darker than the local ROI mean.
+        # This does NOT fire on every image — a uniformly bright surface produces
+        # very few pixels below the threshold.
+        local_mean = float(np.mean(gray_eq))
+        threshold = max(20, int(local_mean - self.dark_offset))
+        threshold = min(threshold, self.dark_min_abs)
+
+        _, dark_mask = cv2.threshold(gray_eq, threshold, 255, cv2.THRESH_BINARY_INV)
+
+        # Morphological cleanup
+        k_close = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (9, 6))
+        k_open  = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (5, 4))
+        dark_mask = cv2.morphologyEx(dark_mask, cv2.MORPH_CLOSE, k_close)
+        dark_mask = cv2.morphologyEx(dark_mask, cv2.MORPH_OPEN,  k_open)
+
+        # Edge density map (texture strength proxy)
+        blurred = cv2.GaussianBlur(gray_eq, (5, 5), 1.5)
+        edges   = cv2.Canny(blurred, 25, 75)
+        edge_map = cv2.GaussianBlur(edges.astype(np.float32), (13, 13), 4)
+
+        contours, _ = cv2.findContours(dark_mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+
+        roi_area = roi.shape[0] * roi.shape[1]
+        candidates = []
+
+        for cnt in contours:
+            area = cv2.contourArea(cnt)
+
+            # Size gate
+            if area < roi_area * self.min_area_frac or area > roi_area * self.max_area_frac:
+                continue
+
+            x, y, bw, bh = cv2.boundingRect(cnt)
+
+            # Aspect ratio gate
+            aspect = bw / max(bh, 1)
+            if aspect > self.max_aspect or aspect < self.min_aspect:
+                continue
+
+            # Solidity gate (irregular blobs only)
+            hull = cv2.convexHull(cnt)
+            hull_area = cv2.contourArea(hull)
+            solidity = area / max(hull_area, 1.0)
+            if solidity > self.max_solidity or solidity < self.min_solidity:
+                continue
+
+            # Edge density inside bbox (potholes have strong boundary edges)
+            edge_crop = edge_map[y:y+bh, x:x+bw]
+            mean_edge = float(np.mean(edge_crop)) if edge_crop.size > 0 else 0.0
+            if mean_edge < self.min_edge_density:
+                continue
+
+            # Additional check: candidate should NOT cover >40% uniform background
+            # (a shadow has little internal texture variation)
+            roi_crop = gray_eq[y:y+bh, x:x+bw]
+            if roi_crop.size > 0:
+                internal_std = float(np.std(roi_crop))
+                if internal_std < 8.0:   # near-uniform patch — likely shadow / floor
+                    continue
+
+            # Map to full-frame coordinates
+            fx1 = float(x + x_margin)
+            fy1 = float(y + y_start)
+            fx2 = float(fx1 + bw)
+            fy2 = float(fy1 + bh)
+
+            # Confidence score (weighted combination of cues)
+            area_score  = min(1.0, area / (roi_area * 0.06))
+            edge_score  = min(1.0, mean_edge / 25.0)
+            # Ideal pothole solidity ~0.65 (irregular but not fragmented)
+            shape_score = max(0.0, 1.0 - abs(solidity - 0.65) / 0.40)
+            conf = float(np.clip(
+                self.w_area  * area_score +
+                self.w_edge  * edge_score +
+                self.w_shape * shape_score,
+                0.0, 0.95
+            ))
+
+            # Distance from vertical position in frame (pinhole geometry approximation)
+            # Lower in frame (higher fy_norm) → closer to camera
+            fy_center_norm = (fy1 + fy2) / 2.0 / max(h, 1)
+            # Linear model: fy_norm=roi_y_end → ~0.4m, fy_norm=roi_y_start → ~5.0m
+            t = (fy_center_norm - self.roi_y_start) / max(self.roi_y_end - self.roi_y_start, 0.01)
+            dist_m = float(np.clip(5.0 * (1.0 - t) + 0.4 * t, 0.3, 6.0))
+
+            candidates.append({
+                'bbox': (fx1, fy1, fx2, fy2),
+                'conf': conf,
+                'dist_m': dist_m,
+                'source': 'heuristic',
+            })
+
+        return candidates
+
+    def _model_detect(self, frame_bgr: np.ndarray, frame_id: int, timestamp: float) -> List[dict]:
+        """Run trained ONNX/YOLO pothole model (placeholder for future trained model)."""
+        if self._model is None:
+            return []
+        try:
+            results = self._model(frame_bgr, conf=0.40, verbose=False)
+            out = []
+            for r in results:
+                if r.boxes is None:
+                    continue
+                for i in range(len(r.boxes)):
+                    xyxy = r.boxes.xyxy[i].cpu().numpy().tolist()
+                    conf = float(r.boxes.conf[i].cpu().numpy())
+                    out.append({
+                        'bbox': (float(xyxy[0]), float(xyxy[1]), float(xyxy[2]), float(xyxy[3])),
+                        'conf': conf,
+                        'dist_m': 2.0,  # placeholder; model should provide this
+                        'source': 'model',
+                    })
+            return out
+        except Exception as e:
+            logger.warning("M13: Trained model inference error: %s", e)
+            return []
+
+    def _merge_candidates(self, heuristic: List[dict], model: List[dict]) -> List[dict]:
+        """Merge heuristic and model candidates; model wins on overlapping regions."""
+        merged = list(model)  # model output takes priority
+        for h in heuristic:
+            if not any(_iou(h['bbox'], m['bbox']) > 0.3 for m in model):
+                merged.append(h)
+        return merged
+
+    # ── Persistence Gate ──────────────────────────────────────────────────────
+
+    def _apply_persistence(self, candidates: List[dict]) -> List[dict]:
+        """Keep only candidates seen in >= persistence_required consecutive frames.
+
+        Candidates not seen this frame lose their count; new ones start at 1.
+        Returns candidates that meet the persistence threshold.
+        """
+        # Match each new candidate to a persisted one by IoU
+        new_persistence: List[Tuple[Tuple, int]] = []
+        promoted: List[dict] = []
+
+        for cand in candidates:
+            best_match = None
+            best_iou = 0.3  # minimum IoU to count as "same" candidate
+            for (old_bbox, count) in self._persistence:
+                iou = _iou(cand['bbox'], old_bbox)
+                if iou > best_iou:
+                    best_iou = iou
+                    best_match = (old_bbox, count)
+
+            new_count = (best_match[1] + 1) if best_match else 1
+            new_persistence.append((cand['bbox'], new_count))
+            cand['persist'] = new_count
+
+            if new_count >= self.persistence_required:
+                promoted.append(cand)
+
+        self._persistence = new_persistence
+        return promoted
+
+    def reset(self):
+        """Clear persistence state (call when source changes)."""
+        self._persistence = []

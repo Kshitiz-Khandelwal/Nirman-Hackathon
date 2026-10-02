@@ -1,13 +1,20 @@
 """SpatialVector-HMI — Standalone Camera Prediction Engine Viewer
 
 Direct camera and prediction engine execution without web dashboard:
-- Visualizes M01-M09 directly inside a high-visibility OpenCV AR window.
+- Visualises M01-M15 directly inside a high-visibility OpenCV AR window.
 - Auto-scales camera feed to fit window dimensions dynamically (zero dead gray space).
-- Real-time YOLOv8 object detection + ByteTrack tracking.
+- Real-time YOLOv8 object detection + ByteTrack tracking (full COCO class set).
+- M13 Ground Hazard Detector (pothole/surface damage) — gated against YOLO tracks.
+- M14 Freespace / Walkable-Ground Estimator — per-corridor WALKABLE/BLOCKED/UNKNOWN.
+- M15 Navigation Decision Engine — single source of truth; fail-safe walk-forward policy.
 - Velocity vectors, FOE, and ego-motion compensation.
-- Collision prediction: Time-to-Collision (TTC), Closest Point of Approach (CPA), Path Intersection.
+- Collision prediction: TTC, CPA, Path Intersection.
 - M08 Risk Engine state machine (SAFE, CAUTION, WARNING, CRITICAL, DEGRADED).
 - M09 Corridor Policy selection (Left / Center / Right) and M10 Haptic command synthesis.
+
+Safety rule: "Walk Forward" is issued ONLY when the centre corridor is positively
+confirmed WALKABLE for several consecutive frames AND no tracked obstacle or pothole
+intersects it. Absence of obstacles alone is NOT sufficient.
 
 Hotkeys:
     [Q] / [ESC]  - Quit
@@ -40,6 +47,9 @@ from spatialvector.decision.corridor_policy import CorridorPolicy
 from spatialvector.decision.prediction import CollisionPredictor
 from spatialvector.decision.risk_engine import RiskEngine, RiskEngineConfig
 from spatialvector.decision.schemas import HapticCommand, Prediction, RiskState
+from spatialvector.freespace import FreeSpaceEstimator, CorridorStatus, FreespaceResult
+from spatialvector.guidance import GuidanceDecision, GuidanceAction, NavigationDecisionEngine
+from spatialvector.hazards import GroundHazardDetector, HazardDetection
 from spatialvector.motion.ego_motion import EgoMotionCompensator
 from spatialvector.motion.geometry import compute_geometry_batch
 from spatialvector.motion.imu_reader import SimulatedIMUReader
@@ -48,6 +58,28 @@ from spatialvector.perception.frame_source import FrameSource
 from spatialvector.perception.schemas import Frame, Track
 from spatialvector.perception.source_resolver import resolve_camera_source
 from spatialvector.perception.tracker import MultiObjectTracker
+
+# ── COCO Classes Relevant to a Walking User ──────────────────────────────────
+# This is the authoritative class allow-list.  The tracker is initialised
+# with class_filter=None (all classes tracked) so unknown objects are not
+# silently dropped, but this list is used for overlay labelling and stats.
+# Do NOT narrow the tracker's filter — that would cause silent detection loss.
+WALKING_USER_COCO_CLASSES: List[str] = [
+    # People
+    'person',
+    # Vehicles
+    'bicycle', 'car', 'motorcycle', 'bus', 'truck',
+    # Furniture / indoor obstacles
+    'chair', 'couch', 'dining table', 'bed', 'bench',
+    # Carry items
+    'backpack', 'handbag', 'suitcase',
+    # Animals
+    'dog', 'cat',
+    # Road furniture
+    'fire hydrant', 'stop sign', 'traffic light',
+    # Miscellaneous static obstacles
+    'potted plant', 'bottle', 'umbrella',
+]
 
 
 class VoiceSynthesizer:
@@ -230,13 +262,15 @@ class PredictionViewer:
 
         # Pipeline modules
         self.init_source(source_str)
+        # Tracker: class_filter=None so ALL COCO classes are tracked.
+        # Do NOT restrict here — silent detection loss is worse than extra labels.
         self.tracker = MultiObjectTracker(backend=tracker_type, history_length=10, confidence_threshold=det_conf)
         self.flow_est = OpticalFlowEstimator(max_corners=200, quality_level=0.01, min_distance=7.0)
         self.imu = SimulatedIMUReader(gyro_fn=lambda t: (0.0, 0.0, 0.0), rate_hz=100.0)
         self.imu.start()
         self.compensator = EgoMotionCompensator(fallback_flow_quality_threshold=0.30)
 
-        # Decision modules
+        # Decision modules (M06–M09)
         self.predictor = CollisionPredictor(horizon_s=5.0, contact_threshold_normalized=0.05, corridor_width_normalized=0.12)
         self.engine = RiskEngine(
             weight_ttc=0.50,
@@ -249,6 +283,28 @@ class PredictionViewer:
         )
         self.policy = CorridorPolicy(all_unsafe_risk_threshold=0.70, trend_window_frames=5)
 
+        # M13 — Ground Hazard Detector (potholes, surface damage)
+        # Uses fixed threshold (not Otsu), YOLO overlap gating, and persistence.
+        self.hazard_detector = GroundHazardDetector(
+            persistence_required=2,
+            min_conf=0.40,
+            max_iou_with_yolo=0.15,
+        )
+
+        # M14 — Freespace / Walkable-Ground Estimator
+        # Defaults to UNKNOWN; requires positive confirmation for WALKABLE.
+        self.freespace_estimator = FreeSpaceEstimator(
+            forward_consec_frames_required=3,   # not a param of M14 but documented here for clarity
+        )
+
+        # M15 — Navigation Decision Engine (single source of truth)
+        self.nav_engine = NavigationDecisionEngine(
+            forward_consec_frames_required=3,
+            freespace_min_conf=0.48,
+            centre_risk_threshold=0.35,
+            global_risk_threshold=0.45,
+        )
+
         self.last_frame = None
         self.fps_history = []
         self.last_time = time.monotonic()
@@ -256,9 +312,14 @@ class PredictionViewer:
         # Temporal smoothing buffers for distance estimation
         self._dist_history: Dict[int, List[float]] = {}   # track_id -> last N distances
 
-        # Pothole detection state
-        self._pothole_detections: List[dict] = []  # list of {bbox, dist_m, conf}
-        self._pothole_cooldown: float = 0.0          # monotonic timestamp of last detection
+        # Current frame hazard and freespace results (set in run loop, read by render_overlay)
+        self._hazard_detections: List[HazardDetection] = []
+        self._freespace_result: Optional[FreespaceResult] = None
+        self._guidance: Optional[GuidanceDecision] = None
+
+        # Legacy alias for overlay drawing code (kept for render_overlay compat)
+        self._pothole_detections: List[dict] = []
+        self._pothole_cooldown: float = 0.0
 
         # Real Voice Guidance Engine
         self.voice = VoiceSynthesizer(cooldown_s=2.5)
@@ -290,6 +351,10 @@ class PredictionViewer:
         self.init_source(new_source)
         self.current_source_label = label
         self.auto_scaled_once = False   # Re-auto scale for the new source's aspect ratio!
+        # Reset stateful modules so previous-source state doesn't bleed through
+        self.hazard_detector.reset()
+        self.freespace_estimator.reset()
+        self.nav_engine.reset()
 
     def auto_scale_window(self, orig_w: int, orig_h: int):
         """Auto-scale the OS window dimensions to optimal proportions for the input aspect ratio."""
@@ -390,6 +455,45 @@ class PredictionViewer:
                 predictions = self.predictor.predict_batch(geometries, tracks, f_obj.frame_id)
                 risk_state = self.engine.update(predictions, fallback_active=motion_st.fallback_active, timestamp=ts)
                 cmd = self.policy.select(risk_state, timestamp=ts)
+
+                # M13 — Ground Hazard Detection
+                # Pass YOLO bboxes so heuristic never fires on tracked objects
+                yolo_bboxes = [t.bbox_history[-1] for t in tracks if t.bbox_history]
+                self._hazard_detections = self.hazard_detector.detect(
+                    frame_bgr=img,
+                    yolo_bboxes=yolo_bboxes,
+                    frame_id=f_obj.frame_id,
+                    timestamp=ts,
+                )
+                # Legacy dict format for backward-compat render_overlay pothole overlay
+                self._pothole_detections = [
+                    {'bbox': h.bbox_xyxy, 'dist_m': h.dist_m, 'conf': h.confidence}
+                    for h in self._hazard_detections
+                ]
+                if self._hazard_detections:
+                    self.total_potholes_detected = getattr(self, 'total_potholes_detected', 0) + len(self._hazard_detections)
+
+                # M14 — Freespace / Walkable-Ground Estimation
+                self._freespace_result = self.freespace_estimator.estimate(
+                    frame_bgr=img,
+                    yolo_bboxes=yolo_bboxes,
+                )
+
+                # M15 — Single Navigation Decision (single source of truth)
+                self._guidance = self.nav_engine.decide(
+                    risk=risk_state,
+                    cmd=cmd,
+                    freespace=self._freespace_result,
+                    hazards=self._hazard_detections,
+                )
+
+                # Voice guidance from M15 (not duplicated anywhere else)
+                if hasattr(self, 'voice') and self.voice is not None:
+                    voice_text = self._guidance.voice_text
+                    if not hasattr(self, '_last_spoken_cmd') or self._last_spoken_cmd != voice_text:
+                        self.voice.speak(voice_text)
+                        self._last_spoken_cmd = voice_text
+                        self.total_voice_alerts = getattr(self, 'total_voice_alerts', 0) + 1
 
                 # Measure actual FPS
                 t_end = time.monotonic()
@@ -756,102 +860,12 @@ class PredictionViewer:
         badge_font = float(np.clip(vw / 850.0 * 0.42, 0.28, 0.44))
         is_compact_badges = (vw < 520)
 
-        # ── Pothole Detection via Ground-Plane ROI Analysis ─────────────────
-        # Analyses the bottom 30% of the frame (ground region visible ahead of the user)
-        # for dark irregular depressions, discoloured patches, and surface discontinuities
-        # that are characteristic of potholes and road damage.
-        def _detect_potholes(frame_bgr: np.ndarray) -> List[dict]:
-            h, w = frame_bgr.shape[:2]
-            # Only analyse the ground-facing zone: y in [55%, 90%] of frame height
-            y_start = int(h * 0.55)
-            y_end   = int(h * 0.90)
-            x_margin = int(w * 0.08)   # ignore far-left and far-right slivers
-            roi = frame_bgr[y_start:y_end, x_margin:w - x_margin]
+        # ── Pothole detections come from M13 (GroundHazardDetector) ──────────
+        # Set in the run loop via self._pothole_detections (legacy dict format).
+        # M13 uses fixed threshold + YOLO gating + persistence — no false fires.
+        # ── End Pothole Section ───────────────────────────────────────────────
 
-            # Convert to grayscale and apply adaptive threshold to isolate dark patches
-            gray = cv2.cvtColor(roi, cv2.COLOR_BGR2GRAY)
-            # CLAHE to normalise lighting variation on the ground
-            clahe = cv2.createCLAHE(clipLimit=2.0, tileGridSize=(4, 4))
-            gray_eq = clahe.apply(gray)
 
-            # Detect dark irregular blobs (potholes appear darker than surroundings)
-            # Strategy: local adaptive thresholding for shadow-robust detection
-            blurred = cv2.GaussianBlur(gray_eq, (9, 9), 2)
-            _, dark_mask = cv2.threshold(blurred, 0, 255, cv2.THRESH_BINARY_INV + cv2.THRESH_OTSU)
-
-            # Morphological cleanup: close small gaps, remove tiny noise
-            kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (11, 7))
-            dark_mask = cv2.morphologyEx(dark_mask, cv2.MORPH_CLOSE, kernel)
-            dark_mask = cv2.morphologyEx(dark_mask, cv2.MORPH_OPEN,  cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (7, 5)))
-
-            # Edge density check: potholes have strong edges around their boundary
-            edges = cv2.Canny(gray_eq, 30, 90)
-            edge_density_map = cv2.GaussianBlur(edges.astype(np.float32), (15, 15), 5)
-
-            contours, _ = cv2.findContours(dark_mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
-
-            potholes = []
-            for cnt in contours:
-                area = cv2.contourArea(cnt)
-                roi_area = roi.shape[0] * roi.shape[1]
-                # Size gate: too small = noise, too large = shadow / whole ground
-                if area < roi_area * 0.005 or area > roi_area * 0.35:
-                    continue
-
-                x, y, bw, bh = cv2.boundingRect(cnt)
-
-                # Shape check: potholes are roughly compact (not very elongated strips)
-                aspect = bw / max(bh, 1)
-                if aspect > 5.0 or aspect < 0.2:
-                    continue
-
-                # Solidity check: irregular blobs (potholes) have lower solidity than rectangles
-                hull = cv2.convexHull(cnt)
-                hull_area = cv2.contourArea(hull)
-                solidity = area / max(hull_area, 1)
-                if solidity > 0.92:   # very regular = not a pothole
-                    continue
-
-                # Edge density inside the bbox must be non-trivial (edges = pothole boundary)
-                edge_crop = edge_density_map[y:y+bh, x:x+bw]
-                mean_edge = float(np.mean(edge_crop)) if edge_crop.size > 0 else 0.0
-                if mean_edge < 4.0:   # not enough texture/edges
-                    continue
-
-                # Map back to full-frame coordinates
-                fx1 = x + x_margin
-                fy1 = y + y_start
-                fx2 = fx1 + bw
-                fy2 = fy1 + bh
-
-                # Confidence heuristic [0..1] based on area fraction, edge density, compactness
-                area_score  = min(1.0, area / (roi_area * 0.08))
-                edge_score  = min(1.0, mean_edge / 30.0)
-                shape_score = 1.0 - abs(solidity - 0.70) / 0.70   # ideal solidity ~0.70
-                conf = float(np.clip((area_score * 0.4 + edge_score * 0.4 + shape_score * 0.2), 0.30, 0.92))
-
-                # Distance estimate: pothole is on the ground; use vertical position in frame
-                # Lower in frame → closer. Use linear model calibrated to typical FOV.
-                fy_center_norm = (fy1 + fy2) / 2.0 / max(h, 1)
-                # At fy_norm=0.90 → ~0.5m,  at fy_norm=0.55 → ~4.5m
-                dist_m = float(np.clip(4.5 * (1.0 - (fy_center_norm - 0.55) / 0.35), 0.3, 6.0))
-
-                potholes.append({
-                    'bbox': (fx1, fy1, fx2, fy2),
-                    'dist_m': dist_m,
-                    'conf': conf,
-                    'area': area,
-                })
-
-            # Keep the top-3 most confident detections only
-            potholes.sort(key=lambda p: p['conf'], reverse=True)
-            return potholes[:3]
-
-        # Run pothole detector on raw (un-enhanced) image to avoid CLAHE double-processing
-        self._pothole_detections = _detect_potholes(img)
-        if self._pothole_detections:
-            self.total_potholes_detected = getattr(self, 'total_potholes_detected', 0) + len(self._pothole_detections)
-        # ── End Pothole Detection ────────────────────────────────────────────
 
         # ── Calibrated Monocular Distance Estimation ─────────────────────────
         SMOOTH_WINDOW = 6
@@ -1239,27 +1253,23 @@ class PredictionViewer:
         c_risk = risk.corridor_risks.get("center", 0.0)
         r_risk = risk.corridor_risks.get("right", 0.0)
 
-        all_blocked = (c_risk >= 0.65 and l_risk >= 0.55 and r_risk >= 0.55) or (risk.global_risk >= 0.72) or (cmd.direction == "STOP" and risk.global_risk > 0.40)
-
-        if all_blocked:
-            nav_action = "STOP"
-            nav_icon = "STOP"
-            nav_color = (25, 25, 225)
-            nav_border = (60, 60, 255)
-        elif c_risk < 0.35 and risk.global_risk < 0.45 and cmd.direction not in ("LEFT", "RIGHT"):
-            nav_action = "WALK FORWARD"
-            nav_icon = "UP"
-            nav_color = (35, 175, 55)
-            nav_border = (70, 235, 95)
+        # ── Navigation decision from M15 (single source of truth) ───────────
+        # self._guidance is set in the run loop by NavigationDecisionEngine.decide().
+        # This replaces the old fail-open c_risk < 0.35 → WALK FORWARD logic.
+        guidance = getattr(self, '_guidance', None)
+        if guidance is not None:
+            nav_action = guidance.action.value
+            nav_icon   = guidance.nav_icon
+            nav_color  = guidance.banner_color_bgr
+            nav_border = guidance.banner_border_bgr
         else:
-            if l_risk <= r_risk:
-                nav_action = "MOVE LEFT"
-                nav_icon = "LEFT"
-            else:
-                nav_action = "MOVE RIGHT"
-                nav_icon = "RIGHT"
-            nav_color = (0, 145, 245)
-            nav_border = (0, 210, 255)
+            # Fallback if M15 not yet initialised (first frame): safe default
+            nav_action = "CAUTION"
+            nav_icon   = "STOP"
+            nav_color  = (0, 115, 200)
+            nav_border = (0, 170, 240)
+        # ── End M15 Decision ─────────────────────────────────────────────────
+
 
         banner_font_sz = 0.65 if target_w >= 850 else (0.55 if target_w >= 600 else 0.45)
         banner_thick = 2
@@ -1368,45 +1378,29 @@ class PredictionViewer:
 
                     card_y += card_h + 4
 
-                # Voice Guidance Panel
+                # Voice Guidance Panel — reads from M15 GuidanceDecision (single source of truth)
                 voice_y = card_y + 8
                 vp_y2 = voice_y
                 if voice_y + 70 < ly2:
                     cv2.putText(canvas, "VOICE GUIDANCE", (lx1 + 10, voice_y + 12), cv2.FONT_HERSHEY_SIMPLEX, 0.34, (0, 200, 255), 1, cv2.LINE_AA)
                     cv2.line(canvas, (lx1 + 10, voice_y + 17), (lx2 - 10, voice_y + 17), (40, 45, 55), 1)
 
-                    # Pothole voice alert takes priority when very close
-                    _near_pothole = next(
-                        (ph for ph in getattr(self, '_pothole_detections', []) if ph['dist_m'] < 2.0), None
-                    )
-
-                    if all_blocked or risk.global_risk >= 0.72:
-                        voice_text = "Stop"
-                        voice_color = (60, 60, 255)
-                    elif _near_pothole is not None:
-                        voice_text = f"Pothole ahead {_near_pothole['dist_m']:.1f} metres"
-                        voice_color = (0, 210, 255)
-                    elif nav_action == "WALK FORWARD":
-                        voice_text = "Walk Forward"
-                        voice_color = (80, 230, 130)
-                    elif nav_action == "MOVE LEFT":
-                        voice_text = "Move Left"
-                        voice_color = (0, 210, 255)
-                    elif nav_action == "MOVE RIGHT":
-                        voice_text = "Move Right"
-                        voice_color = (0, 210, 255)
-                    elif risk.global_risk > 0.45:
-                        voice_text = "Obstacle Ahead"
-                        voice_color = (0, 195, 255)
+                    # Read voice text and colour from M15 GuidanceDecision
+                    _guidance = getattr(self, '_guidance', None)
+                    if _guidance is not None:
+                        voice_text = _guidance.voice_text
+                        _action_val = _guidance.action.value
+                        if "FORWARD" in _action_val:
+                            voice_color = (80, 230, 130)
+                        elif _action_val in ("STOP",):
+                            voice_color = (60, 60, 255)
+                        else:
+                            voice_color = (0, 210, 255)
                     else:
-                        voice_text = "Walk Forward"
-                        voice_color = (80, 230, 130)
+                        voice_text = "Checking path..."
+                        voice_color = (0, 195, 255)
+                    # Voice.speak() is called in the run loop — no duplicate call here
 
-                    if hasattr(self, 'voice') and self.voice is not None:
-                        if not hasattr(self, '_last_spoken_cmd') or self._last_spoken_cmd != voice_text:
-                            self.voice.speak(voice_text)
-                            self._last_spoken_cmd = voice_text
-                            self.total_voice_alerts = getattr(self, 'total_voice_alerts', 0) + 1
 
                     vp_y1 = voice_y + 22
                     vp_y2 = min(vp_y1 + 42, ly2 - 8)
