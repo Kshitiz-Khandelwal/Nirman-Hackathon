@@ -1,0 +1,15 @@
+{
+  "id": "desk_closeup_008",
+  "category": "desk_closeup",
+  "split": "TUNE",
+  "is_hazard_category": true,
+  "expected_walkable": false,
+  "corridor_status": "UNKNOWN",
+  "expected_hazards": [],
+  "expected_objects": [
+    "keyboard"
+  ],
+  "license": "CC0",
+  "source_url": "https://upload.wikimedia.org/wikipedia/commons/f/f8/Black_Computer_keyboard.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+  "image_file": "desk_closeup_008.jpg"
+}

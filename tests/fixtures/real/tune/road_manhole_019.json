@@ -3,10 +3,12 @@
   "category": "road_manhole",
   "split": "TUNE",
   "is_hazard_category": false,
-  "expected_walkable": true,
-  "corridor_status": "WALKABLE",
+  "expected_walkable": false,
+  "corridor_status": "BLOCKED",
   "expected_hazards": [],
-  "expected_objects": [],
+  "expected_objects": [
+    "clock"
+  ],
   "license": "CC BY 4.0",
   "source_url": "https://upload.wikimedia.org/wikipedia/commons/6/62/Manhole_cover_in_Baku_01.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
   "image_file": "road_manhole_019.jpg"

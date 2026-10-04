@@ -6,7 +6,10 @@
   "expected_walkable": false,
   "corridor_status": "UNKNOWN",
   "expected_hazards": [],
-  "expected_objects": [],
+  "expected_objects": [
+    "cat",
+    "bed"
+  ],
   "license": "CC BY-SA 3.0",
   "source_url": "https://upload.wikimedia.org/wikipedia/commons/4/4d/Cat_November_2010-1a.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
   "image_file": "blank_wall_005.jpg"

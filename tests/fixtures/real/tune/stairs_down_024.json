@@ -1,0 +1,13 @@
+{
+  "id": "stairs_down_024",
+  "category": "stairs_down",
+  "split": "TUNE",
+  "is_hazard_category": true,
+  "expected_walkable": false,
+  "corridor_status": "UNKNOWN",
+  "expected_hazards": [],
+  "expected_objects": [],
+  "license": "CC BY-SA 2.0",
+  "source_url": "https://upload.wikimedia.org/wikipedia/commons/9/94/Stairs_down_to_the_beach_-_geograph.org.uk_-_1522791.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+  "image_file": "stairs_down_024.jpg"
+}

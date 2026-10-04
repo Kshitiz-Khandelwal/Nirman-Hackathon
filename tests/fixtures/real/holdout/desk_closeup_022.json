@@ -4,13 +4,15 @@
   "split": "HOLDOUT",
   "is_hazard_category": true,
   "expected_walkable": false,
-  "corridor_status": "BLOCKED",
+  "corridor_status": "UNKNOWN",
   "expected_hazards": [],
   "expected_objects": [
-    "laptop",
+    "chair",
+    "tv",
+    "book",
     "keyboard"
   ],
-  "license": "CC BY-SA 4.0",
-  "source_url": "https://upload.wikimedia.org/wikipedia/commons/e/ef/Metal_keyboard_of_public_computer.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+  "license": "CC BY / Public Domain",
+  "source_url": "https://upload.wikimedia.org/wikipedia/commons/0/02/EFTA00002091_-_Modern_white_desk_with_a_computer_printer_and_chair_in_a_minimalist_office_space.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
   "image_file": "desk_closeup_022.jpg"
 }

@@ -6,7 +6,9 @@
   "expected_walkable": true,
   "corridor_status": "WALKABLE",
   "expected_hazards": [],
-  "expected_objects": [],
+  "expected_objects": [
+    "person"
+  ],
   "license": "CC0",
   "source_url": "https://upload.wikimedia.org/wikipedia/commons/c/cf/Corridor_inside_the_Grandmaster%27s_Palace%2C_Valletta%2C_Malta.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
   "image_file": "indoor_corridor_017.jpg"

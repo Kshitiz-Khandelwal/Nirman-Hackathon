@@ -1,0 +1,21 @@
+{
+  "id": "table_corner_014",
+  "category": "table_corner",
+  "split": "TUNE",
+  "is_hazard_category": true,
+  "expected_walkable": false,
+  "corridor_status": "UNKNOWN",
+  "expected_hazards": [],
+  "expected_objects": [
+    "wine glass",
+    "bottle",
+    "vase",
+    "cup",
+    "potted plant",
+    "bowl",
+    "dining table"
+  ],
+  "license": "Public domain",
+  "source_url": "https://upload.wikimedia.org/wikipedia/commons/9/90/Henri_Fantin-Latour_-_Still_Life%2C_Corner_of_a_Table_-_1951.226_-_Art_Institute_of_Chicago.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+  "image_file": "table_corner_014.jpg"
+}

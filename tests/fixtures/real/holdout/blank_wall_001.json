@@ -1,0 +1,17 @@
+{
+  "id": "blank_wall_001",
+  "category": "blank_wall",
+  "split": "HOLDOUT",
+  "is_hazard_category": true,
+  "expected_walkable": false,
+  "corridor_status": "UNKNOWN",
+  "expected_hazards": [],
+  "expected_objects": [
+    "couch",
+    "chair",
+    "bed"
+  ],
+  "license": "CC BY / Public Domain",
+  "source_url": "https://upload.wikimedia.org/wikipedia/commons/b/b2/American_homes_and_gardens_%281912%29_%2818150808672%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+  "image_file": "blank_wall_001.jpg"
+}

@@ -3,10 +3,12 @@
   "category": "road_patch_puddle",
   "split": "TUNE",
   "is_hazard_category": false,
-  "expected_walkable": true,
-  "corridor_status": "WALKABLE",
+  "expected_walkable": false,
+  "corridor_status": "BLOCKED",
   "expected_hazards": [],
-  "expected_objects": [],
+  "expected_objects": [
+    "fire hydrant"
+  ],
   "license": "CC BY-SA 2.0",
   "source_url": "https://upload.wikimedia.org/wikipedia/commons/7/74/Puddle_in_London_N14_-_geograph.org.uk_-_6848350.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
   "image_file": "road_patch_puddle_021.jpg"

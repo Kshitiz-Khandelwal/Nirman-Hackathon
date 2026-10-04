@@ -6,8 +6,9 @@
   "expected_walkable": false,
   "corridor_status": "UNKNOWN",
   "expected_hazards": [],
-  "expected_objects": [],
-  "license": "Public domain",
-  "source_url": "https://upload.wikimedia.org/wikipedia/commons/7/78/K-edge_table.png?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+  "expected_objects": [
+    "person"
+  ],
+  "license": "CC BY / Public Domain",
   "image_file": "table_edge_006.jpg"
 }

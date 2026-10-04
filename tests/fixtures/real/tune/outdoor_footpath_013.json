@@ -6,9 +6,7 @@
   "expected_walkable": true,
   "corridor_status": "WALKABLE",
   "expected_hazards": [],
-  "expected_objects": [
-    "person"
-  ],
+  "expected_objects": [],
   "license": "CC BY-SA 4.0",
   "source_url": "https://upload.wikimedia.org/wikipedia/commons/7/79/Curtis_Paving_sidewalk_marker.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
   "image_file": "outdoor_footpath_013.jpg"

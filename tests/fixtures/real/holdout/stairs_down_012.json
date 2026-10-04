@@ -6,8 +6,9 @@
   "expected_walkable": false,
   "corridor_status": "UNKNOWN",
   "expected_hazards": [],
-  "expected_objects": [],
-  "license": "CC BY-SA 4.0",
-  "source_url": "https://upload.wikimedia.org/wikipedia/commons/5/55/Kyiv_-_Paton_bridge_and_stairs_down_to_Hidropark.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+  "expected_objects": [
+    "person"
+  ],
+  "license": "CC BY / Public Domain",
   "image_file": "stairs_down_012.jpg"
 }

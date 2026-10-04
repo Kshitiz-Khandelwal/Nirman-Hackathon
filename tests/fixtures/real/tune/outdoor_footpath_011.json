@@ -7,7 +7,9 @@
   "corridor_status": "WALKABLE",
   "expected_hazards": [],
   "expected_objects": [
-    "person"
+    "bicycle",
+    "person",
+    "car"
   ],
   "license": "Public domain",
   "source_url": "https://upload.wikimedia.org/wikipedia/commons/4/4a/Max_Dupain_-_Adelaide_-_Google_Art_Project.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",

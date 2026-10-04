@@ -7,7 +7,7 @@
   "corridor_status": "UNKNOWN",
   "expected_hazards": [],
   "expected_objects": [],
-  "license": "CC0 - Camera Sensor Occlusion Noise",
-  "source_url": "local://camera_occlusion",
+  "license": "CC BY / Public Domain",
+  "source_url": "https://upload.wikimedia.org/wikipedia/commons/a/a3/Black_porphyritic_dacite_%28upper_Holocene%2C_14_May_1915%3B_Devastated_Area%2C_Lassen_Volcano_National_Park%2C_California%2C_USA%29_25.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
   "image_file": "covered_lens_008.jpg"
 }

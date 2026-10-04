@@ -6,10 +6,7 @@
   "expected_walkable": true,
   "corridor_status": "WALKABLE",
   "expected_hazards": [],
-  "expected_objects": [
-    "person"
-  ],
-  "license": "CC BY-SA 3.0 ee",
-  "source_url": "https://upload.wikimedia.org/wikipedia/commons/5/57/Sangaste_m%C3%B5isa_peahoone1.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+  "expected_objects": [],
+  "license": "CC BY / Public Domain",
   "image_file": "outdoor_footpath_024.jpg"
 }

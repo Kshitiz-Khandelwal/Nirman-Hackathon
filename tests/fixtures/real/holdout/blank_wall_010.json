@@ -6,8 +6,12 @@
   "expected_walkable": false,
   "corridor_status": "UNKNOWN",
   "expected_hazards": [],
-  "expected_objects": [],
-  "license": "CC BY-SA 4.0",
-  "source_url": "https://upload.wikimedia.org/wikipedia/commons/5/55/D%C3%BClmen%2C_Kirchspiel%2C_ehem._Sondermunitionslager_Visbeck%2C_Laufgang_--_2023_--_6796_%28bw%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+  "expected_objects": [
+    "car",
+    "clock",
+    "truck"
+  ],
+  "license": "CC BY / Public Domain",
+  "source_url": "https://upload.wikimedia.org/wikipedia/commons/f/f0/Farmers_and_Merchants_Union_Bank%2C_James_Street_and_Dickason_Boulevard%2C_Columbus%2C_WI_-_52807466612.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
   "image_file": "blank_wall_010.jpg"
 }

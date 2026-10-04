@@ -1,0 +1,20 @@
+{
+  "id": "desk_closeup_023",
+  "category": "desk_closeup",
+  "split": "HOLDOUT",
+  "is_hazard_category": true,
+  "expected_walkable": false,
+  "corridor_status": "UNKNOWN",
+  "expected_hazards": [],
+  "expected_objects": [
+    "tv",
+    "keyboard",
+    "scissors",
+    "cell phone",
+    "book",
+    "remote"
+  ],
+  "license": "CC BY / Public Domain",
+  "source_url": "https://upload.wikimedia.org/wikipedia/commons/2/2d/EFTA00002092_-_Clean_white_desk_with_a_computer_printer_and_supplies_ready_for_work.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+  "image_file": "desk_closeup_023.jpg"
+}

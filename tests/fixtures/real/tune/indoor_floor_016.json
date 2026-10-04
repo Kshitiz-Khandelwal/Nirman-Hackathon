@@ -1,0 +1,15 @@
+{
+  "id": "indoor_floor_016",
+  "category": "indoor_floor",
+  "split": "TUNE",
+  "is_hazard_category": false,
+  "expected_walkable": true,
+  "corridor_status": "WALKABLE",
+  "expected_hazards": [],
+  "expected_objects": [
+    "stop sign"
+  ],
+  "license": "Public domain",
+  "source_url": "https://upload.wikimedia.org/wikipedia/commons/3/3d/House_of_Marcus_Lucretius_Fronto_Pompeii_2018_Room_%E2%80%98f%E2%80%99%2C_detail_of_flooring_%283%29_courtesy_of_Annette_Haug.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+  "image_file": "indoor_floor_016.jpg"
+}

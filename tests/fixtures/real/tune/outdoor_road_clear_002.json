@@ -1,0 +1,13 @@
+{
+  "id": "outdoor_road_clear_002",
+  "category": "outdoor_road_clear",
+  "split": "TUNE",
+  "is_hazard_category": false,
+  "expected_walkable": true,
+  "corridor_status": "WALKABLE",
+  "expected_hazards": [],
+  "expected_objects": [],
+  "license": "CC BY 3.0",
+  "source_url": "https://upload.wikimedia.org/wikipedia/commons/f/fd/002_Damaged_road_surface_background_-_cracked_asphalt_blacktop_in_Spain.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+  "image_file": "outdoor_road_clear_002.jpg"
+}

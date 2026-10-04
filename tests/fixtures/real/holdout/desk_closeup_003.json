@@ -1,0 +1,21 @@
+{
+  "id": "desk_closeup_003",
+  "category": "desk_closeup",
+  "split": "HOLDOUT",
+  "is_hazard_category": true,
+  "expected_walkable": false,
+  "corridor_status": "UNKNOWN",
+  "expected_hazards": [],
+  "expected_objects": [
+    "keyboard",
+    "cell phone",
+    "tv",
+    "book",
+    "cup",
+    "teddy bear",
+    "person"
+  ],
+  "license": "CC BY / Public Domain",
+  "source_url": "https://upload.wikimedia.org/wikipedia/commons/b/be/Angelas_desk_%283818388294%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+  "image_file": "desk_closeup_003.jpg"
+}

@@ -1,0 +1,13 @@
+{
+  "id": "road_patch_puddle_008",
+  "category": "road_patch_puddle",
+  "split": "TUNE",
+  "is_hazard_category": false,
+  "expected_walkable": false,
+  "corridor_status": "BLOCKED",
+  "expected_hazards": [],
+  "expected_objects": [],
+  "license": "CC BY-SA 2.0",
+  "source_url": "https://upload.wikimedia.org/wikipedia/commons/0/08/Puddle%2C_Cricketfield_Road%2C_Torquay_-_geograph.org.uk_-_2735278.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+  "image_file": "road_patch_puddle_008.jpg"
+}

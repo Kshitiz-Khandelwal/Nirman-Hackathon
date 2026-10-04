@@ -1,0 +1,15 @@
+{
+  "id": "table_edge_016",
+  "category": "table_edge",
+  "split": "TUNE",
+  "is_hazard_category": true,
+  "expected_walkable": false,
+  "corridor_status": "UNKNOWN",
+  "expected_hazards": [],
+  "expected_objects": [
+    "bench"
+  ],
+  "license": "CC0",
+  "source_url": "https://upload.wikimedia.org/wikipedia/commons/8/80/Side_table_back_with_edge.png?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+  "image_file": "table_edge_016.jpg"
+}

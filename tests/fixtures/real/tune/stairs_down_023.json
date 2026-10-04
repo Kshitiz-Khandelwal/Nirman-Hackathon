@@ -6,7 +6,9 @@
   "expected_walkable": false,
   "corridor_status": "UNKNOWN",
   "expected_hazards": [],
-  "expected_objects": [],
+  "expected_objects": [
+    "car"
+  ],
   "license": "CC BY-SA 2.0",
   "source_url": "https://upload.wikimedia.org/wikipedia/commons/a/ae/Stairs_down_to_Netherlands_Road_-_geograph.org.uk_-_1728794.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
   "image_file": "stairs_down_023.jpg"

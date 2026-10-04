@@ -1,0 +1,16 @@
+{
+  "id": "outdoor_footpath_020",
+  "category": "outdoor_footpath",
+  "split": "TUNE",
+  "is_hazard_category": false,
+  "expected_walkable": true,
+  "corridor_status": "WALKABLE",
+  "expected_hazards": [],
+  "expected_objects": [
+    "horse",
+    "person"
+  ],
+  "license": "CC BY-SA 4.0",
+  "source_url": "https://upload.wikimedia.org/wikipedia/commons/5/5a/Schoenbrunn_Palace_as_seen_from_Neptune_Fountain%2C_September_2016.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+  "image_file": "outdoor_footpath_020.jpg"
+}

@@ -6,7 +6,10 @@
   "expected_walkable": false,
   "corridor_status": "UNKNOWN",
   "expected_hazards": [],
-  "expected_objects": [],
+  "expected_objects": [
+    "boat",
+    "bench"
+  ],
   "license": "CC BY-SA 2.0",
   "source_url": "https://upload.wikimedia.org/wikipedia/commons/d/dd/Picnic_tables_at_the_edge_of_the_River_Teign%2C_Teignmouth_-_geograph.org.uk_-_5879514.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
   "image_file": "table_edge_017.jpg"

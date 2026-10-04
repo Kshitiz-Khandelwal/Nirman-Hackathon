@@ -4,13 +4,14 @@
   "split": "HOLDOUT",
   "is_hazard_category": true,
   "expected_walkable": false,
-  "corridor_status": "BLOCKED",
+  "corridor_status": "UNKNOWN",
   "expected_hazards": [],
   "expected_objects": [
-    "laptop",
+    "chair",
+    "tv",
     "keyboard"
   ],
-  "license": "CC BY-SA 4.0",
-  "source_url": "https://upload.wikimedia.org/wikipedia/commons/1/1d/Logitech_MK240_CJK_Keyboard_2.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+  "license": "CC BY / Public Domain",
+  "source_url": "https://upload.wikimedia.org/wikipedia/commons/9/96/EFTA00001220_-_Vibrant_curved_desk_with_a_turquoise_top_and_red_trim_sits_against_a_metallic_wall_paneling_in_a_modern_office_space_A_black_chair_is_positioned_at_the_desk_which_holds_a_computer_monitor_lamp....jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
   "image_file": "desk_closeup_018.jpg"
 }

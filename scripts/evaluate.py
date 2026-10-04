@@ -76,11 +76,12 @@ def run_m13(
     detector: Optional[GroundHazardDetector],
     img: np.ndarray,
     yolo_bboxes: Optional[List[Tuple[float, float, float, float]]] = None,
+    freespace_result: Optional[object] = None,
 ) -> Tuple[bool, List[HazardDetection]]:
     if detector is None:
         return False, []
     try:
-        detections = detector.detect(img, yolo_bboxes=yolo_bboxes)
+        detections = detector.detect(img, yolo_bboxes=yolo_bboxes, freespace_result=freespace_result)
         detector.reset()
         return len(detections) > 0, detections
     except Exception:
@@ -111,7 +112,11 @@ def evaluate(
             print(f"[WARN] Could not load YOLO detector: {e}")
 
     # Initialise modules (single-frame evaluation)
-    estimator = FreeSpaceEstimator(smoothing_window=1)
+    estimator = FreeSpaceEstimator(
+        smoothing_window=1,
+        ground_classes=[3, 6, 11, 28, 52],
+        obstacle_classes=[0, 1, 2, 7, 8, 10, 12, 14, 15, 31, 32, 33, 53, 56, 59, 64, 80, 102, 121],
+    )
     detector: Optional[GroundHazardDetector] = None
     if pothole_model and pothole_model.exists():
         try:
@@ -120,13 +125,15 @@ def evaluate(
                 persistence_required=1,
                 enable_heuristic_fallback=False,
                 allow_heuristic=False,
+                require_ground_confirmation=True,
+                advisory_only=True,
             )
             print(f"[M13] Loaded ground hazard detector: {pothole_model}")
         except Exception as e:
             print(f"[WARN] Could not load hazard detector: {e}")
-            detector = GroundHazardDetector(persistence_required=1, enable_heuristic_fallback=False, allow_heuristic=False)
+            detector = GroundHazardDetector(persistence_required=1, enable_heuristic_fallback=False, allow_heuristic=False, require_ground_confirmation=True, advisory_only=True)
     else:
-        detector = GroundHazardDetector(persistence_required=1, enable_heuristic_fallback=False, allow_heuristic=False)
+        detector = GroundHazardDetector(persistence_required=1, enable_heuristic_fallback=False, allow_heuristic=False, require_ground_confirmation=True, advisory_only=True)
 
     rows: List[dict] = []
     totals: Dict[str, int] = {
@@ -181,8 +188,8 @@ def evaluate(
         fs_result, fps = run_m14(estimator, img, yolo_bboxes=yolo_boxes)
         fps_list.append(fps)
 
-        # Run M13 with YOLO bounding boxes
-        got_pothole, hazard_dets = run_m13(detector, img, yolo_bboxes=yolo_boxes)
+        # Run M13 with YOLO bounding boxes and two-stage freespace ground confirmation
+        got_pothole, hazard_dets = run_m13(detector, img, yolo_bboxes=yolo_boxes, freespace_result=fs_result)
 
         t_pipe_end = time.perf_counter()
         pipeline_fps = 1.0 / max(1e-6, t_pipe_end - t_pipe_0)

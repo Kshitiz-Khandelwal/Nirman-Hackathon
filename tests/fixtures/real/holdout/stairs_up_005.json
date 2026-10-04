@@ -1,0 +1,16 @@
+{
+  "id": "stairs_up_005",
+  "category": "stairs_up",
+  "split": "HOLDOUT",
+  "is_hazard_category": true,
+  "expected_walkable": false,
+  "corridor_status": "UNKNOWN",
+  "expected_hazards": [],
+  "expected_objects": [
+    "person",
+    "teddy bear",
+    "baseball bat"
+  ],
+  "license": "CC BY / Public Domain",
+  "image_file": "stairs_up_005.jpg"
+}

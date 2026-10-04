@@ -6,7 +6,12 @@
   "expected_walkable": false,
   "corridor_status": "UNKNOWN",
   "expected_hazards": [],
-  "expected_objects": [],
+  "expected_objects": [
+    "person",
+    "backpack",
+    "handbag",
+    "bench"
+  ],
   "license": "CC0",
   "source_url": "https://upload.wikimedia.org/wikipedia/commons/5/52/Kentish_Town_pre_2023_refurb_-_stairs_down_to_southbound_platform_from_lift_landings_38.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
   "image_file": "stairs_down_011.jpg"

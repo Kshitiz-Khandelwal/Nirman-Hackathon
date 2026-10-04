@@ -6,8 +6,10 @@
   "expected_walkable": false,
   "corridor_status": "UNKNOWN",
   "expected_hazards": [],
-  "expected_objects": [],
-  "license": "CC BY-SA 4.0",
-  "source_url": "https://upload.wikimedia.org/wikipedia/commons/2/2a/Killebrew_Park_stairs_down_to_water.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+  "expected_objects": [
+    "person",
+    "suitcase"
+  ],
+  "license": "CC BY / Public Domain",
   "image_file": "stairs_down_018.jpg"
 }

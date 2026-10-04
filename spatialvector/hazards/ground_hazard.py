@@ -131,6 +131,10 @@ class GroundHazardDetector:
         # Whether heuristic is permitted when NO trained model is loaded
         # (Safety critical: default False; unverified heuristic must not produce pothole alerts)
         allow_heuristic: bool = False,
+        # Two-stage rule: require freespace road/ground confirmation before accepting potholes
+        require_ground_confirmation: bool = True,
+        # Advisory only mode: potholes alert visually/audibly but do not halt user navigation
+        advisory_only: bool = True,
     ):
         self.roi_y_start = roi_y_start
         self.roi_y_end   = roi_y_end
@@ -153,6 +157,8 @@ class GroundHazardDetector:
         self.max_detections = max_detections
         self.enable_heuristic_fallback = enable_heuristic_fallback
         self.allow_heuristic = allow_heuristic
+        self.require_ground_confirmation = require_ground_confirmation
+        self.advisory_only = advisory_only
 
         # Persistence tracking: list of (bbox_xyxy, consecutive_count)
         self._persistence: List[Tuple[Tuple, int]] = []
@@ -188,6 +194,7 @@ class GroundHazardDetector:
         yolo_bboxes: Optional[List[Tuple[float,float,float,float]]] = None,
         frame_id: int = 0,
         timestamp: Optional[float] = None,
+        freespace_result: Optional[object] = None,
     ) -> List[HazardDetection]:
         """Detect ground hazards in one frame.
 
@@ -197,12 +204,30 @@ class GroundHazardDetector:
                          Candidates overlapping these are discarded.
             frame_id: Frame index for persistence tracking.
             timestamp: Monotonic timestamp (defaults to time.monotonic()).
+            freespace_result: Optional FreespaceResult from M14. When require_ground_confirmation
+                              is True, candidates on non-ground/unverified surfaces are rejected.
 
         Returns:
             List of confirmed HazardDetection objects (sorted by confidence).
         """
         if timestamp is None:
             timestamp = time.monotonic()
+
+        # Two-stage rule: require freespace road/ground confirmation
+        if self.require_ground_confirmation and freespace_result is not None:
+            c_stat = getattr(freespace_result, "centre", None)
+            c_conf = getattr(freespace_result, "centre_conf", 0.0)
+            reasons = getattr(freespace_result, "reasons", {})
+            c_reason = reasons.get("centre", "") if isinstance(reasons, dict) else ""
+            # If scene is completely non-ground (e.g. wall, table edge, covered lens, stairs)
+            is_valid_ground_surface = (
+                (c_stat is not None and str(c_stat).endswith("WALKABLE"))
+                or ("ground confirmed" in c_reason)
+                or (c_conf >= 0.35 and not any(k in c_reason for k in ("wall", "table", "stairs", "dark", "blurry", "step")))
+            )
+            if not is_valid_ground_surface:
+                # Do not hallucinate potholes on blank walls, tables, or covered lenses
+                return []
 
         # If a trained model is loaded, use it as primary detector
         if self._model is not None:

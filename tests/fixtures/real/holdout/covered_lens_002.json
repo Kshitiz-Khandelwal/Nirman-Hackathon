@@ -6,8 +6,11 @@
   "expected_walkable": false,
   "corridor_status": "UNKNOWN",
   "expected_hazards": [],
-  "expected_objects": [],
-  "license": "CC0 - Camera Sensor Occlusion Noise",
-  "source_url": "local://camera_occlusion",
+  "expected_objects": [
+    "person",
+    "tie"
+  ],
+  "license": "CC BY / Public Domain",
+  "source_url": "https://upload.wikimedia.org/wikipedia/commons/4/40/Arthur_Oscar_Freudenberg_%281891-1968%29%2C_1910s%2C_New_York_City.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
   "image_file": "covered_lens_002.jpg"
 }

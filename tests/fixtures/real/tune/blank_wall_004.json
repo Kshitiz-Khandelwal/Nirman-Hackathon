@@ -1,0 +1,17 @@
+{
+  "id": "blank_wall_004",
+  "category": "blank_wall",
+  "split": "TUNE",
+  "is_hazard_category": true,
+  "expected_walkable": false,
+  "corridor_status": "UNKNOWN",
+  "expected_hazards": [],
+  "expected_objects": [
+    "sheep",
+    "person",
+    "potted plant"
+  ],
+  "license": "CC BY-SA 4.0",
+  "source_url": "https://upload.wikimedia.org/wikipedia/commons/a/aa/A_Koch_woman.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+  "image_file": "blank_wall_004.jpg"
+}

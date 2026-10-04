@@ -6,7 +6,9 @@
   "expected_walkable": false,
   "corridor_status": "UNKNOWN",
   "expected_hazards": [],
-  "expected_objects": [],
+  "expected_objects": [
+    "car"
+  ],
   "license": "Public domain",
   "source_url": "https://upload.wikimedia.org/wikipedia/commons/6/6e/Corner_Table_-_DPLA_-_c9bf7baa14a739b2b0c1d254e58f885f.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
   "image_file": "table_corner_009.jpg"

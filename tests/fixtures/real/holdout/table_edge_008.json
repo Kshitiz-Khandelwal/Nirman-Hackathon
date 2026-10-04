@@ -6,8 +6,10 @@
   "expected_walkable": false,
   "corridor_status": "UNKNOWN",
   "expected_hazards": [],
-  "expected_objects": [],
-  "license": "CC BY-SA 4.0",
-  "source_url": "https://upload.wikimedia.org/wikipedia/commons/0/0e/Gilgamesh_Table_XII_-_Aksharam_Museum_Kottayam.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+  "expected_objects": [
+    "book",
+    "person"
+  ],
+  "license": "CC BY / Public Domain",
   "image_file": "table_edge_008.jpg"
 }

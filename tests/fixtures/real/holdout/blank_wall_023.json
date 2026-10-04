@@ -1,0 +1,16 @@
+{
+  "id": "blank_wall_023",
+  "category": "blank_wall",
+  "split": "HOLDOUT",
+  "is_hazard_category": true,
+  "expected_walkable": false,
+  "corridor_status": "UNKNOWN",
+  "expected_hazards": [],
+  "expected_objects": [
+    "car",
+    "stop sign"
+  ],
+  "license": "CC BY / Public Domain",
+  "source_url": "https://upload.wikimedia.org/wikipedia/commons/6/64/Farmers_and_Merchants_Union_Bank%2C_James_Street_and_Dickason_Boulevard%2C_Columbus%2C_WI_-_52808210384.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+  "image_file": "blank_wall_023.jpg"
+}

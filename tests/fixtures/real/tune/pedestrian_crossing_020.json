@@ -1,0 +1,16 @@
+{
+  "id": "pedestrian_crossing_020",
+  "category": "pedestrian_crossing",
+  "split": "TUNE",
+  "is_hazard_category": false,
+  "expected_walkable": false,
+  "corridor_status": "BLOCKED",
+  "expected_hazards": [],
+  "expected_objects": [
+    "person",
+    "handbag"
+  ],
+  "license": "CC BY-SA 4.0",
+  "source_url": "https://upload.wikimedia.org/wikipedia/commons/c/cf/Pedestrians_walking_by_a_building.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+  "image_file": "pedestrian_crossing_020.jpg"
+}

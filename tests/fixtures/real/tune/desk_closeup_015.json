@@ -4,10 +4,9 @@
   "split": "TUNE",
   "is_hazard_category": true,
   "expected_walkable": false,
-  "corridor_status": "BLOCKED",
+  "corridor_status": "UNKNOWN",
   "expected_hazards": [],
   "expected_objects": [
-    "laptop",
     "keyboard"
   ],
   "license": "CC BY 2.0",

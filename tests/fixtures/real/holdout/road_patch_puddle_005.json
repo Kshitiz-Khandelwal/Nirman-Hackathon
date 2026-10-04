@@ -1,0 +1,12 @@
+{
+  "id": "road_patch_puddle_005",
+  "category": "road_patch_puddle",
+  "split": "HOLDOUT",
+  "is_hazard_category": false,
+  "expected_walkable": false,
+  "corridor_status": "BLOCKED",
+  "expected_hazards": [],
+  "expected_objects": [],
+  "license": "CC BY / Public Domain",
+  "image_file": "road_patch_puddle_005.jpg"
+}

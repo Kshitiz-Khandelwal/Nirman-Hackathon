@@ -7,9 +7,12 @@
   "corridor_status": "BLOCKED",
   "expected_hazards": [],
   "expected_objects": [
-    "person"
+    "person",
+    "traffic light",
+    "car",
+    "bicycle",
+    "handbag"
   ],
-  "license": "CC BY-SA 2.0",
-  "source_url": "https://upload.wikimedia.org/wikipedia/commons/e/ef/Walking_across_Norfolk_Gardens_-_geograph.org.uk_-_8058190.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+  "license": "CC BY / Public Domain",
   "image_file": "pedestrian_crossing_022.jpg"
 }

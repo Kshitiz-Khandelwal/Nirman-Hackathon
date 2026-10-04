@@ -3,11 +3,13 @@
   "category": "road_patch_puddle",
   "split": "HOLDOUT",
   "is_hazard_category": false,
-  "expected_walkable": true,
-  "corridor_status": "WALKABLE",
+  "expected_walkable": false,
+  "corridor_status": "BLOCKED",
   "expected_hazards": [],
-  "expected_objects": [],
-  "license": "CC BY-SA 2.0",
-  "source_url": "https://upload.wikimedia.org/wikipedia/commons/f/f5/Puddle%2C_Upton_Park_-_geograph.org.uk_-_1774802.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+  "expected_objects": [
+    "car",
+    "cow"
+  ],
+  "license": "CC BY / Public Domain",
   "image_file": "road_patch_puddle_010.jpg"
 }

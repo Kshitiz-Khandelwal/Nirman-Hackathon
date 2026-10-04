@@ -1,0 +1,14 @@
+{
+  "id": "table_corner_023",
+  "category": "table_corner",
+  "split": "HOLDOUT",
+  "is_hazard_category": true,
+  "expected_walkable": false,
+  "corridor_status": "UNKNOWN",
+  "expected_hazards": [],
+  "expected_objects": [
+    "bird"
+  ],
+  "license": "CC BY / Public Domain",
+  "image_file": "table_corner_023.jpg"
+}

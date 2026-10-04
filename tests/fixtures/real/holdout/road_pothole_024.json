@@ -2,14 +2,13 @@
   "id": "road_pothole_024",
   "category": "road_pothole",
   "split": "HOLDOUT",
-  "is_hazard_category": true,
+  "is_hazard_category": false,
   "expected_walkable": false,
   "corridor_status": "BLOCKED",
   "expected_hazards": [
     "pothole"
   ],
   "expected_objects": [],
-  "license": "CC BY 4.0",
-  "source_url": "https://huggingface.co/datasets/Ryukijano/Pothole-detection-Yolov8/blob/main/test/images/032_png_jpg.rf.95eac20005ac6dd4fb86907c6bf8d391.jpg",
+  "license": "CC BY / Public Domain",
   "image_file": "road_pothole_024.jpg"
 }

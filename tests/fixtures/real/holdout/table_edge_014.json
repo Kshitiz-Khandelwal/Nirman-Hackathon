@@ -6,8 +6,9 @@
   "expected_walkable": false,
   "corridor_status": "UNKNOWN",
   "expected_hazards": [],
-  "expected_objects": [],
-  "license": "CC BY-SA 4.0",
-  "source_url": "https://upload.wikimedia.org/wikipedia/commons/e/ee/Picnic_table_at_Cypress_Lake_edge.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+  "expected_objects": [
+    "book"
+  ],
+  "license": "CC BY / Public Domain",
   "image_file": "table_edge_014.jpg"
 }

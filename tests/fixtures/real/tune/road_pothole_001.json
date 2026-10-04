@@ -2,7 +2,7 @@
   "id": "road_pothole_001",
   "category": "road_pothole",
   "split": "TUNE",
-  "is_hazard_category": true,
+  "is_hazard_category": false,
   "expected_walkable": false,
   "corridor_status": "BLOCKED",
   "expected_hazards": [

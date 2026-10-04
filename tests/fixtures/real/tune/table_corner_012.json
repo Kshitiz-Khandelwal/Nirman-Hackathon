@@ -1,0 +1,24 @@
+{
+  "id": "table_corner_012",
+  "category": "table_corner",
+  "split": "TUNE",
+  "is_hazard_category": true,
+  "expected_walkable": false,
+  "corridor_status": "UNKNOWN",
+  "expected_hazards": [],
+  "expected_objects": [
+    "person",
+    "tie",
+    "dining table",
+    "cup",
+    "potted plant",
+    "bottle",
+    "vase",
+    "bowl",
+    "book",
+    "wine glass"
+  ],
+  "license": "Public domain",
+  "source_url": "https://upload.wikimedia.org/wikipedia/commons/c/c0/Henri_Fantin-Latour_-_The_Corner_of_the_Table%2C_1872.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+  "image_file": "table_corner_012.jpg"
+}

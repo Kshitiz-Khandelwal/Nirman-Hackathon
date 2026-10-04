@@ -1,0 +1,12 @@
+{
+  "id": "indoor_floor_021",
+  "category": "indoor_floor",
+  "split": "HOLDOUT",
+  "is_hazard_category": false,
+  "expected_walkable": true,
+  "corridor_status": "WALKABLE",
+  "expected_hazards": [],
+  "expected_objects": [],
+  "license": "CC BY / Public Domain",
+  "image_file": "indoor_floor_021.jpg"
+}

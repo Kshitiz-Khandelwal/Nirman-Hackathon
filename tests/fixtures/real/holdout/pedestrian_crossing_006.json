@@ -7,9 +7,11 @@
   "corridor_status": "BLOCKED",
   "expected_hazards": [],
   "expected_objects": [
+    "bus",
+    "car",
+    "traffic light",
     "person"
   ],
-  "license": "CC0",
-  "source_url": "https://upload.wikimedia.org/wikipedia/commons/f/fc/Entrance_of_the_Menai_Bridge_-_from_the_Carnarvon_shore_%281131215%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+  "license": "CC BY / Public Domain",
   "image_file": "pedestrian_crossing_006.jpg"
 }

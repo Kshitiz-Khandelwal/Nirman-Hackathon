@@ -6,8 +6,10 @@
   "expected_walkable": false,
   "corridor_status": "UNKNOWN",
   "expected_hazards": [],
-  "expected_objects": [],
-  "license": "Public domain",
-  "source_url": "https://upload.wikimedia.org/wikipedia/commons/c/c0/Henri_Fantin-Latour_-_The_Corner_of_the_Table%2C_1872.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+  "expected_objects": [
+    "chair",
+    "book"
+  ],
+  "license": "CC BY / Public Domain",
   "image_file": "table_corner_012.jpg"
 }

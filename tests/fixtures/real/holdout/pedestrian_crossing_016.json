@@ -7,9 +7,11 @@
   "corridor_status": "BLOCKED",
   "expected_hazards": [],
   "expected_objects": [
-    "person"
+    "car",
+    "truck",
+    "person",
+    "traffic light"
   ],
-  "license": "CC BY-SA 4.0",
-  "source_url": "https://upload.wikimedia.org/wikipedia/commons/9/9a/Pedestrians_walking_on_the_Howrah_Bridge_in_morning.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+  "license": "CC BY / Public Domain",
   "image_file": "pedestrian_crossing_016.jpg"
 }

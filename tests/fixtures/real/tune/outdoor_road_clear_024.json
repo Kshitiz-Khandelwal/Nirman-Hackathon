@@ -1,0 +1,13 @@
+{
+  "id": "outdoor_road_clear_024",
+  "category": "outdoor_road_clear",
+  "split": "TUNE",
+  "is_hazard_category": false,
+  "expected_walkable": true,
+  "corridor_status": "WALKABLE",
+  "expected_hazards": [],
+  "expected_objects": [],
+  "license": "CC BY-SA 2.5",
+  "source_url": "https://upload.wikimedia.org/wikipedia/commons/9/9f/Tessellated_Pavement_Sunrise_Landscape.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+  "image_file": "outdoor_road_clear_024.jpg"
+}

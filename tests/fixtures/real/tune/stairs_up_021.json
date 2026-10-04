@@ -6,7 +6,9 @@
   "expected_walkable": false,
   "corridor_status": "UNKNOWN",
   "expected_hazards": [],
-  "expected_objects": [],
+  "expected_objects": [
+    "toilet"
+  ],
   "license": "CC0",
   "source_url": "https://upload.wikimedia.org/wikipedia/commons/9/95/Staircase_of_the_BGK_Building_%2826620981474%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
   "image_file": "stairs_up_021.jpg"

@@ -1,0 +1,13 @@
+{
+  "id": "indoor_floor_003",
+  "category": "indoor_floor",
+  "split": "HOLDOUT",
+  "is_hazard_category": false,
+  "expected_walkable": true,
+  "corridor_status": "WALKABLE",
+  "expected_hazards": [],
+  "expected_objects": [],
+  "license": "CC BY / Public Domain",
+  "source_url": "https://upload.wikimedia.org/wikipedia/commons/1/12/Clay_-_Preview_-_Herringbone_Parquet_%28Anonymous_Bob_and_Jandre_van_Heerden_via_Poly_Haven%29.webp?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+  "image_file": "indoor_floor_003.jpg"
+}

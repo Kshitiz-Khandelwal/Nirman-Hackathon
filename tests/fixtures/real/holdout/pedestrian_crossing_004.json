@@ -7,9 +7,9 @@
   "corridor_status": "BLOCKED",
   "expected_hazards": [],
   "expected_objects": [
-    "person"
+    "person",
+    "sports ball"
   ],
-  "license": "CC BY-SA 4.0",
-  "source_url": "https://upload.wikimedia.org/wikipedia/commons/c/ce/A_pedestrian_walking_on_the_walkway_in_the_University_of_Ilorin.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+  "license": "CC BY / Public Domain",
   "image_file": "pedestrian_crossing_004.jpg"
 }

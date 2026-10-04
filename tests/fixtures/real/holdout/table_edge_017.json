@@ -1,0 +1,14 @@
+{
+  "id": "table_edge_017",
+  "category": "table_edge",
+  "split": "HOLDOUT",
+  "is_hazard_category": true,
+  "expected_walkable": false,
+  "corridor_status": "UNKNOWN",
+  "expected_hazards": [],
+  "expected_objects": [
+    "person"
+  ],
+  "license": "CC BY / Public Domain",
+  "image_file": "table_edge_017.jpg"
+}

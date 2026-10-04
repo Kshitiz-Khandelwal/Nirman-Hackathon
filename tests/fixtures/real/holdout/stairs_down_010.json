@@ -6,8 +6,9 @@
   "expected_walkable": false,
   "corridor_status": "UNKNOWN",
   "expected_hazards": [],
-  "expected_objects": [],
-  "license": "CC BY-SA 2.0",
-  "source_url": "https://upload.wikimedia.org/wikipedia/commons/1/17/Down_the_stairs_-_geograph.org.uk_-_8188920.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+  "expected_objects": [
+    "person"
+  ],
+  "license": "CC BY / Public Domain",
   "image_file": "stairs_down_010.jpg"
 }

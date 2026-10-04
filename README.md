@@ -496,17 +496,23 @@ To prevent "tuning thresholds by eye", SpatialVector includes a comprehensive ev
 # Run the evaluation harness
 python scripts/evaluate.py
 ```
-**Current Benchmark Metrics:**
-- **WALKABLE Precision**: **100.00%** (**0 False Positives** across all 17 fixtures / 51 corridor checks — zero false walk-forwards).
-- **Hazard Precision**: **0 False Positives** on negative fixtures.
-- **M14 Processing Latency**: **~3.3 ms (300 FPS)**.
+**Round 4 Verified Ground-Truth Benchmark Metrics:**
+- **Full Live Pipeline Latency**: **15.8 FPS (63.2 ms)** end-to-end on CPU (meets $\ge 15.0$ FPS target).
+- **Hazard False WALKABLE Rate (Fresh HOLDOUT, 175 images)**: **2.29%** (4 / 175 images; 95% Wilson Upper Bound: **5.73%**). Status: **FAIL** against 0.00% target.
+- **Clear Corridor Recall (Fresh HOLDOUT, 100 images)**: **25.00%** (25 / 100 images). Status: **FAIL** against $\ge 80.0\%$ target (single 2D static frames lack temporal ego-motion and optical flow continuity).
+- **Pothole False Positive Rate on Negatives**: **3.43%** on Fresh HOLDOUT (350 images) and **0.00%** on LIVE (100 frames). Status: **PASS** against $\le 5.0\%$ target.
+- **Pothole Recall**: **28.00%** on Fresh HOLDOUT. Status: **FAIL** against $\ge 60.0\%$ target.
+- **Pothole Policy**: In accordance with safety rules, potholes are designated **ADVISORY ONLY** (`pothole_advisory_only: true`). Potholes are surfaced visually on the HUD and announced via audio, but **never stop or redirect the user** unless confirmed by positive ground-plane cues.
+- **Fail-Safe SegFormer Gate**: If SegFormer weights fail to load, the guidance engine strictly refuses to output `WALK_FORWARD` (yielding `UNKNOWN`), unless an explicit `--allow-classical-fallback` flag is provided.
 
 ### 5. Model Management & Integrity Verification
 ```bash
-# Verify local models and check SHA256 integrity
+# Verify local models, SegFormer weights, and check SHA256 integrity
 python models/download_verify_model.py
 ```
-This utility inspects `yolov8n.pt` and `pothole_yolov8.pt`, verifies SHA256 hashes against known reference weights, and reports model readiness.
+This utility inspects `yolov8n.pt`, `pothole_yolov8.pt`, and `nvidia/segformer-b0-finetuned-ade-512-512`, verifies SHA256 hashes against known reference weights, and reports model readiness.
+
+See [`EVALUATION_REPORT_ROUND4.md`](EVALUATION_REPORT_ROUND4.md) for full statistical breakdown and confusion matrices.
 
 ---
 

@@ -1,0 +1,17 @@
+{
+  "id": "table_edge_018",
+  "category": "table_edge",
+  "split": "TUNE",
+  "is_hazard_category": true,
+  "expected_walkable": false,
+  "corridor_status": "UNKNOWN",
+  "expected_hazards": [],
+  "expected_objects": [
+    "cell phone",
+    "potted plant",
+    "vase"
+  ],
+  "license": "CC BY 4.0",
+  "source_url": "https://upload.wikimedia.org/wikipedia/commons/3/31/Sky%27s_Edge_kit_production_process.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+  "image_file": "table_edge_018.jpg"
+}

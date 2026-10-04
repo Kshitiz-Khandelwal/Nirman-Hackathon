@@ -1,0 +1,15 @@
+{
+  "id": "indoor_corridor_015",
+  "category": "indoor_corridor",
+  "split": "HOLDOUT",
+  "is_hazard_category": false,
+  "expected_walkable": true,
+  "corridor_status": "WALKABLE",
+  "expected_hazards": [],
+  "expected_objects": [
+    "dining table"
+  ],
+  "license": "CC BY / Public Domain",
+  "source_url": "https://upload.wikimedia.org/wikipedia/commons/4/46/Bossier_High_School_hallway_Colquittt_Interior_NRHP_LASHPO_13.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+  "image_file": "indoor_corridor_015.jpg"
+}

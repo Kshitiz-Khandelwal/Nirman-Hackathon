@@ -1,0 +1,12 @@
+{
+  "id": "stairs_up_021",
+  "category": "stairs_up",
+  "split": "HOLDOUT",
+  "is_hazard_category": true,
+  "expected_walkable": false,
+  "corridor_status": "UNKNOWN",
+  "expected_hazards": [],
+  "expected_objects": [],
+  "license": "CC BY / Public Domain",
+  "image_file": "stairs_up_021.jpg"
+}

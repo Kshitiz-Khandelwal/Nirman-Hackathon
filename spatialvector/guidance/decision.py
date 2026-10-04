@@ -73,6 +73,8 @@ class NavigationDecisionEngine:
         all_blocked_global_threshold: float = 0.72,
         # Pothole proximity that blocks the centre corridor (metres)
         pothole_block_dist_m: float = 3.0,
+        # Advisory-only pothole mode: potholes alert visually/audibly but do not halt user navigation
+        pothole_advisory_only: bool = True,
     ):
         self.freespace_min_conf = freespace_min_conf
         self.forward_consec_required = forward_consec_frames_required
@@ -80,11 +82,12 @@ class NavigationDecisionEngine:
         self.global_risk_threshold = global_risk_threshold
         self.all_blocked_global_threshold = all_blocked_global_threshold
         self.pothole_block_dist_m = pothole_block_dist_m
+        self.pothole_advisory_only = pothole_advisory_only
 
         # Consecutive WALKABLE frame counter for centre corridor
         self._centre_walkable_streak: int = 0
 
-        logger.info("NavigationDecisionEngine (M15) initialised — forward requires %d consec WALKABLE frames", forward_consec_frames_required)
+        logger.info("NavigationDecisionEngine (M15) initialised — forward requires %d consec WALKABLE frames (pothole_advisory=%s)", forward_consec_frames_required, pothole_advisory_only)
 
     def decide(
         self,
@@ -100,6 +103,20 @@ class NavigationDecisionEngine:
         l_risk = risk.corridor_risks.get("left", 0.0)
         c_risk = risk.corridor_risks.get("center", 0.0)
         r_risk = risk.corridor_risks.get("right", 0.0)
+
+        # ── 0. Fail-Safe: Refuse WALK_FORWARD if segmentation model failed to load ─
+        centre_reason = (freespace.reasons or {}).get("centre", "") if freespace else ""
+        if centre_reason == "SEGMENTATION MODEL NOT LOADED":
+            self._centre_walkable_streak = 0
+            return GuidanceDecision(
+                action=GuidanceAction.UNCERTAIN_STOP,
+                reason="SEGMENTATION MODEL NOT LOADED",
+                voice_text="Caution: ground segmentation offline",
+                confidence=0.0,
+                banner_color_bgr=(0, 140, 255),
+                banner_border_bgr=(0, 180, 255),
+                nav_icon="STOP",
+            )
 
         # ── 1. Hard STOP conditions ────────────────────────────────────────────
         all_blocked_risk = (
@@ -119,11 +136,11 @@ class NavigationDecisionEngine:
                 nav_icon="STOP",
             )
 
-        # ── 2. Near pothole in centre corridor → stop/caution ─────────────────
+        # ── 2. Near pothole in centre corridor → stop/caution (if not advisory only) ──
         centre_pothole = next(
             (h for h in (hazards or []) if h.dist_m <= self.pothole_block_dist_m), None
         )
-        if centre_pothole:
+        if centre_pothole and not self.pothole_advisory_only:
             self._centre_walkable_streak = 0
             return GuidanceDecision(
                 action=GuidanceAction.UNCERTAIN_STOP,

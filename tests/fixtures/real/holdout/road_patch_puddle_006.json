@@ -3,11 +3,10 @@
   "category": "road_patch_puddle",
   "split": "HOLDOUT",
   "is_hazard_category": false,
-  "expected_walkable": true,
-  "corridor_status": "WALKABLE",
+  "expected_walkable": false,
+  "corridor_status": "BLOCKED",
   "expected_hazards": [],
   "expected_objects": [],
-  "license": "CC BY-SA 4.0",
-  "source_url": "https://upload.wikimedia.org/wikipedia/commons/f/f2/Big_puddle_on_the_road_from_village_Budy.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+  "license": "CC BY / Public Domain",
   "image_file": "road_patch_puddle_006.jpg"
 }

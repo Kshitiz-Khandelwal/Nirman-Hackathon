@@ -1,0 +1,18 @@
+{
+  "id": "indoor_corridor_003",
+  "category": "indoor_corridor",
+  "split": "HOLDOUT",
+  "is_hazard_category": false,
+  "expected_walkable": true,
+  "corridor_status": "WALKABLE",
+  "expected_hazards": [],
+  "expected_objects": [
+    "potted plant",
+    "vase",
+    "chair",
+    "dining table"
+  ],
+  "license": "CC BY / Public Domain",
+  "source_url": "https://upload.wikimedia.org/wikipedia/commons/0/02/Corridor_on_the_first_floor._Corridor_on_the_second_floor._Mt._Carmel_Hospital%2C_Columbu%2C_Ohio._-_DPLA_-_f3b50f34373d6f644ea9f5bae37d5d1b_%28page_1%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+  "image_file": "indoor_corridor_003.jpg"
+}

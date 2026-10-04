@@ -1,0 +1,15 @@
+{
+  "id": "covered_lens_025",
+  "category": "covered_lens",
+  "split": "HOLDOUT",
+  "is_hazard_category": true,
+  "expected_walkable": false,
+  "corridor_status": "UNKNOWN",
+  "expected_hazards": [],
+  "expected_objects": [
+    "cake"
+  ],
+  "license": "CC BY / Public Domain",
+  "source_url": "https://upload.wikimedia.org/wikipedia/commons/2/24/Gabbronorite_%28%22Impala_Black_Granite%22%29_%28Bushveld_Complex%2C_2.054-2.061_Ga%2C_Paleoproterozoic%3B_north_of_Rustenburg%2C_North_West_Province%2C_South_Africa%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+  "image_file": "covered_lens_025.jpg"
+}

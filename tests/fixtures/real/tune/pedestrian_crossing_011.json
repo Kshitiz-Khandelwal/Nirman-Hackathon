@@ -7,7 +7,11 @@
   "corridor_status": "BLOCKED",
   "expected_hazards": [],
   "expected_objects": [
-    "person"
+    "person",
+    "potted plant",
+    "chair",
+    "backpack",
+    "bicycle"
   ],
   "license": "CC BY-SA 4.0",
   "source_url": "https://upload.wikimedia.org/wikipedia/commons/b/bb/Jules_and_Gabriel_walking_on_a_pedestrian_street%2C_Rua_Alexandre_Herculano%2C_Tavira%2C_Portugal_julesvernex2.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",

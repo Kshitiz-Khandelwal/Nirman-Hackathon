@@ -1,0 +1,12 @@
+{
+  "id": "outdoor_footpath_013",
+  "category": "outdoor_footpath",
+  "split": "HOLDOUT",
+  "is_hazard_category": false,
+  "expected_walkable": true,
+  "corridor_status": "WALKABLE",
+  "expected_hazards": [],
+  "expected_objects": [],
+  "license": "CC BY / Public Domain",
+  "image_file": "outdoor_footpath_013.jpg"
+}

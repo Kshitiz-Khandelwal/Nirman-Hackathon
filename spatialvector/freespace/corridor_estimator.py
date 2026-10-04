@@ -96,6 +96,9 @@ class FreeSpaceEstimator:
         seg_min_ground: float = 0.25,
         seg_max_obstacle: float = 0.15,
         seg_full_max_obstacle: float = 0.25,
+        ground_classes: Optional[list] = None,
+        obstacle_classes: Optional[list] = None,
+        allow_classical_fallback: bool = False,
         # ── Cue A: Frame validity veto ────────────────────────────────────────
         min_mean_brightness: float = 15.0,    # darker → UNKNOWN
         max_mean_brightness: float = 240.0,   # over-exposed → UNKNOWN
@@ -114,6 +117,7 @@ class FreeSpaceEstimator:
         # ── Temporal smoothing ────────────────────────────────────────────────
         smoothing_window: int  = 5,
         min_walkable_conf: float = 0.45,
+        seg_frame_skip: int = 1,              # Skip segmentation every N frames for >= 15 FPS real-time execution
     ):
         self.ground_y_start = ground_y_start
         self.ground_y_end   = ground_y_end
@@ -124,6 +128,12 @@ class FreeSpaceEstimator:
         self.seg_min_ground = seg_min_ground
         self.seg_max_obstacle = seg_max_obstacle
         self.seg_full_max_obstacle = seg_full_max_obstacle
+        self.ground_classes = set(ground_classes) if ground_classes else set(GROUND_CLASSES)
+        self.obstacle_classes = set(obstacle_classes) if obstacle_classes else set(OBSTACLE_CLASSES)
+        self.allow_classical_fallback = allow_classical_fallback
+        self.seg_frame_skip = seg_frame_skip
+        self._frame_count: int = 0
+        self._last_seg_cues: dict = {}
 
         self.min_mean_brightness   = min_mean_brightness
         self.max_mean_brightness   = max_mean_brightness
@@ -151,7 +161,7 @@ class FreeSpaceEstimator:
         if self.use_segmentation:
             self._init_seg_model()
 
-        mode_str = "SegFormer-B0 + classical vetoes" if self._seg_model is not None else "classical multi-cue fallback"
+        mode_str = "SegFormer-B0 + classical vetoes" if self._seg_model is not None else ("classical multi-cue fallback" if allow_classical_fallback else "FAIL-SAFE (refuse WALK_FORWARD)")
         logger.info("FreeSpaceEstimator (M14) initialised — mode=%s, smoothing=%d", mode_str, smoothing_window)
 
     def _init_seg_model(self):
@@ -163,7 +173,10 @@ class FreeSpaceEstimator:
             self._seg_model.eval()
             print(f"[STARTUP] M14 FreeSpaceEstimator: Loaded segmentation model '{self.seg_model_name}'")
         except Exception as e:
-            logger.warning("Could not load SegFormer model (%s): %s. Running classical fallback.", self.seg_model_name, e)
+            if not self.allow_classical_fallback:
+                logger.error("Could not load SegFormer model (%s): %s. Fallback disallowed by policy.", self.seg_model_name, e)
+            else:
+                logger.warning("Could not load SegFormer model (%s): %s. Running classical fallback.", self.seg_model_name, e)
             self._seg_model = None
 
     # ── Public API ────────────────────────────────────────────────────────────
@@ -176,6 +189,10 @@ class FreeSpaceEstimator:
     ) -> FreespaceResult:
         if frame_bgr is None or frame_bgr.size == 0:
             return FreespaceResult.all_unknown("null frame")
+
+        # Fail-safe check: If SegFormer failed to load and classical fallback is not explicitly permitted
+        if self.use_segmentation and self._seg_model is None and not self.allow_classical_fallback:
+            return FreespaceResult.all_unknown("SEGMENTATION MODEL NOT LOADED")
 
         h, w = frame_bgr.shape[:2]
         gray = cv2.cvtColor(frame_bgr, cv2.COLOR_BGR2GRAY)
@@ -265,6 +282,11 @@ class FreeSpaceEstimator:
         """Run fast SegFormer-B0 inference on 224x224 input (~20ms latency)."""
         if self._seg_model is None:
             return {}
+
+        self._frame_count += 1
+        if self.seg_frame_skip > 0 and (self._frame_count % (self.seg_frame_skip + 1) != 1) and self._last_seg_cues:
+            return self._last_seg_cues
+
         try:
             import torch
             rgb = cv2.cvtColor(frame_bgr, cv2.COLOR_BGR2RGB)
@@ -278,7 +300,7 @@ class FreeSpaceEstimator:
             ph, pw = pred.shape
 
             roi_pred = pred[int(ph * self.ground_y_start):, :]
-            full_o_frac = float(np.mean(np.isin(roi_pred, list(OBSTACLE_CLASSES))))
+            full_o_frac = float(np.mean(np.isin(roi_pred, list(self.obstacle_classes))))
 
             # Per-corridor slices
             cx_left  = int(pw * self.left_x_end)
@@ -294,9 +316,10 @@ class FreeSpaceEstimator:
                 if sl.size == 0:
                     res[name] = {"ground_frac": 0.0, "obstacle_frac": 0.0}
                     continue
-                g = float(np.mean(np.isin(sl, list(GROUND_CLASSES))))
-                o = float(np.mean(np.isin(sl, list(OBSTACLE_CLASSES))))
+                g = float(np.mean(np.isin(sl, list(self.ground_classes))))
+                o = float(np.mean(np.isin(sl, list(self.obstacle_classes))))
                 res[name] = {"ground_frac": g, "obstacle_frac": o}
+            self._last_seg_cues = res
             return res
         except Exception as e:
             logger.warning("M14: Segmentation inference error: %s", e)
@@ -474,3 +497,5 @@ class FreeSpaceEstimator:
         for q in self._history.values():
             q.clear()
         self._last_result = None
+        self._last_seg_cues = {}
+        self._frame_count = 0

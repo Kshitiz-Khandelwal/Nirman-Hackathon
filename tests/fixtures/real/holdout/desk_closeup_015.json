@@ -1,0 +1,17 @@
+{
+  "id": "desk_closeup_015",
+  "category": "desk_closeup",
+  "split": "HOLDOUT",
+  "is_hazard_category": true,
+  "expected_walkable": false,
+  "corridor_status": "UNKNOWN",
+  "expected_hazards": [],
+  "expected_objects": [
+    "mouse",
+    "chair",
+    "bottle"
+  ],
+  "license": "CC BY / Public Domain",
+  "source_url": "https://upload.wikimedia.org/wikipedia/commons/b/bb/EFTA00000866_-_Cluttered_office_desk_with_tools_supplies_and_a_computer_monitor_viewed_through_a_doorway_into_another_room.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+  "image_file": "desk_closeup_015.jpg"
+}

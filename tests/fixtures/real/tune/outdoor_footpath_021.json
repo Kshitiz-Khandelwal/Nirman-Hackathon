@@ -7,7 +7,9 @@
   "corridor_status": "WALKABLE",
   "expected_hazards": [],
   "expected_objects": [
-    "person"
+    "person",
+    "bench",
+    "chair"
   ],
   "license": "CC BY-SA 4.0",
   "source_url": "https://upload.wikimedia.org/wikipedia/commons/1/1a/M%C3%BCnster%2C_Schloss_--_2014_--_6769-71_%28crop%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",

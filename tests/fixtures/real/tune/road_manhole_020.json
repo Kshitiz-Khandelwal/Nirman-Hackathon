@@ -1,0 +1,13 @@
+{
+  "id": "road_manhole_020",
+  "category": "road_manhole",
+  "split": "TUNE",
+  "is_hazard_category": false,
+  "expected_walkable": false,
+  "corridor_status": "BLOCKED",
+  "expected_hazards": [],
+  "expected_objects": [],
+  "license": "CC BY-SA 4.0",
+  "source_url": "https://upload.wikimedia.org/wikipedia/commons/5/57/Manhole_cover_20.09.24_in_Istanbul_03.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+  "image_file": "road_manhole_020.jpg"
+}

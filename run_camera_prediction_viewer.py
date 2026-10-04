@@ -169,6 +169,8 @@ def parse_args():
     parser.add_argument("--tracker", type=str, choices=["bytetrack", "sort"], default="bytetrack", help="Tracker algorithm")
     parser.add_argument("--mode", type=str, choices=["auto", "max", "studio"], default="auto", help="View mode: auto, max, or studio")
     parser.add_argument("--record-session", type=str, default=None, nargs="?", const="default", help="Record session raw frames and per-frame decision log to output directory")
+    parser.add_argument("--allow-classical-fallback", action="store_true", default=False, help="Allow classical fallback when SegFormer fails to load (default: False; fail-safe refuses WALK_FORWARD)")
+    parser.add_argument("--skip-self-check", action="store_true", default=False, help="Skip startup model verification self-check")
     return parser.parse_args()
 
 
@@ -247,6 +249,7 @@ class PredictionViewer:
         tracker_type: str = "bytetrack",
         initial_mode: str = "auto",
         record_session: Optional[str] = None,
+        allow_classical_fallback: bool = False,
     ):
         self.target_fps = target_fps
         self.det_conf = det_conf
@@ -322,11 +325,14 @@ class PredictionViewer:
             max_iou_with_yolo=cfg_hazard.get("max_iou_with_yolo", 0.15),
             model_path=pothole_model_path,
             allow_heuristic=cfg_hazard.get("allow_heuristic", False),
+            require_ground_confirmation=cfg_hazard.get("require_ground_confirmation", True),
+            advisory_only=cfg_hazard.get("advisory_only", True),
         )
 
         # M14 — Freespace / Walkable-Ground Estimator
         # Defaults to UNKNOWN; requires positive confirmation for WALKABLE.
         cfg_fs = self.config.get("freespace", {})
+        fallback_allowed = allow_classical_fallback or cfg_fs.get("allow_classical_fallback", False)
         self.freespace_estimator = FreeSpaceEstimator(
             min_walkable_conf=cfg_fs.get("min_walkable_conf", 0.45),
             smoothing_window=cfg_fs.get("smoothing_window", 5),
@@ -334,6 +340,9 @@ class PredictionViewer:
             continuity_max_delta=cfg_fs.get("continuity_max_delta", 20.0),
             continuity_min_bands=cfg_fs.get("continuity_min_bands", 5),
             dark_blob_frac_thresh=cfg_fs.get("dark_blob_frac_thresh", 0.15),
+            ground_classes=cfg_fs.get("ground_classes", None),
+            obstacle_classes=cfg_fs.get("obstacle_classes", None),
+            allow_classical_fallback=fallback_allowed,
         )
 
         # M15 — Navigation Decision Engine (single source of truth)
@@ -344,6 +353,7 @@ class PredictionViewer:
             centre_risk_threshold=cfg_nav.get("centre_risk_threshold", 0.35),
             global_risk_threshold=cfg_nav.get("global_risk_threshold", 0.45),
             pothole_block_dist_m=cfg_nav.get("pothole_block_dist_m", 3.0),
+            pothole_advisory_only=cfg_hazard.get("advisory_only", True),
         )
 
         self.last_frame = None
@@ -513,16 +523,19 @@ class PredictionViewer:
                 risk_state = self.engine.update(predictions, fallback_active=motion_st.fallback_active, timestamp=ts)
                 cmd = self.policy.select(risk_state, timestamp=ts)
 
-                # M13 — Ground Hazard Detection
-                # Pass both tracked bboxes and raw detections so M13 and M14 gate against all obstacles
-                tracked_bboxes = [t.bbox_history[-1] for t in tracks if t.bbox_history]
-                raw_bboxes = getattr(self.tracker, 'raw_bboxes_this_frame', [])
-                all_yolo_bboxes = tracked_bboxes + [b for b in raw_bboxes if b not in tracked_bboxes]
+                # M14 — Freespace / Walkable-Ground Estimation
+                self._freespace_result = self.freespace_estimator.estimate(
+                    frame_bgr=img,
+                    yolo_bboxes=all_yolo_bboxes,
+                )
+
+                # M13 — Ground Hazard Detection (with two-stage ground verification)
                 self._hazard_detections = self.hazard_detector.detect(
                     frame_bgr=img,
                     yolo_bboxes=all_yolo_bboxes,
                     frame_id=f_obj.frame_id,
                     timestamp=ts,
+                    freespace_result=self._freespace_result,
                 )
                 # Legacy dict format for backward-compat render_overlay pothole overlay
                 self._pothole_detections = [
@@ -531,12 +544,6 @@ class PredictionViewer:
                 ]
                 if self._hazard_detections:
                     self.total_potholes_detected = getattr(self, 'total_potholes_detected', 0) + len(self._hazard_detections)
-
-                # M14 — Freespace / Walkable-Ground Estimation
-                self._freespace_result = self.freespace_estimator.estimate(
-                    frame_bgr=img,
-                    yolo_bboxes=all_yolo_bboxes,
-                )
 
                 # M15 — Single Navigation Decision (single source of truth)
                 self._guidance = self.nav_engine.decide(
@@ -1859,6 +1866,14 @@ class PredictionViewer:
 def main():
     args = parse_args()
 
+    # Startup model self-check & integrity verification
+    if not args.skip_self_check:
+        try:
+            from models.download_verify_model import run_startup_self_check
+            run_startup_self_check(strict=True)
+        except Exception as e:
+            print(f"[!] Startup self-check warning: {e}")
+
     # Determine camera source
     if args.scene:
         title, path = BENCHMARK_SCENES[args.scene]
@@ -1875,6 +1890,7 @@ def main():
         tracker_type=args.tracker,
         initial_mode=args.mode,
         record_session=args.record_session,
+        allow_classical_fallback=args.allow_classical_fallback,
     )
     viewer.run()
 

@@ -1,0 +1,15 @@
+{
+  "id": "stairs_up_020",
+  "category": "stairs_up",
+  "split": "TUNE",
+  "is_hazard_category": true,
+  "expected_walkable": false,
+  "corridor_status": "UNKNOWN",
+  "expected_hazards": [],
+  "expected_objects": [
+    "person"
+  ],
+  "license": "CC BY 4.0",
+  "source_url": "https://upload.wikimedia.org/wikipedia/commons/f/f2/Muzeum_Sztuki_Nowoczesnej%2C_wn%C4%99trza%2C_hol_ze_schodami_017%2C_KsP_listopad_2024.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+  "image_file": "stairs_up_020.jpg"
+}

@@ -1,0 +1,14 @@
+{
+  "id": "stairs_down_011",
+  "category": "stairs_down",
+  "split": "HOLDOUT",
+  "is_hazard_category": true,
+  "expected_walkable": false,
+  "corridor_status": "UNKNOWN",
+  "expected_hazards": [],
+  "expected_objects": [
+    "person"
+  ],
+  "license": "CC BY / Public Domain",
+  "image_file": "stairs_down_011.jpg"
+}

@@ -1,0 +1,15 @@
+{
+  "id": "table_corner_016",
+  "category": "table_corner",
+  "split": "TUNE",
+  "is_hazard_category": true,
+  "expected_walkable": false,
+  "corridor_status": "UNKNOWN",
+  "expected_hazards": [],
+  "expected_objects": [
+    "potted plant"
+  ],
+  "license": "CC0",
+  "source_url": "https://upload.wikimedia.org/wikipedia/commons/5/57/Table_Rock%2C_NE_Luzerne_x_Houston_NW_corner_1.JPG?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+  "image_file": "table_corner_016.jpg"
+}

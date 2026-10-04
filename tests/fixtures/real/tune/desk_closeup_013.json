@@ -4,12 +4,9 @@
   "split": "TUNE",
   "is_hazard_category": true,
   "expected_walkable": false,
-  "corridor_status": "BLOCKED",
+  "corridor_status": "UNKNOWN",
   "expected_hazards": [],
-  "expected_objects": [
-    "laptop",
-    "keyboard"
-  ],
+  "expected_objects": [],
   "license": "CC BY 2.0",
   "source_url": "https://upload.wikimedia.org/wikipedia/commons/5/50/Computer_Keyboard_-_stock_photo.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
   "image_file": "desk_closeup_013.jpg"

@@ -7,9 +7,8 @@
   "corridor_status": "BLOCKED",
   "expected_hazards": [],
   "expected_objects": [
-    "person"
+    "car"
   ],
-  "license": "CC BY-SA 4.0",
-  "source_url": "https://upload.wikimedia.org/wikipedia/commons/d/dd/Pedestrian_walking%2Cpath_faculty_of_Education_Ahmad.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+  "license": "CC BY / Public Domain",
   "image_file": "pedestrian_crossing_012.jpg"
 }

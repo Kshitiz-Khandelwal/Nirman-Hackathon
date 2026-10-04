@@ -1,0 +1,15 @@
+{
+  "id": "stairs_up_004",
+  "category": "stairs_up",
+  "split": "TUNE",
+  "is_hazard_category": true,
+  "expected_walkable": false,
+  "corridor_status": "UNKNOWN",
+  "expected_hazards": [],
+  "expected_objects": [
+    "toilet"
+  ],
+  "license": "CC BY-SA 4.0",
+  "source_url": "https://upload.wikimedia.org/wikipedia/commons/a/ad/D%C3%BClmen%2C_Alte_Brennerei_L%C3%B6hning_--_2015_--_8664-8.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+  "image_file": "stairs_up_004.jpg"
+}

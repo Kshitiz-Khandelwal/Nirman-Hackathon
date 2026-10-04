@@ -1,0 +1,13 @@
+{
+  "id": "indoor_corridor_025",
+  "category": "indoor_corridor",
+  "split": "HOLDOUT",
+  "is_hazard_category": false,
+  "expected_walkable": true,
+  "corridor_status": "WALKABLE",
+  "expected_hazards": [],
+  "expected_objects": [],
+  "license": "CC BY / Public Domain",
+  "source_url": "https://upload.wikimedia.org/wikipedia/commons/6/6d/Dornbirn-ORF_Vorarlberg-Television_studio-corridor-03ASD.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+  "image_file": "indoor_corridor_025.jpg"
+}

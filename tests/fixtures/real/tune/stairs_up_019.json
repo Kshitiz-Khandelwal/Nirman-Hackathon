@@ -6,7 +6,9 @@
   "expected_walkable": false,
   "corridor_status": "UNKNOWN",
   "expected_hazards": [],
-  "expected_objects": [],
+  "expected_objects": [
+    "car"
+  ],
   "license": "CC BY-SA 2.0",
   "source_url": "https://upload.wikimedia.org/wikipedia/commons/3/3f/Spiral_staircase_-_geograph.org.uk_-_475551.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
   "image_file": "stairs_up_019.jpg"

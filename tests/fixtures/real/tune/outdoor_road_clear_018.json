@@ -1,0 +1,16 @@
+{
+  "id": "outdoor_road_clear_018",
+  "category": "outdoor_road_clear",
+  "split": "TUNE",
+  "is_hazard_category": false,
+  "expected_walkable": true,
+  "corridor_status": "WALKABLE",
+  "expected_hazards": [],
+  "expected_objects": [
+    "person",
+    "handbag"
+  ],
+  "license": "CC0",
+  "source_url": "https://upload.wikimedia.org/wikipedia/commons/3/32/Machine_crushing_asphalt.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+  "image_file": "outdoor_road_clear_018.jpg"
+}

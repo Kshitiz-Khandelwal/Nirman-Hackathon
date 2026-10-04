@@ -1,0 +1,15 @@
+{
+  "id": "road_manhole_011",
+  "category": "road_manhole",
+  "split": "HOLDOUT",
+  "is_hazard_category": false,
+  "expected_walkable": false,
+  "corridor_status": "BLOCKED",
+  "expected_hazards": [],
+  "expected_objects": [
+    "fire hydrant",
+    "stop sign"
+  ],
+  "license": "CC BY / Public Domain",
+  "image_file": "road_manhole_011.jpg"
+}

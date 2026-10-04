@@ -1,0 +1,17 @@
+{
+  "id": "blank_wall_016",
+  "category": "blank_wall",
+  "split": "TUNE",
+  "is_hazard_category": true,
+  "expected_walkable": false,
+  "corridor_status": "UNKNOWN",
+  "expected_hazards": [],
+  "expected_objects": [
+    "bench",
+    "potted plant",
+    "bed"
+  ],
+  "license": "CC BY-SA 3.0",
+  "source_url": "https://upload.wikimedia.org/wikipedia/commons/2/24/Iglesia_de_Santiago_Tlatelolco%2C_M%C3%A9xico_D.F.%2C_M%C3%A9xico%2C_2013-10-16%2C_DD_38.JPG?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+  "image_file": "blank_wall_016.jpg"
+}

@@ -4,11 +4,10 @@
   "split": "TUNE",
   "is_hazard_category": true,
   "expected_walkable": false,
-  "corridor_status": "BLOCKED",
+  "corridor_status": "UNKNOWN",
   "expected_hazards": [],
   "expected_objects": [
-    "laptop",
-    "keyboard"
+    "train"
   ],
   "license": "CC BY-SA 4.0",
   "source_url": "https://upload.wikimedia.org/wikipedia/commons/0/08/Camera_zoom_burst_on_a_Microsoft_computer_keyboard_in_Tuntorp_8.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",

@@ -4,13 +4,13 @@
   "split": "HOLDOUT",
   "is_hazard_category": true,
   "expected_walkable": false,
-  "corridor_status": "BLOCKED",
+  "corridor_status": "UNKNOWN",
   "expected_hazards": [],
   "expected_objects": [
-    "laptop",
-    "keyboard"
+    "book",
+    "chair"
   ],
-  "license": "CC BY-SA 4.0",
-  "source_url": "https://upload.wikimedia.org/wikipedia/commons/1/1a/Computer_keyboard_with_QWERTZ_layout.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+  "license": "CC BY / Public Domain",
+  "source_url": "https://upload.wikimedia.org/wikipedia/commons/f/f2/EFTA00000888_-_Wooden-walled_office_with_a_red_desk_computer_guitar_and_zebra-patterned_rug.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
   "image_file": "desk_closeup_016.jpg"
 }

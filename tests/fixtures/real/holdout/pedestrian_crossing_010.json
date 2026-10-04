@@ -7,9 +7,8 @@
   "corridor_status": "BLOCKED",
   "expected_hazards": [],
   "expected_objects": [
-    "person"
+    "truck"
   ],
-  "license": "CC0",
-  "source_url": "https://upload.wikimedia.org/wikipedia/commons/9/9b/Pedestrians_Walking_%28Unsplash%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+  "license": "CC BY / Public Domain",
   "image_file": "pedestrian_crossing_010.jpg"
 }

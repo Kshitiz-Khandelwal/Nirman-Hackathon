@@ -1,0 +1,5252 @@
+[
+  {
+    "id": "blank_wall_001",
+    "category": "blank_wall",
+    "split": "TUNE",
+    "is_hazard_category": true,
+    "expected_walkable": false,
+    "corridor_status": "UNKNOWN",
+    "expected_hazards": [],
+    "expected_objects": [],
+    "license": "CC BY-SA 3.0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/1/12/Albarrac%C3%ADn%2C_Teruel%2C_Espa%C3%B1a%2C_2014-01-10%2C_DD_051.JPG?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "blank_wall_001.jpg"
+  },
+  {
+    "id": "blank_wall_002",
+    "category": "blank_wall",
+    "split": "TUNE",
+    "is_hazard_category": true,
+    "expected_walkable": false,
+    "corridor_status": "UNKNOWN",
+    "expected_hazards": [],
+    "expected_objects": [
+      "person",
+      "sports ball"
+    ],
+    "license": "CC BY-SA 4.0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/1/13/Boys_playing_street_football_in_Egypt.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "blank_wall_002.jpg"
+  },
+  {
+    "id": "blank_wall_003",
+    "category": "blank_wall",
+    "split": "TUNE",
+    "is_hazard_category": true,
+    "expected_walkable": false,
+    "corridor_status": "UNKNOWN",
+    "expected_hazards": [],
+    "expected_objects": [],
+    "license": "CC BY 3.0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/9/96/2012-11-06_09-57-49-fort-du-mt-bart.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "blank_wall_003.jpg"
+  },
+  {
+    "id": "blank_wall_004",
+    "category": "blank_wall",
+    "split": "TUNE",
+    "is_hazard_category": true,
+    "expected_walkable": false,
+    "corridor_status": "UNKNOWN",
+    "expected_hazards": [],
+    "expected_objects": [
+      "sheep",
+      "person",
+      "potted plant"
+    ],
+    "license": "CC BY-SA 4.0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/a/aa/A_Koch_woman.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "blank_wall_004.jpg"
+  },
+  {
+    "id": "blank_wall_005",
+    "category": "blank_wall",
+    "split": "TUNE",
+    "is_hazard_category": true,
+    "expected_walkable": false,
+    "corridor_status": "UNKNOWN",
+    "expected_hazards": [],
+    "expected_objects": [
+      "cat",
+      "bed"
+    ],
+    "license": "CC BY-SA 3.0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/4/4d/Cat_November_2010-1a.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "blank_wall_005.jpg"
+  },
+  {
+    "id": "blank_wall_006",
+    "category": "blank_wall",
+    "split": "TUNE",
+    "is_hazard_category": true,
+    "expected_walkable": false,
+    "corridor_status": "UNKNOWN",
+    "expected_hazards": [],
+    "expected_objects": [
+      "cat"
+    ],
+    "license": "CC BY-SA 4.0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/7/72/Cat_playing_with_a_lizard.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "blank_wall_006.jpg"
+  },
+  {
+    "id": "blank_wall_007",
+    "category": "blank_wall",
+    "split": "TUNE",
+    "is_hazard_category": true,
+    "expected_walkable": false,
+    "corridor_status": "UNKNOWN",
+    "expected_hazards": [],
+    "expected_objects": [
+      "car"
+    ],
+    "license": "CC BY-SA 4.0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/a/a7/2015_Zak%C5%82ad_Karny_w_K%C5%82odzku_02.JPG?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "blank_wall_007.jpg"
+  },
+  {
+    "id": "blank_wall_008",
+    "category": "blank_wall",
+    "split": "TUNE",
+    "is_hazard_category": true,
+    "expected_walkable": false,
+    "corridor_status": "UNKNOWN",
+    "expected_hazards": [],
+    "expected_objects": [],
+    "license": "CC BY-SA 4.0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/2/2d/Duisburg%2C_Landschaftspark_Duisburg-Nord_--_2020_--_7772.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "blank_wall_008.jpg"
+  },
+  {
+    "id": "blank_wall_009",
+    "category": "blank_wall",
+    "split": "TUNE",
+    "is_hazard_category": true,
+    "expected_walkable": false,
+    "corridor_status": "UNKNOWN",
+    "expected_hazards": [],
+    "expected_objects": [
+      "potted plant"
+    ],
+    "license": "CC BY-SA 2.5",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/8/82/Cukrowicz_nachbaur_Kapelle_1.JPG?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "blank_wall_009.jpg"
+  },
+  {
+    "id": "blank_wall_010",
+    "category": "blank_wall",
+    "split": "TUNE",
+    "is_hazard_category": true,
+    "expected_walkable": false,
+    "corridor_status": "UNKNOWN",
+    "expected_hazards": [],
+    "expected_objects": [],
+    "license": "CC BY-SA 4.0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/5/55/D%C3%BClmen%2C_Kirchspiel%2C_ehem._Sondermunitionslager_Visbeck%2C_Laufgang_--_2023_--_6796_%28bw%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "blank_wall_010.jpg"
+  },
+  {
+    "id": "blank_wall_011",
+    "category": "blank_wall",
+    "split": "TUNE",
+    "is_hazard_category": true,
+    "expected_walkable": false,
+    "corridor_status": "UNKNOWN",
+    "expected_hazards": [],
+    "expected_objects": [],
+    "license": "CC BY-SA 4.0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/b/b6/Cygnus_Wall%2C_NGC_7000.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "blank_wall_011.jpg"
+  },
+  {
+    "id": "blank_wall_012",
+    "category": "blank_wall",
+    "split": "TUNE",
+    "is_hazard_category": true,
+    "expected_walkable": false,
+    "corridor_status": "UNKNOWN",
+    "expected_hazards": [],
+    "expected_objects": [],
+    "license": "CC BY-SA 4.0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/7/75/00_3604_Bad_Doberan_-_Ruine_der_Klosterscheune_Althof.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "blank_wall_012.jpg"
+  },
+  {
+    "id": "blank_wall_013",
+    "category": "blank_wall",
+    "split": "TUNE",
+    "is_hazard_category": true,
+    "expected_walkable": false,
+    "corridor_status": "UNKNOWN",
+    "expected_hazards": [],
+    "expected_objects": [],
+    "license": "CC BY-SA 4.0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/3/37/Funchal_%28Madeira%2C_Portugal%29%2C_Rua_de_Santa_Maria_1_--_2025_--_0818.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "blank_wall_013.jpg"
+  },
+  {
+    "id": "blank_wall_014",
+    "category": "blank_wall",
+    "split": "TUNE",
+    "is_hazard_category": true,
+    "expected_walkable": false,
+    "corridor_status": "UNKNOWN",
+    "expected_hazards": [],
+    "expected_objects": [
+      "car",
+      "clock"
+    ],
+    "license": "CC BY-SA 3.0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/8/8c/House_of_Blackheads_and_St._Peter%27s_Church_Tower%2C_Riga%2C_Latvia_-_Diliff.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "blank_wall_014.jpg"
+  },
+  {
+    "id": "blank_wall_015",
+    "category": "blank_wall",
+    "split": "TUNE",
+    "is_hazard_category": true,
+    "expected_walkable": false,
+    "corridor_status": "UNKNOWN",
+    "expected_hazards": [],
+    "expected_objects": [
+      "bench"
+    ],
+    "license": "CC BY-SA 4.0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/3/3a/D%C3%BClmen%2C_St.-Viktor-Kirche%2C_Innenansicht_--_2020_--_6115.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "blank_wall_015.jpg"
+  },
+  {
+    "id": "blank_wall_016",
+    "category": "blank_wall",
+    "split": "TUNE",
+    "is_hazard_category": true,
+    "expected_walkable": false,
+    "corridor_status": "UNKNOWN",
+    "expected_hazards": [],
+    "expected_objects": [
+      "bench",
+      "potted plant",
+      "bed"
+    ],
+    "license": "CC BY-SA 3.0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/2/24/Iglesia_de_Santiago_Tlatelolco%2C_M%C3%A9xico_D.F.%2C_M%C3%A9xico%2C_2013-10-16%2C_DD_38.JPG?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "blank_wall_016.jpg"
+  },
+  {
+    "id": "blank_wall_017",
+    "category": "blank_wall",
+    "split": "TUNE",
+    "is_hazard_category": true,
+    "expected_walkable": false,
+    "corridor_status": "UNKNOWN",
+    "expected_hazards": [],
+    "expected_objects": [
+      "vase"
+    ],
+    "license": "CC BY-SA 4.0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/8/83/Interior_wall_of_the_Schloss_Benrath%2C_D%C3%BCsseldorf%2C_Germany.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "blank_wall_017.jpg"
+  },
+  {
+    "id": "blank_wall_018",
+    "category": "blank_wall",
+    "split": "TUNE",
+    "is_hazard_category": true,
+    "expected_walkable": false,
+    "corridor_status": "UNKNOWN",
+    "expected_hazards": [],
+    "expected_objects": [],
+    "license": "GFDL 1.2",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/c/c8/Ivy_Hedera_Red_Brick_Wall_2892px.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "blank_wall_018.jpg"
+  },
+  {
+    "id": "blank_wall_019",
+    "category": "blank_wall",
+    "split": "TUNE",
+    "is_hazard_category": true,
+    "expected_walkable": false,
+    "corridor_status": "UNKNOWN",
+    "expected_hazards": [],
+    "expected_objects": [],
+    "license": "CC BY-SA 3.0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/1/17/Iglesia_del_Esp%C3%ADritu_Santo%2C_Landshut%2C_Alemania%2C_2012-05-27%2C_DD_02.JPG?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "blank_wall_019.jpg"
+  },
+  {
+    "id": "blank_wall_020",
+    "category": "blank_wall",
+    "split": "TUNE",
+    "is_hazard_category": true,
+    "expected_walkable": false,
+    "corridor_status": "UNKNOWN",
+    "expected_hazards": [],
+    "expected_objects": [
+      "potted plant"
+    ],
+    "license": "CC BY-SA 4.0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/e/ee/Juist%2C_Altes_Warmbad_--_2014_--_3632.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "blank_wall_020.jpg"
+  },
+  {
+    "id": "blank_wall_021",
+    "category": "blank_wall",
+    "split": "TUNE",
+    "is_hazard_category": true,
+    "expected_walkable": false,
+    "corridor_status": "UNKNOWN",
+    "expected_hazards": [],
+    "expected_objects": [],
+    "license": "CC BY-SA 4.0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/8/89/Jard%C3%ADn_del_Pr%C3%ADncipe%2C_Mahan%2C_Ir%C3%A1n%2C_2016-09-22%2C_DD_21.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "blank_wall_021.jpg"
+  },
+  {
+    "id": "blank_wall_022",
+    "category": "blank_wall",
+    "split": "TUNE",
+    "is_hazard_category": true,
+    "expected_walkable": false,
+    "corridor_status": "UNKNOWN",
+    "expected_hazards": [],
+    "expected_objects": [
+      "clock"
+    ],
+    "license": "CC BY-SA 4.0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/a/ab/Interior_wall_of_the_Schloss_Benrath.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "blank_wall_022.jpg"
+  },
+  {
+    "id": "blank_wall_023",
+    "category": "blank_wall",
+    "split": "TUNE",
+    "is_hazard_category": true,
+    "expected_walkable": false,
+    "corridor_status": "UNKNOWN",
+    "expected_hazards": [],
+    "expected_objects": [],
+    "license": "CC BY-SA 4.0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/7/75/Interior_wall_of_the_Schloss_Benrath_1.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "blank_wall_023.jpg"
+  },
+  {
+    "id": "blank_wall_024",
+    "category": "blank_wall",
+    "split": "TUNE",
+    "is_hazard_category": true,
+    "expected_walkable": false,
+    "corridor_status": "UNKNOWN",
+    "expected_hazards": [],
+    "expected_objects": [
+      "person"
+    ],
+    "license": "CC BY-SA 4.0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/7/71/Machu_Picchu%2C_Per%C3%BA%2C_2015-07-30%2C_DD_47.JPG?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "blank_wall_024.jpg"
+  },
+  {
+    "id": "covered_lens_001",
+    "category": "covered_lens",
+    "split": "TUNE",
+    "is_hazard_category": true,
+    "expected_walkable": false,
+    "corridor_status": "UNKNOWN",
+    "expected_hazards": [],
+    "expected_objects": [],
+    "license": "CC0 - Camera Sensor Occlusion Noise",
+    "source_url": "local://camera_occlusion",
+    "image_file": "covered_lens_001.jpg"
+  },
+  {
+    "id": "covered_lens_002",
+    "category": "covered_lens",
+    "split": "TUNE",
+    "is_hazard_category": true,
+    "expected_walkable": false,
+    "corridor_status": "UNKNOWN",
+    "expected_hazards": [],
+    "expected_objects": [],
+    "license": "CC0 - Camera Sensor Occlusion Noise",
+    "source_url": "local://camera_occlusion",
+    "image_file": "covered_lens_002.jpg"
+  },
+  {
+    "id": "covered_lens_003",
+    "category": "covered_lens",
+    "split": "TUNE",
+    "is_hazard_category": true,
+    "expected_walkable": false,
+    "corridor_status": "UNKNOWN",
+    "expected_hazards": [],
+    "expected_objects": [],
+    "license": "CC0 - Camera Sensor Occlusion Noise",
+    "source_url": "local://camera_occlusion",
+    "image_file": "covered_lens_003.jpg"
+  },
+  {
+    "id": "covered_lens_004",
+    "category": "covered_lens",
+    "split": "TUNE",
+    "is_hazard_category": true,
+    "expected_walkable": false,
+    "corridor_status": "UNKNOWN",
+    "expected_hazards": [],
+    "expected_objects": [],
+    "license": "CC0 - Camera Sensor Occlusion Noise",
+    "source_url": "local://camera_occlusion",
+    "image_file": "covered_lens_004.jpg"
+  },
+  {
+    "id": "covered_lens_005",
+    "category": "covered_lens",
+    "split": "TUNE",
+    "is_hazard_category": true,
+    "expected_walkable": false,
+    "corridor_status": "UNKNOWN",
+    "expected_hazards": [],
+    "expected_objects": [],
+    "license": "CC0 - Camera Sensor Occlusion Noise",
+    "source_url": "local://camera_occlusion",
+    "image_file": "covered_lens_005.jpg"
+  },
+  {
+    "id": "covered_lens_006",
+    "category": "covered_lens",
+    "split": "TUNE",
+    "is_hazard_category": true,
+    "expected_walkable": false,
+    "corridor_status": "UNKNOWN",
+    "expected_hazards": [],
+    "expected_objects": [],
+    "license": "CC0 - Camera Sensor Occlusion Noise",
+    "source_url": "local://camera_occlusion",
+    "image_file": "covered_lens_006.jpg"
+  },
+  {
+    "id": "covered_lens_007",
+    "category": "covered_lens",
+    "split": "TUNE",
+    "is_hazard_category": true,
+    "expected_walkable": false,
+    "corridor_status": "UNKNOWN",
+    "expected_hazards": [],
+    "expected_objects": [],
+    "license": "CC0 - Camera Sensor Occlusion Noise",
+    "source_url": "local://camera_occlusion",
+    "image_file": "covered_lens_007.jpg"
+  },
+  {
+    "id": "covered_lens_008",
+    "category": "covered_lens",
+    "split": "TUNE",
+    "is_hazard_category": true,
+    "expected_walkable": false,
+    "corridor_status": "UNKNOWN",
+    "expected_hazards": [],
+    "expected_objects": [],
+    "license": "CC0 - Camera Sensor Occlusion Noise",
+    "source_url": "local://camera_occlusion",
+    "image_file": "covered_lens_008.jpg"
+  },
+  {
+    "id": "covered_lens_009",
+    "category": "covered_lens",
+    "split": "TUNE",
+    "is_hazard_category": true,
+    "expected_walkable": false,
+    "corridor_status": "UNKNOWN",
+    "expected_hazards": [],
+    "expected_objects": [],
+    "license": "CC0 - Camera Sensor Occlusion Noise",
+    "source_url": "local://camera_occlusion",
+    "image_file": "covered_lens_009.jpg"
+  },
+  {
+    "id": "covered_lens_010",
+    "category": "covered_lens",
+    "split": "TUNE",
+    "is_hazard_category": true,
+    "expected_walkable": false,
+    "corridor_status": "UNKNOWN",
+    "expected_hazards": [],
+    "expected_objects": [],
+    "license": "CC0 - Camera Sensor Occlusion Noise",
+    "source_url": "local://camera_occlusion",
+    "image_file": "covered_lens_010.jpg"
+  },
+  {
+    "id": "covered_lens_011",
+    "category": "covered_lens",
+    "split": "TUNE",
+    "is_hazard_category": true,
+    "expected_walkable": false,
+    "corridor_status": "UNKNOWN",
+    "expected_hazards": [],
+    "expected_objects": [],
+    "license": "CC0 - Camera Sensor Occlusion Noise",
+    "source_url": "local://camera_occlusion",
+    "image_file": "covered_lens_011.jpg"
+  },
+  {
+    "id": "covered_lens_012",
+    "category": "covered_lens",
+    "split": "TUNE",
+    "is_hazard_category": true,
+    "expected_walkable": false,
+    "corridor_status": "UNKNOWN",
+    "expected_hazards": [],
+    "expected_objects": [],
+    "license": "CC0 - Camera Sensor Occlusion Noise",
+    "source_url": "local://camera_occlusion",
+    "image_file": "covered_lens_012.jpg"
+  },
+  {
+    "id": "covered_lens_013",
+    "category": "covered_lens",
+    "split": "TUNE",
+    "is_hazard_category": true,
+    "expected_walkable": false,
+    "corridor_status": "UNKNOWN",
+    "expected_hazards": [],
+    "expected_objects": [],
+    "license": "CC0 - Camera Sensor Occlusion Noise",
+    "source_url": "local://camera_occlusion",
+    "image_file": "covered_lens_013.jpg"
+  },
+  {
+    "id": "covered_lens_014",
+    "category": "covered_lens",
+    "split": "TUNE",
+    "is_hazard_category": true,
+    "expected_walkable": false,
+    "corridor_status": "UNKNOWN",
+    "expected_hazards": [],
+    "expected_objects": [],
+    "license": "CC0 - Camera Sensor Occlusion Noise",
+    "source_url": "local://camera_occlusion",
+    "image_file": "covered_lens_014.jpg"
+  },
+  {
+    "id": "covered_lens_015",
+    "category": "covered_lens",
+    "split": "TUNE",
+    "is_hazard_category": true,
+    "expected_walkable": false,
+    "corridor_status": "UNKNOWN",
+    "expected_hazards": [],
+    "expected_objects": [],
+    "license": "CC0 - Camera Sensor Occlusion Noise",
+    "source_url": "local://camera_occlusion",
+    "image_file": "covered_lens_015.jpg"
+  },
+  {
+    "id": "covered_lens_016",
+    "category": "covered_lens",
+    "split": "TUNE",
+    "is_hazard_category": true,
+    "expected_walkable": false,
+    "corridor_status": "UNKNOWN",
+    "expected_hazards": [],
+    "expected_objects": [],
+    "license": "CC0 - Camera Sensor Occlusion Noise",
+    "source_url": "local://camera_occlusion",
+    "image_file": "covered_lens_016.jpg"
+  },
+  {
+    "id": "covered_lens_017",
+    "category": "covered_lens",
+    "split": "TUNE",
+    "is_hazard_category": true,
+    "expected_walkable": false,
+    "corridor_status": "UNKNOWN",
+    "expected_hazards": [],
+    "expected_objects": [],
+    "license": "CC0 - Camera Sensor Occlusion Noise",
+    "source_url": "local://camera_occlusion",
+    "image_file": "covered_lens_017.jpg"
+  },
+  {
+    "id": "covered_lens_018",
+    "category": "covered_lens",
+    "split": "TUNE",
+    "is_hazard_category": true,
+    "expected_walkable": false,
+    "corridor_status": "UNKNOWN",
+    "expected_hazards": [],
+    "expected_objects": [],
+    "license": "CC0 - Camera Sensor Occlusion Noise",
+    "source_url": "local://camera_occlusion",
+    "image_file": "covered_lens_018.jpg"
+  },
+  {
+    "id": "covered_lens_019",
+    "category": "covered_lens",
+    "split": "TUNE",
+    "is_hazard_category": true,
+    "expected_walkable": false,
+    "corridor_status": "UNKNOWN",
+    "expected_hazards": [],
+    "expected_objects": [],
+    "license": "CC0 - Camera Sensor Occlusion Noise",
+    "source_url": "local://camera_occlusion",
+    "image_file": "covered_lens_019.jpg"
+  },
+  {
+    "id": "covered_lens_020",
+    "category": "covered_lens",
+    "split": "TUNE",
+    "is_hazard_category": true,
+    "expected_walkable": false,
+    "corridor_status": "UNKNOWN",
+    "expected_hazards": [],
+    "expected_objects": [],
+    "license": "CC0 - Camera Sensor Occlusion Noise",
+    "source_url": "local://camera_occlusion",
+    "image_file": "covered_lens_020.jpg"
+  },
+  {
+    "id": "covered_lens_021",
+    "category": "covered_lens",
+    "split": "TUNE",
+    "is_hazard_category": true,
+    "expected_walkable": false,
+    "corridor_status": "UNKNOWN",
+    "expected_hazards": [],
+    "expected_objects": [],
+    "license": "CC0 - Camera Sensor Occlusion Noise",
+    "source_url": "local://camera_occlusion",
+    "image_file": "covered_lens_021.jpg"
+  },
+  {
+    "id": "covered_lens_022",
+    "category": "covered_lens",
+    "split": "TUNE",
+    "is_hazard_category": true,
+    "expected_walkable": false,
+    "corridor_status": "UNKNOWN",
+    "expected_hazards": [],
+    "expected_objects": [],
+    "license": "CC0 - Camera Sensor Occlusion Noise",
+    "source_url": "local://camera_occlusion",
+    "image_file": "covered_lens_022.jpg"
+  },
+  {
+    "id": "covered_lens_023",
+    "category": "covered_lens",
+    "split": "TUNE",
+    "is_hazard_category": true,
+    "expected_walkable": false,
+    "corridor_status": "UNKNOWN",
+    "expected_hazards": [],
+    "expected_objects": [],
+    "license": "CC0 - Camera Sensor Occlusion Noise",
+    "source_url": "local://camera_occlusion",
+    "image_file": "covered_lens_023.jpg"
+  },
+  {
+    "id": "covered_lens_024",
+    "category": "covered_lens",
+    "split": "TUNE",
+    "is_hazard_category": true,
+    "expected_walkable": false,
+    "corridor_status": "UNKNOWN",
+    "expected_hazards": [],
+    "expected_objects": [],
+    "license": "CC0 - Camera Sensor Occlusion Noise",
+    "source_url": "local://camera_occlusion",
+    "image_file": "covered_lens_024.jpg"
+  },
+  {
+    "id": "desk_closeup_001",
+    "category": "desk_closeup",
+    "split": "TUNE",
+    "is_hazard_category": true,
+    "expected_walkable": false,
+    "corridor_status": "UNKNOWN",
+    "expected_hazards": [],
+    "expected_objects": [
+      "person",
+      "keyboard"
+    ],
+    "license": "CC BY-SA 4.0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/c/c4/Backlit_keyboard.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "desk_closeup_001.jpg"
+  },
+  {
+    "id": "desk_closeup_002",
+    "category": "desk_closeup",
+    "split": "TUNE",
+    "is_hazard_category": true,
+    "expected_walkable": false,
+    "corridor_status": "UNKNOWN",
+    "expected_hazards": [],
+    "expected_objects": [
+      "keyboard"
+    ],
+    "license": "CC BY-SA 4.0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/8/86/Behavior_Tech_Computer_keyboard_model_5140_Swiss_French_layout.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "desk_closeup_002.jpg"
+  },
+  {
+    "id": "desk_closeup_003",
+    "category": "desk_closeup",
+    "split": "TUNE",
+    "is_hazard_category": true,
+    "expected_walkable": false,
+    "corridor_status": "UNKNOWN",
+    "expected_hazards": [],
+    "expected_objects": [
+      "keyboard"
+    ],
+    "license": "CC BY-SA 2.5 au",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/3/37/Apple_Keyboard_II.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "desk_closeup_003.jpg"
+  },
+  {
+    "id": "desk_closeup_004",
+    "category": "desk_closeup",
+    "split": "TUNE",
+    "is_hazard_category": true,
+    "expected_walkable": false,
+    "corridor_status": "UNKNOWN",
+    "expected_hazards": [],
+    "expected_objects": [],
+    "license": "CC BY-SA 4.0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/1/17/Backlit_keyboard_2.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "desk_closeup_004.jpg"
+  },
+  {
+    "id": "desk_closeup_005",
+    "category": "desk_closeup",
+    "split": "TUNE",
+    "is_hazard_category": true,
+    "expected_walkable": false,
+    "corridor_status": "UNKNOWN",
+    "expected_hazards": [],
+    "expected_objects": [
+      "keyboard"
+    ],
+    "license": "CC BY-SA 4.0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/a/a0/Atreus_42_%28keyboard%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "desk_closeup_005.jpg"
+  },
+  {
+    "id": "desk_closeup_006",
+    "category": "desk_closeup",
+    "split": "TUNE",
+    "is_hazard_category": true,
+    "expected_walkable": false,
+    "corridor_status": "UNKNOWN",
+    "expected_hazards": [],
+    "expected_objects": [
+      "keyboard",
+      "tv"
+    ],
+    "license": "CC BY-SA 4.0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/1/15/Assistive_keyboard_and_Joystick.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "desk_closeup_006.jpg"
+  },
+  {
+    "id": "desk_closeup_007",
+    "category": "desk_closeup",
+    "split": "TUNE",
+    "is_hazard_category": true,
+    "expected_walkable": false,
+    "corridor_status": "UNKNOWN",
+    "expected_hazards": [],
+    "expected_objects": [
+      "train"
+    ],
+    "license": "CC BY-SA 4.0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/0/08/Camera_zoom_burst_on_a_Microsoft_computer_keyboard_in_Tuntorp_8.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "desk_closeup_007.jpg"
+  },
+  {
+    "id": "desk_closeup_008",
+    "category": "desk_closeup",
+    "split": "TUNE",
+    "is_hazard_category": true,
+    "expected_walkable": false,
+    "corridor_status": "UNKNOWN",
+    "expected_hazards": [],
+    "expected_objects": [
+      "keyboard"
+    ],
+    "license": "CC0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/f/f8/Black_Computer_keyboard.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "desk_closeup_008.jpg"
+  },
+  {
+    "id": "desk_closeup_009",
+    "category": "desk_closeup",
+    "split": "TUNE",
+    "is_hazard_category": true,
+    "expected_walkable": false,
+    "corridor_status": "UNKNOWN",
+    "expected_hazards": [],
+    "expected_objects": [],
+    "license": "CC BY-SA 4.0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/2/2a/Computer-Tastatur-Belegung_deutsch_QUERTZ.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "desk_closeup_009.jpg"
+  },
+  {
+    "id": "desk_closeup_010",
+    "category": "desk_closeup",
+    "split": "TUNE",
+    "is_hazard_category": true,
+    "expected_walkable": false,
+    "corridor_status": "UNKNOWN",
+    "expected_hazards": [],
+    "expected_objects": [],
+    "license": "CC BY-SA 4.0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/7/7e/Camera_zoom_burst_on_a_Microsoft_computer_keyboard_in_Tuntorp_8_-_banner.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "desk_closeup_010.jpg"
+  },
+  {
+    "id": "desk_closeup_011",
+    "category": "desk_closeup",
+    "split": "TUNE",
+    "is_hazard_category": true,
+    "expected_walkable": false,
+    "corridor_status": "UNKNOWN",
+    "expected_hazards": [],
+    "expected_objects": [],
+    "license": "CC BY-SA 4.0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/2/2c/Computer_keyboard..._dusty_and_black.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "desk_closeup_011.jpg"
+  },
+  {
+    "id": "desk_closeup_012",
+    "category": "desk_closeup",
+    "split": "TUNE",
+    "is_hazard_category": true,
+    "expected_walkable": false,
+    "corridor_status": "UNKNOWN",
+    "expected_hazards": [],
+    "expected_objects": [],
+    "license": "CC BY-SA 4.0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/8/87/Computer-Tastatur-Belegung_deutsch_QUERTZ.png?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "desk_closeup_012.jpg"
+  },
+  {
+    "id": "desk_closeup_013",
+    "category": "desk_closeup",
+    "split": "TUNE",
+    "is_hazard_category": true,
+    "expected_walkable": false,
+    "corridor_status": "UNKNOWN",
+    "expected_hazards": [],
+    "expected_objects": [],
+    "license": "CC BY 2.0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/5/50/Computer_Keyboard_-_stock_photo.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "desk_closeup_013.jpg"
+  },
+  {
+    "id": "desk_closeup_014",
+    "category": "desk_closeup",
+    "split": "TUNE",
+    "is_hazard_category": true,
+    "expected_walkable": false,
+    "corridor_status": "UNKNOWN",
+    "expected_hazards": [],
+    "expected_objects": [
+      "keyboard"
+    ],
+    "license": "CC BY-SA 4.0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/4/4f/Keyboard_in_dark.png?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "desk_closeup_014.jpg"
+  },
+  {
+    "id": "desk_closeup_015",
+    "category": "desk_closeup",
+    "split": "TUNE",
+    "is_hazard_category": true,
+    "expected_walkable": false,
+    "corridor_status": "UNKNOWN",
+    "expected_hazards": [],
+    "expected_objects": [
+      "keyboard"
+    ],
+    "license": "CC BY 2.0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/a/aa/Computer_keyboard_layout_%2828808607618%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "desk_closeup_015.jpg"
+  },
+  {
+    "id": "desk_closeup_016",
+    "category": "desk_closeup",
+    "split": "TUNE",
+    "is_hazard_category": true,
+    "expected_walkable": false,
+    "corridor_status": "UNKNOWN",
+    "expected_hazards": [],
+    "expected_objects": [
+      "keyboard"
+    ],
+    "license": "CC BY-SA 4.0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/1/1a/Computer_keyboard_with_QWERTZ_layout.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "desk_closeup_016.jpg"
+  },
+  {
+    "id": "desk_closeup_017",
+    "category": "desk_closeup",
+    "split": "TUNE",
+    "is_hazard_category": true,
+    "expected_walkable": false,
+    "corridor_status": "UNKNOWN",
+    "expected_hazards": [],
+    "expected_objects": [
+      "laptop"
+    ],
+    "license": "CC BY-SA 4.0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/1/1e/MacBook_Air_keyboard_1.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "desk_closeup_017.jpg"
+  },
+  {
+    "id": "desk_closeup_018",
+    "category": "desk_closeup",
+    "split": "TUNE",
+    "is_hazard_category": true,
+    "expected_walkable": false,
+    "corridor_status": "UNKNOWN",
+    "expected_hazards": [],
+    "expected_objects": [
+      "keyboard"
+    ],
+    "license": "CC BY-SA 4.0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/1/1d/Logitech_MK240_CJK_Keyboard_2.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "desk_closeup_018.jpg"
+  },
+  {
+    "id": "desk_closeup_019",
+    "category": "desk_closeup",
+    "split": "TUNE",
+    "is_hazard_category": true,
+    "expected_walkable": false,
+    "corridor_status": "UNKNOWN",
+    "expected_hazards": [],
+    "expected_objects": [
+      "keyboard"
+    ],
+    "license": "CC BY-SA 4.0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/0/09/MacBook_Air_keyboard_2.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "desk_closeup_019.jpg"
+  },
+  {
+    "id": "desk_closeup_020",
+    "category": "desk_closeup",
+    "split": "TUNE",
+    "is_hazard_category": true,
+    "expected_walkable": false,
+    "corridor_status": "UNKNOWN",
+    "expected_hazards": [],
+    "expected_objects": [
+      "keyboard"
+    ],
+    "license": "CC BY-SA 3.0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/0/0a/QWERTY_keyboard.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "desk_closeup_020.jpg"
+  },
+  {
+    "id": "desk_closeup_021",
+    "category": "desk_closeup",
+    "split": "TUNE",
+    "is_hazard_category": true,
+    "expected_walkable": false,
+    "corridor_status": "UNKNOWN",
+    "expected_hazards": [],
+    "expected_objects": [
+      "keyboard"
+    ],
+    "license": "CC BY-SA 4.0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/8/8c/MacBook_Air_keyboard_3.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "desk_closeup_021.jpg"
+  },
+  {
+    "id": "desk_closeup_022",
+    "category": "desk_closeup",
+    "split": "TUNE",
+    "is_hazard_category": true,
+    "expected_walkable": false,
+    "corridor_status": "UNKNOWN",
+    "expected_hazards": [],
+    "expected_objects": [
+      "cell phone"
+    ],
+    "license": "CC BY-SA 4.0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/e/ef/Metal_keyboard_of_public_computer.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "desk_closeup_022.jpg"
+  },
+  {
+    "id": "desk_closeup_023",
+    "category": "desk_closeup",
+    "split": "TUNE",
+    "is_hazard_category": true,
+    "expected_walkable": false,
+    "corridor_status": "UNKNOWN",
+    "expected_hazards": [],
+    "expected_objects": [
+      "cell phone",
+      "keyboard"
+    ],
+    "license": "CC BY-SA 4.0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/f/fe/MacBook_Air_keyboard_4.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "desk_closeup_023.jpg"
+  },
+  {
+    "id": "desk_closeup_024",
+    "category": "desk_closeup",
+    "split": "TUNE",
+    "is_hazard_category": true,
+    "expected_walkable": false,
+    "corridor_status": "UNKNOWN",
+    "expected_hazards": [],
+    "expected_objects": [
+      "keyboard"
+    ],
+    "license": "CC BY-SA 4.0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/a/a0/Norwegian_keyboard_by_Dell.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "desk_closeup_024.jpg"
+  },
+  {
+    "id": "indoor_corridor_001",
+    "category": "indoor_corridor",
+    "split": "TUNE",
+    "is_hazard_category": false,
+    "expected_walkable": true,
+    "corridor_status": "WALKABLE",
+    "expected_hazards": [],
+    "expected_objects": [],
+    "license": "CC BY-SA 4.0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/0/0e/Corredor_Florestal_-_Pontal_do_Paranapanema.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "indoor_corridor_001.jpg"
+  },
+  {
+    "id": "indoor_corridor_002",
+    "category": "indoor_corridor",
+    "split": "TUNE",
+    "is_hazard_category": false,
+    "expected_walkable": true,
+    "corridor_status": "WALKABLE",
+    "expected_hazards": [],
+    "expected_objects": [],
+    "license": "CC BY 3.0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/b/b6/2009_-_Laeken_-_Grave_galleries.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "indoor_corridor_002.jpg"
+  },
+  {
+    "id": "indoor_corridor_003",
+    "category": "indoor_corridor",
+    "split": "TUNE",
+    "is_hazard_category": false,
+    "expected_walkable": true,
+    "corridor_status": "WALKABLE",
+    "expected_hazards": [],
+    "expected_objects": [],
+    "license": "CC BY-SA 4.0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/9/93/CERN_hallway_in_building_304.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "indoor_corridor_003.jpg"
+  },
+  {
+    "id": "indoor_corridor_004",
+    "category": "indoor_corridor",
+    "split": "TUNE",
+    "is_hazard_category": false,
+    "expected_walkable": true,
+    "corridor_status": "WALKABLE",
+    "expected_hazards": [],
+    "expected_objects": [
+      "person"
+    ],
+    "license": "CC BY-SA 4.0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/9/99/Corridor_2023-12_1702130219.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "indoor_corridor_004.jpg"
+  },
+  {
+    "id": "indoor_corridor_005",
+    "category": "indoor_corridor",
+    "split": "TUNE",
+    "is_hazard_category": false,
+    "expected_walkable": true,
+    "corridor_status": "WALKABLE",
+    "expected_hazards": [],
+    "expected_objects": [
+      "person",
+      "potted plant"
+    ],
+    "license": "CC BY-SA 4.0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/7/77/Amsterdam_-_Herengracht_-_Museum_Willet-Holthuysen_-_Bel_Etage_-_Corridor_-_View_towards_Octagonal_Conservatory.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "indoor_corridor_005.jpg"
+  },
+  {
+    "id": "indoor_corridor_006",
+    "category": "indoor_corridor",
+    "split": "TUNE",
+    "is_hazard_category": false,
+    "expected_walkable": true,
+    "corridor_status": "WALKABLE",
+    "expected_hazards": [],
+    "expected_objects": [
+      "chair"
+    ],
+    "license": "CC BY-SA 4.0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/5/56/Amsterdam_-_Herengracht_-_Museum_Willet-Holthuysen_-_Upper_Floor_-_Corridor_-_View_on_Collector%27s_Room.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "indoor_corridor_006.jpg"
+  },
+  {
+    "id": "indoor_corridor_007",
+    "category": "indoor_corridor",
+    "split": "TUNE",
+    "is_hazard_category": false,
+    "expected_walkable": true,
+    "corridor_status": "WALKABLE",
+    "expected_hazards": [],
+    "expected_objects": [
+      "train"
+    ],
+    "license": "CC BY-SA 4.0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/0/0e/Corridor_2023-12_1702130467.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "indoor_corridor_007.jpg"
+  },
+  {
+    "id": "indoor_corridor_008",
+    "category": "indoor_corridor",
+    "split": "TUNE",
+    "is_hazard_category": false,
+    "expected_walkable": true,
+    "corridor_status": "WALKABLE",
+    "expected_hazards": [],
+    "expected_objects": [],
+    "license": "CC BY 4.0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/f/fd/Corridor_Stanley_Hotel_Estes_Park_Colorado_2024.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "indoor_corridor_008.jpg"
+  },
+  {
+    "id": "indoor_corridor_009",
+    "category": "indoor_corridor",
+    "split": "TUNE",
+    "is_hazard_category": false,
+    "expected_walkable": true,
+    "corridor_status": "WALKABLE",
+    "expected_hazards": [],
+    "expected_objects": [
+      "chair",
+      "bench",
+      "person",
+      "tv"
+    ],
+    "license": "CC BY 4.0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/b/b0/Corridor_Botanical_Museum_Helsinki_01.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "indoor_corridor_009.jpg"
+  },
+  {
+    "id": "indoor_corridor_010",
+    "category": "indoor_corridor",
+    "split": "TUNE",
+    "is_hazard_category": false,
+    "expected_walkable": true,
+    "corridor_status": "WALKABLE",
+    "expected_hazards": [],
+    "expected_objects": [
+      "chair",
+      "bench"
+    ],
+    "license": "CC0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/3/3f/Corridor_in_Arundel_Castle_2026-05-14.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "indoor_corridor_010.jpg"
+  },
+  {
+    "id": "indoor_corridor_011",
+    "category": "indoor_corridor",
+    "split": "TUNE",
+    "is_hazard_category": false,
+    "expected_walkable": true,
+    "corridor_status": "WALKABLE",
+    "expected_hazards": [],
+    "expected_objects": [
+      "bed"
+    ],
+    "license": "CC BY-SA 4.0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/7/70/Corridor_Image.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "indoor_corridor_011.jpg"
+  },
+  {
+    "id": "indoor_corridor_012",
+    "category": "indoor_corridor",
+    "split": "TUNE",
+    "is_hazard_category": false,
+    "expected_walkable": true,
+    "corridor_status": "WALKABLE",
+    "expected_hazards": [],
+    "expected_objects": [
+      "dining table"
+    ],
+    "license": "CC0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/1/1f/Corridor_in_Arundel_Castle_2026-05-14_%283%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "indoor_corridor_012.jpg"
+  },
+  {
+    "id": "indoor_corridor_013",
+    "category": "indoor_corridor",
+    "split": "TUNE",
+    "is_hazard_category": false,
+    "expected_walkable": true,
+    "corridor_status": "WALKABLE",
+    "expected_hazards": [],
+    "expected_objects": [],
+    "license": "CC BY-SA 4.0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/2/27/Corridor_leading_to_indoor_pool_of_spa_at_Amantaka_luxury_Resort_%26_Hotel_in_Luang_Prabang_Laos_front_view.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "indoor_corridor_013.jpg"
+  },
+  {
+    "id": "indoor_corridor_014",
+    "category": "indoor_corridor",
+    "split": "TUNE",
+    "is_hazard_category": false,
+    "expected_walkable": true,
+    "corridor_status": "WALKABLE",
+    "expected_hazards": [],
+    "expected_objects": [
+      "chair"
+    ],
+    "license": "CC0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/1/16/Corridor_in_Arundel_Castle_2026-05-14_%282%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "indoor_corridor_014.jpg"
+  },
+  {
+    "id": "indoor_corridor_015",
+    "category": "indoor_corridor",
+    "split": "TUNE",
+    "is_hazard_category": false,
+    "expected_walkable": true,
+    "corridor_status": "WALKABLE",
+    "expected_hazards": [],
+    "expected_objects": [
+      "person"
+    ],
+    "license": "Public domain",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/4/4e/Corridor_to_Committee_Rooms_of_the_House_of_Commons%2C_Westminster.png?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "indoor_corridor_015.jpg"
+  },
+  {
+    "id": "indoor_corridor_016",
+    "category": "indoor_corridor",
+    "split": "TUNE",
+    "is_hazard_category": false,
+    "expected_walkable": true,
+    "corridor_status": "WALKABLE",
+    "expected_hazards": [],
+    "expected_objects": [],
+    "license": "CC BY 4.0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/c/cb/Corridor_Botanical_Museum_Helsinki_02.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "indoor_corridor_016.jpg"
+  },
+  {
+    "id": "indoor_corridor_017",
+    "category": "indoor_corridor",
+    "split": "TUNE",
+    "is_hazard_category": false,
+    "expected_walkable": true,
+    "corridor_status": "WALKABLE",
+    "expected_hazards": [],
+    "expected_objects": [
+      "person"
+    ],
+    "license": "CC0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/c/cf/Corridor_inside_the_Grandmaster%27s_Palace%2C_Valletta%2C_Malta.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "indoor_corridor_017.jpg"
+  },
+  {
+    "id": "indoor_corridor_018",
+    "category": "indoor_corridor",
+    "split": "TUNE",
+    "is_hazard_category": false,
+    "expected_walkable": true,
+    "corridor_status": "WALKABLE",
+    "expected_hazards": [],
+    "expected_objects": [],
+    "license": "CC BY 4.0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/e/e4/Corridor_Viikinm%C3%A4ki_Wastewater_Treatment_Plant_2.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "indoor_corridor_018.jpg"
+  },
+  {
+    "id": "indoor_corridor_019",
+    "category": "indoor_corridor",
+    "split": "TUNE",
+    "is_hazard_category": false,
+    "expected_walkable": true,
+    "corridor_status": "WALKABLE",
+    "expected_hazards": [],
+    "expected_objects": [
+      "person",
+      "bench",
+      "potted plant",
+      "tie"
+    ],
+    "license": "CC BY-SA 4.0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/c/cf/Corridor_of_Laboratory_School.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "indoor_corridor_019.jpg"
+  },
+  {
+    "id": "indoor_corridor_020",
+    "category": "indoor_corridor",
+    "split": "TUNE",
+    "is_hazard_category": false,
+    "expected_walkable": true,
+    "corridor_status": "WALKABLE",
+    "expected_hazards": [],
+    "expected_objects": [],
+    "license": "CC BY-SA 4.0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/9/91/Green_corridor_from_Lillie_Bridge.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "indoor_corridor_020.jpg"
+  },
+  {
+    "id": "indoor_corridor_021",
+    "category": "indoor_corridor",
+    "split": "TUNE",
+    "is_hazard_category": false,
+    "expected_walkable": true,
+    "corridor_status": "WALKABLE",
+    "expected_hazards": [],
+    "expected_objects": [
+      "person",
+      "bench"
+    ],
+    "license": "CC BY-SA 4.0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/6/69/Corridors_of_Classroom_Complex.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "indoor_corridor_021.jpg"
+  },
+  {
+    "id": "indoor_corridor_022",
+    "category": "indoor_corridor",
+    "split": "TUNE",
+    "is_hazard_category": false,
+    "expected_walkable": true,
+    "corridor_status": "WALKABLE",
+    "expected_hazards": [],
+    "expected_objects": [],
+    "license": "CC BY-SA 2.0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/d/dd/Hotel_room_corridor_at_Circus_Circus_Reno_in_2010.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "indoor_corridor_022.jpg"
+  },
+  {
+    "id": "indoor_corridor_023",
+    "category": "indoor_corridor",
+    "split": "TUNE",
+    "is_hazard_category": false,
+    "expected_walkable": true,
+    "corridor_status": "WALKABLE",
+    "expected_hazards": [],
+    "expected_objects": [],
+    "license": "CC0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/c/c0/Deambulatory_north_Saint-Eutropius_romanesque_Basilica_Saintes_Charente-Maritime.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "indoor_corridor_023.jpg"
+  },
+  {
+    "id": "indoor_corridor_024",
+    "category": "indoor_corridor",
+    "split": "TUNE",
+    "is_hazard_category": false,
+    "expected_walkable": true,
+    "corridor_status": "WALKABLE",
+    "expected_hazards": [],
+    "expected_objects": [],
+    "license": "CC BY-SA 4.0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/4/44/Explorer_of_the_Seas_corridor.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "indoor_corridor_024.jpg"
+  },
+  {
+    "id": "indoor_floor_001",
+    "category": "indoor_floor",
+    "split": "TUNE",
+    "is_hazard_category": false,
+    "expected_walkable": true,
+    "corridor_status": "WALKABLE",
+    "expected_hazards": [],
+    "expected_objects": [],
+    "license": "CC BY 4.0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/8/83/Drovyanoy_Lane_4_2015-07_1436112224.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "indoor_floor_001.jpg"
+  },
+  {
+    "id": "indoor_floor_002",
+    "category": "indoor_floor",
+    "split": "TUNE",
+    "is_hazard_category": false,
+    "expected_walkable": true,
+    "corridor_status": "WALKABLE",
+    "expected_hazards": [],
+    "expected_objects": [],
+    "license": "CC BY 4.0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/5/57/Drovyanoy_Lane_4_2015-07_1436112199.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "indoor_floor_002.jpg"
+  },
+  {
+    "id": "indoor_floor_003",
+    "category": "indoor_floor",
+    "split": "TUNE",
+    "is_hazard_category": false,
+    "expected_walkable": true,
+    "corridor_status": "WALKABLE",
+    "expected_hazards": [],
+    "expected_objects": [],
+    "license": "CC BY-SA 4.0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/1/1a/Aledo_Opera_House_hardwood_flooring.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "indoor_floor_003.jpg"
+  },
+  {
+    "id": "indoor_floor_004",
+    "category": "indoor_floor",
+    "split": "TUNE",
+    "is_hazard_category": false,
+    "expected_walkable": true,
+    "corridor_status": "WALKABLE",
+    "expected_hazards": [],
+    "expected_objects": [],
+    "license": "CC BY-SA 4.0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/7/7a/2021_Popular_Vinyl_Plank_Flooring_Color.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "indoor_floor_004.jpg"
+  },
+  {
+    "id": "indoor_floor_005",
+    "category": "indoor_floor",
+    "split": "TUNE",
+    "is_hazard_category": false,
+    "expected_walkable": true,
+    "corridor_status": "WALKABLE",
+    "expected_hazards": [],
+    "expected_objects": [
+      "handbag",
+      "bed"
+    ],
+    "license": "CC BY-SA 4.0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/e/e3/2014_Tbilisi%2C_Dywany_na_ulicy.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "indoor_floor_005.jpg"
+  },
+  {
+    "id": "indoor_floor_006",
+    "category": "indoor_floor",
+    "split": "TUNE",
+    "is_hazard_category": false,
+    "expected_walkable": true,
+    "corridor_status": "WALKABLE",
+    "expected_hazards": [],
+    "expected_objects": [],
+    "license": "CC BY 4.0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/0/0a/Drovyanoy_Lane_4_2015-07_1436112191.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "indoor_floor_006.jpg"
+  },
+  {
+    "id": "indoor_floor_007",
+    "category": "indoor_floor",
+    "split": "TUNE",
+    "is_hazard_category": false,
+    "expected_walkable": true,
+    "corridor_status": "WALKABLE",
+    "expected_hazards": [],
+    "expected_objects": [],
+    "license": "CC BY-SA 2.0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/3/32/Factory_Flooring_Outlet%2C_Ravensthorpe_Road_-_geograph.org.uk_-_5260608.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "indoor_floor_007.jpg"
+  },
+  {
+    "id": "indoor_floor_008",
+    "category": "indoor_floor",
+    "split": "TUNE",
+    "is_hazard_category": false,
+    "expected_walkable": true,
+    "corridor_status": "WALKABLE",
+    "expected_hazards": [],
+    "expected_objects": [],
+    "license": "CC BY-SA 4.0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/0/06/Flooring_2013_%282%29.JPG?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "indoor_floor_008.jpg"
+  },
+  {
+    "id": "indoor_floor_009",
+    "category": "indoor_floor",
+    "split": "TUNE",
+    "is_hazard_category": false,
+    "expected_walkable": true,
+    "corridor_status": "WALKABLE",
+    "expected_hazards": [],
+    "expected_objects": [],
+    "license": "CC BY-SA 4.0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/8/8a/Flooring_2013_%281%29.JPG?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "indoor_floor_009.jpg"
+  },
+  {
+    "id": "indoor_floor_010",
+    "category": "indoor_floor",
+    "split": "TUNE",
+    "is_hazard_category": false,
+    "expected_walkable": true,
+    "corridor_status": "WALKABLE",
+    "expected_hazards": [],
+    "expected_objects": [],
+    "license": "CC BY-SA 4.0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/2/22/Flooring_design.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "indoor_floor_010.jpg"
+  },
+  {
+    "id": "indoor_floor_011",
+    "category": "indoor_floor",
+    "split": "TUNE",
+    "is_hazard_category": false,
+    "expected_walkable": true,
+    "corridor_status": "WALKABLE",
+    "expected_hazards": [],
+    "expected_objects": [],
+    "license": "CC BY-SA 4.0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/9/9b/Flooring_2013_%283%29.JPG?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "indoor_floor_011.jpg"
+  },
+  {
+    "id": "indoor_floor_012",
+    "category": "indoor_floor",
+    "split": "TUNE",
+    "is_hazard_category": false,
+    "expected_walkable": true,
+    "corridor_status": "WALKABLE",
+    "expected_hazards": [],
+    "expected_objects": [
+      "person"
+    ],
+    "license": "CC BY-SA 4.0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/4/4a/Flooring.png?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "indoor_floor_012.jpg"
+  },
+  {
+    "id": "indoor_floor_013",
+    "category": "indoor_floor",
+    "split": "TUNE",
+    "is_hazard_category": false,
+    "expected_walkable": true,
+    "corridor_status": "WALKABLE",
+    "expected_hazards": [],
+    "expected_objects": [
+      "book"
+    ],
+    "license": "CC BY-SA 3.0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/5/58/Flooring_strips.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "indoor_floor_013.jpg"
+  },
+  {
+    "id": "indoor_floor_014",
+    "category": "indoor_floor",
+    "split": "TUNE",
+    "is_hazard_category": false,
+    "expected_walkable": true,
+    "corridor_status": "WALKABLE",
+    "expected_hazards": [],
+    "expected_objects": [],
+    "license": "Public domain",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/4/4b/House_of_Marcus_Lucretius_Fronto_Pompeii_2018_Room_%E2%80%98f%E2%80%99%2C_detail_of_flooring_courtesy_of_Annette_Haug.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "indoor_floor_014.jpg"
+  },
+  {
+    "id": "indoor_floor_015",
+    "category": "indoor_floor",
+    "split": "TUNE",
+    "is_hazard_category": false,
+    "expected_walkable": true,
+    "corridor_status": "WALKABLE",
+    "expected_hazards": [],
+    "expected_objects": [],
+    "license": "Public domain",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/d/d6/House_of_Marcus_Lucretius_Fronto_Pompeii_2018_Room_%E2%80%98f%E2%80%99%2C_detail_of_flooring_%282%29_courtesy_of_Annette_Haug.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "indoor_floor_015.jpg"
+  },
+  {
+    "id": "indoor_floor_016",
+    "category": "indoor_floor",
+    "split": "TUNE",
+    "is_hazard_category": false,
+    "expected_walkable": true,
+    "corridor_status": "WALKABLE",
+    "expected_hazards": [],
+    "expected_objects": [
+      "stop sign"
+    ],
+    "license": "Public domain",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/3/3d/House_of_Marcus_Lucretius_Fronto_Pompeii_2018_Room_%E2%80%98f%E2%80%99%2C_detail_of_flooring_%283%29_courtesy_of_Annette_Haug.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "indoor_floor_016.jpg"
+  },
+  {
+    "id": "indoor_floor_017",
+    "category": "indoor_floor",
+    "split": "TUNE",
+    "is_hazard_category": false,
+    "expected_walkable": true,
+    "corridor_status": "WALKABLE",
+    "expected_hazards": [],
+    "expected_objects": [
+      "bench"
+    ],
+    "license": "Public domain",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/0/0b/House_of_Marcus_Lucretius_Fronto_Pompeii_2018_Room_%E2%80%98f%E2%80%99%2C_doorway_threshold%2C_looking_north_towards_flooring_in_atrium_courtesy_of_Annette_Haug.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "indoor_floor_017.jpg"
+  },
+  {
+    "id": "indoor_floor_018",
+    "category": "indoor_floor",
+    "split": "TUNE",
+    "is_hazard_category": false,
+    "expected_walkable": true,
+    "corridor_status": "WALKABLE",
+    "expected_hazards": [],
+    "expected_objects": [],
+    "license": "CC BY-SA 4.0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/5/54/Hardwood_Flooring_Installation.png?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "indoor_floor_018.jpg"
+  },
+  {
+    "id": "indoor_floor_019",
+    "category": "indoor_floor",
+    "split": "TUNE",
+    "is_hazard_category": false,
+    "expected_walkable": true,
+    "corridor_status": "WALKABLE",
+    "expected_hazards": [],
+    "expected_objects": [],
+    "license": "Public domain",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/5/57/House_of_Marcus_Lucretius_Fronto_Pompeii_2018_Room_%E2%80%98g%E2%80%99%2C_detail_from_flooring_%282%29_courtesy_of_Annette_Haug.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "indoor_floor_019.jpg"
+  },
+  {
+    "id": "indoor_floor_020",
+    "category": "indoor_floor",
+    "split": "TUNE",
+    "is_hazard_category": false,
+    "expected_walkable": true,
+    "corridor_status": "WALKABLE",
+    "expected_hazards": [],
+    "expected_objects": [],
+    "license": "Public domain",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/2/20/House_of_the_Vettii_VI_15%2C1_Pompeii_2017_Threshold_and_flooring_between_atrium_and_oecus_%28e%29_courtesy_of_Annette_Haug.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "indoor_floor_020.jpg"
+  },
+  {
+    "id": "indoor_floor_021",
+    "category": "indoor_floor",
+    "split": "TUNE",
+    "is_hazard_category": false,
+    "expected_walkable": true,
+    "corridor_status": "WALKABLE",
+    "expected_hazards": [],
+    "expected_objects": [],
+    "license": "Public domain",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/4/49/House_of_Marcus_Lucretius_Fronto_Pompeii_2018_Room_%E2%80%98g%E2%80%99%2C_looking_west_across_flooring_in_south-west_corner_courtesy_of_Annette_Haug.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "indoor_floor_021.jpg"
+  },
+  {
+    "id": "indoor_floor_022",
+    "category": "indoor_floor",
+    "split": "TUNE",
+    "is_hazard_category": false,
+    "expected_walkable": true,
+    "corridor_status": "WALKABLE",
+    "expected_hazards": [],
+    "expected_objects": [],
+    "license": "Public domain",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/0/0f/House_of_Marcus_Lucretius_Fronto_Pompeii_2018_Room_%E2%80%98g%E2%80%99%2C_detail_from_flooring_courtesy_of_Annette_Haug.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "indoor_floor_022.jpg"
+  },
+  {
+    "id": "indoor_floor_023",
+    "category": "indoor_floor",
+    "split": "TUNE",
+    "is_hazard_category": false,
+    "expected_walkable": true,
+    "corridor_status": "WALKABLE",
+    "expected_hazards": [],
+    "expected_objects": [],
+    "license": "CC BY 4.0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/7/7e/Nevskiy_142_-_Bakunina_2_-_Degtyarnaya_1_-_2_Sovetskaia_27_2015-07_1436127731.JPG?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "indoor_floor_023.jpg"
+  },
+  {
+    "id": "indoor_floor_024",
+    "category": "indoor_floor",
+    "split": "TUNE",
+    "is_hazard_category": false,
+    "expected_walkable": true,
+    "corridor_status": "WALKABLE",
+    "expected_hazards": [],
+    "expected_objects": [],
+    "license": "CC BY-SA 4.0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/c/ce/Kopenhagen_%28DK%29%2C_Nyhavn_--_2017_--_1711.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "indoor_floor_024.jpg"
+  },
+  {
+    "id": "outdoor_footpath_001",
+    "category": "outdoor_footpath",
+    "split": "TUNE",
+    "is_hazard_category": false,
+    "expected_walkable": true,
+    "corridor_status": "WALKABLE",
+    "expected_hazards": [],
+    "expected_objects": [],
+    "license": "CC BY-SA 4.0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/7/7a/Amboy_%28California%2C_USA%29%2C_Hist._Route_66_--_2012_--_1.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "outdoor_footpath_001.jpg"
+  },
+  {
+    "id": "outdoor_footpath_002",
+    "category": "outdoor_footpath",
+    "split": "TUNE",
+    "is_hazard_category": false,
+    "expected_walkable": true,
+    "corridor_status": "WALKABLE",
+    "expected_hazards": [],
+    "expected_objects": [],
+    "license": "CC BY-SA 4.0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/1/15/Brick_sidewalk_%28Salem%2C_Massachusetts%29_Photography_by_David_Adam_Kess.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "outdoor_footpath_002.jpg"
+  },
+  {
+    "id": "outdoor_footpath_003",
+    "category": "outdoor_footpath",
+    "split": "TUNE",
+    "is_hazard_category": false,
+    "expected_walkable": true,
+    "corridor_status": "WALKABLE",
+    "expected_hazards": [],
+    "expected_objects": [],
+    "license": "CC BY-SA 3.0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/b/b8/Church_of_St_George_-_Kyustendil.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "outdoor_footpath_003.jpg"
+  },
+  {
+    "id": "outdoor_footpath_004",
+    "category": "outdoor_footpath",
+    "split": "TUNE",
+    "is_hazard_category": false,
+    "expected_walkable": true,
+    "corridor_status": "WALKABLE",
+    "expected_hazards": [],
+    "expected_objects": [
+      "car"
+    ],
+    "license": "CC BY-SA 3.0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/5/5c/Basilica_of_the_Sacred_Heart.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "outdoor_footpath_004.jpg"
+  },
+  {
+    "id": "outdoor_footpath_005",
+    "category": "outdoor_footpath",
+    "split": "TUNE",
+    "is_hazard_category": false,
+    "expected_walkable": true,
+    "corridor_status": "WALKABLE",
+    "expected_hazards": [],
+    "expected_objects": [],
+    "license": "CC BY-SA 4.0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/d/dc/D%C3%BClmen%2C_St.-Viktor-Kirche%2C_Eingangsportal_--_2021_--_4504-10.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "outdoor_footpath_005.jpg"
+  },
+  {
+    "id": "outdoor_footpath_006",
+    "category": "outdoor_footpath",
+    "split": "TUNE",
+    "is_hazard_category": false,
+    "expected_walkable": true,
+    "corridor_status": "WALKABLE",
+    "expected_hazards": [],
+    "expected_objects": [
+      "potted plant"
+    ],
+    "license": "CC BY-SA 4.0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/1/1b/A_scenic_sidewalk_inside_of_an_old_factory.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "outdoor_footpath_006.jpg"
+  },
+  {
+    "id": "outdoor_footpath_007",
+    "category": "outdoor_footpath",
+    "split": "TUNE",
+    "is_hazard_category": false,
+    "expected_walkable": true,
+    "corridor_status": "WALKABLE",
+    "expected_hazards": [],
+    "expected_objects": [],
+    "license": "CC BY-SA 4.0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/3/39/Cracked_sidewalk_1.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "outdoor_footpath_007.jpg"
+  },
+  {
+    "id": "outdoor_footpath_008",
+    "category": "outdoor_footpath",
+    "split": "TUNE",
+    "is_hazard_category": false,
+    "expected_walkable": true,
+    "corridor_status": "WALKABLE",
+    "expected_hazards": [],
+    "expected_objects": [],
+    "license": "CC BY-SA 4.0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/0/0b/Ermita_de_San_Bartolom%C3%A9%2C_Parque_Natural_del_Ca%C3%B1%C3%B3n_del_R%C3%ADo_Lobos%2C_Soria%2C_Espa%C3%B1a%2C_2017-05-26%2C_DD_11-16_PAN.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "outdoor_footpath_008.jpg"
+  },
+  {
+    "id": "outdoor_footpath_009",
+    "category": "outdoor_footpath",
+    "split": "TUNE",
+    "is_hazard_category": false,
+    "expected_walkable": true,
+    "corridor_status": "WALKABLE",
+    "expected_hazards": [],
+    "expected_objects": [],
+    "license": "CC BY-SA 4.0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/6/69/Cracked_pavement_2.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "outdoor_footpath_009.jpg"
+  },
+  {
+    "id": "outdoor_footpath_010",
+    "category": "outdoor_footpath",
+    "split": "TUNE",
+    "is_hazard_category": false,
+    "expected_walkable": true,
+    "corridor_status": "WALKABLE",
+    "expected_hazards": [],
+    "expected_objects": [],
+    "license": "Attribution",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/8/8a/Gehweg.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "outdoor_footpath_010.jpg"
+  },
+  {
+    "id": "outdoor_footpath_011",
+    "category": "outdoor_footpath",
+    "split": "TUNE",
+    "is_hazard_category": false,
+    "expected_walkable": true,
+    "corridor_status": "WALKABLE",
+    "expected_hazards": [],
+    "expected_objects": [
+      "bicycle",
+      "person",
+      "car"
+    ],
+    "license": "Public domain",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/4/4a/Max_Dupain_-_Adelaide_-_Google_Art_Project.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "outdoor_footpath_011.jpg"
+  },
+  {
+    "id": "outdoor_footpath_012",
+    "category": "outdoor_footpath",
+    "split": "TUNE",
+    "is_hazard_category": false,
+    "expected_walkable": true,
+    "corridor_status": "WALKABLE",
+    "expected_hazards": [],
+    "expected_objects": [],
+    "license": "CC BY-SA 4.0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/2/2c/Globen_September_2014_01.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "outdoor_footpath_012.jpg"
+  },
+  {
+    "id": "outdoor_footpath_013",
+    "category": "outdoor_footpath",
+    "split": "TUNE",
+    "is_hazard_category": false,
+    "expected_walkable": true,
+    "corridor_status": "WALKABLE",
+    "expected_hazards": [],
+    "expected_objects": [],
+    "license": "CC BY-SA 4.0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/7/79/Curtis_Paving_sidewalk_marker.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "outdoor_footpath_013.jpg"
+  },
+  {
+    "id": "outdoor_footpath_014",
+    "category": "outdoor_footpath",
+    "split": "TUNE",
+    "is_hazard_category": false,
+    "expected_walkable": true,
+    "corridor_status": "WALKABLE",
+    "expected_hazards": [],
+    "expected_objects": [
+      "bird"
+    ],
+    "license": "CC BY-SA 4.0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/5/59/Larus_argentatus_walking_on_the_sidewalk_in_Dieppe_France.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "outdoor_footpath_014.jpg"
+  },
+  {
+    "id": "outdoor_footpath_015",
+    "category": "outdoor_footpath",
+    "split": "TUNE",
+    "is_hazard_category": false,
+    "expected_walkable": true,
+    "corridor_status": "WALKABLE",
+    "expected_hazards": [],
+    "expected_objects": [
+      "bicycle"
+    ],
+    "license": "CC BY-SA 4.0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/5/5a/M%C3%BCnster%2C_Freiherr-vom-Stein-Haus_--_2021_--_9042-6.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "outdoor_footpath_015.jpg"
+  },
+  {
+    "id": "outdoor_footpath_016",
+    "category": "outdoor_footpath",
+    "split": "TUNE",
+    "is_hazard_category": false,
+    "expected_walkable": true,
+    "corridor_status": "WALKABLE",
+    "expected_hazards": [],
+    "expected_objects": [
+      "car",
+      "person"
+    ],
+    "license": "CC BY-SA 4.0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/a/a4/Film_on_sidewalk.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "outdoor_footpath_016.jpg"
+  },
+  {
+    "id": "outdoor_footpath_017",
+    "category": "outdoor_footpath",
+    "split": "TUNE",
+    "is_hazard_category": false,
+    "expected_walkable": true,
+    "corridor_status": "WALKABLE",
+    "expected_hazards": [],
+    "expected_objects": [
+      "chair",
+      "bench"
+    ],
+    "license": "CC BY-SA 4.0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/d/d8/M%C3%BCnster%2C_F%C3%BCrstbisch%C3%B6fliches_Schloss_--_2018_--_1930-31_%28cropped%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "outdoor_footpath_017.jpg"
+  },
+  {
+    "id": "outdoor_footpath_018",
+    "category": "outdoor_footpath",
+    "split": "TUNE",
+    "is_hazard_category": false,
+    "expected_walkable": true,
+    "corridor_status": "WALKABLE",
+    "expected_hazards": [],
+    "expected_objects": [],
+    "license": "CC BY-SA 4.0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/f/f7/M%C3%BCnster%2C_Liudgerhaus_und_Di%C3%B6zesanbibliothek_--_2014_--_0303.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "outdoor_footpath_018.jpg"
+  },
+  {
+    "id": "outdoor_footpath_019",
+    "category": "outdoor_footpath",
+    "split": "TUNE",
+    "is_hazard_category": false,
+    "expected_walkable": true,
+    "corridor_status": "WALKABLE",
+    "expected_hazards": [],
+    "expected_objects": [],
+    "license": "CC0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/d/d8/Pavement_ants_battling_on_sidewalk_closeup.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "outdoor_footpath_019.jpg"
+  },
+  {
+    "id": "outdoor_footpath_020",
+    "category": "outdoor_footpath",
+    "split": "TUNE",
+    "is_hazard_category": false,
+    "expected_walkable": true,
+    "corridor_status": "WALKABLE",
+    "expected_hazards": [],
+    "expected_objects": [
+      "horse",
+      "person"
+    ],
+    "license": "CC BY-SA 4.0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/5/5a/Schoenbrunn_Palace_as_seen_from_Neptune_Fountain%2C_September_2016.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "outdoor_footpath_020.jpg"
+  },
+  {
+    "id": "outdoor_footpath_021",
+    "category": "outdoor_footpath",
+    "split": "TUNE",
+    "is_hazard_category": false,
+    "expected_walkable": true,
+    "corridor_status": "WALKABLE",
+    "expected_hazards": [],
+    "expected_objects": [
+      "person",
+      "bench",
+      "chair"
+    ],
+    "license": "CC BY-SA 4.0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/1/1a/M%C3%BCnster%2C_Schloss_--_2014_--_6769-71_%28crop%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "outdoor_footpath_021.jpg"
+  },
+  {
+    "id": "outdoor_footpath_022",
+    "category": "outdoor_footpath",
+    "split": "TUNE",
+    "is_hazard_category": false,
+    "expected_walkable": true,
+    "corridor_status": "WALKABLE",
+    "expected_hazards": [],
+    "expected_objects": [],
+    "license": "CC BY-SA 3.0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/a/a6/Neak_Pean%2C_Angkor%2C_Camboya%2C_2013-08-17%2C_DD_01.JPG?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "outdoor_footpath_022.jpg"
+  },
+  {
+    "id": "outdoor_footpath_023",
+    "category": "outdoor_footpath",
+    "split": "TUNE",
+    "is_hazard_category": false,
+    "expected_walkable": true,
+    "corridor_status": "WALKABLE",
+    "expected_hazards": [],
+    "expected_objects": [],
+    "license": "CC0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/2/21/Pavement_ants_battling_on_sidewalk.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "outdoor_footpath_023.jpg"
+  },
+  {
+    "id": "outdoor_footpath_024",
+    "category": "outdoor_footpath",
+    "split": "TUNE",
+    "is_hazard_category": false,
+    "expected_walkable": true,
+    "corridor_status": "WALKABLE",
+    "expected_hazards": [],
+    "expected_objects": [
+      "car"
+    ],
+    "license": "CC BY-SA 3.0 ee",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/5/57/Sangaste_m%C3%B5isa_peahoone1.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "outdoor_footpath_024.jpg"
+  },
+  {
+    "id": "outdoor_road_clear_001",
+    "category": "outdoor_road_clear",
+    "split": "TUNE",
+    "is_hazard_category": false,
+    "expected_walkable": true,
+    "corridor_status": "WALKABLE",
+    "expected_hazards": [],
+    "expected_objects": [],
+    "license": "CC BY-SA 3.0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/d/d3/Asphalt_base.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "outdoor_road_clear_001.jpg"
+  },
+  {
+    "id": "outdoor_road_clear_002",
+    "category": "outdoor_road_clear",
+    "split": "TUNE",
+    "is_hazard_category": false,
+    "expected_walkable": true,
+    "corridor_status": "WALKABLE",
+    "expected_hazards": [],
+    "expected_objects": [],
+    "license": "CC BY 3.0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/f/fd/002_Damaged_road_surface_background_-_cracked_asphalt_blacktop_in_Spain.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "outdoor_road_clear_002.jpg"
+  },
+  {
+    "id": "outdoor_road_clear_003",
+    "category": "outdoor_road_clear",
+    "split": "TUNE",
+    "is_hazard_category": false,
+    "expected_walkable": true,
+    "corridor_status": "WALKABLE",
+    "expected_hazards": [],
+    "expected_objects": [],
+    "license": "CC BY-SA 4.0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/5/5c/Asphalt_roads_in_Russia._img_03.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "outdoor_road_clear_003.jpg"
+  },
+  {
+    "id": "outdoor_road_clear_004",
+    "category": "outdoor_road_clear",
+    "split": "TUNE",
+    "is_hazard_category": false,
+    "expected_walkable": true,
+    "corridor_status": "WALKABLE",
+    "expected_hazards": [],
+    "expected_objects": [],
+    "license": "CC BY-SA 4.0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/6/61/Asphalt_roads_in_Russia._img_02.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "outdoor_road_clear_004.jpg"
+  },
+  {
+    "id": "outdoor_road_clear_005",
+    "category": "outdoor_road_clear",
+    "split": "TUNE",
+    "is_hazard_category": false,
+    "expected_walkable": true,
+    "corridor_status": "WALKABLE",
+    "expected_hazards": [],
+    "expected_objects": [],
+    "license": "CC BY-SA 4.0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/7/74/Asphalt_roads_in_Russia._img_04.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "outdoor_road_clear_005.jpg"
+  },
+  {
+    "id": "outdoor_road_clear_006",
+    "category": "outdoor_road_clear",
+    "split": "TUNE",
+    "is_hazard_category": false,
+    "expected_walkable": true,
+    "corridor_status": "WALKABLE",
+    "expected_hazards": [],
+    "expected_objects": [
+      "car"
+    ],
+    "license": "CC BY-SA 4.0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/2/21/Asphalt_road_in_Ghana.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "outdoor_road_clear_006.jpg"
+  },
+  {
+    "id": "outdoor_road_clear_007",
+    "category": "outdoor_road_clear",
+    "split": "TUNE",
+    "is_hazard_category": false,
+    "expected_walkable": true,
+    "corridor_status": "WALKABLE",
+    "expected_hazards": [],
+    "expected_objects": [],
+    "license": "CC BY-SA 4.0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/3/3e/Asphalt_roads_in_Russia._img_01.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "outdoor_road_clear_007.jpg"
+  },
+  {
+    "id": "outdoor_road_clear_008",
+    "category": "outdoor_road_clear",
+    "split": "TUNE",
+    "is_hazard_category": false,
+    "expected_walkable": true,
+    "corridor_status": "WALKABLE",
+    "expected_hazards": [],
+    "expected_objects": [
+      "person"
+    ],
+    "license": "CC BY-SA 3.0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/d/d2/Chiang_Kai-shek_memorial_amk.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "outdoor_road_clear_008.jpg"
+  },
+  {
+    "id": "outdoor_road_clear_009",
+    "category": "outdoor_road_clear",
+    "split": "TUNE",
+    "is_hazard_category": false,
+    "expected_walkable": true,
+    "corridor_status": "WALKABLE",
+    "expected_hazards": [],
+    "expected_objects": [],
+    "license": "CC BY-SA 4.0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/b/bb/Asphalt_roads_in_Vladimirskaya_Oblast.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "outdoor_road_clear_009.jpg"
+  },
+  {
+    "id": "outdoor_road_clear_010",
+    "category": "outdoor_road_clear",
+    "split": "TUNE",
+    "is_hazard_category": false,
+    "expected_walkable": true,
+    "corridor_status": "WALKABLE",
+    "expected_hazards": [],
+    "expected_objects": [
+      "car",
+      "truck",
+      "fire hydrant"
+    ],
+    "license": "CC BY-SA 4.0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/1/1e/Concrete_base_for_asphalt_pavement.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "outdoor_road_clear_010.jpg"
+  },
+  {
+    "id": "outdoor_road_clear_011",
+    "category": "outdoor_road_clear",
+    "split": "TUNE",
+    "is_hazard_category": false,
+    "expected_walkable": true,
+    "corridor_status": "WALKABLE",
+    "expected_hazards": [],
+    "expected_objects": [],
+    "license": "CC BY-SA 4.0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/b/b5/Asphalt_roads_in_Russia._img_05.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "outdoor_road_clear_011.jpg"
+  },
+  {
+    "id": "outdoor_road_clear_012",
+    "category": "outdoor_road_clear",
+    "split": "TUNE",
+    "is_hazard_category": false,
+    "expected_walkable": true,
+    "corridor_status": "WALKABLE",
+    "expected_hazards": [],
+    "expected_objects": [],
+    "license": "CC BY-SA 4.0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/c/c0/Front_view_of_the_Eastern_side_of_the_Imperial_Throne_Hall_Geunjeongjeon_at_Gyeongbokgung_Palace_in_Seoul.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "outdoor_road_clear_012.jpg"
+  },
+  {
+    "id": "outdoor_road_clear_013",
+    "category": "outdoor_road_clear",
+    "split": "TUNE",
+    "is_hazard_category": false,
+    "expected_walkable": true,
+    "corridor_status": "WALKABLE",
+    "expected_hazards": [],
+    "expected_objects": [
+      "person",
+      "car",
+      "bicycle",
+      "handbag",
+      "chair"
+    ],
+    "license": "CC BY-SA 4.0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/f/ff/Filled_pavement_tiles_in_Stuttgart.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "outdoor_road_clear_013.jpg"
+  },
+  {
+    "id": "outdoor_road_clear_014",
+    "category": "outdoor_road_clear",
+    "split": "TUNE",
+    "is_hazard_category": false,
+    "expected_walkable": true,
+    "corridor_status": "WALKABLE",
+    "expected_hazards": [],
+    "expected_objects": [],
+    "license": "CC BY-SA 4.0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/9/9c/Front_view_of_Heungnyemun_Gate_in_Gyeongbokgung_Palace_Seoul_South_Korea.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "outdoor_road_clear_014.jpg"
+  },
+  {
+    "id": "outdoor_road_clear_015",
+    "category": "outdoor_road_clear",
+    "split": "TUNE",
+    "is_hazard_category": false,
+    "expected_walkable": true,
+    "corridor_status": "WALKABLE",
+    "expected_hazards": [],
+    "expected_objects": [],
+    "license": "CC BY-SA 4.0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/f/f0/Asphalt_roads_in_Tverskaya_Oblast.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "outdoor_road_clear_015.jpg"
+  },
+  {
+    "id": "outdoor_road_clear_016",
+    "category": "outdoor_road_clear",
+    "split": "TUNE",
+    "is_hazard_category": false,
+    "expected_walkable": true,
+    "corridor_status": "WALKABLE",
+    "expected_hazards": [],
+    "expected_objects": [],
+    "license": "CC BY-SA 4.0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/2/2c/Globen_September_2014_01.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "outdoor_road_clear_016.jpg"
+  },
+  {
+    "id": "outdoor_road_clear_017",
+    "category": "outdoor_road_clear",
+    "split": "TUNE",
+    "is_hazard_category": false,
+    "expected_walkable": true,
+    "corridor_status": "WALKABLE",
+    "expected_hazards": [],
+    "expected_objects": [
+      "person",
+      "car",
+      "truck"
+    ],
+    "license": "CC BY-SA 4.0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/7/79/Heavy_machines_for_asphalt_pavement_in_Canada.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "outdoor_road_clear_017.jpg"
+  },
+  {
+    "id": "outdoor_road_clear_018",
+    "category": "outdoor_road_clear",
+    "split": "TUNE",
+    "is_hazard_category": false,
+    "expected_walkable": true,
+    "corridor_status": "WALKABLE",
+    "expected_hazards": [],
+    "expected_objects": [
+      "person",
+      "handbag"
+    ],
+    "license": "CC0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/3/32/Machine_crushing_asphalt.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "outdoor_road_clear_018.jpg"
+  },
+  {
+    "id": "outdoor_road_clear_019",
+    "category": "outdoor_road_clear",
+    "split": "TUNE",
+    "is_hazard_category": false,
+    "expected_walkable": true,
+    "corridor_status": "WALKABLE",
+    "expected_hazards": [],
+    "expected_objects": [],
+    "license": "CC BY-SA 4.0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/2/21/Intermediate_asphald_road_surface_near_Krate%C4%8Dko.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "outdoor_road_clear_019.jpg"
+  },
+  {
+    "id": "outdoor_road_clear_020",
+    "category": "outdoor_road_clear",
+    "split": "TUNE",
+    "is_hazard_category": false,
+    "expected_walkable": true,
+    "corridor_status": "WALKABLE",
+    "expected_hazards": [],
+    "expected_objects": [
+      "bird"
+    ],
+    "license": "CC BY-SA 4.0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/5/5e/Goose_on_Pavement_Staring_at_Viewer.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "outdoor_road_clear_020.jpg"
+  },
+  {
+    "id": "outdoor_road_clear_021",
+    "category": "outdoor_road_clear",
+    "split": "TUNE",
+    "is_hazard_category": false,
+    "expected_walkable": true,
+    "corridor_status": "WALKABLE",
+    "expected_hazards": [],
+    "expected_objects": [],
+    "license": "CC BY 4.0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/e/e5/Red_hedges%2C_green_floral_arch_gates_%26_concrete_pavements_in_the_Joysana_Retreat%2C_a_resort_in_Oinam_town%2C_near_Nambol_town%2C_in_Manipur_state_%28Kangleipak%29_01.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "outdoor_road_clear_021.jpg"
+  },
+  {
+    "id": "outdoor_road_clear_022",
+    "category": "outdoor_road_clear",
+    "split": "TUNE",
+    "is_hazard_category": false,
+    "expected_walkable": true,
+    "corridor_status": "WALKABLE",
+    "expected_hazards": [],
+    "expected_objects": [],
+    "license": "CC BY-SA 4.0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/e/e2/Novi_i_stari_asflat%2C_usporedba.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "outdoor_road_clear_022.jpg"
+  },
+  {
+    "id": "outdoor_road_clear_023",
+    "category": "outdoor_road_clear",
+    "split": "TUNE",
+    "is_hazard_category": false,
+    "expected_walkable": true,
+    "corridor_status": "WALKABLE",
+    "expected_hazards": [],
+    "expected_objects": [],
+    "license": "CC0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/d/da/Snow_on_the_asphalt_road_in_Beijing.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "outdoor_road_clear_023.jpg"
+  },
+  {
+    "id": "outdoor_road_clear_024",
+    "category": "outdoor_road_clear",
+    "split": "TUNE",
+    "is_hazard_category": false,
+    "expected_walkable": true,
+    "corridor_status": "WALKABLE",
+    "expected_hazards": [],
+    "expected_objects": [],
+    "license": "CC BY-SA 2.5",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/9/9f/Tessellated_Pavement_Sunrise_Landscape.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "outdoor_road_clear_024.jpg"
+  },
+  {
+    "id": "pedestrian_crossing_001",
+    "category": "pedestrian_crossing",
+    "split": "TUNE",
+    "is_hazard_category": false,
+    "expected_walkable": false,
+    "corridor_status": "BLOCKED",
+    "expected_hazards": [],
+    "expected_objects": [
+      "horse",
+      "person",
+      "dog"
+    ],
+    "license": "Public domain",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/1/18/Entrance_of_the_Menai_Bridge_-_from_the_Carnarvon_shore.jpeg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "pedestrian_crossing_001.jpg"
+  },
+  {
+    "id": "pedestrian_crossing_002",
+    "category": "pedestrian_crossing",
+    "split": "TUNE",
+    "is_hazard_category": false,
+    "expected_walkable": false,
+    "corridor_status": "BLOCKED",
+    "expected_hazards": [],
+    "expected_objects": [
+      "person",
+      "baseball glove"
+    ],
+    "license": "Public domain",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/c/c9/Bufford%27s_pedestrian_card_sheet_no._456_LCCN2002735714.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "pedestrian_crossing_002.jpg"
+  },
+  {
+    "id": "pedestrian_crossing_003",
+    "category": "pedestrian_crossing",
+    "split": "TUNE",
+    "is_hazard_category": false,
+    "expected_walkable": false,
+    "corridor_status": "BLOCKED",
+    "expected_hazards": [],
+    "expected_objects": [
+      "horse",
+      "person",
+      "dog"
+    ],
+    "license": "CC0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/3/36/Entrance_of_the_Menai_Bridge_-_from_the_Carnarvon_shore_%281133662%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "pedestrian_crossing_003.jpg"
+  },
+  {
+    "id": "pedestrian_crossing_004",
+    "category": "pedestrian_crossing",
+    "split": "TUNE",
+    "is_hazard_category": false,
+    "expected_walkable": false,
+    "corridor_status": "BLOCKED",
+    "expected_hazards": [],
+    "expected_objects": [
+      "person",
+      "car"
+    ],
+    "license": "CC BY-SA 4.0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/c/ce/A_pedestrian_walking_on_the_walkway_in_the_University_of_Ilorin.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "pedestrian_crossing_004.jpg"
+  },
+  {
+    "id": "pedestrian_crossing_005",
+    "category": "pedestrian_crossing",
+    "split": "TUNE",
+    "is_hazard_category": false,
+    "expected_walkable": false,
+    "corridor_status": "BLOCKED",
+    "expected_hazards": [],
+    "expected_objects": [],
+    "license": "CC BY-SA 4.0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/1/1d/I%27m_walking_here_-_pedestrians_only_sign_in_Prospect_Park.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "pedestrian_crossing_005.jpg"
+  },
+  {
+    "id": "pedestrian_crossing_006",
+    "category": "pedestrian_crossing",
+    "split": "TUNE",
+    "is_hazard_category": false,
+    "expected_walkable": false,
+    "corridor_status": "BLOCKED",
+    "expected_hazards": [],
+    "expected_objects": [
+      "horse",
+      "person"
+    ],
+    "license": "CC0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/f/fc/Entrance_of_the_Menai_Bridge_-_from_the_Carnarvon_shore_%281131215%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "pedestrian_crossing_006.jpg"
+  },
+  {
+    "id": "pedestrian_crossing_007",
+    "category": "pedestrian_crossing",
+    "split": "TUNE",
+    "is_hazard_category": false,
+    "expected_walkable": false,
+    "corridor_status": "BLOCKED",
+    "expected_hazards": [],
+    "expected_objects": [],
+    "license": "CC BY-SA 4.0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/5/5b/Pedestrian_walking_by_User-MrALCA95.png?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "pedestrian_crossing_007.jpg"
+  },
+  {
+    "id": "pedestrian_crossing_008",
+    "category": "pedestrian_crossing",
+    "split": "TUNE",
+    "is_hazard_category": false,
+    "expected_walkable": false,
+    "corridor_status": "BLOCKED",
+    "expected_hazards": [],
+    "expected_objects": [
+      "person",
+      "handbag",
+      "car"
+    ],
+    "license": "CC BY 2.0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/4/4f/Pedestrians_%285071681767%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "pedestrian_crossing_008.jpg"
+  },
+  {
+    "id": "pedestrian_crossing_009",
+    "category": "pedestrian_crossing",
+    "split": "TUNE",
+    "is_hazard_category": false,
+    "expected_walkable": false,
+    "corridor_status": "BLOCKED",
+    "expected_hazards": [],
+    "expected_objects": [
+      "person",
+      "frisbee"
+    ],
+    "license": "Public domain",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/2/23/Pedestrians_walking_along_businesses_on_Front_Street%2C_Nome%2C_Alaska%2C_between_1900_and_1908_%28AL%2BCA_6610%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "pedestrian_crossing_009.jpg"
+  },
+  {
+    "id": "pedestrian_crossing_010",
+    "category": "pedestrian_crossing",
+    "split": "TUNE",
+    "is_hazard_category": false,
+    "expected_walkable": false,
+    "corridor_status": "BLOCKED",
+    "expected_hazards": [],
+    "expected_objects": [
+      "person",
+      "bicycle",
+      "backpack"
+    ],
+    "license": "CC0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/9/9b/Pedestrians_Walking_%28Unsplash%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "pedestrian_crossing_010.jpg"
+  },
+  {
+    "id": "pedestrian_crossing_011",
+    "category": "pedestrian_crossing",
+    "split": "TUNE",
+    "is_hazard_category": false,
+    "expected_walkable": false,
+    "corridor_status": "BLOCKED",
+    "expected_hazards": [],
+    "expected_objects": [
+      "person",
+      "potted plant",
+      "chair",
+      "backpack",
+      "bicycle"
+    ],
+    "license": "CC BY-SA 4.0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/b/bb/Jules_and_Gabriel_walking_on_a_pedestrian_street%2C_Rua_Alexandre_Herculano%2C_Tavira%2C_Portugal_julesvernex2.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "pedestrian_crossing_011.jpg"
+  },
+  {
+    "id": "pedestrian_crossing_012",
+    "category": "pedestrian_crossing",
+    "split": "TUNE",
+    "is_hazard_category": false,
+    "expected_walkable": false,
+    "corridor_status": "BLOCKED",
+    "expected_hazards": [],
+    "expected_objects": [],
+    "license": "CC BY-SA 4.0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/d/dd/Pedestrian_walking%2Cpath_faculty_of_Education_Ahmad.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "pedestrian_crossing_012.jpg"
+  },
+  {
+    "id": "pedestrian_crossing_013",
+    "category": "pedestrian_crossing",
+    "split": "TUNE",
+    "is_hazard_category": false,
+    "expected_walkable": false,
+    "corridor_status": "BLOCKED",
+    "expected_hazards": [],
+    "expected_objects": [
+      "person",
+      "handbag"
+    ],
+    "license": "CC BY 2.0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/c/c5/Pedestrians_II%2C_Ethiopia_2007.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "pedestrian_crossing_013.jpg"
+  },
+  {
+    "id": "pedestrian_crossing_014",
+    "category": "pedestrian_crossing",
+    "split": "TUNE",
+    "is_hazard_category": false,
+    "expected_walkable": false,
+    "corridor_status": "BLOCKED",
+    "expected_hazards": [],
+    "expected_objects": [
+      "car",
+      "person",
+      "truck",
+      "bench"
+    ],
+    "license": "CC BY-SA 4.0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/2/28/Pedestrians_walking_in_Mbarara.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "pedestrian_crossing_014.jpg"
+  },
+  {
+    "id": "pedestrian_crossing_015",
+    "category": "pedestrian_crossing",
+    "split": "TUNE",
+    "is_hazard_category": false,
+    "expected_walkable": false,
+    "corridor_status": "BLOCKED",
+    "expected_hazards": [],
+    "expected_objects": [
+      "person",
+      "motorcycle",
+      "car",
+      "tie",
+      "bus"
+    ],
+    "license": "Public domain",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/0/05/Pedestrians_walking_on_a_steep_street_in_S%C3%A3o_Paulo%2C_Brazil.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "pedestrian_crossing_015.jpg"
+  },
+  {
+    "id": "pedestrian_crossing_016",
+    "category": "pedestrian_crossing",
+    "split": "TUNE",
+    "is_hazard_category": false,
+    "expected_walkable": false,
+    "corridor_status": "BLOCKED",
+    "expected_hazards": [],
+    "expected_objects": [
+      "person",
+      "umbrella"
+    ],
+    "license": "CC BY-SA 4.0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/9/9a/Pedestrians_walking_on_the_Howrah_Bridge_in_morning.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "pedestrian_crossing_016.jpg"
+  },
+  {
+    "id": "pedestrian_crossing_017",
+    "category": "pedestrian_crossing",
+    "split": "TUNE",
+    "is_hazard_category": false,
+    "expected_walkable": false,
+    "corridor_status": "BLOCKED",
+    "expected_hazards": [],
+    "expected_objects": [
+      "person",
+      "bicycle",
+      "umbrella"
+    ],
+    "license": "CC BY-SA 4.0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/7/70/Pedestrians_walking_on_the_Howrah_Bridge.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "pedestrian_crossing_017.jpg"
+  },
+  {
+    "id": "pedestrian_crossing_018",
+    "category": "pedestrian_crossing",
+    "split": "TUNE",
+    "is_hazard_category": false,
+    "expected_walkable": false,
+    "corridor_status": "BLOCKED",
+    "expected_hazards": [],
+    "expected_objects": [
+      "person",
+      "bus",
+      "car",
+      "kite"
+    ],
+    "license": "CC BY 2.0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/f/f0/Pedestrians_walking_around_the_Puerta_de_Alcala%2C_Madrid_%286394593055%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "pedestrian_crossing_018.jpg"
+  },
+  {
+    "id": "pedestrian_crossing_019",
+    "category": "pedestrian_crossing",
+    "split": "TUNE",
+    "is_hazard_category": false,
+    "expected_walkable": false,
+    "corridor_status": "BLOCKED",
+    "expected_hazards": [],
+    "expected_objects": [
+      "potted plant",
+      "chair"
+    ],
+    "license": "CC0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/f/f8/Road%2C_barriers%2C_ropes_preventing_pedestrians_from_walking_easily_along_the_Meguro_river.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "pedestrian_crossing_019.jpg"
+  },
+  {
+    "id": "pedestrian_crossing_020",
+    "category": "pedestrian_crossing",
+    "split": "TUNE",
+    "is_hazard_category": false,
+    "expected_walkable": false,
+    "corridor_status": "BLOCKED",
+    "expected_hazards": [],
+    "expected_objects": [
+      "person",
+      "handbag"
+    ],
+    "license": "CC BY-SA 4.0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/c/cf/Pedestrians_walking_by_a_building.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "pedestrian_crossing_020.jpg"
+  },
+  {
+    "id": "pedestrian_crossing_021",
+    "category": "pedestrian_crossing",
+    "split": "TUNE",
+    "is_hazard_category": false,
+    "expected_walkable": false,
+    "corridor_status": "BLOCKED",
+    "expected_hazards": [],
+    "expected_objects": [
+      "person",
+      "airplane",
+      "baseball glove"
+    ],
+    "license": "CC BY-SA 2.0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/8/8b/Pedestrians_walking_over_the_Lowry_Bridge_-_geograph.org.uk_-_8107611.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "pedestrian_crossing_021.jpg"
+  },
+  {
+    "id": "pedestrian_crossing_022",
+    "category": "pedestrian_crossing",
+    "split": "TUNE",
+    "is_hazard_category": false,
+    "expected_walkable": false,
+    "corridor_status": "BLOCKED",
+    "expected_hazards": [],
+    "expected_objects": [
+      "suitcase",
+      "person"
+    ],
+    "license": "CC BY-SA 2.0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/e/ef/Walking_across_Norfolk_Gardens_-_geograph.org.uk_-_8058190.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "pedestrian_crossing_022.jpg"
+  },
+  {
+    "id": "pedestrian_crossing_023",
+    "category": "pedestrian_crossing",
+    "split": "TUNE",
+    "is_hazard_category": false,
+    "expected_walkable": false,
+    "corridor_status": "BLOCKED",
+    "expected_hazards": [],
+    "expected_objects": [],
+    "license": "CC BY-SA 4.0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/d/dd/Walking_infrastructure_-_Pedestrian_crossing_in_Tel_Aviv%2C_April_2024_01.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "pedestrian_crossing_023.jpg"
+  },
+  {
+    "id": "pedestrian_crossing_024",
+    "category": "pedestrian_crossing",
+    "split": "TUNE",
+    "is_hazard_category": false,
+    "expected_walkable": false,
+    "corridor_status": "BLOCKED",
+    "expected_hazards": [],
+    "expected_objects": [],
+    "license": "CC BY-SA 4.0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/5/51/Walking_infrastructure_-_Pedestrian_crossing_in_Tel_Aviv%2C_April_2024_02.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "pedestrian_crossing_024.jpg"
+  },
+  {
+    "id": "road_manhole_001",
+    "category": "road_manhole",
+    "split": "TUNE",
+    "is_hazard_category": false,
+    "expected_walkable": false,
+    "corridor_status": "BLOCKED",
+    "expected_hazards": [],
+    "expected_objects": [
+      "remote"
+    ],
+    "license": "CC BY-SA 4.0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/3/3a/A_manhole_cover_19.09.24_in_Istanbul_04.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "road_manhole_001.jpg"
+  },
+  {
+    "id": "road_manhole_002",
+    "category": "road_manhole",
+    "split": "TUNE",
+    "is_hazard_category": false,
+    "expected_walkable": false,
+    "corridor_status": "BLOCKED",
+    "expected_hazards": [],
+    "expected_objects": [
+      "clock"
+    ],
+    "license": "CC BY-SA 4.0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/8/8f/2017-09-19_%28115%29_Manhole_cover_at_Bahnhof_Ybbs_an_der_Donau.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "road_manhole_002.jpg"
+  },
+  {
+    "id": "road_manhole_003",
+    "category": "road_manhole",
+    "split": "TUNE",
+    "is_hazard_category": false,
+    "expected_walkable": false,
+    "corridor_status": "BLOCKED",
+    "expected_hazards": [],
+    "expected_objects": [],
+    "license": "CC BY-SA 4.0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/6/62/2018-02-13_%28605%29_Manhole_cover_by_Meier_Guss_at_Bahnhof_Mauthausen.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "road_manhole_003.jpg"
+  },
+  {
+    "id": "road_manhole_004",
+    "category": "road_manhole",
+    "split": "TUNE",
+    "is_hazard_category": false,
+    "expected_walkable": false,
+    "corridor_status": "BLOCKED",
+    "expected_hazards": [],
+    "expected_objects": [
+      "frisbee"
+    ],
+    "license": "CC BY-SA 4.0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/b/b5/A_manhole_cover_19.09.24_in_Istanbul_03.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "road_manhole_004.jpg"
+  },
+  {
+    "id": "road_manhole_005",
+    "category": "road_manhole",
+    "split": "TUNE",
+    "is_hazard_category": false,
+    "expected_walkable": false,
+    "corridor_status": "BLOCKED",
+    "expected_hazards": [],
+    "expected_objects": [
+      "clock"
+    ],
+    "license": "CC BY-SA 4.0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/6/6b/2017-09-14_%28107%29_Manhole_cover_by_Wallner_%26_Neubert_at_Bahnhof_Rekawinkel.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "road_manhole_005.jpg"
+  },
+  {
+    "id": "road_manhole_006",
+    "category": "road_manhole",
+    "split": "TUNE",
+    "is_hazard_category": false,
+    "expected_walkable": false,
+    "corridor_status": "BLOCKED",
+    "expected_hazards": [],
+    "expected_objects": [
+      "clock"
+    ],
+    "license": "CC BY-SA 4.0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/8/88/A_manhole_cover_19.09.24_in_Istanbul_02.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "road_manhole_006.jpg"
+  },
+  {
+    "id": "road_manhole_007",
+    "category": "road_manhole",
+    "split": "TUNE",
+    "is_hazard_category": false,
+    "expected_walkable": false,
+    "corridor_status": "BLOCKED",
+    "expected_hazards": [],
+    "expected_objects": [
+      "keyboard"
+    ],
+    "license": "CC BY-SA 4.0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/e/e8/A_manhole_cover_19.09.24_in_Istanbul_08.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "road_manhole_007.jpg"
+  },
+  {
+    "id": "road_manhole_008",
+    "category": "road_manhole",
+    "split": "TUNE",
+    "is_hazard_category": false,
+    "expected_walkable": false,
+    "corridor_status": "BLOCKED",
+    "expected_hazards": [],
+    "expected_objects": [],
+    "license": "CC BY-SA 4.0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/6/61/A_manhole_cover_19.09.24_in_Istanbul_09.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "road_manhole_008.jpg"
+  },
+  {
+    "id": "road_manhole_009",
+    "category": "road_manhole",
+    "split": "TUNE",
+    "is_hazard_category": false,
+    "expected_walkable": false,
+    "corridor_status": "BLOCKED",
+    "expected_hazards": [],
+    "expected_objects": [
+      "clock"
+    ],
+    "license": "CC BY-SA 4.0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/3/38/A_manhole_cover_19.09.24_in_Istanbul_12.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "road_manhole_009.jpg"
+  },
+  {
+    "id": "road_manhole_010",
+    "category": "road_manhole",
+    "split": "TUNE",
+    "is_hazard_category": false,
+    "expected_walkable": false,
+    "corridor_status": "BLOCKED",
+    "expected_hazards": [],
+    "expected_objects": [],
+    "license": "CC BY-SA 4.0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/a/a4/A_manhole_cover_19.09.24_in_Istanbul_10.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "road_manhole_010.jpg"
+  },
+  {
+    "id": "road_manhole_011",
+    "category": "road_manhole",
+    "split": "TUNE",
+    "is_hazard_category": false,
+    "expected_walkable": false,
+    "corridor_status": "BLOCKED",
+    "expected_hazards": [],
+    "expected_objects": [
+      "frisbee"
+    ],
+    "license": "CC BY-SA 4.0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/2/27/A_manhole_cover_19.09.24_in_Istanbul_11.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "road_manhole_011.jpg"
+  },
+  {
+    "id": "road_manhole_012",
+    "category": "road_manhole",
+    "split": "TUNE",
+    "is_hazard_category": false,
+    "expected_walkable": false,
+    "corridor_status": "BLOCKED",
+    "expected_hazards": [],
+    "expected_objects": [
+      "frisbee"
+    ],
+    "license": "CC BY-SA 4.0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/e/ed/A_manhole_cover_22.09_24_in_Istanbul_01.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "road_manhole_012.jpg"
+  },
+  {
+    "id": "road_manhole_013",
+    "category": "road_manhole",
+    "split": "TUNE",
+    "is_hazard_category": false,
+    "expected_walkable": false,
+    "corridor_status": "BLOCKED",
+    "expected_hazards": [],
+    "expected_objects": [
+      "clock"
+    ],
+    "license": "CC BY-SA 4.0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/9/9e/A_manhole_cover_22.09_24_in_Istanbul_02.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "road_manhole_013.jpg"
+  },
+  {
+    "id": "road_manhole_014",
+    "category": "road_manhole",
+    "split": "TUNE",
+    "is_hazard_category": false,
+    "expected_walkable": false,
+    "corridor_status": "BLOCKED",
+    "expected_hazards": [],
+    "expected_objects": [
+      "clock"
+    ],
+    "license": "CC BY-SA 4.0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/a/a2/D%C3%BCsseldorf_Manhole_Cover_with_City_Emblem.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "road_manhole_014.jpg"
+  },
+  {
+    "id": "road_manhole_015",
+    "category": "road_manhole",
+    "split": "TUNE",
+    "is_hazard_category": false,
+    "expected_walkable": false,
+    "corridor_status": "BLOCKED",
+    "expected_hazards": [],
+    "expected_objects": [
+      "clock"
+    ],
+    "license": "CC BY-SA 4.0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/e/e2/A_manhole_cover_22.09_24_in_Istanbul_06.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "road_manhole_015.jpg"
+  },
+  {
+    "id": "road_manhole_016",
+    "category": "road_manhole",
+    "split": "TUNE",
+    "is_hazard_category": false,
+    "expected_walkable": false,
+    "corridor_status": "BLOCKED",
+    "expected_hazards": [],
+    "expected_objects": [
+      "clock"
+    ],
+    "license": "CC BY-SA 4.0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/7/72/A_manhole_cover_22.09_24_in_Istanbul_05.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "road_manhole_016.jpg"
+  },
+  {
+    "id": "road_manhole_017",
+    "category": "road_manhole",
+    "split": "TUNE",
+    "is_hazard_category": false,
+    "expected_walkable": false,
+    "corridor_status": "BLOCKED",
+    "expected_hazards": [],
+    "expected_objects": [
+      "clock"
+    ],
+    "license": "CC BY-SA 4.0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/8/81/Manhole_cover%2C_Berlin_%28IMG_20190806_094407%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "road_manhole_017.jpg"
+  },
+  {
+    "id": "road_manhole_018",
+    "category": "road_manhole",
+    "split": "TUNE",
+    "is_hazard_category": false,
+    "expected_walkable": false,
+    "corridor_status": "BLOCKED",
+    "expected_hazards": [],
+    "expected_objects": [
+      "clock"
+    ],
+    "license": "CC BY-SA 4.0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/e/ea/Kontrollschacht_003_2024_07_19.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "road_manhole_018.jpg"
+  },
+  {
+    "id": "road_manhole_019",
+    "category": "road_manhole",
+    "split": "TUNE",
+    "is_hazard_category": false,
+    "expected_walkable": false,
+    "corridor_status": "BLOCKED",
+    "expected_hazards": [],
+    "expected_objects": [
+      "clock"
+    ],
+    "license": "CC BY 4.0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/6/62/Manhole_cover_in_Baku_01.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "road_manhole_019.jpg"
+  },
+  {
+    "id": "road_manhole_020",
+    "category": "road_manhole",
+    "split": "TUNE",
+    "is_hazard_category": false,
+    "expected_walkable": false,
+    "corridor_status": "BLOCKED",
+    "expected_hazards": [],
+    "expected_objects": [],
+    "license": "CC BY-SA 4.0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/5/57/Manhole_cover_20.09.24_in_Istanbul_03.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "road_manhole_020.jpg"
+  },
+  {
+    "id": "road_manhole_021",
+    "category": "road_manhole",
+    "split": "TUNE",
+    "is_hazard_category": false,
+    "expected_walkable": false,
+    "corridor_status": "BLOCKED",
+    "expected_hazards": [],
+    "expected_objects": [
+      "clock"
+    ],
+    "license": "CC BY-SA 4.0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/2/28/Manhole_cover_20.09.24_in_Istanbul_02.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "road_manhole_021.jpg"
+  },
+  {
+    "id": "road_manhole_022",
+    "category": "road_manhole",
+    "split": "TUNE",
+    "is_hazard_category": false,
+    "expected_walkable": false,
+    "corridor_status": "BLOCKED",
+    "expected_hazards": [],
+    "expected_objects": [
+      "suitcase"
+    ],
+    "license": "CC BY-SA 4.0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/e/eb/Manhole_cover_20.09.24_in_Istanbul_01.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "road_manhole_022.jpg"
+  },
+  {
+    "id": "road_manhole_023",
+    "category": "road_manhole",
+    "split": "TUNE",
+    "is_hazard_category": false,
+    "expected_walkable": false,
+    "corridor_status": "BLOCKED",
+    "expected_hazards": [],
+    "expected_objects": [
+      "clock"
+    ],
+    "license": "CC BY 4.0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/7/70/Manhole_cover_in_Baku_02.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "road_manhole_023.jpg"
+  },
+  {
+    "id": "road_manhole_024",
+    "category": "road_manhole",
+    "split": "TUNE",
+    "is_hazard_category": false,
+    "expected_walkable": false,
+    "corridor_status": "BLOCKED",
+    "expected_hazards": [],
+    "expected_objects": [
+      "clock"
+    ],
+    "license": "CC BY 4.0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/f/fd/Manhole_cover_in_Baku_03.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "road_manhole_024.jpg"
+  },
+  {
+    "id": "road_patch_puddle_001",
+    "category": "road_patch_puddle",
+    "split": "TUNE",
+    "is_hazard_category": false,
+    "expected_walkable": false,
+    "corridor_status": "BLOCKED",
+    "expected_hazards": [],
+    "expected_objects": [],
+    "license": "CC BY-SA 2.0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/3/3c/A_fishy_puddle_-_geograph.org.uk_-_603243.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "road_patch_puddle_001.jpg"
+  },
+  {
+    "id": "road_patch_puddle_002",
+    "category": "road_patch_puddle",
+    "split": "TUNE",
+    "is_hazard_category": false,
+    "expected_walkable": false,
+    "corridor_status": "BLOCKED",
+    "expected_hazards": [],
+    "expected_objects": [
+      "car",
+      "traffic light"
+    ],
+    "license": "CC BY-SA 2.0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/f/f8/A3211%2C_Puddle_Dock_-_geograph.org.uk_-_4459944.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "road_patch_puddle_002.jpg"
+  },
+  {
+    "id": "road_patch_puddle_003",
+    "category": "road_patch_puddle",
+    "split": "TUNE",
+    "is_hazard_category": false,
+    "expected_walkable": false,
+    "corridor_status": "BLOCKED",
+    "expected_hazards": [],
+    "expected_objects": [],
+    "license": "CC BY-SA 2.0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/1/1a/Access_Road_for_Little_Puddle_Farm_-_geograph.org.uk_-_491977.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "road_patch_puddle_003.jpg"
+  },
+  {
+    "id": "road_patch_puddle_004",
+    "category": "road_patch_puddle",
+    "split": "TUNE",
+    "is_hazard_category": false,
+    "expected_walkable": false,
+    "corridor_status": "BLOCKED",
+    "expected_hazards": [],
+    "expected_objects": [],
+    "license": "CC BY-SA 2.0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/d/d3/Car_park_puddle_at_Coniston%2C_Cumbria_-_geograph.org.uk_-_1574953.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "road_patch_puddle_004.jpg"
+  },
+  {
+    "id": "road_patch_puddle_005",
+    "category": "road_patch_puddle",
+    "split": "TUNE",
+    "is_hazard_category": false,
+    "expected_walkable": false,
+    "corridor_status": "BLOCKED",
+    "expected_hazards": [],
+    "expected_objects": [],
+    "license": "CC BY-SA 2.0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/5/5a/Large_puddle_on_Winfield_Lane_-_geograph.org.uk_-_1572188.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "road_patch_puddle_005.jpg"
+  },
+  {
+    "id": "road_patch_puddle_006",
+    "category": "road_patch_puddle",
+    "split": "TUNE",
+    "is_hazard_category": false,
+    "expected_walkable": false,
+    "corridor_status": "BLOCKED",
+    "expected_hazards": [],
+    "expected_objects": [],
+    "license": "CC BY-SA 4.0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/f/f2/Big_puddle_on_the_road_from_village_Budy.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "road_patch_puddle_006.jpg"
+  },
+  {
+    "id": "road_patch_puddle_007",
+    "category": "road_patch_puddle",
+    "split": "TUNE",
+    "is_hazard_category": false,
+    "expected_walkable": false,
+    "corridor_status": "BLOCKED",
+    "expected_hazards": [],
+    "expected_objects": [],
+    "license": "CC BY-SA 2.0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/a/ac/Puddle%2C_Hospital_Road%2C_Omagh_-_geograph.org.uk_-_628843.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "road_patch_puddle_007.jpg"
+  },
+  {
+    "id": "road_patch_puddle_008",
+    "category": "road_patch_puddle",
+    "split": "TUNE",
+    "is_hazard_category": false,
+    "expected_walkable": false,
+    "corridor_status": "BLOCKED",
+    "expected_hazards": [],
+    "expected_objects": [],
+    "license": "CC BY-SA 2.0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/0/08/Puddle%2C_Cricketfield_Road%2C_Torquay_-_geograph.org.uk_-_2735278.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "road_patch_puddle_008.jpg"
+  },
+  {
+    "id": "road_patch_puddle_009",
+    "category": "road_patch_puddle",
+    "split": "TUNE",
+    "is_hazard_category": false,
+    "expected_walkable": false,
+    "corridor_status": "BLOCKED",
+    "expected_hazards": [],
+    "expected_objects": [],
+    "license": "CC BY-SA 4.0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/9/9b/Muddy_road_in_Akamas_Peninsula%2C_Cyprus_02.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "road_patch_puddle_009.jpg"
+  },
+  {
+    "id": "road_patch_puddle_010",
+    "category": "road_patch_puddle",
+    "split": "TUNE",
+    "is_hazard_category": false,
+    "expected_walkable": false,
+    "corridor_status": "BLOCKED",
+    "expected_hazards": [],
+    "expected_objects": [
+      "car"
+    ],
+    "license": "CC BY-SA 2.0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/f/f5/Puddle%2C_Upton_Park_-_geograph.org.uk_-_1774802.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "road_patch_puddle_010.jpg"
+  },
+  {
+    "id": "road_patch_puddle_011",
+    "category": "road_patch_puddle",
+    "split": "TUNE",
+    "is_hazard_category": false,
+    "expected_walkable": false,
+    "corridor_status": "BLOCKED",
+    "expected_hazards": [],
+    "expected_objects": [],
+    "license": "CC BY-SA 2.0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/a/a1/Forest_Road_with_Puddle_-_geograph.org.uk_-_6504886.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "road_patch_puddle_011.jpg"
+  },
+  {
+    "id": "road_patch_puddle_012",
+    "category": "road_patch_puddle",
+    "split": "TUNE",
+    "is_hazard_category": false,
+    "expected_walkable": false,
+    "corridor_status": "BLOCKED",
+    "expected_hazards": [],
+    "expected_objects": [],
+    "license": "CC BY-SA 2.0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/7/7d/Puddle%2C_Meenadoo_Road_-_geograph.org.uk_-_3332161.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "road_patch_puddle_012.jpg"
+  },
+  {
+    "id": "road_patch_puddle_013",
+    "category": "road_patch_puddle",
+    "split": "TUNE",
+    "is_hazard_category": false,
+    "expected_walkable": false,
+    "corridor_status": "BLOCKED",
+    "expected_hazards": [],
+    "expected_objects": [],
+    "license": "CC BY-SA 2.0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/3/31/Puddle_by_road_-_geograph.org.uk_-_657605.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "road_patch_puddle_013.jpg"
+  },
+  {
+    "id": "road_patch_puddle_014",
+    "category": "road_patch_puddle",
+    "split": "TUNE",
+    "is_hazard_category": false,
+    "expected_walkable": false,
+    "corridor_status": "BLOCKED",
+    "expected_hazards": [],
+    "expected_objects": [],
+    "license": "CC BY-SA 2.0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/2/22/Puddle_Road_-_geograph.org.uk_-_3314928.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "road_patch_puddle_014.jpg"
+  },
+  {
+    "id": "road_patch_puddle_015",
+    "category": "road_patch_puddle",
+    "split": "TUNE",
+    "is_hazard_category": false,
+    "expected_walkable": false,
+    "corridor_status": "BLOCKED",
+    "expected_hazards": [],
+    "expected_objects": [
+      "bench"
+    ],
+    "license": "CC BY-SA 2.0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/b/b3/Puddle_by_Teignmouth_Road%2C_Torquay_-_geograph.org.uk_-_4731096.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "road_patch_puddle_015.jpg"
+  },
+  {
+    "id": "road_patch_puddle_016",
+    "category": "road_patch_puddle",
+    "split": "TUNE",
+    "is_hazard_category": false,
+    "expected_walkable": false,
+    "corridor_status": "BLOCKED",
+    "expected_hazards": [],
+    "expected_objects": [],
+    "license": "CC BY-SA 2.0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/1/1f/Puddle_by_Kingskerswell_Road_-_geograph.org.uk_-_8236885.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "road_patch_puddle_016.jpg"
+  },
+  {
+    "id": "road_patch_puddle_017",
+    "category": "road_patch_puddle",
+    "split": "TUNE",
+    "is_hazard_category": false,
+    "expected_walkable": false,
+    "corridor_status": "BLOCKED",
+    "expected_hazards": [],
+    "expected_objects": [
+      "car",
+      "truck",
+      "fire hydrant"
+    ],
+    "license": "CC BY-SA 2.0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/b/bf/Puddle_in_London_N14_-_geograph.org.uk_-_6848349.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "road_patch_puddle_017.jpg"
+  },
+  {
+    "id": "road_patch_puddle_018",
+    "category": "road_patch_puddle",
+    "split": "TUNE",
+    "is_hazard_category": false,
+    "expected_walkable": false,
+    "corridor_status": "BLOCKED",
+    "expected_hazards": [],
+    "expected_objects": [
+      "car",
+      "fire hydrant",
+      "person"
+    ],
+    "license": "CC BY-SA 2.0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/e/e2/Puddle%2C_White_Lee_Road_%28B6122%29%2C_Batley_-_geograph.org.uk_-_7520526.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "road_patch_puddle_018.jpg"
+  },
+  {
+    "id": "road_patch_puddle_019",
+    "category": "road_patch_puddle",
+    "split": "TUNE",
+    "is_hazard_category": false,
+    "expected_walkable": false,
+    "corridor_status": "BLOCKED",
+    "expected_hazards": [],
+    "expected_objects": [],
+    "license": "CC BY-SA 2.0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/b/bd/Puddle_near_The_Round_House_-_geograph.org.uk_-_823918.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "road_patch_puddle_019.jpg"
+  },
+  {
+    "id": "road_patch_puddle_020",
+    "category": "road_patch_puddle",
+    "split": "TUNE",
+    "is_hazard_category": false,
+    "expected_walkable": false,
+    "corridor_status": "BLOCKED",
+    "expected_hazards": [],
+    "expected_objects": [
+      "truck",
+      "car"
+    ],
+    "license": "CC BY-SA 2.0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/8/87/Puddle_in_Road_near_Oakwood_Tavern%2C_London_N14_-_geograph.org.uk_-_4904764.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "road_patch_puddle_020.jpg"
+  },
+  {
+    "id": "road_patch_puddle_021",
+    "category": "road_patch_puddle",
+    "split": "TUNE",
+    "is_hazard_category": false,
+    "expected_walkable": false,
+    "corridor_status": "BLOCKED",
+    "expected_hazards": [],
+    "expected_objects": [
+      "fire hydrant"
+    ],
+    "license": "CC BY-SA 2.0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/7/74/Puddle_in_London_N14_-_geograph.org.uk_-_6848350.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "road_patch_puddle_021.jpg"
+  },
+  {
+    "id": "road_patch_puddle_022",
+    "category": "road_patch_puddle",
+    "split": "TUNE",
+    "is_hazard_category": false,
+    "expected_walkable": false,
+    "corridor_status": "BLOCKED",
+    "expected_hazards": [],
+    "expected_objects": [],
+    "license": "CC BY-SA 2.0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/3/39/Puddle_on_Stocks_Road_-_geograph.org.uk_-_3995478.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "road_patch_puddle_022.jpg"
+  },
+  {
+    "id": "road_patch_puddle_023",
+    "category": "road_patch_puddle",
+    "split": "TUNE",
+    "is_hazard_category": false,
+    "expected_walkable": false,
+    "corridor_status": "BLOCKED",
+    "expected_hazards": [],
+    "expected_objects": [
+      "car"
+    ],
+    "license": "CC BY-SA 2.0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/0/00/Puddle_in_the_Road_-_geograph.org.uk_-_4568593.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "road_patch_puddle_023.jpg"
+  },
+  {
+    "id": "road_patch_puddle_024",
+    "category": "road_patch_puddle",
+    "split": "TUNE",
+    "is_hazard_category": false,
+    "expected_walkable": false,
+    "corridor_status": "BLOCKED",
+    "expected_hazards": [],
+    "expected_objects": [
+      "car"
+    ],
+    "license": "CC BY-SA 2.0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/a/a4/Reflection_in_Puddle_by_Oakwood_Shops%2C_Bramley_Road%2C_London_N14_-_geograph.org.uk_-_3582463.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "road_patch_puddle_024.jpg"
+  },
+  {
+    "id": "road_pothole_001",
+    "category": "road_pothole",
+    "split": "TUNE",
+    "is_hazard_category": false,
+    "expected_walkable": false,
+    "corridor_status": "BLOCKED",
+    "expected_hazards": [
+      "pothole"
+    ],
+    "expected_objects": [],
+    "license": "CC BY 4.0",
+    "source_url": "https://huggingface.co/datasets/Ryukijano/Pothole-detection-Yolov8/blob/main/test/images/0004_jpg.rf.f92ab952cd8544f887caf35fcccbcd10.jpg",
+    "image_file": "road_pothole_001.jpg"
+  },
+  {
+    "id": "road_pothole_002",
+    "category": "road_pothole",
+    "split": "TUNE",
+    "is_hazard_category": false,
+    "expected_walkable": false,
+    "corridor_status": "BLOCKED",
+    "expected_hazards": [
+      "pothole"
+    ],
+    "expected_objects": [],
+    "license": "CC BY 4.0",
+    "source_url": "https://huggingface.co/datasets/Ryukijano/Pothole-detection-Yolov8/blob/main/test/images/0040_jpg.rf.ce9dde51c6f4e3fdfb4ad43b0ab1a623.jpg",
+    "image_file": "road_pothole_002.jpg"
+  },
+  {
+    "id": "road_pothole_003",
+    "category": "road_pothole",
+    "split": "TUNE",
+    "is_hazard_category": false,
+    "expected_walkable": false,
+    "corridor_status": "BLOCKED",
+    "expected_hazards": [
+      "pothole"
+    ],
+    "expected_objects": [
+      "car"
+    ],
+    "license": "CC BY 4.0",
+    "source_url": "https://huggingface.co/datasets/Ryukijano/Pothole-detection-Yolov8/blob/main/test/images/0041_jpg.rf.1f8a699096c7118149354819e27b8018.jpg",
+    "image_file": "road_pothole_003.jpg"
+  },
+  {
+    "id": "road_pothole_004",
+    "category": "road_pothole",
+    "split": "TUNE",
+    "is_hazard_category": false,
+    "expected_walkable": false,
+    "corridor_status": "BLOCKED",
+    "expected_hazards": [
+      "pothole"
+    ],
+    "expected_objects": [
+      "car",
+      "truck"
+    ],
+    "license": "CC BY 4.0",
+    "source_url": "https://huggingface.co/datasets/Ryukijano/Pothole-detection-Yolov8/blob/main/test/images/0081_jpg.rf.d1735a9bb243cb526d9e3e094531c94b.jpg",
+    "image_file": "road_pothole_004.jpg"
+  },
+  {
+    "id": "road_pothole_005",
+    "category": "road_pothole",
+    "split": "TUNE",
+    "is_hazard_category": false,
+    "expected_walkable": false,
+    "corridor_status": "BLOCKED",
+    "expected_hazards": [
+      "pothole"
+    ],
+    "expected_objects": [
+      "car",
+      "truck",
+      "bench"
+    ],
+    "license": "CC BY 4.0",
+    "source_url": "https://huggingface.co/datasets/Ryukijano/Pothole-detection-Yolov8/blob/main/test/images/0096_jpg.rf.de125945c49ee744d62c17da76d4d68c.jpg",
+    "image_file": "road_pothole_005.jpg"
+  },
+  {
+    "id": "road_pothole_006",
+    "category": "road_pothole",
+    "split": "TUNE",
+    "is_hazard_category": false,
+    "expected_walkable": false,
+    "corridor_status": "BLOCKED",
+    "expected_hazards": [
+      "pothole"
+    ],
+    "expected_objects": [],
+    "license": "CC BY 4.0",
+    "source_url": "https://huggingface.co/datasets/Ryukijano/Pothole-detection-Yolov8/blob/main/test/images/0107_jpg.rf.b36504f4b2e1ec9ff8cebacf8ab4c255.jpg",
+    "image_file": "road_pothole_006.jpg"
+  },
+  {
+    "id": "road_pothole_007",
+    "category": "road_pothole",
+    "split": "TUNE",
+    "is_hazard_category": false,
+    "expected_walkable": false,
+    "corridor_status": "BLOCKED",
+    "expected_hazards": [
+      "pothole"
+    ],
+    "expected_objects": [
+      "car"
+    ],
+    "license": "CC BY 4.0",
+    "source_url": "https://huggingface.co/datasets/Ryukijano/Pothole-detection-Yolov8/blob/main/test/images/0118_jpg.rf.fe3852eb5521e8919a668ba3a9207f8d.jpg",
+    "image_file": "road_pothole_007.jpg"
+  },
+  {
+    "id": "road_pothole_008",
+    "category": "road_pothole",
+    "split": "TUNE",
+    "is_hazard_category": false,
+    "expected_walkable": false,
+    "corridor_status": "BLOCKED",
+    "expected_hazards": [
+      "pothole"
+    ],
+    "expected_objects": [
+      "person"
+    ],
+    "license": "CC BY 4.0",
+    "source_url": "https://huggingface.co/datasets/Ryukijano/Pothole-detection-Yolov8/blob/main/test/images/0129_jpg.rf.ba3c9ced9c7139a017f2b8a136c641f7.jpg",
+    "image_file": "road_pothole_008.jpg"
+  },
+  {
+    "id": "road_pothole_009",
+    "category": "road_pothole",
+    "split": "TUNE",
+    "is_hazard_category": false,
+    "expected_walkable": false,
+    "corridor_status": "BLOCKED",
+    "expected_hazards": [
+      "pothole"
+    ],
+    "expected_objects": [],
+    "license": "CC BY 4.0",
+    "source_url": "https://huggingface.co/datasets/Ryukijano/Pothole-detection-Yolov8/blob/main/test/images/0148_jpg.rf.878d22109d19b7062b708cdf0301d3ce.jpg",
+    "image_file": "road_pothole_009.jpg"
+  },
+  {
+    "id": "road_pothole_010",
+    "category": "road_pothole",
+    "split": "TUNE",
+    "is_hazard_category": false,
+    "expected_walkable": false,
+    "corridor_status": "BLOCKED",
+    "expected_hazards": [
+      "pothole"
+    ],
+    "expected_objects": [
+      "person",
+      "motorcycle"
+    ],
+    "license": "CC BY 4.0",
+    "source_url": "https://huggingface.co/datasets/Ryukijano/Pothole-detection-Yolov8/blob/main/test/images/0151_jpg.rf.8530ac502a1dbc4c2b732e222c2a1d9b.jpg",
+    "image_file": "road_pothole_010.jpg"
+  },
+  {
+    "id": "road_pothole_011",
+    "category": "road_pothole",
+    "split": "TUNE",
+    "is_hazard_category": false,
+    "expected_walkable": false,
+    "corridor_status": "BLOCKED",
+    "expected_hazards": [
+      "pothole"
+    ],
+    "expected_objects": [
+      "motorcycle",
+      "person",
+      "car"
+    ],
+    "license": "CC BY 4.0",
+    "source_url": "https://huggingface.co/datasets/Ryukijano/Pothole-detection-Yolov8/blob/main/test/images/0162_jpg.rf.ed0e4831f8e4443c70192b1771207169.jpg",
+    "image_file": "road_pothole_011.jpg"
+  },
+  {
+    "id": "road_pothole_012",
+    "category": "road_pothole",
+    "split": "TUNE",
+    "is_hazard_category": false,
+    "expected_walkable": false,
+    "corridor_status": "BLOCKED",
+    "expected_hazards": [
+      "pothole"
+    ],
+    "expected_objects": [
+      "car",
+      "truck"
+    ],
+    "license": "CC BY 4.0",
+    "source_url": "https://huggingface.co/datasets/Ryukijano/Pothole-detection-Yolov8/blob/main/test/images/0166_jpg.rf.c4ca9745b928027131937814c34d76e6.jpg",
+    "image_file": "road_pothole_012.jpg"
+  },
+  {
+    "id": "road_pothole_013",
+    "category": "road_pothole",
+    "split": "TUNE",
+    "is_hazard_category": false,
+    "expected_walkable": false,
+    "corridor_status": "BLOCKED",
+    "expected_hazards": [
+      "pothole"
+    ],
+    "expected_objects": [],
+    "license": "CC BY 4.0",
+    "source_url": "https://huggingface.co/datasets/Ryukijano/Pothole-detection-Yolov8/blob/main/test/images/0187_jpg.rf.3daf31d95197ffe21920e5df07dda8ea.jpg",
+    "image_file": "road_pothole_013.jpg"
+  },
+  {
+    "id": "road_pothole_014",
+    "category": "road_pothole",
+    "split": "TUNE",
+    "is_hazard_category": false,
+    "expected_walkable": false,
+    "corridor_status": "BLOCKED",
+    "expected_hazards": [
+      "pothole"
+    ],
+    "expected_objects": [
+      "motorcycle",
+      "bicycle",
+      "car"
+    ],
+    "license": "CC BY 4.0",
+    "source_url": "https://huggingface.co/datasets/Ryukijano/Pothole-detection-Yolov8/blob/main/test/images/0201_jpg.rf.5d124f864320873ed87bb61d2657eb0d.jpg",
+    "image_file": "road_pothole_014.jpg"
+  },
+  {
+    "id": "road_pothole_015",
+    "category": "road_pothole",
+    "split": "TUNE",
+    "is_hazard_category": false,
+    "expected_walkable": false,
+    "corridor_status": "BLOCKED",
+    "expected_hazards": [
+      "pothole"
+    ],
+    "expected_objects": [
+      "motorcycle",
+      "person",
+      "car"
+    ],
+    "license": "CC BY 4.0",
+    "source_url": "https://huggingface.co/datasets/Ryukijano/Pothole-detection-Yolov8/blob/main/test/images/0202_jpg.rf.48f0da351778a2070144b126e65c2599.jpg",
+    "image_file": "road_pothole_015.jpg"
+  },
+  {
+    "id": "road_pothole_016",
+    "category": "road_pothole",
+    "split": "TUNE",
+    "is_hazard_category": false,
+    "expected_walkable": false,
+    "corridor_status": "BLOCKED",
+    "expected_hazards": [
+      "pothole"
+    ],
+    "expected_objects": [
+      "car",
+      "person"
+    ],
+    "license": "CC BY 4.0",
+    "source_url": "https://huggingface.co/datasets/Ryukijano/Pothole-detection-Yolov8/blob/main/test/images/0208_jpg.rf.4749138ccd140c0f40f6b1e380f2ceef.jpg",
+    "image_file": "road_pothole_016.jpg"
+  },
+  {
+    "id": "road_pothole_017",
+    "category": "road_pothole",
+    "split": "TUNE",
+    "is_hazard_category": false,
+    "expected_walkable": false,
+    "corridor_status": "BLOCKED",
+    "expected_hazards": [
+      "pothole"
+    ],
+    "expected_objects": [
+      "potted plant"
+    ],
+    "license": "CC BY 4.0",
+    "source_url": "https://huggingface.co/datasets/Ryukijano/Pothole-detection-Yolov8/blob/main/test/images/0238_jpg.rf.fe3849f5beed355f393d2a4376b21356.jpg",
+    "image_file": "road_pothole_017.jpg"
+  },
+  {
+    "id": "road_pothole_018",
+    "category": "road_pothole",
+    "split": "TUNE",
+    "is_hazard_category": false,
+    "expected_walkable": false,
+    "corridor_status": "BLOCKED",
+    "expected_hazards": [
+      "pothole"
+    ],
+    "expected_objects": [
+      "car"
+    ],
+    "license": "CC BY 4.0",
+    "source_url": "https://huggingface.co/datasets/Ryukijano/Pothole-detection-Yolov8/blob/main/test/images/0240_jpg.rf.c96fcf5f8c94014b365bb6f30e86db42.jpg",
+    "image_file": "road_pothole_018.jpg"
+  },
+  {
+    "id": "road_pothole_019",
+    "category": "road_pothole",
+    "split": "TUNE",
+    "is_hazard_category": false,
+    "expected_walkable": false,
+    "corridor_status": "BLOCKED",
+    "expected_hazards": [
+      "pothole"
+    ],
+    "expected_objects": [
+      "car",
+      "frisbee"
+    ],
+    "license": "CC BY 4.0",
+    "source_url": "https://huggingface.co/datasets/Ryukijano/Pothole-detection-Yolov8/blob/main/test/images/0259_jpg.rf.cbc74b1f49ea7929805339be227993a7.jpg",
+    "image_file": "road_pothole_019.jpg"
+  },
+  {
+    "id": "road_pothole_020",
+    "category": "road_pothole",
+    "split": "TUNE",
+    "is_hazard_category": false,
+    "expected_walkable": false,
+    "corridor_status": "BLOCKED",
+    "expected_hazards": [
+      "pothole"
+    ],
+    "expected_objects": [
+      "car"
+    ],
+    "license": "CC BY 4.0",
+    "source_url": "https://huggingface.co/datasets/Ryukijano/Pothole-detection-Yolov8/blob/main/test/images/0270_jpg.rf.822af468de8fed77e01fa767f34461b9.jpg",
+    "image_file": "road_pothole_020.jpg"
+  },
+  {
+    "id": "road_pothole_021",
+    "category": "road_pothole",
+    "split": "TUNE",
+    "is_hazard_category": false,
+    "expected_walkable": false,
+    "corridor_status": "BLOCKED",
+    "expected_hazards": [
+      "pothole"
+    ],
+    "expected_objects": [],
+    "license": "CC BY 4.0",
+    "source_url": "https://huggingface.co/datasets/Ryukijano/Pothole-detection-Yolov8/blob/main/test/images/0294_jpg.rf.51b0efb0f7700f03f167153337af074c.jpg",
+    "image_file": "road_pothole_021.jpg"
+  },
+  {
+    "id": "road_pothole_022",
+    "category": "road_pothole",
+    "split": "TUNE",
+    "is_hazard_category": false,
+    "expected_walkable": false,
+    "corridor_status": "BLOCKED",
+    "expected_hazards": [
+      "pothole"
+    ],
+    "expected_objects": [
+      "car",
+      "truck"
+    ],
+    "license": "CC BY 4.0",
+    "source_url": "https://huggingface.co/datasets/Ryukijano/Pothole-detection-Yolov8/blob/main/test/images/0305_jpg.rf.c3120268fcc4bbaccd22913a696e51de.jpg",
+    "image_file": "road_pothole_022.jpg"
+  },
+  {
+    "id": "road_pothole_023",
+    "category": "road_pothole",
+    "split": "TUNE",
+    "is_hazard_category": false,
+    "expected_walkable": false,
+    "corridor_status": "BLOCKED",
+    "expected_hazards": [
+      "pothole"
+    ],
+    "expected_objects": [
+      "person",
+      "car",
+      "handbag",
+      "truck"
+    ],
+    "license": "CC BY 4.0",
+    "source_url": "https://huggingface.co/datasets/Ryukijano/Pothole-detection-Yolov8/blob/main/test/images/0328_jpg.rf.162dc457b62e2905354925e6b7163ee6.jpg",
+    "image_file": "road_pothole_023.jpg"
+  },
+  {
+    "id": "road_pothole_024",
+    "category": "road_pothole",
+    "split": "TUNE",
+    "is_hazard_category": false,
+    "expected_walkable": false,
+    "corridor_status": "BLOCKED",
+    "expected_hazards": [
+      "pothole"
+    ],
+    "expected_objects": [
+      "car"
+    ],
+    "license": "CC BY 4.0",
+    "source_url": "https://huggingface.co/datasets/Ryukijano/Pothole-detection-Yolov8/blob/main/test/images/032_png_jpg.rf.95eac20005ac6dd4fb86907c6bf8d391.jpg",
+    "image_file": "road_pothole_024.jpg"
+  },
+  {
+    "id": "stairs_down_001",
+    "category": "stairs_down",
+    "split": "TUNE",
+    "is_hazard_category": true,
+    "expected_walkable": false,
+    "corridor_status": "UNKNOWN",
+    "expected_hazards": [],
+    "expected_objects": [
+      "person"
+    ],
+    "license": "CC BY-SA 2.0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/e/ec/Down_the_stairs%2C_Leicester_Square_Underground_Station_-_geograph.org.uk_-_2832245.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "stairs_down_001.jpg"
+  },
+  {
+    "id": "stairs_down_002",
+    "category": "stairs_down",
+    "split": "TUNE",
+    "is_hazard_category": true,
+    "expected_walkable": false,
+    "corridor_status": "UNKNOWN",
+    "expected_hazards": [],
+    "expected_objects": [],
+    "license": "CC BY-SA 2.0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/b/bb/Down_the_stairs_-_geograph.org.uk_-_1265751.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "stairs_down_002.jpg"
+  },
+  {
+    "id": "stairs_down_003",
+    "category": "stairs_down",
+    "split": "TUNE",
+    "is_hazard_category": true,
+    "expected_walkable": false,
+    "corridor_status": "UNKNOWN",
+    "expected_hazards": [],
+    "expected_objects": [],
+    "license": "CC BY-SA 2.0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/1/14/Alderman_Stairs_down_to_The_Thames_-_geograph.org.uk_-_7870198.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "stairs_down_003.jpg"
+  },
+  {
+    "id": "stairs_down_004",
+    "category": "stairs_down",
+    "split": "TUNE",
+    "is_hazard_category": true,
+    "expected_walkable": false,
+    "corridor_status": "UNKNOWN",
+    "expected_hazards": [],
+    "expected_objects": [],
+    "license": "CC BY 4.0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/6/61/Down_the_stairs%2C_Ewelme_Cottage.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "stairs_down_004.jpg"
+  },
+  {
+    "id": "stairs_down_005",
+    "category": "stairs_down",
+    "split": "TUNE",
+    "is_hazard_category": true,
+    "expected_walkable": false,
+    "corridor_status": "UNKNOWN",
+    "expected_hazards": [],
+    "expected_objects": [],
+    "license": "Public domain",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/f/f4/A_shot_looking_down_the_main_stairs_%2816040027841%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "stairs_down_005.jpg"
+  },
+  {
+    "id": "stairs_down_006",
+    "category": "stairs_down",
+    "split": "TUNE",
+    "is_hazard_category": true,
+    "expected_walkable": false,
+    "corridor_status": "UNKNOWN",
+    "expected_hazards": [],
+    "expected_objects": [
+      "person",
+      "handbag"
+    ],
+    "license": "CC BY-SA 4.0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/5/51/Jules_and_Gabriel_walking_down_the_Metro_station_Avenida_stairs%2C_Avenida_da_Liberdade%2C_Lisbon%2C_Portugal_julesvernex2.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "stairs_down_006.jpg"
+  },
+  {
+    "id": "stairs_down_007",
+    "category": "stairs_down",
+    "split": "TUNE",
+    "is_hazard_category": true,
+    "expected_walkable": false,
+    "corridor_status": "UNKNOWN",
+    "expected_hazards": [],
+    "expected_objects": [],
+    "license": "CC BY-SA 2.0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/e/e5/Down_Short_Stairs_-_geograph.org.uk_-_5067236.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "stairs_down_007.jpg"
+  },
+  {
+    "id": "stairs_down_008",
+    "category": "stairs_down",
+    "split": "TUNE",
+    "is_hazard_category": true,
+    "expected_walkable": false,
+    "corridor_status": "UNKNOWN",
+    "expected_hazards": [],
+    "expected_objects": [],
+    "license": "CC BY-SA 2.0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/0/0b/Down_the_stairs_and_right_at_the_bottom_-_geograph.org.uk_-_665398.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "stairs_down_008.jpg"
+  },
+  {
+    "id": "stairs_down_009",
+    "category": "stairs_down",
+    "split": "TUNE",
+    "is_hazard_category": true,
+    "expected_walkable": false,
+    "corridor_status": "UNKNOWN",
+    "expected_hazards": [],
+    "expected_objects": [
+      "person"
+    ],
+    "license": "CC BY-SA 2.0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/2/2e/Down_the_stairs_to_platform_2%2C_Kirkstall_Forge_Station_-_geograph.org.uk_-_5003091.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "stairs_down_009.jpg"
+  },
+  {
+    "id": "stairs_down_010",
+    "category": "stairs_down",
+    "split": "TUNE",
+    "is_hazard_category": true,
+    "expected_walkable": false,
+    "corridor_status": "UNKNOWN",
+    "expected_hazards": [],
+    "expected_objects": [],
+    "license": "CC BY-SA 2.0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/1/17/Down_the_stairs_-_geograph.org.uk_-_8188920.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "stairs_down_010.jpg"
+  },
+  {
+    "id": "stairs_down_011",
+    "category": "stairs_down",
+    "split": "TUNE",
+    "is_hazard_category": true,
+    "expected_walkable": false,
+    "corridor_status": "UNKNOWN",
+    "expected_hazards": [],
+    "expected_objects": [
+      "person",
+      "backpack",
+      "handbag",
+      "bench"
+    ],
+    "license": "CC0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/5/52/Kentish_Town_pre_2023_refurb_-_stairs_down_to_southbound_platform_from_lift_landings_38.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "stairs_down_011.jpg"
+  },
+  {
+    "id": "stairs_down_012",
+    "category": "stairs_down",
+    "split": "TUNE",
+    "is_hazard_category": true,
+    "expected_walkable": false,
+    "corridor_status": "UNKNOWN",
+    "expected_hazards": [],
+    "expected_objects": [],
+    "license": "CC BY-SA 4.0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/5/55/Kyiv_-_Paton_bridge_and_stairs_down_to_Hidropark.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "stairs_down_012.jpg"
+  },
+  {
+    "id": "stairs_down_013",
+    "category": "stairs_down",
+    "split": "TUNE",
+    "is_hazard_category": true,
+    "expected_walkable": false,
+    "corridor_status": "UNKNOWN",
+    "expected_hazards": [],
+    "expected_objects": [],
+    "license": "CC BY-SA 4.0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/2/24/London_Borough_of_Southwark_-_Horseley_Down_Old_Stairs_And_Hard_-_20221105124337.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "stairs_down_013.jpg"
+  },
+  {
+    "id": "stairs_down_014",
+    "category": "stairs_down",
+    "split": "TUNE",
+    "is_hazard_category": true,
+    "expected_walkable": false,
+    "corridor_status": "UNKNOWN",
+    "expected_hazards": [],
+    "expected_objects": [
+      "person"
+    ],
+    "license": "CC BY-SA 2.0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/5/56/London_Bridge_station%2C_stairs_down_into_the_new_concourse_-_geograph.org.uk_-_5189498.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "stairs_down_014.jpg"
+  },
+  {
+    "id": "stairs_down_015",
+    "category": "stairs_down",
+    "split": "TUNE",
+    "is_hazard_category": true,
+    "expected_walkable": false,
+    "corridor_status": "UNKNOWN",
+    "expected_hazards": [],
+    "expected_objects": [],
+    "license": "CC BY-SA 2.0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/e/e5/Looking_down_the_stairs_-_geograph.org.uk_-_1235409.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "stairs_down_015.jpg"
+  },
+  {
+    "id": "stairs_down_016",
+    "category": "stairs_down",
+    "split": "TUNE",
+    "is_hazard_category": true,
+    "expected_walkable": false,
+    "corridor_status": "UNKNOWN",
+    "expected_hazards": [],
+    "expected_objects": [
+      "person",
+      "boat"
+    ],
+    "license": "CC BY-SA 2.0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/2/22/Stairs_down_from_mezzanine_of_Westfield_-_geograph.org.uk_-_1041048.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "stairs_down_016.jpg"
+  },
+  {
+    "id": "stairs_down_017",
+    "category": "stairs_down",
+    "split": "TUNE",
+    "is_hazard_category": true,
+    "expected_walkable": false,
+    "corridor_status": "UNKNOWN",
+    "expected_hazards": [],
+    "expected_objects": [
+      "person"
+    ],
+    "license": "CC BY-SA 2.0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/2/27/Stairs_Down_-_geograph.org.uk_-_5326402.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "stairs_down_017.jpg"
+  },
+  {
+    "id": "stairs_down_018",
+    "category": "stairs_down",
+    "split": "TUNE",
+    "is_hazard_category": true,
+    "expected_walkable": false,
+    "corridor_status": "UNKNOWN",
+    "expected_hazards": [],
+    "expected_objects": [
+      "bench"
+    ],
+    "license": "CC BY-SA 4.0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/2/2a/Killebrew_Park_stairs_down_to_water.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "stairs_down_018.jpg"
+  },
+  {
+    "id": "stairs_down_019",
+    "category": "stairs_down",
+    "split": "TUNE",
+    "is_hazard_category": true,
+    "expected_walkable": false,
+    "corridor_status": "UNKNOWN",
+    "expected_hazards": [],
+    "expected_objects": [],
+    "license": "CC BY-SA 4.0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/f/fe/Lower_Gate_Stairs_Bab_Jemaa_Taza_Nov25_A7CR_09666.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "stairs_down_019.jpg"
+  },
+  {
+    "id": "stairs_down_020",
+    "category": "stairs_down",
+    "split": "TUNE",
+    "is_hazard_category": true,
+    "expected_walkable": false,
+    "corridor_status": "UNKNOWN",
+    "expected_hazards": [],
+    "expected_objects": [],
+    "license": "CC BY-SA 4.0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/1/18/Stairs_down_the_Passion_tower_in_Barcelona%27s_Sagrada_Familia.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "stairs_down_020.jpg"
+  },
+  {
+    "id": "stairs_down_021",
+    "category": "stairs_down",
+    "split": "TUNE",
+    "is_hazard_category": true,
+    "expected_walkable": false,
+    "corridor_status": "UNKNOWN",
+    "expected_hazards": [],
+    "expected_objects": [],
+    "license": "CC BY-SA 4.0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/d/d2/London_Borough_of_Southwark_-_Horseley_Down_Old_Stairs_And_Hard_-_20221105124053.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "stairs_down_021.jpg"
+  },
+  {
+    "id": "stairs_down_022",
+    "category": "stairs_down",
+    "split": "TUNE",
+    "is_hazard_category": true,
+    "expected_walkable": false,
+    "corridor_status": "UNKNOWN",
+    "expected_hazards": [],
+    "expected_objects": [],
+    "license": "CC0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/4/45/Stairs_down_to_Goodge_Street_Station_2021.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "stairs_down_022.jpg"
+  },
+  {
+    "id": "stairs_down_023",
+    "category": "stairs_down",
+    "split": "TUNE",
+    "is_hazard_category": true,
+    "expected_walkable": false,
+    "corridor_status": "UNKNOWN",
+    "expected_hazards": [],
+    "expected_objects": [
+      "car"
+    ],
+    "license": "CC BY-SA 2.0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/a/ae/Stairs_down_to_Netherlands_Road_-_geograph.org.uk_-_1728794.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "stairs_down_023.jpg"
+  },
+  {
+    "id": "stairs_down_024",
+    "category": "stairs_down",
+    "split": "TUNE",
+    "is_hazard_category": true,
+    "expected_walkable": false,
+    "corridor_status": "UNKNOWN",
+    "expected_hazards": [],
+    "expected_objects": [],
+    "license": "CC BY-SA 2.0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/9/94/Stairs_down_to_the_beach_-_geograph.org.uk_-_1522791.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "stairs_down_024.jpg"
+  },
+  {
+    "id": "stairs_up_001",
+    "category": "stairs_up",
+    "split": "TUNE",
+    "is_hazard_category": true,
+    "expected_walkable": false,
+    "corridor_status": "UNKNOWN",
+    "expected_hazards": [],
+    "expected_objects": [],
+    "license": "CC BY-SA 4.0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/f/ff/D%C3%BClmen%2C_St.-Viktor-Kirche%2C_Aufgang_zum_Kirchturm_--_2021_--_6700-2_%28bw%2C_crop%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "stairs_up_001.jpg"
+  },
+  {
+    "id": "stairs_up_002",
+    "category": "stairs_up",
+    "split": "TUNE",
+    "is_hazard_category": true,
+    "expected_walkable": false,
+    "corridor_status": "UNKNOWN",
+    "expected_hazards": [],
+    "expected_objects": [
+      "car"
+    ],
+    "license": "CC BY-SA 4.0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/d/d1/Flight_of_stairs_Alberta.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "stairs_up_002.jpg"
+  },
+  {
+    "id": "stairs_up_003",
+    "category": "stairs_up",
+    "split": "TUNE",
+    "is_hazard_category": true,
+    "expected_walkable": false,
+    "corridor_status": "UNKNOWN",
+    "expected_hazards": [],
+    "expected_objects": [],
+    "license": "CC BY-SA 4.0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/2/25/13th_floor_looking_down_-_staircase_modern_high_rise.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "stairs_up_003.jpg"
+  },
+  {
+    "id": "stairs_up_004",
+    "category": "stairs_up",
+    "split": "TUNE",
+    "is_hazard_category": true,
+    "expected_walkable": false,
+    "corridor_status": "UNKNOWN",
+    "expected_hazards": [],
+    "expected_objects": [
+      "toilet"
+    ],
+    "license": "CC BY-SA 4.0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/a/ad/D%C3%BClmen%2C_Alte_Brennerei_L%C3%B6hning_--_2015_--_8664-8.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "stairs_up_004.jpg"
+  },
+  {
+    "id": "stairs_up_005",
+    "category": "stairs_up",
+    "split": "TUNE",
+    "is_hazard_category": true,
+    "expected_walkable": false,
+    "corridor_status": "UNKNOWN",
+    "expected_hazards": [],
+    "expected_objects": [],
+    "license": "CC BY-SA 4.0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/c/c4/An_unused_staircase_and_grass_paver_blocks_%281%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "stairs_up_005.jpg"
+  },
+  {
+    "id": "stairs_up_006",
+    "category": "stairs_up",
+    "split": "TUNE",
+    "is_hazard_category": true,
+    "expected_walkable": false,
+    "corridor_status": "UNKNOWN",
+    "expected_hazards": [],
+    "expected_objects": [],
+    "license": "CC BY-SA 4.0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/d/d5/Half-timbered_mansion%2C_Zirkel%2C_East_view.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "stairs_up_006.jpg"
+  },
+  {
+    "id": "stairs_up_007",
+    "category": "stairs_up",
+    "split": "TUNE",
+    "is_hazard_category": true,
+    "expected_walkable": false,
+    "corridor_status": "UNKNOWN",
+    "expected_hazards": [],
+    "expected_objects": [],
+    "license": "CC BY-SA 4.0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/e/e3/Heiligengrabe%2C_Kloster_Stift_zum_Heiligengrabe%2C_Abtei%2C_Treppenturm_--_2017_--_9941-7.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "stairs_up_007.jpg"
+  },
+  {
+    "id": "stairs_up_008",
+    "category": "stairs_up",
+    "split": "TUNE",
+    "is_hazard_category": true,
+    "expected_walkable": false,
+    "corridor_status": "UNKNOWN",
+    "expected_hazards": [],
+    "expected_objects": [
+      "potted plant",
+      "bottle"
+    ],
+    "license": "CC BY-SA 4.0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/9/9a/D%C3%BClmen%2C_Alte_Brennerei_L%C3%B6hning_--_2015_--_8677-81.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "stairs_up_008.jpg"
+  },
+  {
+    "id": "stairs_up_009",
+    "category": "stairs_up",
+    "split": "TUNE",
+    "is_hazard_category": true,
+    "expected_walkable": false,
+    "corridor_status": "UNKNOWN",
+    "expected_hazards": [],
+    "expected_objects": [
+      "person",
+      "toothbrush",
+      "clock"
+    ],
+    "license": "CC BY-SA 3.0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/a/a5/India_-_Painting_a_staircase_-_0063.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "stairs_up_009.jpg"
+  },
+  {
+    "id": "stairs_up_010",
+    "category": "stairs_up",
+    "split": "TUNE",
+    "is_hazard_category": true,
+    "expected_walkable": false,
+    "corridor_status": "UNKNOWN",
+    "expected_hazards": [],
+    "expected_objects": [
+      "person",
+      "clock"
+    ],
+    "license": "CC BY-SA 3.0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/2/27/Lutheran_Cathedral_Helsinki.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "stairs_up_010.jpg"
+  },
+  {
+    "id": "stairs_up_011",
+    "category": "stairs_up",
+    "split": "TUNE",
+    "is_hazard_category": true,
+    "expected_walkable": false,
+    "corridor_status": "UNKNOWN",
+    "expected_hazards": [],
+    "expected_objects": [],
+    "license": "CC BY-SA 4.0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/b/b1/Glasgow_City_Chambers_-_Carrara_Marble_Staircase_-_1.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "stairs_up_011.jpg"
+  },
+  {
+    "id": "stairs_up_012",
+    "category": "stairs_up",
+    "split": "TUNE",
+    "is_hazard_category": true,
+    "expected_walkable": false,
+    "corridor_status": "UNKNOWN",
+    "expected_hazards": [],
+    "expected_objects": [],
+    "license": "CC BY-SA 4.0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/f/ff/Kasyno_Szlacheckie_we_Lwowie_%281%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "stairs_up_012.jpg"
+  },
+  {
+    "id": "stairs_up_013",
+    "category": "stairs_up",
+    "split": "TUNE",
+    "is_hazard_category": true,
+    "expected_walkable": false,
+    "corridor_status": "UNKNOWN",
+    "expected_hazards": [],
+    "expected_objects": [],
+    "license": "FAL",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/a/ab/Moscow_Hotel_National_stairway_asv2018-09.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "stairs_up_013.jpg"
+  },
+  {
+    "id": "stairs_up_014",
+    "category": "stairs_up",
+    "split": "TUNE",
+    "is_hazard_category": true,
+    "expected_walkable": false,
+    "corridor_status": "UNKNOWN",
+    "expected_hazards": [],
+    "expected_objects": [],
+    "license": "CC BY 3.0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/6/6b/Klausenturm_Treppenhaus.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "stairs_up_014.jpg"
+  },
+  {
+    "id": "stairs_up_015",
+    "category": "stairs_up",
+    "split": "TUNE",
+    "is_hazard_category": true,
+    "expected_walkable": false,
+    "corridor_status": "UNKNOWN",
+    "expected_hazards": [],
+    "expected_objects": [],
+    "license": "CC BY-SA 4.0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/f/f0/Mehrfamilienhaus_Cunnersdorfer_Stra%C3%9Fe_7_%E2%80%93_Hauseingang.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "stairs_up_015.jpg"
+  },
+  {
+    "id": "stairs_up_016",
+    "category": "stairs_up",
+    "split": "TUNE",
+    "is_hazard_category": true,
+    "expected_walkable": false,
+    "corridor_status": "UNKNOWN",
+    "expected_hazards": [],
+    "expected_objects": [
+      "clock"
+    ],
+    "license": "CC0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/4/4a/Spiral_staircase_in_the_Vatican_Museums_from_bottom_02.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "stairs_up_016.jpg"
+  },
+  {
+    "id": "stairs_up_017",
+    "category": "stairs_up",
+    "split": "TUNE",
+    "is_hazard_category": true,
+    "expected_walkable": false,
+    "corridor_status": "UNKNOWN",
+    "expected_hazards": [],
+    "expected_objects": [],
+    "license": "CC BY-SA 4.0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/e/e7/Royal_stairs_in_Palazzo_Farnese_%28Caprarola%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "stairs_up_017.jpg"
+  },
+  {
+    "id": "stairs_up_018",
+    "category": "stairs_up",
+    "split": "TUNE",
+    "is_hazard_category": true,
+    "expected_walkable": false,
+    "corridor_status": "UNKNOWN",
+    "expected_hazards": [],
+    "expected_objects": [],
+    "license": "CC0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/6/63/Staircase_at_K%C3%BCppersm%C3%BChle_museum.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "stairs_up_018.jpg"
+  },
+  {
+    "id": "stairs_up_019",
+    "category": "stairs_up",
+    "split": "TUNE",
+    "is_hazard_category": true,
+    "expected_walkable": false,
+    "corridor_status": "UNKNOWN",
+    "expected_hazards": [],
+    "expected_objects": [
+      "car"
+    ],
+    "license": "CC BY-SA 2.0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/3/3f/Spiral_staircase_-_geograph.org.uk_-_475551.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "stairs_up_019.jpg"
+  },
+  {
+    "id": "stairs_up_020",
+    "category": "stairs_up",
+    "split": "TUNE",
+    "is_hazard_category": true,
+    "expected_walkable": false,
+    "corridor_status": "UNKNOWN",
+    "expected_hazards": [],
+    "expected_objects": [
+      "person"
+    ],
+    "license": "CC BY 4.0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/f/f2/Muzeum_Sztuki_Nowoczesnej%2C_wn%C4%99trza%2C_hol_ze_schodami_017%2C_KsP_listopad_2024.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "stairs_up_020.jpg"
+  },
+  {
+    "id": "stairs_up_021",
+    "category": "stairs_up",
+    "split": "TUNE",
+    "is_hazard_category": true,
+    "expected_walkable": false,
+    "corridor_status": "UNKNOWN",
+    "expected_hazards": [],
+    "expected_objects": [
+      "toilet"
+    ],
+    "license": "CC0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/9/95/Staircase_of_the_BGK_Building_%2826620981474%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "stairs_up_021.jpg"
+  },
+  {
+    "id": "stairs_up_022",
+    "category": "stairs_up",
+    "split": "TUNE",
+    "is_hazard_category": true,
+    "expected_walkable": false,
+    "corridor_status": "UNKNOWN",
+    "expected_hazards": [],
+    "expected_objects": [],
+    "license": "CC BY-SA 4.0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/9/9b/Staircase_of_the_National_Museum_of_Slovenia.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "stairs_up_022.jpg"
+  },
+  {
+    "id": "stairs_up_023",
+    "category": "stairs_up",
+    "split": "TUNE",
+    "is_hazard_category": true,
+    "expected_walkable": false,
+    "corridor_status": "UNKNOWN",
+    "expected_hazards": [],
+    "expected_objects": [
+      "potted plant",
+      "vase"
+    ],
+    "license": "CC BY-SA 4.0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/c/c5/Symmetric_view_of_the_staircase_at_The_Fullerton_Hotel_Singapore.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "stairs_up_023.jpg"
+  },
+  {
+    "id": "stairs_up_024",
+    "category": "stairs_up",
+    "split": "TUNE",
+    "is_hazard_category": true,
+    "expected_walkable": false,
+    "corridor_status": "UNKNOWN",
+    "expected_hazards": [],
+    "expected_objects": [],
+    "license": "CC BY 4.0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/e/e8/Staircase_of_Liesikuja_parking_hall_in_Myyrm%C3%A4ki%2C_Vantaa%2C_Finland%2C_2022_May.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "stairs_up_024.jpg"
+  },
+  {
+    "id": "table_corner_001",
+    "category": "table_corner",
+    "split": "TUNE",
+    "is_hazard_category": true,
+    "expected_walkable": false,
+    "corridor_status": "UNKNOWN",
+    "expected_hazards": [],
+    "expected_objects": [
+      "keyboard",
+      "person",
+      "tv",
+      "chair",
+      "mouse",
+      "book"
+    ],
+    "license": "CC BY 2.0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/a/a1/Apple_Tysons_corner_opening_kids%27_table.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "table_corner_001.jpg"
+  },
+  {
+    "id": "table_corner_002",
+    "category": "table_corner",
+    "split": "TUNE",
+    "is_hazard_category": true,
+    "expected_walkable": false,
+    "corridor_status": "UNKNOWN",
+    "expected_hazards": [],
+    "expected_objects": [],
+    "license": "CC BY 2.0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/5/5e/A_Table_Corner_%28Un_coin_de_table%29_%28ca._1895%29_by_Paul_C%C3%A9zanne._Original_from_Original_from_Barnes_Foundation._Digitally_enhanced_by_rawpixel._%2850639818021%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "table_corner_002.jpg"
+  },
+  {
+    "id": "table_corner_003",
+    "category": "table_corner",
+    "split": "TUNE",
+    "is_hazard_category": true,
+    "expected_walkable": false,
+    "corridor_status": "UNKNOWN",
+    "expected_hazards": [],
+    "expected_objects": [
+      "chair",
+      "dining table",
+      "potted plant"
+    ],
+    "license": "CC BY 2.0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/3/32/A_small%2C_inviting_corner_features_a_wooden_table_with_two_chairs_beside_a_large_window.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "table_corner_003.jpg"
+  },
+  {
+    "id": "table_corner_004",
+    "category": "table_corner",
+    "split": "TUNE",
+    "is_hazard_category": true,
+    "expected_walkable": false,
+    "corridor_status": "UNKNOWN",
+    "expected_hazards": [],
+    "expected_objects": [
+      "car"
+    ],
+    "license": "Public domain",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/d/d4/Corner_Table_-_DPLA_-_366f9b0686aec99b66609773a3628b65.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "table_corner_004.jpg"
+  },
+  {
+    "id": "table_corner_005",
+    "category": "table_corner",
+    "split": "TUNE",
+    "is_hazard_category": true,
+    "expected_walkable": false,
+    "corridor_status": "UNKNOWN",
+    "expected_hazards": [],
+    "expected_objects": [
+      "bench"
+    ],
+    "license": "CC BY-SA 4.0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/e/ec/Ballyconra_Church_NE_corner_table_tomb_%2830%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "table_corner_005.jpg"
+  },
+  {
+    "id": "table_corner_006",
+    "category": "table_corner",
+    "split": "TUNE",
+    "is_hazard_category": true,
+    "expected_walkable": false,
+    "corridor_status": "UNKNOWN",
+    "expected_hazards": [],
+    "expected_objects": [],
+    "license": "CC BY-SA 4.0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/6/61/Ballyconra_Church_NE_corner_table_tomb_%2829%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "table_corner_006.jpg"
+  },
+  {
+    "id": "table_corner_007",
+    "category": "table_corner",
+    "split": "TUNE",
+    "is_hazard_category": true,
+    "expected_walkable": false,
+    "corridor_status": "UNKNOWN",
+    "expected_hazards": [],
+    "expected_objects": [],
+    "license": "Public domain",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/e/e4/Corner_Table_-_DPLA_-_82d724f9a01b0e12f8d7d50ae85e3fda.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "table_corner_007.jpg"
+  },
+  {
+    "id": "table_corner_008",
+    "category": "table_corner",
+    "split": "TUNE",
+    "is_hazard_category": true,
+    "expected_walkable": false,
+    "corridor_status": "UNKNOWN",
+    "expected_hazards": [],
+    "expected_objects": [
+      "chair",
+      "dining table"
+    ],
+    "license": "CC BY-SA 3.0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/d/d8/Corner_of_a_table.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "table_corner_008.jpg"
+  },
+  {
+    "id": "table_corner_009",
+    "category": "table_corner",
+    "split": "TUNE",
+    "is_hazard_category": true,
+    "expected_walkable": false,
+    "corridor_status": "UNKNOWN",
+    "expected_hazards": [],
+    "expected_objects": [
+      "car"
+    ],
+    "license": "Public domain",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/6/6e/Corner_Table_-_DPLA_-_c9bf7baa14a739b2b0c1d254e58f885f.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "table_corner_009.jpg"
+  },
+  {
+    "id": "table_corner_010",
+    "category": "table_corner",
+    "split": "TUNE",
+    "is_hazard_category": true,
+    "expected_walkable": false,
+    "corridor_status": "UNKNOWN",
+    "expected_hazards": [],
+    "expected_objects": [
+      "person",
+      "tie",
+      "dining table",
+      "bottle",
+      "wine glass",
+      "cup",
+      "vase"
+    ],
+    "license": "Public domain",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/9/90/Henri_Fantin-Latour_The_Corner_of_the_Table.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "table_corner_010.jpg"
+  },
+  {
+    "id": "table_corner_011",
+    "category": "table_corner",
+    "split": "TUNE",
+    "is_hazard_category": true,
+    "expected_walkable": false,
+    "corridor_status": "UNKNOWN",
+    "expected_hazards": [],
+    "expected_objects": [
+      "stop sign",
+      "truck",
+      "fire hydrant",
+      "potted plant"
+    ],
+    "license": "CC BY 2.0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/f/f8/Corner_Table_Restaurant.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "table_corner_011.jpg"
+  },
+  {
+    "id": "table_corner_012",
+    "category": "table_corner",
+    "split": "TUNE",
+    "is_hazard_category": true,
+    "expected_walkable": false,
+    "corridor_status": "UNKNOWN",
+    "expected_hazards": [],
+    "expected_objects": [
+      "person",
+      "tie",
+      "dining table",
+      "cup",
+      "potted plant",
+      "bottle",
+      "vase",
+      "bowl",
+      "book",
+      "wine glass"
+    ],
+    "license": "Public domain",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/c/c0/Henri_Fantin-Latour_-_The_Corner_of_the_Table%2C_1872.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "table_corner_012.jpg"
+  },
+  {
+    "id": "table_corner_013",
+    "category": "table_corner",
+    "split": "TUNE",
+    "is_hazard_category": true,
+    "expected_walkable": false,
+    "corridor_status": "UNKNOWN",
+    "expected_hazards": [],
+    "expected_objects": [],
+    "license": "CC BY-SA 4.0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/d/d3/Corner_of_glass_surface_of_table_-_2.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "table_corner_013.jpg"
+  },
+  {
+    "id": "table_corner_014",
+    "category": "table_corner",
+    "split": "TUNE",
+    "is_hazard_category": true,
+    "expected_walkable": false,
+    "corridor_status": "UNKNOWN",
+    "expected_hazards": [],
+    "expected_objects": [
+      "wine glass",
+      "bottle",
+      "vase",
+      "cup",
+      "potted plant",
+      "bowl",
+      "dining table"
+    ],
+    "license": "Public domain",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/9/90/Henri_Fantin-Latour_-_Still_Life%2C_Corner_of_a_Table_-_1951.226_-_Art_Institute_of_Chicago.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "table_corner_014.jpg"
+  },
+  {
+    "id": "table_corner_015",
+    "category": "table_corner",
+    "split": "TUNE",
+    "is_hazard_category": true,
+    "expected_walkable": false,
+    "corridor_status": "UNKNOWN",
+    "expected_hazards": [],
+    "expected_objects": [],
+    "license": "CC BY-SA 3.0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/a/ab/Kloof_Corner%2C_Table_Mountain%2C_Cape_Town%2C_8001%2C_South_Africa_-_panoramio_%2810%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "table_corner_015.jpg"
+  },
+  {
+    "id": "table_corner_016",
+    "category": "table_corner",
+    "split": "TUNE",
+    "is_hazard_category": true,
+    "expected_walkable": false,
+    "corridor_status": "UNKNOWN",
+    "expected_hazards": [],
+    "expected_objects": [
+      "potted plant"
+    ],
+    "license": "CC0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/5/57/Table_Rock%2C_NE_Luzerne_x_Houston_NW_corner_1.JPG?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "table_corner_016.jpg"
+  },
+  {
+    "id": "table_corner_017",
+    "category": "table_corner",
+    "split": "TUNE",
+    "is_hazard_category": true,
+    "expected_walkable": false,
+    "corridor_status": "UNKNOWN",
+    "expected_hazards": [],
+    "expected_objects": [
+      "scissors"
+    ],
+    "license": "CC BY 2.0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/1/10/Pool_Table_Corner_Pocket_%28British_Style%29_%2814309776200%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "table_corner_017.jpg"
+  },
+  {
+    "id": "table_corner_018",
+    "category": "table_corner",
+    "split": "TUNE",
+    "is_hazard_category": true,
+    "expected_walkable": false,
+    "corridor_status": "UNKNOWN",
+    "expected_hazards": [],
+    "expected_objects": [],
+    "license": "Public domain",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/2/29/Paul_C%C3%A9zanne_-_A_Table_Corner_%28Un_coin_de_table%29_-_BF711_-_Barnes_Foundation.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "table_corner_018.jpg"
+  },
+  {
+    "id": "table_corner_019",
+    "category": "table_corner",
+    "split": "TUNE",
+    "is_hazard_category": true,
+    "expected_walkable": false,
+    "corridor_status": "UNKNOWN",
+    "expected_hazards": [],
+    "expected_objects": [
+      "person",
+      "potted plant"
+    ],
+    "license": "CC BY-SA 3.0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/a/a1/Hanyiguan_Corridor_Corner_and_Sauces_Table_20101114.JPG?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "table_corner_019.jpg"
+  },
+  {
+    "id": "table_corner_020",
+    "category": "table_corner",
+    "split": "TUNE",
+    "is_hazard_category": true,
+    "expected_walkable": false,
+    "corridor_status": "UNKNOWN",
+    "expected_hazards": [],
+    "expected_objects": [
+      "clock",
+      "potted plant"
+    ],
+    "license": "CC0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/3/3a/Table_Rock%2C_NE_Luzerne_x_Houston_NW_corner_2.JPG?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "table_corner_020.jpg"
+  },
+  {
+    "id": "table_corner_021",
+    "category": "table_corner",
+    "split": "TUNE",
+    "is_hazard_category": true,
+    "expected_walkable": false,
+    "corridor_status": "UNKNOWN",
+    "expected_hazards": [],
+    "expected_objects": [
+      "car",
+      "truck"
+    ],
+    "license": "CC0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/2/2b/Table_Rock%2C_NE_Luzerne_x_Houston_SW_corner_1.JPG?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "table_corner_021.jpg"
+  },
+  {
+    "id": "table_corner_022",
+    "category": "table_corner",
+    "split": "TUNE",
+    "is_hazard_category": true,
+    "expected_walkable": false,
+    "corridor_status": "UNKNOWN",
+    "expected_hazards": [],
+    "expected_objects": [
+      "chair",
+      "wine glass",
+      "bowl",
+      "person",
+      "dining table",
+      "vase",
+      "bottle"
+    ],
+    "license": "Public domain",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/f/f7/The_Corner_Table_by_Irving_Ramsey_Wiles.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "table_corner_022.jpg"
+  },
+  {
+    "id": "table_corner_023",
+    "category": "table_corner",
+    "split": "TUNE",
+    "is_hazard_category": true,
+    "expected_walkable": false,
+    "corridor_status": "UNKNOWN",
+    "expected_hazards": [],
+    "expected_objects": [
+      "truck",
+      "car",
+      "bench"
+    ],
+    "license": "CC0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/e/ea/Table_Rock%2C_NE_Luzerne_x_Nebraska_SW_corner_1.JPG?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "table_corner_023.jpg"
+  },
+  {
+    "id": "table_corner_024",
+    "category": "table_corner",
+    "split": "TUNE",
+    "is_hazard_category": true,
+    "expected_walkable": false,
+    "corridor_status": "UNKNOWN",
+    "expected_hazards": [],
+    "expected_objects": [],
+    "license": "CC0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/7/79/Table_Rock%2C_NE_Pennsylvania_x_Nebraska_NW_corner_1.JPG?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "table_corner_024.jpg"
+  },
+  {
+    "id": "table_edge_001",
+    "category": "table_edge",
+    "split": "TUNE",
+    "is_hazard_category": true,
+    "expected_walkable": false,
+    "corridor_status": "UNKNOWN",
+    "expected_hazards": [],
+    "expected_objects": [],
+    "license": "Public domain",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/0/00/Auction_catalogue_-_Mabbett_%26_Edge_-_Amport_St_Mary%27s_-_1919-07.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "table_edge_001.jpg"
+  },
+  {
+    "id": "table_edge_002",
+    "category": "table_edge",
+    "split": "TUNE",
+    "is_hazard_category": true,
+    "expected_walkable": false,
+    "corridor_status": "UNKNOWN",
+    "expected_hazards": [],
+    "expected_objects": [],
+    "license": "CC0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/b/b6/Bottom_Edge_Of_Computer_Monitor_Touch_Table.png?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "table_edge_002.jpg"
+  },
+  {
+    "id": "table_edge_003",
+    "category": "table_edge",
+    "split": "TUNE",
+    "is_hazard_category": true,
+    "expected_walkable": false,
+    "corridor_status": "UNKNOWN",
+    "expected_hazards": [],
+    "expected_objects": [],
+    "license": "CC BY-SA 4.0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/4/43/Coronavirus_Covid-19%2C_outdoor_table_tennis_lockout_in_London_1.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "table_edge_003.jpg"
+  },
+  {
+    "id": "table_edge_004",
+    "category": "table_edge",
+    "split": "TUNE",
+    "is_hazard_category": true,
+    "expected_walkable": false,
+    "corridor_status": "UNKNOWN",
+    "expected_hazards": [],
+    "expected_objects": [
+      "suitcase",
+      "book"
+    ],
+    "license": "CC0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/3/37/Biblia_latina._With_table_of_Gabriel_Brunus_%28revised%29_Basel-_Johann_Froben%2C_27_Oct._1495_-_Fore_edge_%28IA37886%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "table_edge_004.jpg"
+  },
+  {
+    "id": "table_edge_005",
+    "category": "table_edge",
+    "split": "TUNE",
+    "is_hazard_category": true,
+    "expected_walkable": false,
+    "corridor_status": "UNKNOWN",
+    "expected_hazards": [],
+    "expected_objects": [],
+    "license": "CC BY-SA 4.0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/d/d8/A_vibrant_leaf_beetle_peers_over_the_edge_of_a_leaf.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "table_edge_005.jpg"
+  },
+  {
+    "id": "table_edge_006",
+    "category": "table_edge",
+    "split": "TUNE",
+    "is_hazard_category": true,
+    "expected_walkable": false,
+    "corridor_status": "UNKNOWN",
+    "expected_hazards": [],
+    "expected_objects": [],
+    "license": "Public domain",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/7/78/K-edge_table.png?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "table_edge_006.jpg"
+  },
+  {
+    "id": "table_edge_007",
+    "category": "table_edge",
+    "split": "TUNE",
+    "is_hazard_category": true,
+    "expected_walkable": false,
+    "corridor_status": "UNKNOWN",
+    "expected_hazards": [],
+    "expected_objects": [],
+    "license": "CC BY-SA 2.0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/f/f0/Optics_experiment_-_Knife_edge_table_%28annotated%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "table_edge_007.jpg"
+  },
+  {
+    "id": "table_edge_008",
+    "category": "table_edge",
+    "split": "TUNE",
+    "is_hazard_category": true,
+    "expected_walkable": false,
+    "corridor_status": "UNKNOWN",
+    "expected_hazards": [],
+    "expected_objects": [
+      "handbag"
+    ],
+    "license": "CC BY-SA 4.0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/0/0e/Gilgamesh_Table_XII_-_Aksharam_Museum_Kottayam.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "table_edge_008.jpg"
+  },
+  {
+    "id": "table_edge_009",
+    "category": "table_edge",
+    "split": "TUNE",
+    "is_hazard_category": true,
+    "expected_walkable": false,
+    "corridor_status": "UNKNOWN",
+    "expected_hazards": [],
+    "expected_objects": [
+      "laptop",
+      "potted plant",
+      "book",
+      "vase"
+    ],
+    "license": "CC0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/8/8e/Photographer%27s_table_edge_%28Unsplash%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "table_edge_009.jpg"
+  },
+  {
+    "id": "table_edge_010",
+    "category": "table_edge",
+    "split": "TUNE",
+    "is_hazard_category": true,
+    "expected_walkable": false,
+    "corridor_status": "UNKNOWN",
+    "expected_hazards": [],
+    "expected_objects": [
+      "kite"
+    ],
+    "license": "CC BY-SA 2.0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/6/69/Paragliders_over_Rushup_Edge_-_geograph.org.uk_-_2668749.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "table_edge_010.jpg"
+  },
+  {
+    "id": "table_edge_011",
+    "category": "table_edge",
+    "split": "TUNE",
+    "is_hazard_category": true,
+    "expected_walkable": false,
+    "corridor_status": "UNKNOWN",
+    "expected_hazards": [],
+    "expected_objects": [
+      "bench"
+    ],
+    "license": "CC BY-SA 4.0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/a/af/Padded_table_edge.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "table_edge_011.jpg"
+  },
+  {
+    "id": "table_edge_012",
+    "category": "table_edge",
+    "split": "TUNE",
+    "is_hazard_category": true,
+    "expected_walkable": false,
+    "corridor_status": "UNKNOWN",
+    "expected_hazards": [],
+    "expected_objects": [
+      "bench"
+    ],
+    "license": "CC BY-SA 2.0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/e/e3/On_The_Edge_-_geograph.org.uk_-_3719726.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "table_edge_012.jpg"
+  },
+  {
+    "id": "table_edge_013",
+    "category": "table_edge",
+    "split": "TUNE",
+    "is_hazard_category": true,
+    "expected_walkable": false,
+    "corridor_status": "UNKNOWN",
+    "expected_hazards": [],
+    "expected_objects": [
+      "bench"
+    ],
+    "license": "CC BY-SA 2.0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/d/df/Picnic_table%2C_Weston-Sub-Edge_-_geograph.org.uk_-_7341129.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "table_edge_013.jpg"
+  },
+  {
+    "id": "table_edge_014",
+    "category": "table_edge",
+    "split": "TUNE",
+    "is_hazard_category": true,
+    "expected_walkable": false,
+    "corridor_status": "UNKNOWN",
+    "expected_hazards": [],
+    "expected_objects": [
+      "bench",
+      "dining table"
+    ],
+    "license": "CC BY-SA 4.0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/e/ee/Picnic_table_at_Cypress_Lake_edge.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "table_edge_014.jpg"
+  },
+  {
+    "id": "table_edge_015",
+    "category": "table_edge",
+    "split": "TUNE",
+    "is_hazard_category": true,
+    "expected_walkable": false,
+    "corridor_status": "UNKNOWN",
+    "expected_hazards": [],
+    "expected_objects": [
+      "bench"
+    ],
+    "license": "CC BY 3.0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/6/6a/Picnic_table_area_at_the_east_edge_of_Sefton_Coast_Woodlands_-_panoramio.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "table_edge_015.jpg"
+  },
+  {
+    "id": "table_edge_016",
+    "category": "table_edge",
+    "split": "TUNE",
+    "is_hazard_category": true,
+    "expected_walkable": false,
+    "corridor_status": "UNKNOWN",
+    "expected_hazards": [],
+    "expected_objects": [
+      "bench"
+    ],
+    "license": "CC0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/8/80/Side_table_back_with_edge.png?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "table_edge_016.jpg"
+  },
+  {
+    "id": "table_edge_017",
+    "category": "table_edge",
+    "split": "TUNE",
+    "is_hazard_category": true,
+    "expected_walkable": false,
+    "corridor_status": "UNKNOWN",
+    "expected_hazards": [],
+    "expected_objects": [
+      "boat",
+      "bench"
+    ],
+    "license": "CC BY-SA 2.0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/d/dd/Picnic_tables_at_the_edge_of_the_River_Teign%2C_Teignmouth_-_geograph.org.uk_-_5879514.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "table_edge_017.jpg"
+  },
+  {
+    "id": "table_edge_018",
+    "category": "table_edge",
+    "split": "TUNE",
+    "is_hazard_category": true,
+    "expected_walkable": false,
+    "corridor_status": "UNKNOWN",
+    "expected_hazards": [],
+    "expected_objects": [
+      "cell phone",
+      "potted plant",
+      "vase"
+    ],
+    "license": "CC BY 4.0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/3/31/Sky%27s_Edge_kit_production_process.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "table_edge_018.jpg"
+  },
+  {
+    "id": "table_edge_019",
+    "category": "table_edge",
+    "split": "TUNE",
+    "is_hazard_category": true,
+    "expected_walkable": false,
+    "corridor_status": "UNKNOWN",
+    "expected_hazards": [],
+    "expected_objects": [
+      "bench"
+    ],
+    "license": "CC BY-SA 2.0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/3/35/Stone_table%2C_Kinnoull_Hill_-_geograph.org.uk_-_1629312.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "table_edge_019.jpg"
+  },
+  {
+    "id": "table_edge_020",
+    "category": "table_edge",
+    "split": "TUNE",
+    "is_hazard_category": true,
+    "expected_walkable": false,
+    "corridor_status": "UNKNOWN",
+    "expected_hazards": [],
+    "expected_objects": [
+      "bench",
+      "dining table"
+    ],
+    "license": "CC BY-SA 4.0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/6/6b/Picnic_table_edge_of_lake%2C_General_Coffee_State_Park.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "table_edge_020.jpg"
+  },
+  {
+    "id": "table_edge_021",
+    "category": "table_edge",
+    "split": "TUNE",
+    "is_hazard_category": true,
+    "expected_walkable": false,
+    "corridor_status": "UNKNOWN",
+    "expected_hazards": [],
+    "expected_objects": [],
+    "license": "CC BY-SA 2.0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/7/75/The_Edge_of_Airds_Moss_-_geograph.org.uk_-_567194.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "table_edge_021.jpg"
+  },
+  {
+    "id": "table_edge_022",
+    "category": "table_edge",
+    "split": "TUNE",
+    "is_hazard_category": true,
+    "expected_walkable": false,
+    "corridor_status": "UNKNOWN",
+    "expected_hazards": [],
+    "expected_objects": [
+      "person"
+    ],
+    "license": "CC0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/9/9f/The_Essays_..._With_a_Table_of_the_Colours_of_Good_and_Evil.._-_Edge_%28Davis111%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "table_edge_022.jpg"
+  },
+  {
+    "id": "table_edge_023",
+    "category": "table_edge",
+    "split": "TUNE",
+    "is_hazard_category": true,
+    "expected_walkable": false,
+    "corridor_status": "UNKNOWN",
+    "expected_hazards": [],
+    "expected_objects": [],
+    "license": "Public domain",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/9/91/Trail_to_the_Edge_of_Lower_Table_Rock_%2815549912868%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "table_edge_023.jpg"
+  },
+  {
+    "id": "table_edge_024",
+    "category": "table_edge",
+    "split": "TUNE",
+    "is_hazard_category": true,
+    "expected_walkable": false,
+    "corridor_status": "UNKNOWN",
+    "expected_hazards": [],
+    "expected_objects": [],
+    "license": "CC BY-SA 2.0",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/b/be/Stone_table_on_Kinnoul_Hill.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "image_file": "table_edge_024.jpg"
+  }
+]

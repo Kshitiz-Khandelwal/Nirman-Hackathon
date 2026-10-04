@@ -1,0 +1,16 @@
+{
+  "id": "outdoor_road_clear_009",
+  "category": "outdoor_road_clear",
+  "split": "HOLDOUT",
+  "is_hazard_category": false,
+  "expected_walkable": true,
+  "corridor_status": "WALKABLE",
+  "expected_hazards": [],
+  "expected_objects": [
+    "car",
+    "traffic light",
+    "truck"
+  ],
+  "license": "CC BY / Public Domain",
+  "image_file": "outdoor_road_clear_009.jpg"
+}

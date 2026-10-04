@@ -1,0 +1,15 @@
+{
+  "id": "covered_lens_001",
+  "category": "covered_lens",
+  "split": "HOLDOUT",
+  "is_hazard_category": true,
+  "expected_walkable": false,
+  "corridor_status": "UNKNOWN",
+  "expected_hazards": [],
+  "expected_objects": [
+    "orange"
+  ],
+  "license": "CC BY / Public Domain",
+  "source_url": "https://upload.wikimedia.org/wikipedia/commons/4/4f/Algol-type_variable_binary_star_animation_2.gif?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+  "image_file": "covered_lens_001.jpg"
+}

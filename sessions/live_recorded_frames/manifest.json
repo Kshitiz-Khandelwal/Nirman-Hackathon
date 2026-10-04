@@ -1,0 +1,1457 @@
+[
+  {
+    "id": "live_frame_001",
+    "category": "live_user_walking",
+    "split": "LIVE",
+    "is_hazard_category": false,
+    "expected_walkable": true,
+    "corridor_status": "WALKABLE",
+    "expected_hazards": [],
+    "expected_objects": [
+      "person"
+    ],
+    "license": "Internal Test Footage",
+    "image_file": "live_frame_001.jpg"
+  },
+  {
+    "id": "live_frame_002",
+    "category": "live_user_walking",
+    "split": "LIVE",
+    "is_hazard_category": false,
+    "expected_walkable": true,
+    "corridor_status": "WALKABLE",
+    "expected_hazards": [],
+    "expected_objects": [
+      "person"
+    ],
+    "license": "Internal Test Footage",
+    "image_file": "live_frame_002.jpg"
+  },
+  {
+    "id": "live_frame_003",
+    "category": "live_user_walking",
+    "split": "LIVE",
+    "is_hazard_category": false,
+    "expected_walkable": true,
+    "corridor_status": "WALKABLE",
+    "expected_hazards": [],
+    "expected_objects": [
+      "person"
+    ],
+    "license": "Internal Test Footage",
+    "image_file": "live_frame_003.jpg"
+  },
+  {
+    "id": "live_frame_004",
+    "category": "live_user_walking",
+    "split": "LIVE",
+    "is_hazard_category": false,
+    "expected_walkable": true,
+    "corridor_status": "WALKABLE",
+    "expected_hazards": [],
+    "expected_objects": [
+      "person"
+    ],
+    "license": "Internal Test Footage",
+    "image_file": "live_frame_004.jpg"
+  },
+  {
+    "id": "live_frame_005",
+    "category": "live_user_walking",
+    "split": "LIVE",
+    "is_hazard_category": false,
+    "expected_walkable": true,
+    "corridor_status": "WALKABLE",
+    "expected_hazards": [],
+    "expected_objects": [
+      "person"
+    ],
+    "license": "Internal Test Footage",
+    "image_file": "live_frame_005.jpg"
+  },
+  {
+    "id": "live_frame_006",
+    "category": "live_user_walking",
+    "split": "LIVE",
+    "is_hazard_category": false,
+    "expected_walkable": true,
+    "corridor_status": "WALKABLE",
+    "expected_hazards": [],
+    "expected_objects": [
+      "person"
+    ],
+    "license": "Internal Test Footage",
+    "image_file": "live_frame_006.jpg"
+  },
+  {
+    "id": "live_frame_007",
+    "category": "live_user_walking",
+    "split": "LIVE",
+    "is_hazard_category": false,
+    "expected_walkable": true,
+    "corridor_status": "WALKABLE",
+    "expected_hazards": [],
+    "expected_objects": [
+      "person"
+    ],
+    "license": "Internal Test Footage",
+    "image_file": "live_frame_007.jpg"
+  },
+  {
+    "id": "live_frame_008",
+    "category": "live_user_walking",
+    "split": "LIVE",
+    "is_hazard_category": false,
+    "expected_walkable": true,
+    "corridor_status": "WALKABLE",
+    "expected_hazards": [],
+    "expected_objects": [
+      "person"
+    ],
+    "license": "Internal Test Footage",
+    "image_file": "live_frame_008.jpg"
+  },
+  {
+    "id": "live_frame_009",
+    "category": "live_user_walking",
+    "split": "LIVE",
+    "is_hazard_category": false,
+    "expected_walkable": true,
+    "corridor_status": "WALKABLE",
+    "expected_hazards": [],
+    "expected_objects": [
+      "person"
+    ],
+    "license": "Internal Test Footage",
+    "image_file": "live_frame_009.jpg"
+  },
+  {
+    "id": "live_frame_010",
+    "category": "live_user_walking",
+    "split": "LIVE",
+    "is_hazard_category": false,
+    "expected_walkable": true,
+    "corridor_status": "WALKABLE",
+    "expected_hazards": [],
+    "expected_objects": [
+      "person"
+    ],
+    "license": "Internal Test Footage",
+    "image_file": "live_frame_010.jpg"
+  },
+  {
+    "id": "live_frame_011",
+    "category": "live_user_walking",
+    "split": "LIVE",
+    "is_hazard_category": false,
+    "expected_walkable": true,
+    "corridor_status": "WALKABLE",
+    "expected_hazards": [],
+    "expected_objects": [
+      "person"
+    ],
+    "license": "Internal Test Footage",
+    "image_file": "live_frame_011.jpg"
+  },
+  {
+    "id": "live_frame_012",
+    "category": "live_user_walking",
+    "split": "LIVE",
+    "is_hazard_category": false,
+    "expected_walkable": true,
+    "corridor_status": "WALKABLE",
+    "expected_hazards": [],
+    "expected_objects": [
+      "person"
+    ],
+    "license": "Internal Test Footage",
+    "image_file": "live_frame_012.jpg"
+  },
+  {
+    "id": "live_frame_013",
+    "category": "live_user_walking",
+    "split": "LIVE",
+    "is_hazard_category": false,
+    "expected_walkable": true,
+    "corridor_status": "WALKABLE",
+    "expected_hazards": [],
+    "expected_objects": [
+      "person"
+    ],
+    "license": "Internal Test Footage",
+    "image_file": "live_frame_013.jpg"
+  },
+  {
+    "id": "live_frame_014",
+    "category": "live_user_walking",
+    "split": "LIVE",
+    "is_hazard_category": false,
+    "expected_walkable": true,
+    "corridor_status": "WALKABLE",
+    "expected_hazards": [],
+    "expected_objects": [
+      "person"
+    ],
+    "license": "Internal Test Footage",
+    "image_file": "live_frame_014.jpg"
+  },
+  {
+    "id": "live_frame_015",
+    "category": "live_user_walking",
+    "split": "LIVE",
+    "is_hazard_category": false,
+    "expected_walkable": true,
+    "corridor_status": "WALKABLE",
+    "expected_hazards": [],
+    "expected_objects": [
+      "person"
+    ],
+    "license": "Internal Test Footage",
+    "image_file": "live_frame_015.jpg"
+  },
+  {
+    "id": "live_frame_016",
+    "category": "live_user_walking",
+    "split": "LIVE",
+    "is_hazard_category": false,
+    "expected_walkable": true,
+    "corridor_status": "WALKABLE",
+    "expected_hazards": [],
+    "expected_objects": [
+      "person"
+    ],
+    "license": "Internal Test Footage",
+    "image_file": "live_frame_016.jpg"
+  },
+  {
+    "id": "live_frame_017",
+    "category": "live_user_walking",
+    "split": "LIVE",
+    "is_hazard_category": false,
+    "expected_walkable": true,
+    "corridor_status": "WALKABLE",
+    "expected_hazards": [],
+    "expected_objects": [
+      "person"
+    ],
+    "license": "Internal Test Footage",
+    "image_file": "live_frame_017.jpg"
+  },
+  {
+    "id": "live_frame_018",
+    "category": "live_user_walking",
+    "split": "LIVE",
+    "is_hazard_category": false,
+    "expected_walkable": true,
+    "corridor_status": "WALKABLE",
+    "expected_hazards": [],
+    "expected_objects": [
+      "person"
+    ],
+    "license": "Internal Test Footage",
+    "image_file": "live_frame_018.jpg"
+  },
+  {
+    "id": "live_frame_019",
+    "category": "live_user_walking",
+    "split": "LIVE",
+    "is_hazard_category": false,
+    "expected_walkable": true,
+    "corridor_status": "WALKABLE",
+    "expected_hazards": [],
+    "expected_objects": [
+      "person"
+    ],
+    "license": "Internal Test Footage",
+    "image_file": "live_frame_019.jpg"
+  },
+  {
+    "id": "live_frame_020",
+    "category": "live_user_walking",
+    "split": "LIVE",
+    "is_hazard_category": false,
+    "expected_walkable": true,
+    "corridor_status": "WALKABLE",
+    "expected_hazards": [],
+    "expected_objects": [
+      "person"
+    ],
+    "license": "Internal Test Footage",
+    "image_file": "live_frame_020.jpg"
+  },
+  {
+    "id": "live_frame_021",
+    "category": "live_user_walking",
+    "split": "LIVE",
+    "is_hazard_category": false,
+    "expected_walkable": true,
+    "corridor_status": "WALKABLE",
+    "expected_hazards": [],
+    "expected_objects": [
+      "person"
+    ],
+    "license": "Internal Test Footage",
+    "image_file": "live_frame_021.jpg"
+  },
+  {
+    "id": "live_frame_022",
+    "category": "live_user_walking",
+    "split": "LIVE",
+    "is_hazard_category": false,
+    "expected_walkable": true,
+    "corridor_status": "WALKABLE",
+    "expected_hazards": [],
+    "expected_objects": [
+      "person"
+    ],
+    "license": "Internal Test Footage",
+    "image_file": "live_frame_022.jpg"
+  },
+  {
+    "id": "live_frame_023",
+    "category": "live_user_walking",
+    "split": "LIVE",
+    "is_hazard_category": false,
+    "expected_walkable": true,
+    "corridor_status": "WALKABLE",
+    "expected_hazards": [],
+    "expected_objects": [
+      "person"
+    ],
+    "license": "Internal Test Footage",
+    "image_file": "live_frame_023.jpg"
+  },
+  {
+    "id": "live_frame_024",
+    "category": "live_user_walking",
+    "split": "LIVE",
+    "is_hazard_category": false,
+    "expected_walkable": true,
+    "corridor_status": "WALKABLE",
+    "expected_hazards": [],
+    "expected_objects": [
+      "person"
+    ],
+    "license": "Internal Test Footage",
+    "image_file": "live_frame_024.jpg"
+  },
+  {
+    "id": "live_frame_025",
+    "category": "live_user_walking",
+    "split": "LIVE",
+    "is_hazard_category": false,
+    "expected_walkable": true,
+    "corridor_status": "WALKABLE",
+    "expected_hazards": [],
+    "expected_objects": [
+      "person"
+    ],
+    "license": "Internal Test Footage",
+    "image_file": "live_frame_025.jpg"
+  },
+  {
+    "id": "live_frame_026",
+    "category": "live_user_walking",
+    "split": "LIVE",
+    "is_hazard_category": false,
+    "expected_walkable": true,
+    "corridor_status": "WALKABLE",
+    "expected_hazards": [],
+    "expected_objects": [
+      "person"
+    ],
+    "license": "Internal Test Footage",
+    "image_file": "live_frame_026.jpg"
+  },
+  {
+    "id": "live_frame_027",
+    "category": "live_user_walking",
+    "split": "LIVE",
+    "is_hazard_category": false,
+    "expected_walkable": true,
+    "corridor_status": "WALKABLE",
+    "expected_hazards": [],
+    "expected_objects": [
+      "person"
+    ],
+    "license": "Internal Test Footage",
+    "image_file": "live_frame_027.jpg"
+  },
+  {
+    "id": "live_frame_028",
+    "category": "live_user_walking",
+    "split": "LIVE",
+    "is_hazard_category": false,
+    "expected_walkable": true,
+    "corridor_status": "WALKABLE",
+    "expected_hazards": [],
+    "expected_objects": [
+      "person"
+    ],
+    "license": "Internal Test Footage",
+    "image_file": "live_frame_028.jpg"
+  },
+  {
+    "id": "live_frame_029",
+    "category": "live_user_walking",
+    "split": "LIVE",
+    "is_hazard_category": false,
+    "expected_walkable": true,
+    "corridor_status": "WALKABLE",
+    "expected_hazards": [],
+    "expected_objects": [
+      "person"
+    ],
+    "license": "Internal Test Footage",
+    "image_file": "live_frame_029.jpg"
+  },
+  {
+    "id": "live_frame_030",
+    "category": "live_user_walking",
+    "split": "LIVE",
+    "is_hazard_category": false,
+    "expected_walkable": true,
+    "corridor_status": "WALKABLE",
+    "expected_hazards": [],
+    "expected_objects": [
+      "person"
+    ],
+    "license": "Internal Test Footage",
+    "image_file": "live_frame_030.jpg"
+  },
+  {
+    "id": "live_frame_031",
+    "category": "live_user_walking",
+    "split": "LIVE",
+    "is_hazard_category": false,
+    "expected_walkable": true,
+    "corridor_status": "WALKABLE",
+    "expected_hazards": [],
+    "expected_objects": [
+      "person"
+    ],
+    "license": "Internal Test Footage",
+    "image_file": "live_frame_031.jpg"
+  },
+  {
+    "id": "live_frame_032",
+    "category": "live_user_walking",
+    "split": "LIVE",
+    "is_hazard_category": false,
+    "expected_walkable": true,
+    "corridor_status": "WALKABLE",
+    "expected_hazards": [],
+    "expected_objects": [
+      "person"
+    ],
+    "license": "Internal Test Footage",
+    "image_file": "live_frame_032.jpg"
+  },
+  {
+    "id": "live_frame_033",
+    "category": "live_user_walking",
+    "split": "LIVE",
+    "is_hazard_category": false,
+    "expected_walkable": true,
+    "corridor_status": "WALKABLE",
+    "expected_hazards": [],
+    "expected_objects": [
+      "person"
+    ],
+    "license": "Internal Test Footage",
+    "image_file": "live_frame_033.jpg"
+  },
+  {
+    "id": "live_frame_034",
+    "category": "live_user_walking",
+    "split": "LIVE",
+    "is_hazard_category": false,
+    "expected_walkable": true,
+    "corridor_status": "WALKABLE",
+    "expected_hazards": [],
+    "expected_objects": [
+      "person"
+    ],
+    "license": "Internal Test Footage",
+    "image_file": "live_frame_034.jpg"
+  },
+  {
+    "id": "live_frame_035",
+    "category": "live_user_walking",
+    "split": "LIVE",
+    "is_hazard_category": false,
+    "expected_walkable": true,
+    "corridor_status": "WALKABLE",
+    "expected_hazards": [],
+    "expected_objects": [
+      "person"
+    ],
+    "license": "Internal Test Footage",
+    "image_file": "live_frame_035.jpg"
+  },
+  {
+    "id": "live_frame_036",
+    "category": "live_user_walking",
+    "split": "LIVE",
+    "is_hazard_category": false,
+    "expected_walkable": true,
+    "corridor_status": "WALKABLE",
+    "expected_hazards": [],
+    "expected_objects": [
+      "person"
+    ],
+    "license": "Internal Test Footage",
+    "image_file": "live_frame_036.jpg"
+  },
+  {
+    "id": "live_frame_037",
+    "category": "live_user_walking",
+    "split": "LIVE",
+    "is_hazard_category": false,
+    "expected_walkable": true,
+    "corridor_status": "WALKABLE",
+    "expected_hazards": [],
+    "expected_objects": [
+      "person",
+      "tie"
+    ],
+    "license": "Internal Test Footage",
+    "image_file": "live_frame_037.jpg"
+  },
+  {
+    "id": "live_frame_038",
+    "category": "live_user_walking",
+    "split": "LIVE",
+    "is_hazard_category": false,
+    "expected_walkable": true,
+    "corridor_status": "WALKABLE",
+    "expected_hazards": [],
+    "expected_objects": [
+      "person"
+    ],
+    "license": "Internal Test Footage",
+    "image_file": "live_frame_038.jpg"
+  },
+  {
+    "id": "live_frame_039",
+    "category": "live_user_walking",
+    "split": "LIVE",
+    "is_hazard_category": false,
+    "expected_walkable": true,
+    "corridor_status": "WALKABLE",
+    "expected_hazards": [],
+    "expected_objects": [
+      "person"
+    ],
+    "license": "Internal Test Footage",
+    "image_file": "live_frame_039.jpg"
+  },
+  {
+    "id": "live_frame_040",
+    "category": "live_user_walking",
+    "split": "LIVE",
+    "is_hazard_category": false,
+    "expected_walkable": true,
+    "corridor_status": "WALKABLE",
+    "expected_hazards": [],
+    "expected_objects": [
+      "person"
+    ],
+    "license": "Internal Test Footage",
+    "image_file": "live_frame_040.jpg"
+  },
+  {
+    "id": "live_frame_041",
+    "category": "live_user_walking",
+    "split": "LIVE",
+    "is_hazard_category": false,
+    "expected_walkable": true,
+    "corridor_status": "WALKABLE",
+    "expected_hazards": [],
+    "expected_objects": [
+      "person"
+    ],
+    "license": "Internal Test Footage",
+    "image_file": "live_frame_041.jpg"
+  },
+  {
+    "id": "live_frame_042",
+    "category": "live_user_walking",
+    "split": "LIVE",
+    "is_hazard_category": false,
+    "expected_walkable": true,
+    "corridor_status": "WALKABLE",
+    "expected_hazards": [],
+    "expected_objects": [
+      "person"
+    ],
+    "license": "Internal Test Footage",
+    "image_file": "live_frame_042.jpg"
+  },
+  {
+    "id": "live_frame_043",
+    "category": "live_user_walking",
+    "split": "LIVE",
+    "is_hazard_category": false,
+    "expected_walkable": true,
+    "corridor_status": "WALKABLE",
+    "expected_hazards": [],
+    "expected_objects": [
+      "person"
+    ],
+    "license": "Internal Test Footage",
+    "image_file": "live_frame_043.jpg"
+  },
+  {
+    "id": "live_frame_044",
+    "category": "live_user_walking",
+    "split": "LIVE",
+    "is_hazard_category": false,
+    "expected_walkable": true,
+    "corridor_status": "WALKABLE",
+    "expected_hazards": [],
+    "expected_objects": [
+      "person"
+    ],
+    "license": "Internal Test Footage",
+    "image_file": "live_frame_044.jpg"
+  },
+  {
+    "id": "live_frame_045",
+    "category": "live_user_walking",
+    "split": "LIVE",
+    "is_hazard_category": false,
+    "expected_walkable": true,
+    "corridor_status": "WALKABLE",
+    "expected_hazards": [],
+    "expected_objects": [
+      "person"
+    ],
+    "license": "Internal Test Footage",
+    "image_file": "live_frame_045.jpg"
+  },
+  {
+    "id": "live_frame_046",
+    "category": "live_user_walking",
+    "split": "LIVE",
+    "is_hazard_category": false,
+    "expected_walkable": true,
+    "corridor_status": "WALKABLE",
+    "expected_hazards": [],
+    "expected_objects": [
+      "person"
+    ],
+    "license": "Internal Test Footage",
+    "image_file": "live_frame_046.jpg"
+  },
+  {
+    "id": "live_frame_047",
+    "category": "live_user_walking",
+    "split": "LIVE",
+    "is_hazard_category": false,
+    "expected_walkable": true,
+    "corridor_status": "WALKABLE",
+    "expected_hazards": [],
+    "expected_objects": [
+      "person"
+    ],
+    "license": "Internal Test Footage",
+    "image_file": "live_frame_047.jpg"
+  },
+  {
+    "id": "live_frame_048",
+    "category": "live_user_walking",
+    "split": "LIVE",
+    "is_hazard_category": false,
+    "expected_walkable": true,
+    "corridor_status": "WALKABLE",
+    "expected_hazards": [],
+    "expected_objects": [
+      "person"
+    ],
+    "license": "Internal Test Footage",
+    "image_file": "live_frame_048.jpg"
+  },
+  {
+    "id": "live_frame_049",
+    "category": "live_user_walking",
+    "split": "LIVE",
+    "is_hazard_category": false,
+    "expected_walkable": true,
+    "corridor_status": "WALKABLE",
+    "expected_hazards": [],
+    "expected_objects": [
+      "person"
+    ],
+    "license": "Internal Test Footage",
+    "image_file": "live_frame_049.jpg"
+  },
+  {
+    "id": "live_frame_050",
+    "category": "live_user_walking",
+    "split": "LIVE",
+    "is_hazard_category": false,
+    "expected_walkable": true,
+    "corridor_status": "WALKABLE",
+    "expected_hazards": [],
+    "expected_objects": [
+      "person"
+    ],
+    "license": "Internal Test Footage",
+    "image_file": "live_frame_050.jpg"
+  },
+  {
+    "id": "live_frame_051",
+    "category": "live_user_walking",
+    "split": "LIVE",
+    "is_hazard_category": false,
+    "expected_walkable": true,
+    "corridor_status": "WALKABLE",
+    "expected_hazards": [],
+    "expected_objects": [
+      "person",
+      "bus"
+    ],
+    "license": "Internal Test Footage",
+    "image_file": "live_frame_051.jpg"
+  },
+  {
+    "id": "live_frame_052",
+    "category": "live_user_walking",
+    "split": "LIVE",
+    "is_hazard_category": false,
+    "expected_walkable": true,
+    "corridor_status": "WALKABLE",
+    "expected_hazards": [],
+    "expected_objects": [
+      "person",
+      "bus"
+    ],
+    "license": "Internal Test Footage",
+    "image_file": "live_frame_052.jpg"
+  },
+  {
+    "id": "live_frame_053",
+    "category": "live_user_walking",
+    "split": "LIVE",
+    "is_hazard_category": false,
+    "expected_walkable": true,
+    "corridor_status": "WALKABLE",
+    "expected_hazards": [],
+    "expected_objects": [
+      "person",
+      "bus"
+    ],
+    "license": "Internal Test Footage",
+    "image_file": "live_frame_053.jpg"
+  },
+  {
+    "id": "live_frame_054",
+    "category": "live_user_walking",
+    "split": "LIVE",
+    "is_hazard_category": false,
+    "expected_walkable": true,
+    "corridor_status": "WALKABLE",
+    "expected_hazards": [],
+    "expected_objects": [
+      "person",
+      "bus"
+    ],
+    "license": "Internal Test Footage",
+    "image_file": "live_frame_054.jpg"
+  },
+  {
+    "id": "live_frame_055",
+    "category": "live_user_walking",
+    "split": "LIVE",
+    "is_hazard_category": false,
+    "expected_walkable": true,
+    "corridor_status": "WALKABLE",
+    "expected_hazards": [],
+    "expected_objects": [
+      "person",
+      "bus"
+    ],
+    "license": "Internal Test Footage",
+    "image_file": "live_frame_055.jpg"
+  },
+  {
+    "id": "live_frame_056",
+    "category": "live_user_walking",
+    "split": "LIVE",
+    "is_hazard_category": false,
+    "expected_walkable": true,
+    "corridor_status": "WALKABLE",
+    "expected_hazards": [],
+    "expected_objects": [
+      "person",
+      "bus"
+    ],
+    "license": "Internal Test Footage",
+    "image_file": "live_frame_056.jpg"
+  },
+  {
+    "id": "live_frame_057",
+    "category": "live_user_walking",
+    "split": "LIVE",
+    "is_hazard_category": false,
+    "expected_walkable": true,
+    "corridor_status": "WALKABLE",
+    "expected_hazards": [],
+    "expected_objects": [
+      "person",
+      "bus"
+    ],
+    "license": "Internal Test Footage",
+    "image_file": "live_frame_057.jpg"
+  },
+  {
+    "id": "live_frame_058",
+    "category": "live_user_walking",
+    "split": "LIVE",
+    "is_hazard_category": false,
+    "expected_walkable": true,
+    "corridor_status": "WALKABLE",
+    "expected_hazards": [],
+    "expected_objects": [
+      "person",
+      "bus"
+    ],
+    "license": "Internal Test Footage",
+    "image_file": "live_frame_058.jpg"
+  },
+  {
+    "id": "live_frame_059",
+    "category": "live_user_walking",
+    "split": "LIVE",
+    "is_hazard_category": false,
+    "expected_walkable": true,
+    "corridor_status": "WALKABLE",
+    "expected_hazards": [],
+    "expected_objects": [
+      "person",
+      "bus"
+    ],
+    "license": "Internal Test Footage",
+    "image_file": "live_frame_059.jpg"
+  },
+  {
+    "id": "live_frame_060",
+    "category": "live_user_walking",
+    "split": "LIVE",
+    "is_hazard_category": false,
+    "expected_walkable": true,
+    "corridor_status": "WALKABLE",
+    "expected_hazards": [],
+    "expected_objects": [
+      "person",
+      "bus"
+    ],
+    "license": "Internal Test Footage",
+    "image_file": "live_frame_060.jpg"
+  },
+  {
+    "id": "live_frame_061",
+    "category": "live_user_walking",
+    "split": "LIVE",
+    "is_hazard_category": false,
+    "expected_walkable": true,
+    "corridor_status": "WALKABLE",
+    "expected_hazards": [],
+    "expected_objects": [
+      "person",
+      "bus"
+    ],
+    "license": "Internal Test Footage",
+    "image_file": "live_frame_061.jpg"
+  },
+  {
+    "id": "live_frame_062",
+    "category": "live_user_walking",
+    "split": "LIVE",
+    "is_hazard_category": false,
+    "expected_walkable": false,
+    "corridor_status": "BLOCKED",
+    "expected_hazards": [],
+    "expected_objects": [
+      "person",
+      "bus",
+      "dog"
+    ],
+    "license": "Internal Test Footage",
+    "image_file": "live_frame_062.jpg"
+  },
+  {
+    "id": "live_frame_063",
+    "category": "live_user_walking",
+    "split": "LIVE",
+    "is_hazard_category": false,
+    "expected_walkable": false,
+    "corridor_status": "BLOCKED",
+    "expected_hazards": [],
+    "expected_objects": [
+      "person",
+      "bus"
+    ],
+    "license": "Internal Test Footage",
+    "image_file": "live_frame_063.jpg"
+  },
+  {
+    "id": "live_frame_064",
+    "category": "live_user_walking",
+    "split": "LIVE",
+    "is_hazard_category": false,
+    "expected_walkable": false,
+    "corridor_status": "BLOCKED",
+    "expected_hazards": [],
+    "expected_objects": [
+      "person",
+      "bus"
+    ],
+    "license": "Internal Test Footage",
+    "image_file": "live_frame_064.jpg"
+  },
+  {
+    "id": "live_frame_065",
+    "category": "live_user_walking",
+    "split": "LIVE",
+    "is_hazard_category": false,
+    "expected_walkable": false,
+    "corridor_status": "BLOCKED",
+    "expected_hazards": [],
+    "expected_objects": [
+      "person",
+      "bus"
+    ],
+    "license": "Internal Test Footage",
+    "image_file": "live_frame_065.jpg"
+  },
+  {
+    "id": "live_frame_066",
+    "category": "live_user_walking",
+    "split": "LIVE",
+    "is_hazard_category": false,
+    "expected_walkable": false,
+    "corridor_status": "BLOCKED",
+    "expected_hazards": [],
+    "expected_objects": [
+      "person",
+      "bus"
+    ],
+    "license": "Internal Test Footage",
+    "image_file": "live_frame_066.jpg"
+  },
+  {
+    "id": "live_frame_067",
+    "category": "live_user_walking",
+    "split": "LIVE",
+    "is_hazard_category": false,
+    "expected_walkable": false,
+    "corridor_status": "BLOCKED",
+    "expected_hazards": [],
+    "expected_objects": [
+      "person",
+      "bus"
+    ],
+    "license": "Internal Test Footage",
+    "image_file": "live_frame_067.jpg"
+  },
+  {
+    "id": "live_frame_068",
+    "category": "live_user_walking",
+    "split": "LIVE",
+    "is_hazard_category": false,
+    "expected_walkable": false,
+    "corridor_status": "BLOCKED",
+    "expected_hazards": [],
+    "expected_objects": [
+      "person",
+      "bus"
+    ],
+    "license": "Internal Test Footage",
+    "image_file": "live_frame_068.jpg"
+  },
+  {
+    "id": "live_frame_069",
+    "category": "live_user_walking",
+    "split": "LIVE",
+    "is_hazard_category": false,
+    "expected_walkable": false,
+    "corridor_status": "BLOCKED",
+    "expected_hazards": [],
+    "expected_objects": [
+      "person",
+      "bus"
+    ],
+    "license": "Internal Test Footage",
+    "image_file": "live_frame_069.jpg"
+  },
+  {
+    "id": "live_frame_070",
+    "category": "live_user_walking",
+    "split": "LIVE",
+    "is_hazard_category": false,
+    "expected_walkable": false,
+    "corridor_status": "BLOCKED",
+    "expected_hazards": [],
+    "expected_objects": [
+      "person",
+      "bus"
+    ],
+    "license": "Internal Test Footage",
+    "image_file": "live_frame_070.jpg"
+  },
+  {
+    "id": "live_frame_071",
+    "category": "live_user_walking",
+    "split": "LIVE",
+    "is_hazard_category": false,
+    "expected_walkable": false,
+    "corridor_status": "BLOCKED",
+    "expected_hazards": [],
+    "expected_objects": [
+      "person",
+      "bus"
+    ],
+    "license": "Internal Test Footage",
+    "image_file": "live_frame_071.jpg"
+  },
+  {
+    "id": "live_frame_072",
+    "category": "live_user_walking",
+    "split": "LIVE",
+    "is_hazard_category": false,
+    "expected_walkable": false,
+    "corridor_status": "BLOCKED",
+    "expected_hazards": [],
+    "expected_objects": [
+      "person",
+      "bus"
+    ],
+    "license": "Internal Test Footage",
+    "image_file": "live_frame_072.jpg"
+  },
+  {
+    "id": "live_frame_073",
+    "category": "live_user_walking",
+    "split": "LIVE",
+    "is_hazard_category": false,
+    "expected_walkable": false,
+    "corridor_status": "BLOCKED",
+    "expected_hazards": [],
+    "expected_objects": [
+      "person",
+      "bus"
+    ],
+    "license": "Internal Test Footage",
+    "image_file": "live_frame_073.jpg"
+  },
+  {
+    "id": "live_frame_074",
+    "category": "live_user_walking",
+    "split": "LIVE",
+    "is_hazard_category": false,
+    "expected_walkable": false,
+    "corridor_status": "BLOCKED",
+    "expected_hazards": [],
+    "expected_objects": [
+      "person",
+      "bus"
+    ],
+    "license": "Internal Test Footage",
+    "image_file": "live_frame_074.jpg"
+  },
+  {
+    "id": "live_frame_075",
+    "category": "live_user_walking",
+    "split": "LIVE",
+    "is_hazard_category": false,
+    "expected_walkable": false,
+    "corridor_status": "BLOCKED",
+    "expected_hazards": [],
+    "expected_objects": [
+      "person",
+      "bus"
+    ],
+    "license": "Internal Test Footage",
+    "image_file": "live_frame_075.jpg"
+  },
+  {
+    "id": "live_frame_076",
+    "category": "live_user_walking",
+    "split": "LIVE",
+    "is_hazard_category": false,
+    "expected_walkable": false,
+    "corridor_status": "BLOCKED",
+    "expected_hazards": [],
+    "expected_objects": [
+      "person",
+      "bus",
+      "tie"
+    ],
+    "license": "Internal Test Footage",
+    "image_file": "live_frame_076.jpg"
+  },
+  {
+    "id": "live_frame_077",
+    "category": "live_user_walking",
+    "split": "LIVE",
+    "is_hazard_category": false,
+    "expected_walkable": false,
+    "corridor_status": "BLOCKED",
+    "expected_hazards": [],
+    "expected_objects": [
+      "person",
+      "bus"
+    ],
+    "license": "Internal Test Footage",
+    "image_file": "live_frame_077.jpg"
+  },
+  {
+    "id": "live_frame_078",
+    "category": "live_user_walking",
+    "split": "LIVE",
+    "is_hazard_category": false,
+    "expected_walkable": false,
+    "corridor_status": "BLOCKED",
+    "expected_hazards": [],
+    "expected_objects": [
+      "person",
+      "bus"
+    ],
+    "license": "Internal Test Footage",
+    "image_file": "live_frame_078.jpg"
+  },
+  {
+    "id": "live_frame_079",
+    "category": "live_user_walking",
+    "split": "LIVE",
+    "is_hazard_category": false,
+    "expected_walkable": false,
+    "corridor_status": "BLOCKED",
+    "expected_hazards": [],
+    "expected_objects": [
+      "person",
+      "bus"
+    ],
+    "license": "Internal Test Footage",
+    "image_file": "live_frame_079.jpg"
+  },
+  {
+    "id": "live_frame_080",
+    "category": "live_user_walking",
+    "split": "LIVE",
+    "is_hazard_category": false,
+    "expected_walkable": false,
+    "corridor_status": "BLOCKED",
+    "expected_hazards": [],
+    "expected_objects": [
+      "person",
+      "bus"
+    ],
+    "license": "Internal Test Footage",
+    "image_file": "live_frame_080.jpg"
+  },
+  {
+    "id": "live_frame_081",
+    "category": "live_user_walking",
+    "split": "LIVE",
+    "is_hazard_category": false,
+    "expected_walkable": false,
+    "corridor_status": "BLOCKED",
+    "expected_hazards": [],
+    "expected_objects": [
+      "person",
+      "bus"
+    ],
+    "license": "Internal Test Footage",
+    "image_file": "live_frame_081.jpg"
+  },
+  {
+    "id": "live_frame_082",
+    "category": "live_user_walking",
+    "split": "LIVE",
+    "is_hazard_category": false,
+    "expected_walkable": false,
+    "corridor_status": "BLOCKED",
+    "expected_hazards": [],
+    "expected_objects": [
+      "person",
+      "bus"
+    ],
+    "license": "Internal Test Footage",
+    "image_file": "live_frame_082.jpg"
+  },
+  {
+    "id": "live_frame_083",
+    "category": "live_user_walking",
+    "split": "LIVE",
+    "is_hazard_category": false,
+    "expected_walkable": false,
+    "corridor_status": "BLOCKED",
+    "expected_hazards": [],
+    "expected_objects": [
+      "person",
+      "bus"
+    ],
+    "license": "Internal Test Footage",
+    "image_file": "live_frame_083.jpg"
+  },
+  {
+    "id": "live_frame_084",
+    "category": "live_user_walking",
+    "split": "LIVE",
+    "is_hazard_category": false,
+    "expected_walkable": false,
+    "corridor_status": "BLOCKED",
+    "expected_hazards": [],
+    "expected_objects": [
+      "person",
+      "bus",
+      "tie"
+    ],
+    "license": "Internal Test Footage",
+    "image_file": "live_frame_084.jpg"
+  },
+  {
+    "id": "live_frame_085",
+    "category": "live_user_walking",
+    "split": "LIVE",
+    "is_hazard_category": false,
+    "expected_walkable": false,
+    "corridor_status": "BLOCKED",
+    "expected_hazards": [],
+    "expected_objects": [
+      "person",
+      "bus"
+    ],
+    "license": "Internal Test Footage",
+    "image_file": "live_frame_085.jpg"
+  },
+  {
+    "id": "live_frame_086",
+    "category": "live_user_walking",
+    "split": "LIVE",
+    "is_hazard_category": false,
+    "expected_walkable": true,
+    "corridor_status": "WALKABLE",
+    "expected_hazards": [],
+    "expected_objects": [
+      "person",
+      "bus"
+    ],
+    "license": "Internal Test Footage",
+    "image_file": "live_frame_086.jpg"
+  },
+  {
+    "id": "live_frame_087",
+    "category": "live_user_walking",
+    "split": "LIVE",
+    "is_hazard_category": false,
+    "expected_walkable": true,
+    "corridor_status": "WALKABLE",
+    "expected_hazards": [],
+    "expected_objects": [
+      "person",
+      "bus",
+      "handbag"
+    ],
+    "license": "Internal Test Footage",
+    "image_file": "live_frame_087.jpg"
+  },
+  {
+    "id": "live_frame_088",
+    "category": "live_user_walking",
+    "split": "LIVE",
+    "is_hazard_category": false,
+    "expected_walkable": true,
+    "corridor_status": "WALKABLE",
+    "expected_hazards": [],
+    "expected_objects": [
+      "person",
+      "bus"
+    ],
+    "license": "Internal Test Footage",
+    "image_file": "live_frame_088.jpg"
+  },
+  {
+    "id": "live_frame_089",
+    "category": "live_user_walking",
+    "split": "LIVE",
+    "is_hazard_category": false,
+    "expected_walkable": true,
+    "corridor_status": "WALKABLE",
+    "expected_hazards": [],
+    "expected_objects": [
+      "person",
+      "bus"
+    ],
+    "license": "Internal Test Footage",
+    "image_file": "live_frame_089.jpg"
+  },
+  {
+    "id": "live_frame_090",
+    "category": "live_user_walking",
+    "split": "LIVE",
+    "is_hazard_category": false,
+    "expected_walkable": true,
+    "corridor_status": "WALKABLE",
+    "expected_hazards": [],
+    "expected_objects": [
+      "person",
+      "bus"
+    ],
+    "license": "Internal Test Footage",
+    "image_file": "live_frame_090.jpg"
+  },
+  {
+    "id": "live_frame_091",
+    "category": "live_user_walking",
+    "split": "LIVE",
+    "is_hazard_category": false,
+    "expected_walkable": true,
+    "corridor_status": "WALKABLE",
+    "expected_hazards": [],
+    "expected_objects": [
+      "person",
+      "bus"
+    ],
+    "license": "Internal Test Footage",
+    "image_file": "live_frame_091.jpg"
+  },
+  {
+    "id": "live_frame_092",
+    "category": "live_user_walking",
+    "split": "LIVE",
+    "is_hazard_category": false,
+    "expected_walkable": true,
+    "corridor_status": "WALKABLE",
+    "expected_hazards": [],
+    "expected_objects": [
+      "person",
+      "bus"
+    ],
+    "license": "Internal Test Footage",
+    "image_file": "live_frame_092.jpg"
+  },
+  {
+    "id": "live_frame_093",
+    "category": "live_user_walking",
+    "split": "LIVE",
+    "is_hazard_category": false,
+    "expected_walkable": true,
+    "corridor_status": "WALKABLE",
+    "expected_hazards": [],
+    "expected_objects": [
+      "person",
+      "bus"
+    ],
+    "license": "Internal Test Footage",
+    "image_file": "live_frame_093.jpg"
+  },
+  {
+    "id": "live_frame_094",
+    "category": "live_user_walking",
+    "split": "LIVE",
+    "is_hazard_category": false,
+    "expected_walkable": true,
+    "corridor_status": "WALKABLE",
+    "expected_hazards": [],
+    "expected_objects": [
+      "person",
+      "bus"
+    ],
+    "license": "Internal Test Footage",
+    "image_file": "live_frame_094.jpg"
+  },
+  {
+    "id": "live_frame_095",
+    "category": "live_user_walking",
+    "split": "LIVE",
+    "is_hazard_category": false,
+    "expected_walkable": true,
+    "corridor_status": "WALKABLE",
+    "expected_hazards": [],
+    "expected_objects": [
+      "person",
+      "bus"
+    ],
+    "license": "Internal Test Footage",
+    "image_file": "live_frame_095.jpg"
+  },
+  {
+    "id": "live_frame_096",
+    "category": "live_user_walking",
+    "split": "LIVE",
+    "is_hazard_category": false,
+    "expected_walkable": true,
+    "corridor_status": "WALKABLE",
+    "expected_hazards": [],
+    "expected_objects": [
+      "person",
+      "bus"
+    ],
+    "license": "Internal Test Footage",
+    "image_file": "live_frame_096.jpg"
+  },
+  {
+    "id": "live_frame_097",
+    "category": "live_user_walking",
+    "split": "LIVE",
+    "is_hazard_category": false,
+    "expected_walkable": true,
+    "corridor_status": "WALKABLE",
+    "expected_hazards": [],
+    "expected_objects": [
+      "person",
+      "bus"
+    ],
+    "license": "Internal Test Footage",
+    "image_file": "live_frame_097.jpg"
+  },
+  {
+    "id": "live_frame_098",
+    "category": "live_user_walking",
+    "split": "LIVE",
+    "is_hazard_category": false,
+    "expected_walkable": true,
+    "corridor_status": "WALKABLE",
+    "expected_hazards": [],
+    "expected_objects": [
+      "bus",
+      "person"
+    ],
+    "license": "Internal Test Footage",
+    "image_file": "live_frame_098.jpg"
+  },
+  {
+    "id": "live_frame_099",
+    "category": "live_user_walking",
+    "split": "LIVE",
+    "is_hazard_category": false,
+    "expected_walkable": true,
+    "corridor_status": "WALKABLE",
+    "expected_hazards": [],
+    "expected_objects": [
+      "bus",
+      "person"
+    ],
+    "license": "Internal Test Footage",
+    "image_file": "live_frame_099.jpg"
+  },
+  {
+    "id": "live_frame_100",
+    "category": "live_user_walking",
+    "split": "LIVE",
+    "is_hazard_category": false,
+    "expected_walkable": true,
+    "corridor_status": "WALKABLE",
+    "expected_hazards": [],
+    "expected_objects": [
+      "person",
+      "bus"
+    ],
+    "license": "Internal Test Footage",
+    "image_file": "live_frame_100.jpg"
+  }
+]

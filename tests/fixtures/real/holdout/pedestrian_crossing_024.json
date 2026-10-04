@@ -7,9 +7,10 @@
   "corridor_status": "BLOCKED",
   "expected_hazards": [],
   "expected_objects": [
-    "person"
+    "car",
+    "person",
+    "backpack"
   ],
-  "license": "CC BY-SA 4.0",
-  "source_url": "https://upload.wikimedia.org/wikipedia/commons/5/51/Walking_infrastructure_-_Pedestrian_crossing_in_Tel_Aviv%2C_April_2024_02.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+  "license": "CC BY / Public Domain",
   "image_file": "pedestrian_crossing_024.jpg"
 }

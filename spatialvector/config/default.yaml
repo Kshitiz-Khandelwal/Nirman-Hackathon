@@ -80,18 +80,54 @@ logging:
 
 hazard_detector:
   model_path: pothole_yolov8.pt
-  min_conf: 0.45
+  min_conf: 0.35
   persistence_required: 2
   allow_heuristic: false
   max_iou_with_yolo: 0.15
+  require_ground_confirmation: true  # Two-stage rule: require freespace road/ground confirmation
+  advisory_only: true                # Potholes alert visually/audibly, but do not override walk-forward or force-redirect
 
 freespace:
+  use_segmentation: true
+  seg_model_name: nvidia/segformer-b0-finetuned-ade-512-512
+  # Configurable SegFormer ADE20K Ground Classes (floor:3, road:6, sidewalk:11, rug:28, path:52)
+  ground_classes:
+    - 3
+    - 6
+    - 11
+    - 28
+    - 52
+  # Configurable SegFormer ADE20K Obstacle Classes (wall:0, building:1, sky:2, table:15, desk:33, stairs:53, stairway:59, step:121)
+  obstacle_classes:
+    - 0
+    - 1
+    - 2
+    - 7
+    - 8
+    - 10
+    - 12
+    - 14
+    - 15
+    - 31
+    - 32
+    - 33
+    - 53
+    - 56
+    - 59
+    - 64
+    - 80
+    - 102
+    - 121
+  seg_min_ground: 0.25
+  seg_max_obstacle: 0.30
+  seg_full_max_obstacle: 0.25
   min_walkable_conf: 0.45
   smoothing_window: 5
   gradient_jump_thresh: 28.0
   continuity_max_delta: 20.0
   continuity_min_bands: 5
   dark_blob_frac_thresh: 0.15
+  allow_classical_fallback: false    # Fail-safe: if SegFormer fails to load, refuse WALK_FORWARD unless explicitly enabled
 
 navigation_decision:
   forward_consec_frames_required: 3

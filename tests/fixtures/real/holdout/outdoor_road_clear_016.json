@@ -6,10 +6,7 @@
   "expected_walkable": true,
   "corridor_status": "WALKABLE",
   "expected_hazards": [],
-  "expected_objects": [
-    "car"
-  ],
-  "license": "CC BY-SA 4.0",
-  "source_url": "https://upload.wikimedia.org/wikipedia/commons/2/2c/Globen_September_2014_01.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+  "expected_objects": [],
+  "license": "CC BY / Public Domain",
   "image_file": "outdoor_road_clear_016.jpg"
 }

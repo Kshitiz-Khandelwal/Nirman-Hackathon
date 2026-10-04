@@ -7,7 +7,8 @@
   "corridor_status": "BLOCKED",
   "expected_hazards": [],
   "expected_objects": [
-    "person"
+    "potted plant",
+    "chair"
   ],
   "license": "CC0",
   "source_url": "https://upload.wikimedia.org/wikipedia/commons/f/f8/Road%2C_barriers%2C_ropes_preventing_pedestrians_from_walking_easily_along_the_Meguro_river.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",

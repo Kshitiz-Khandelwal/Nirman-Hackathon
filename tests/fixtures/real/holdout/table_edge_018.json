@@ -6,8 +6,10 @@
   "expected_walkable": false,
   "corridor_status": "UNKNOWN",
   "expected_hazards": [],
-  "expected_objects": [],
-  "license": "CC BY 4.0",
-  "source_url": "https://upload.wikimedia.org/wikipedia/commons/3/31/Sky%27s_Edge_kit_production_process.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+  "expected_objects": [
+    "person",
+    "book"
+  ],
+  "license": "CC BY / Public Domain",
   "image_file": "table_edge_018.jpg"
 }

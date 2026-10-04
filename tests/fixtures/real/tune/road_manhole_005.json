@@ -3,10 +3,12 @@
   "category": "road_manhole",
   "split": "TUNE",
   "is_hazard_category": false,
-  "expected_walkable": true,
-  "corridor_status": "WALKABLE",
+  "expected_walkable": false,
+  "corridor_status": "BLOCKED",
   "expected_hazards": [],
-  "expected_objects": [],
+  "expected_objects": [
+    "clock"
+  ],
   "license": "CC BY-SA 4.0",
   "source_url": "https://upload.wikimedia.org/wikipedia/commons/6/6b/2017-09-14_%28107%29_Manhole_cover_by_Wallner_%26_Neubert_at_Bahnhof_Rekawinkel.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
   "image_file": "road_manhole_005.jpg"

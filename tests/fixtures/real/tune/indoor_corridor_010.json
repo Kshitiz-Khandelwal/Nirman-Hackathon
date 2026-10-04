@@ -1,0 +1,16 @@
+{
+  "id": "indoor_corridor_010",
+  "category": "indoor_corridor",
+  "split": "TUNE",
+  "is_hazard_category": false,
+  "expected_walkable": true,
+  "corridor_status": "WALKABLE",
+  "expected_hazards": [],
+  "expected_objects": [
+    "chair",
+    "bench"
+  ],
+  "license": "CC0",
+  "source_url": "https://upload.wikimedia.org/wikipedia/commons/3/3f/Corridor_in_Arundel_Castle_2026-05-14.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+  "image_file": "indoor_corridor_010.jpg"
+}

@@ -3,11 +3,10 @@
   "category": "road_patch_puddle",
   "split": "HOLDOUT",
   "is_hazard_category": false,
-  "expected_walkable": true,
-  "corridor_status": "WALKABLE",
+  "expected_walkable": false,
+  "corridor_status": "BLOCKED",
   "expected_hazards": [],
   "expected_objects": [],
-  "license": "CC BY-SA 2.0",
-  "source_url": "https://upload.wikimedia.org/wikipedia/commons/2/22/Puddle_Road_-_geograph.org.uk_-_3314928.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+  "license": "CC BY / Public Domain",
   "image_file": "road_patch_puddle_014.jpg"
 }

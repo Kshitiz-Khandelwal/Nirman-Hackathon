@@ -1,0 +1,16 @@
+{
+  "id": "table_edge_007",
+  "category": "table_edge",
+  "split": "HOLDOUT",
+  "is_hazard_category": true,
+  "expected_walkable": false,
+  "corridor_status": "UNKNOWN",
+  "expected_hazards": [],
+  "expected_objects": [
+    "hot dog",
+    "cup",
+    "dining table"
+  ],
+  "license": "CC BY / Public Domain",
+  "image_file": "table_edge_007.jpg"
+}

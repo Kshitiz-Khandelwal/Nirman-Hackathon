@@ -1,0 +1,14 @@
+{
+  "id": "road_pothole_017",
+  "category": "road_pothole",
+  "split": "HOLDOUT",
+  "is_hazard_category": false,
+  "expected_walkable": false,
+  "corridor_status": "BLOCKED",
+  "expected_hazards": [
+    "pothole"
+  ],
+  "expected_objects": [],
+  "license": "CC BY / Public Domain",
+  "image_file": "road_pothole_017.jpg"
+}

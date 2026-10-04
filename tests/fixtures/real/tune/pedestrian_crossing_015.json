@@ -7,7 +7,11 @@
   "corridor_status": "BLOCKED",
   "expected_hazards": [],
   "expected_objects": [
-    "person"
+    "person",
+    "motorcycle",
+    "car",
+    "tie",
+    "bus"
   ],
   "license": "Public domain",
   "source_url": "https://upload.wikimedia.org/wikipedia/commons/0/05/Pedestrians_walking_on_a_steep_street_in_S%C3%A3o_Paulo%2C_Brazil.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",

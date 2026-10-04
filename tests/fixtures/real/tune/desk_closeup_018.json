@@ -1,0 +1,15 @@
+{
+  "id": "desk_closeup_018",
+  "category": "desk_closeup",
+  "split": "TUNE",
+  "is_hazard_category": true,
+  "expected_walkable": false,
+  "corridor_status": "UNKNOWN",
+  "expected_hazards": [],
+  "expected_objects": [
+    "keyboard"
+  ],
+  "license": "CC BY-SA 4.0",
+  "source_url": "https://upload.wikimedia.org/wikipedia/commons/1/1d/Logitech_MK240_CJK_Keyboard_2.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+  "image_file": "desk_closeup_018.jpg"
+}

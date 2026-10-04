@@ -6,8 +6,10 @@
   "expected_walkable": false,
   "corridor_status": "UNKNOWN",
   "expected_hazards": [],
-  "expected_objects": [],
-  "license": "CC BY-SA 4.0",
-  "source_url": "https://upload.wikimedia.org/wikipedia/commons/f/ff/Kasyno_Szlacheckie_we_Lwowie_%281%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+  "expected_objects": [
+    "book",
+    "person"
+  ],
+  "license": "CC BY / Public Domain",
   "image_file": "stairs_up_012.jpg"
 }

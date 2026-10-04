@@ -1,0 +1,16 @@
+{
+  "id": "pedestrian_crossing_005",
+  "category": "pedestrian_crossing",
+  "split": "HOLDOUT",
+  "is_hazard_category": false,
+  "expected_walkable": false,
+  "corridor_status": "BLOCKED",
+  "expected_hazards": [],
+  "expected_objects": [
+    "car",
+    "sports ball",
+    "person"
+  ],
+  "license": "CC BY / Public Domain",
+  "image_file": "pedestrian_crossing_005.jpg"
+}

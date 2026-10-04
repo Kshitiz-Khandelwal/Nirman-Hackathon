@@ -1,0 +1,15 @@
+{
+  "id": "table_corner_004",
+  "category": "table_corner",
+  "split": "TUNE",
+  "is_hazard_category": true,
+  "expected_walkable": false,
+  "corridor_status": "UNKNOWN",
+  "expected_hazards": [],
+  "expected_objects": [
+    "car"
+  ],
+  "license": "Public domain",
+  "source_url": "https://upload.wikimedia.org/wikipedia/commons/d/d4/Corner_Table_-_DPLA_-_366f9b0686aec99b66609773a3628b65.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+  "image_file": "table_corner_004.jpg"
+}

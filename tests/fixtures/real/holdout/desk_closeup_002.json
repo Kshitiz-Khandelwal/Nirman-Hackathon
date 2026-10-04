@@ -4,13 +4,13 @@
   "split": "HOLDOUT",
   "is_hazard_category": true,
   "expected_walkable": false,
-  "corridor_status": "BLOCKED",
+  "corridor_status": "UNKNOWN",
   "expected_hazards": [],
   "expected_objects": [
-    "laptop",
-    "keyboard"
+    "keyboard",
+    "tv"
   ],
-  "license": "CC BY-SA 4.0",
-  "source_url": "https://upload.wikimedia.org/wikipedia/commons/8/86/Behavior_Tech_Computer_keyboard_model_5140_Swiss_French_layout.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+  "license": "CC BY / Public Domain",
+  "source_url": "https://upload.wikimedia.org/wikipedia/commons/7/75/RGB_desktop_computer_setup_with_keyboard_and_monitor.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
   "image_file": "desk_closeup_002.jpg"
 }

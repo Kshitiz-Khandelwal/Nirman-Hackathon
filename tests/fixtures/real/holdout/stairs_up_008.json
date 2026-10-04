@@ -6,8 +6,10 @@
   "expected_walkable": false,
   "corridor_status": "UNKNOWN",
   "expected_hazards": [],
-  "expected_objects": [],
-  "license": "CC BY-SA 4.0",
-  "source_url": "https://upload.wikimedia.org/wikipedia/commons/9/9a/D%C3%BClmen%2C_Alte_Brennerei_L%C3%B6hning_--_2015_--_8677-81.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+  "expected_objects": [
+    "bench",
+    "potted plant"
+  ],
+  "license": "CC BY / Public Domain",
   "image_file": "stairs_up_008.jpg"
 }
