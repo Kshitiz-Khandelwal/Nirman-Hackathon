@@ -1,0 +1,13 @@
+{
+  "id": "indoor_corridor_009",
+  "category": "indoor_corridor",
+  "split": "TUNE",
+  "is_hazard_category": false,
+  "expected_walkable": true,
+  "corridor_status": "WALKABLE",
+  "expected_hazards": [],
+  "expected_objects": [],
+  "license": "CC BY 4.0",
+  "source_url": "https://upload.wikimedia.org/wikipedia/commons/b/b0/Corridor_Botanical_Museum_Helsinki_01.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+  "image_file": "indoor_corridor_009.jpg"
+}

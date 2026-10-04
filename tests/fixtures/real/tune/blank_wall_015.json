@@ -1,0 +1,13 @@
+{
+  "id": "blank_wall_015",
+  "category": "blank_wall",
+  "split": "TUNE",
+  "is_hazard_category": true,
+  "expected_walkable": false,
+  "corridor_status": "UNKNOWN",
+  "expected_hazards": [],
+  "expected_objects": [],
+  "license": "CC BY-SA 4.0",
+  "source_url": "https://upload.wikimedia.org/wikipedia/commons/3/3a/D%C3%BClmen%2C_St.-Viktor-Kirche%2C_Innenansicht_--_2020_--_6115.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+  "image_file": "blank_wall_015.jpg"
+}

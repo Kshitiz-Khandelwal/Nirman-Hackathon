@@ -1,0 +1,16 @@
+{
+  "id": "desk_closeup_003",
+  "category": "desk_closeup",
+  "split": "TUNE",
+  "is_hazard_category": true,
+  "expected_walkable": false,
+  "corridor_status": "BLOCKED",
+  "expected_hazards": [],
+  "expected_objects": [
+    "laptop",
+    "keyboard"
+  ],
+  "license": "CC BY-SA 2.5 au",
+  "source_url": "https://upload.wikimedia.org/wikipedia/commons/3/37/Apple_Keyboard_II.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+  "image_file": "desk_closeup_003.jpg"
+}

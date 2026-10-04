@@ -1,0 +1,15 @@
+{
+  "id": "pedestrian_crossing_009",
+  "category": "pedestrian_crossing",
+  "split": "TUNE",
+  "is_hazard_category": false,
+  "expected_walkable": false,
+  "corridor_status": "BLOCKED",
+  "expected_hazards": [],
+  "expected_objects": [
+    "person"
+  ],
+  "license": "Public domain",
+  "source_url": "https://upload.wikimedia.org/wikipedia/commons/2/23/Pedestrians_walking_along_businesses_on_Front_Street%2C_Nome%2C_Alaska%2C_between_1900_and_1908_%28AL%2BCA_6610%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+  "image_file": "pedestrian_crossing_009.jpg"
+}

@@ -1,0 +1,13 @@
+{
+  "id": "indoor_floor_003",
+  "category": "indoor_floor",
+  "split": "TUNE",
+  "is_hazard_category": false,
+  "expected_walkable": true,
+  "corridor_status": "WALKABLE",
+  "expected_hazards": [],
+  "expected_objects": [],
+  "license": "CC BY-SA 4.0",
+  "source_url": "https://upload.wikimedia.org/wikipedia/commons/1/1a/Aledo_Opera_House_hardwood_flooring.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+  "image_file": "indoor_floor_003.jpg"
+}

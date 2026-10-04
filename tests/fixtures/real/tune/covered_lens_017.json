@@ -1,0 +1,13 @@
+{
+  "id": "covered_lens_017",
+  "category": "covered_lens",
+  "split": "TUNE",
+  "is_hazard_category": true,
+  "expected_walkable": false,
+  "corridor_status": "UNKNOWN",
+  "expected_hazards": [],
+  "expected_objects": [],
+  "license": "CC0 - Camera Sensor Occlusion Noise",
+  "source_url": "local://camera_occlusion",
+  "image_file": "covered_lens_017.jpg"
+}

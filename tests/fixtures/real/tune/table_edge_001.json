@@ -1,0 +1,13 @@
+{
+  "id": "table_edge_001",
+  "category": "table_edge",
+  "split": "TUNE",
+  "is_hazard_category": true,
+  "expected_walkable": false,
+  "corridor_status": "UNKNOWN",
+  "expected_hazards": [],
+  "expected_objects": [],
+  "license": "Public domain",
+  "source_url": "https://upload.wikimedia.org/wikipedia/commons/0/00/Auction_catalogue_-_Mabbett_%26_Edge_-_Amport_St_Mary%27s_-_1919-07.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+  "image_file": "table_edge_001.jpg"
+}

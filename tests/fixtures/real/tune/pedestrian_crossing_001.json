@@ -1,0 +1,15 @@
+{
+  "id": "pedestrian_crossing_001",
+  "category": "pedestrian_crossing",
+  "split": "TUNE",
+  "is_hazard_category": false,
+  "expected_walkable": false,
+  "corridor_status": "BLOCKED",
+  "expected_hazards": [],
+  "expected_objects": [
+    "person"
+  ],
+  "license": "Public domain",
+  "source_url": "https://upload.wikimedia.org/wikipedia/commons/1/18/Entrance_of_the_Menai_Bridge_-_from_the_Carnarvon_shore.jpeg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+  "image_file": "pedestrian_crossing_001.jpg"
+}

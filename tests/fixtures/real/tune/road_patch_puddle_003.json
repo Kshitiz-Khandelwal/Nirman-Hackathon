@@ -1,0 +1,13 @@
+{
+  "id": "road_patch_puddle_003",
+  "category": "road_patch_puddle",
+  "split": "TUNE",
+  "is_hazard_category": false,
+  "expected_walkable": true,
+  "corridor_status": "WALKABLE",
+  "expected_hazards": [],
+  "expected_objects": [],
+  "license": "CC BY-SA 2.0",
+  "source_url": "https://upload.wikimedia.org/wikipedia/commons/1/1a/Access_Road_for_Little_Puddle_Farm_-_geograph.org.uk_-_491977.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+  "image_file": "road_patch_puddle_003.jpg"
+}

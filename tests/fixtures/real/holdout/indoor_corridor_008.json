@@ -1,0 +1,13 @@
+{
+  "id": "indoor_corridor_008",
+  "category": "indoor_corridor",
+  "split": "HOLDOUT",
+  "is_hazard_category": false,
+  "expected_walkable": true,
+  "corridor_status": "WALKABLE",
+  "expected_hazards": [],
+  "expected_objects": [],
+  "license": "CC BY 4.0",
+  "source_url": "https://upload.wikimedia.org/wikipedia/commons/f/fd/Corridor_Stanley_Hotel_Estes_Park_Colorado_2024.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+  "image_file": "indoor_corridor_008.jpg"
+}

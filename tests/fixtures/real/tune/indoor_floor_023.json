@@ -1,0 +1,13 @@
+{
+  "id": "indoor_floor_023",
+  "category": "indoor_floor",
+  "split": "TUNE",
+  "is_hazard_category": false,
+  "expected_walkable": true,
+  "corridor_status": "WALKABLE",
+  "expected_hazards": [],
+  "expected_objects": [],
+  "license": "CC BY 4.0",
+  "source_url": "https://upload.wikimedia.org/wikipedia/commons/7/7e/Nevskiy_142_-_Bakunina_2_-_Degtyarnaya_1_-_2_Sovetskaia_27_2015-07_1436127731.JPG?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+  "image_file": "indoor_floor_023.jpg"
+}

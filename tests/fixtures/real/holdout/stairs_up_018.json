@@ -1,0 +1,13 @@
+{
+  "id": "stairs_up_018",
+  "category": "stairs_up",
+  "split": "HOLDOUT",
+  "is_hazard_category": true,
+  "expected_walkable": false,
+  "corridor_status": "UNKNOWN",
+  "expected_hazards": [],
+  "expected_objects": [],
+  "license": "CC0",
+  "source_url": "https://upload.wikimedia.org/wikipedia/commons/6/63/Staircase_at_K%C3%BCppersm%C3%BChle_museum.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+  "image_file": "stairs_up_018.jpg"
+}

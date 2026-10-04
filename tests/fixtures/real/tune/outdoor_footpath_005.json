@@ -1,0 +1,15 @@
+{
+  "id": "outdoor_footpath_005",
+  "category": "outdoor_footpath",
+  "split": "TUNE",
+  "is_hazard_category": false,
+  "expected_walkable": true,
+  "corridor_status": "WALKABLE",
+  "expected_hazards": [],
+  "expected_objects": [
+    "person"
+  ],
+  "license": "CC BY-SA 4.0",
+  "source_url": "https://upload.wikimedia.org/wikipedia/commons/d/dc/D%C3%BClmen%2C_St.-Viktor-Kirche%2C_Eingangsportal_--_2021_--_4504-10.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+  "image_file": "outdoor_footpath_005.jpg"
+}

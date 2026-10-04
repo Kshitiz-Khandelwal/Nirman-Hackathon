@@ -1,0 +1,15 @@
+{
+  "id": "outdoor_footpath_011",
+  "category": "outdoor_footpath",
+  "split": "TUNE",
+  "is_hazard_category": false,
+  "expected_walkable": true,
+  "corridor_status": "WALKABLE",
+  "expected_hazards": [],
+  "expected_objects": [
+    "person"
+  ],
+  "license": "Public domain",
+  "source_url": "https://upload.wikimedia.org/wikipedia/commons/4/4a/Max_Dupain_-_Adelaide_-_Google_Art_Project.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+  "image_file": "outdoor_footpath_011.jpg"
+}

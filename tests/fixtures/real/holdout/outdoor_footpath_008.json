@@ -1,0 +1,15 @@
+{
+  "id": "outdoor_footpath_008",
+  "category": "outdoor_footpath",
+  "split": "HOLDOUT",
+  "is_hazard_category": false,
+  "expected_walkable": true,
+  "corridor_status": "WALKABLE",
+  "expected_hazards": [],
+  "expected_objects": [
+    "person"
+  ],
+  "license": "CC BY-SA 4.0",
+  "source_url": "https://upload.wikimedia.org/wikipedia/commons/0/0b/Ermita_de_San_Bartolom%C3%A9%2C_Parque_Natural_del_Ca%C3%B1%C3%B3n_del_R%C3%ADo_Lobos%2C_Soria%2C_Espa%C3%B1a%2C_2017-05-26%2C_DD_11-16_PAN.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+  "image_file": "outdoor_footpath_008.jpg"
+}

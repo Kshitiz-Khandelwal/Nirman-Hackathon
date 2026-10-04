@@ -28,7 +28,9 @@ Hotkeys:
 from __future__ import annotations
 
 import argparse
+import json
 import math
+import os
 from pathlib import Path
 import queue
 import subprocess
@@ -166,6 +168,7 @@ def parse_args():
     parser.add_argument("--conf", type=float, default=0.35, help="YOLO detection confidence threshold")
     parser.add_argument("--tracker", type=str, choices=["bytetrack", "sort"], default="bytetrack", help="Tracker algorithm")
     parser.add_argument("--mode", type=str, choices=["auto", "max", "studio"], default="auto", help="View mode: auto, max, or studio")
+    parser.add_argument("--record-session", type=str, default=None, nargs="?", const="default", help="Record session raw frames and per-frame decision log to output directory")
     return parser.parse_args()
 
 
@@ -243,11 +246,13 @@ class PredictionViewer:
         det_conf: float = 0.35,
         tracker_type: str = "bytetrack",
         initial_mode: str = "auto",
+        record_session: Optional[str] = None,
     ):
         self.target_fps = target_fps
         self.det_conf = det_conf
         self.tracker_type = tracker_type
         self.view_mode = initial_mode.upper()   # "AUTO", "MAX", "STUDIO"
+        self.record_session = record_session
 
         # Interactive state
         self.paused = False
@@ -368,6 +373,22 @@ class PredictionViewer:
         self.total_safe_corridors = 0
         self.total_nav_corrections = 0
         self._last_cmd_dir = "NONE"
+
+        # Session Recording
+        self.record_session_dir: Optional[Path] = None
+        self.record_frames_dir: Optional[Path] = None
+        self._session_log_f = None
+        if self.record_session:
+            if self.record_session in ("default", "", "1", "true", "True"):
+                ts_str = time.strftime("%Y%m%d_%H%M%S")
+                self.record_session_dir = ROOT / "sessions" / f"session_{ts_str}"
+            else:
+                self.record_session_dir = Path(self.record_session)
+            self.record_frames_dir = self.record_session_dir / "frames"
+            self.record_frames_dir.mkdir(parents=True, exist_ok=True)
+            log_path = self.record_session_dir / "session_log.jsonl"
+            self._session_log_f = open(log_path, "a", encoding="utf-8")
+            print(f"[*] Session recording enabled: saving to {self.record_session_dir}")
 
     def init_source(self, src: str | int):
         is_network = isinstance(src, str) and any(src.lower().startswith(p) for p in ("http://", "https://", "rtsp://"))
@@ -533,6 +554,62 @@ class PredictionViewer:
                         self._last_spoken_cmd = voice_text
                         self.total_voice_alerts = getattr(self, 'total_voice_alerts', 0) + 1
 
+                # Record session raw frame + per-frame decision/reason if --record-session enabled
+                if self.record_frames_dir is not None and self._session_log_f is not None:
+                    frame_filename = f"frame_{f_obj.frame_id:06d}.jpg"
+                    frame_path = self.record_frames_dir / frame_filename
+                    cv2.imwrite(str(frame_path), img)
+
+                    corridors_summary = {}
+                    if self._freespace_result and hasattr(self._freespace_result, "corridors"):
+                        for c_name, c_res in self._freespace_result.corridors.items():
+                            corridors_summary[c_name] = {
+                                "status": c_res.status.value if hasattr(c_res.status, "value") else str(c_res.status),
+                                "confidence": round(float(c_res.confidence), 3),
+                                "reason": getattr(c_res, "reason", ""),
+                            }
+
+                    hazards_summary = []
+                    for h in getattr(self, "_hazard_detections", []):
+                        hazards_summary.append({
+                            "type": h.hazard_type.value if hasattr(h.hazard_type, "value") else str(h.hazard_type),
+                            "confidence": round(float(h.confidence), 3),
+                            "dist_m": round(float(h.dist_m), 2),
+                            "corridor": getattr(h, "corridor", "center"),
+                            "bbox": [round(float(v), 1) for v in h.bbox_xyxy],
+                        })
+
+                    tracks_summary = []
+                    for trk in tracks:
+                        tracks_summary.append({
+                            "track_id": trk.track_id,
+                            "class": trk.class_name,
+                            "confidence": round(float(trk.confidence), 3),
+                            "bbox": [round(float(v), 1) for v in trk.bbox_xyxy],
+                        })
+
+                    log_entry = {
+                        "frame_id": f_obj.frame_id,
+                        "timestamp": round(float(ts), 4),
+                        "frame_file": frame_filename,
+                        "guidance": {
+                            "action": self._guidance.action.value if hasattr(self._guidance.action, "value") else str(self._guidance.action),
+                            "reason": self._guidance.reason if self._guidance else "",
+                            "voice_text": self._guidance.voice_text if self._guidance else "",
+                            "target_corridor": getattr(self._guidance, "target_corridor", "center"),
+                        } if self._guidance else None,
+                        "risk": {
+                            "level": risk_state.level.value if hasattr(risk_state.level, "value") else str(risk_state.level),
+                            "global_risk": round(float(risk_state.global_risk), 3),
+                            "dominant_cause": getattr(risk_state, "dominant_cause", ""),
+                        } if risk_state else None,
+                        "freespace": corridors_summary,
+                        "hazards": hazards_summary,
+                        "tracks": tracks_summary,
+                    }
+                    self._session_log_f.write(json.dumps(log_entry) + "\n")
+                    self._session_log_f.flush()
+
                 # Measure actual FPS
                 t_end = time.monotonic()
                 fps_instant = 1.0 / max(0.001, t_end - self.last_time)
@@ -572,6 +649,12 @@ class PredictionViewer:
                     break
 
         finally:
+            if hasattr(self, '_session_log_f') and self._session_log_f is not None:
+                try:
+                    self._session_log_f.close()
+                except Exception:
+                    pass
+                print(f"[*] Session recording saved to: {self.record_session_dir}")
             if hasattr(self, 'voice'):
                 self.voice.stop()
             self.frame_src.stop()
@@ -1791,6 +1874,7 @@ def main():
         det_conf=args.conf,
         tracker_type=args.tracker,
         initial_mode=args.mode,
+        record_session=args.record_session,
     )
     viewer.run()
 

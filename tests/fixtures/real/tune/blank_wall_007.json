@@ -1,0 +1,13 @@
+{
+  "id": "blank_wall_007",
+  "category": "blank_wall",
+  "split": "TUNE",
+  "is_hazard_category": true,
+  "expected_walkable": false,
+  "corridor_status": "UNKNOWN",
+  "expected_hazards": [],
+  "expected_objects": [],
+  "license": "CC BY-SA 4.0",
+  "source_url": "https://upload.wikimedia.org/wikipedia/commons/a/a7/2015_Zak%C5%82ad_Karny_w_K%C5%82odzku_02.JPG?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+  "image_file": "blank_wall_007.jpg"
+}

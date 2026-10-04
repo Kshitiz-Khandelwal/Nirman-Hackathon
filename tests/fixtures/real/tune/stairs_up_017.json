@@ -1,0 +1,13 @@
+{
+  "id": "stairs_up_017",
+  "category": "stairs_up",
+  "split": "TUNE",
+  "is_hazard_category": true,
+  "expected_walkable": false,
+  "corridor_status": "UNKNOWN",
+  "expected_hazards": [],
+  "expected_objects": [],
+  "license": "CC BY-SA 4.0",
+  "source_url": "https://upload.wikimedia.org/wikipedia/commons/e/e7/Royal_stairs_in_Palazzo_Farnese_%28Caprarola%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+  "image_file": "stairs_up_017.jpg"
+}

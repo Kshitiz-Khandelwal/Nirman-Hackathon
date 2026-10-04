@@ -1,0 +1,13 @@
+{
+  "id": "stairs_down_017",
+  "category": "stairs_down",
+  "split": "TUNE",
+  "is_hazard_category": true,
+  "expected_walkable": false,
+  "corridor_status": "UNKNOWN",
+  "expected_hazards": [],
+  "expected_objects": [],
+  "license": "CC BY-SA 2.0",
+  "source_url": "https://upload.wikimedia.org/wikipedia/commons/2/27/Stairs_Down_-_geograph.org.uk_-_5326402.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+  "image_file": "stairs_down_017.jpg"
+}

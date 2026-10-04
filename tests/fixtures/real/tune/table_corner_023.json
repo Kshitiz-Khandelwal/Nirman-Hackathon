@@ -1,0 +1,13 @@
+{
+  "id": "table_corner_023",
+  "category": "table_corner",
+  "split": "TUNE",
+  "is_hazard_category": true,
+  "expected_walkable": false,
+  "corridor_status": "UNKNOWN",
+  "expected_hazards": [],
+  "expected_objects": [],
+  "license": "CC0",
+  "source_url": "https://upload.wikimedia.org/wikipedia/commons/e/ea/Table_Rock%2C_NE_Luzerne_x_Nebraska_SW_corner_1.JPG?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+  "image_file": "table_corner_023.jpg"
+}

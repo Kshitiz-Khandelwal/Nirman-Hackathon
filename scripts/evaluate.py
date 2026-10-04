@@ -95,9 +95,9 @@ def evaluate(
     save_failures: bool = True,
 ) -> None:
     fixtures_dir = fixtures_dir.resolve()
-    png_files = sorted(fixtures_dir.glob("*.png"))
-    if not png_files:
-        print(f"[WARN] No PNG fixtures found in {fixtures_dir}")
+    image_files = sorted([f for f in fixtures_dir.glob("*.*") if f.suffix.lower() in (".png", ".jpg", ".jpeg")])
+    if not image_files:
+        print(f"[WARN] No image fixtures found in {fixtures_dir}")
         return
 
     # Load YOLO detector
@@ -118,36 +118,61 @@ def evaluate(
             detector = GroundHazardDetector(
                 model_path=str(pothole_model),
                 persistence_required=1,
-                enable_heuristic_fallback=True,
+                enable_heuristic_fallback=False,
+                allow_heuristic=False,
             )
             print(f"[M13] Loaded ground hazard detector: {pothole_model}")
         except Exception as e:
             print(f"[WARN] Could not load hazard detector: {e}")
-            detector = GroundHazardDetector(persistence_required=1, enable_heuristic_fallback=True)
+            detector = GroundHazardDetector(persistence_required=1, enable_heuristic_fallback=False, allow_heuristic=False)
     else:
-        detector = GroundHazardDetector(persistence_required=1, enable_heuristic_fallback=True)
+        detector = GroundHazardDetector(persistence_required=1, enable_heuristic_fallback=False, allow_heuristic=False)
 
     rows: List[dict] = []
     totals: Dict[str, int] = {
         "walkable_tp": 0, "walkable_fp": 0, "walkable_fn": 0,
         "blocked_unk_tp": 0, "blocked_unk_fp": 0, "blocked_unk_fn": 0,
         "pothole_tp": 0, "pothole_fp": 0, "pothole_fn": 0,
+        "pothole_negatives": 0,
         "obj_tp": 0, "obj_fp": 0, "obj_fn": 0,
+        "hazard_frames": 0, "hazard_false_walkable": 0,
+        "clear_frames": 0, "clear_walkable_tp": 0,
     }
     fps_list: List[float] = []
+    pipeline_fps_list: List[float] = []
     failures_dir = Path("eval_failures")
     if save_failures:
         failures_dir.mkdir(parents=True, exist_ok=True)
 
-    for png in png_files:
-        img, label = load_fixture(png)
+    for img_path in image_files:
+        img, label = load_fixture(img_path)
         if img is None or label is None:
-            print(f"[SKIP] {png.name} — missing or unreadable")
+            print(f"[SKIP] {img_path.name} — missing or unreadable")
             continue
 
-        exp_walkable: dict = label.get("expected_walkable", {})
-        exp_pothole: bool  = label.get("expected_potholes", False)
-        exp_objects: list  = label.get("expected_objects", [])
+        raw_walkable = label.get("expected_walkable", False)
+        if isinstance(raw_walkable, dict):
+            exp_walkable = raw_walkable
+        elif isinstance(raw_walkable, bool):
+            if raw_walkable:
+                exp_walkable = {"left": "WALKABLE", "centre": "WALKABLE", "right": "WALKABLE"}
+            else:
+                default_stat = label.get("corridor_status", "UNKNOWN" if label.get("is_hazard_category") else "BLOCKED")
+                exp_walkable = {"left": default_stat, "centre": default_stat, "right": default_stat}
+        else:
+            exp_walkable = {"left": "UNKNOWN", "centre": "UNKNOWN", "right": "UNKNOWN"}
+
+        exp_pothole = ("pothole" in label.get("expected_hazards", [])) or bool(label.get("expected_potholes", False))
+        exp_objects: list = label.get("expected_objects", [])
+        cat_name = label.get("category", "")
+        # Step 3 Prompt: "must be 0 on edge, ledge, stairs, wall, desk close-up, covered lens"
+        is_m14_hazard_cat = cat_name in (
+            "table_edge", "table_corner", "stairs_down", "stairs_up", "blank_wall", "desk_closeup", "covered_lens"
+        )
+        is_clear_cat = cat_name in ("indoor_corridor", "indoor_floor", "outdoor_footpath", "outdoor_road_clear")
+
+        # Measure full pipeline latency
+        t_pipe_0 = time.perf_counter()
 
         # Run YOLO object detection
         yolo_boxes, got_objects = run_yolo(yolo_model, img)
@@ -159,7 +184,24 @@ def evaluate(
         # Run M13 with YOLO bounding boxes
         got_pothole, hazard_dets = run_m13(detector, img, yolo_bboxes=yolo_boxes)
 
+        t_pipe_end = time.perf_counter()
+        pipeline_fps = 1.0 / max(1e-6, t_pipe_end - t_pipe_0)
+        pipeline_fps_list.append(pipeline_fps)
+
         fixture_has_failure = False
+
+        # Hazard categories safety check: must be 0 false WALKABLE on edge, stairs, wall, desk, lens
+        if is_m14_hazard_cat:
+            totals["hazard_frames"] += 1
+            if any(fs_result.get(c) == CorridorStatus.WALKABLE for c in CORRIDORS):
+                totals["hazard_false_walkable"] += 1
+                fixture_has_failure = True
+
+        # Clear categories recall check
+        if is_clear_cat:
+            totals["clear_frames"] += 1
+            if fs_result.get("centre") == CorridorStatus.WALKABLE:
+                totals["clear_walkable_tp"] += 1
 
         # Per-corridor metrics
         for corridor in CORRIDORS:
@@ -188,7 +230,8 @@ def evaluate(
                 fixture_has_failure = True
 
             rows.append({
-                "fixture":            png.stem,
+                "fixture":            img_path.stem,
+                "category":           cat_name,
                 "corridor":           corridor,
                 "expected_walkable":  exp_str,
                 "got_walkable":       got_status.value,
@@ -210,6 +253,8 @@ def evaluate(
         totals["pothole_tp"] += p_tp
         totals["pothole_fp"] += p_fp
         totals["pothole_fn"] += p_fn
+        if not exp_pothole:
+            totals["pothole_negatives"] += 1
 
         if p_fp or p_fn:
             fixture_has_failure = True
@@ -227,18 +272,16 @@ def evaluate(
         # Save annotated image on failure
         if save_failures and fixture_has_failure:
             ann = img.copy()
-            # Draw ground ROI
             h, w = ann.shape[:2]
             y0, y1 = int(h * 0.55), int(h * 0.95)
             cv2.rectangle(ann, (0, y0), (w, y1), (255, 255, 0), 1)
-            # Overlay status text
             stat_text = f"L:{fs_result.left.value} C:{fs_result.centre.value} R:{fs_result.right.value}"
             cv2.putText(ann, stat_text, (20, 40), cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0, 0, 255), 2)
             cv2.putText(ann, f"PH got:{got_pothole} exp:{exp_pothole}", (20, 75), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 165, 255), 2)
             for box in yolo_boxes:
                 bx1, by1, bx2, by2 = map(int, box)
                 cv2.rectangle(ann, (bx1, by1), (bx2, by2), (0, 255, 0), 2)
-            out_fail_path = failures_dir / f"fail_{png.name}"
+            out_fail_path = failures_dir / f"fail_{img_path.name}"
             cv2.imwrite(str(out_fail_path), ann)
 
     # ── Write CSV ─────────────────────────────────────────────────────────────
@@ -271,34 +314,55 @@ def evaluate(
     obj_precision = safe_div(otp, otp + ofp)
     obj_recall    = safe_div(otp, otp + ofn)
 
-    mean_fps = float(np.mean(fps_list)) if fps_list else 0.0
+    mean_m14_fps = float(np.mean(fps_list)) if fps_list else 0.0
+    mean_pipeline_fps = float(np.mean(pipeline_fps_list)) if pipeline_fps_list else 0.0
 
-    print("\n" + "=" * 62)
-    print("  SpatialVector-HMI Full Evaluation Report (Ground Truth)")
-    print("=" * 62)
-    print(f"  Fixtures evaluated    : {len(png_files)}")
-    print(f"  Corridor checks       : {len(rows)}")
+    hazard_total = totals["hazard_frames"]
+    hazard_fw = totals["hazard_false_walkable"]
+    hazard_fw_rate = safe_div(hazard_fw, hazard_total)
+
+    clear_total = totals["clear_frames"]
+    clear_rec = safe_div(totals["clear_walkable_tp"], clear_total)
+
+    p_neg = totals["pothole_negatives"]
+    ph_fpr_on_neg = safe_div(pfp, p_neg)
+
+    print("\n" + "=" * 68)
+    print("  SpatialVector-HMI Full Evaluation Report (Ground Truth HOLDOUT)")
+    print("=" * 68)
+    print(f"  Fixtures evaluated        : {len(image_files)}")
+    print(f"  Corridor checks           : {len(rows)}")
     print()
-    print(f"  WALKABLE precision    : {walkable_precision:.2%}  (FP={wfp} — must be 0 for safety)")
-    print(f"  WALKABLE recall       : {walkable_recall:.2%}  (FN={wfn})")
+    print("  [M14 WALKABLE GROUND]")
+    print(f"  Overall WALKABLE precision: {walkable_precision:.2%}  (FP={wfp} corridor checks)")
+    print(f"  Overall WALKABLE recall   : {walkable_recall:.2%}  (FN={wfn})")
+    print(f"  Hazard Categories Evaluated: {hazard_total} frames (table edge/corner, stairs, wall, desk, lens)")
+    print(f"  Hazard False WALKABLE Rate : {hazard_fw_rate:.2%} ({hazard_fw}/{hazard_total})  [TARGET: 0.00%]")
+    print(f"  Clear Categories Recall   : {clear_rec:.2%} ({totals['clear_walkable_tp']}/{clear_total})  [TARGET: >= 80%]")
     print()
-    print(f"  Pothole precision     : {ph_precision:.2%}  (FP={pfp}, TP={ptp})")
-    print(f"  Pothole recall        : {ph_recall:.2%}  (FN={pfn})")
+    print("  [M13 GROUND HAZARDS / POTHOLE]")
+    print(f"  Pothole precision         : {ph_precision:.2%}  (TP={ptp}, FP={pfp})")
+    print(f"  Pothole recall            : {ph_recall:.2%}  (FN={pfn})")
+    print(f"  Pothole FP on Negatives   : {ph_fpr_on_neg:.2%} ({pfp}/{p_neg})  [TARGET: <= 5.0%]")
     print()
     if yolo_model:
-        print(f"  Object precision      : {obj_precision:.2%}  (TP={otp}, FP={ofp})")
-        print(f"  Object recall         : {obj_recall:.2%}  (FN={ofn})")
-    print(f"  M14 processing speed  : {mean_fps:.0f} FPS (Latency: {1000.0/max(mean_fps, 1):.1f} ms)")
-    print(f"  Results saved to      : {out_csv}")
-    print("=" * 62)
+        print("  [M02 OBJECT DETECTION (YOLO)]")
+        print(f"  Object precision          : {obj_precision:.2%}  (TP={otp}, FP={ofp})")
+        print(f"  Object recall             : {obj_recall:.2%}  (FN={ofn})")
+        print()
+    print("  [SYSTEM PERFORMANCE]")
+    print(f"  M14 SegFormer Speed       : {mean_m14_fps:.1f} FPS ({1000.0/max(mean_m14_fps, 1):.1f} ms)")
+    print(f"  Full Pipeline Speed       : {mean_pipeline_fps:.1f} FPS ({1000.0/max(mean_pipeline_fps, 1):.1f} ms)  [TARGET: >= 15 FPS]")
+    print(f"  Results saved to          : {out_csv}")
+    print("=" * 68)
 
-    if wfp > 0:
-        print(f"\n[CRITICAL] {wfp} FALSE WALK-FORWARD(S) — M14 said WALKABLE when it was unsafe:")
+    if hazard_fw > 0 or wfp > 0:
+        print(f"\n[CRITICAL] {wfp} FALSE WALK-FORWARD(S) — M14 said WALKABLE when unsafe:")
         for row in rows:
             if row["fp_w"] == 1:
-                print(f"    fixture={row['fixture']}  corridor={row['corridor']}  reason={row['reason']}")
+                print(f"    fixture={row['fixture']}  category={row.get('category')}  corridor={row['corridor']}  reason={row['reason']}")
     else:
-        print("\n[SUCCESS] ZERO FALSE WALK-FORWARDS! (Safety critical invariant held)")
+        print("\n[SUCCESS] ZERO FALSE WALK-FORWARDS ON HAZARDS! (Safety invariant held 100%)")
 
 
 def main():

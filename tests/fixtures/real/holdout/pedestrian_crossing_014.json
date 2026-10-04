@@ -1,0 +1,15 @@
+{
+  "id": "pedestrian_crossing_014",
+  "category": "pedestrian_crossing",
+  "split": "HOLDOUT",
+  "is_hazard_category": false,
+  "expected_walkable": false,
+  "corridor_status": "BLOCKED",
+  "expected_hazards": [],
+  "expected_objects": [
+    "person"
+  ],
+  "license": "CC BY-SA 4.0",
+  "source_url": "https://upload.wikimedia.org/wikipedia/commons/2/28/Pedestrians_walking_in_Mbarara.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+  "image_file": "pedestrian_crossing_014.jpg"
+}

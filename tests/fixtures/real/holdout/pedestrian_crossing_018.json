@@ -1,0 +1,15 @@
+{
+  "id": "pedestrian_crossing_018",
+  "category": "pedestrian_crossing",
+  "split": "HOLDOUT",
+  "is_hazard_category": false,
+  "expected_walkable": false,
+  "corridor_status": "BLOCKED",
+  "expected_hazards": [],
+  "expected_objects": [
+    "person"
+  ],
+  "license": "CC BY 2.0",
+  "source_url": "https://upload.wikimedia.org/wikipedia/commons/f/f0/Pedestrians_walking_around_the_Puerta_de_Alcala%2C_Madrid_%286394593055%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+  "image_file": "pedestrian_crossing_018.jpg"
+}

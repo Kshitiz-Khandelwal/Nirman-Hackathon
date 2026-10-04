@@ -1,0 +1,13 @@
+{
+  "id": "blank_wall_018",
+  "category": "blank_wall",
+  "split": "HOLDOUT",
+  "is_hazard_category": true,
+  "expected_walkable": false,
+  "corridor_status": "UNKNOWN",
+  "expected_hazards": [],
+  "expected_objects": [],
+  "license": "GFDL 1.2",
+  "source_url": "https://upload.wikimedia.org/wikipedia/commons/c/c8/Ivy_Hedera_Red_Brick_Wall_2892px.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+  "image_file": "blank_wall_018.jpg"
+}

@@ -1,0 +1,13 @@
+{
+  "id": "table_edge_023",
+  "category": "table_edge",
+  "split": "TUNE",
+  "is_hazard_category": true,
+  "expected_walkable": false,
+  "corridor_status": "UNKNOWN",
+  "expected_hazards": [],
+  "expected_objects": [],
+  "license": "Public domain",
+  "source_url": "https://upload.wikimedia.org/wikipedia/commons/9/91/Trail_to_the_Edge_of_Lower_Table_Rock_%2815549912868%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+  "image_file": "table_edge_023.jpg"
+}

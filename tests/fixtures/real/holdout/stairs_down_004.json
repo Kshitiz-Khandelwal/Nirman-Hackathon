@@ -1,0 +1,13 @@
+{
+  "id": "stairs_down_004",
+  "category": "stairs_down",
+  "split": "HOLDOUT",
+  "is_hazard_category": true,
+  "expected_walkable": false,
+  "corridor_status": "UNKNOWN",
+  "expected_hazards": [],
+  "expected_objects": [],
+  "license": "CC BY 4.0",
+  "source_url": "https://upload.wikimedia.org/wikipedia/commons/6/61/Down_the_stairs%2C_Ewelme_Cottage.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+  "image_file": "stairs_down_004.jpg"
+}

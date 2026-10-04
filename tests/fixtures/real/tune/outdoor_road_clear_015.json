@@ -1,0 +1,15 @@
+{
+  "id": "outdoor_road_clear_015",
+  "category": "outdoor_road_clear",
+  "split": "TUNE",
+  "is_hazard_category": false,
+  "expected_walkable": true,
+  "corridor_status": "WALKABLE",
+  "expected_hazards": [],
+  "expected_objects": [
+    "car"
+  ],
+  "license": "CC BY-SA 4.0",
+  "source_url": "https://upload.wikimedia.org/wikipedia/commons/f/f0/Asphalt_roads_in_Tverskaya_Oblast.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+  "image_file": "outdoor_road_clear_015.jpg"
+}

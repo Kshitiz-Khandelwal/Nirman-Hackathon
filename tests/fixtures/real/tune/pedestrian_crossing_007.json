@@ -1,0 +1,15 @@
+{
+  "id": "pedestrian_crossing_007",
+  "category": "pedestrian_crossing",
+  "split": "TUNE",
+  "is_hazard_category": false,
+  "expected_walkable": false,
+  "corridor_status": "BLOCKED",
+  "expected_hazards": [],
+  "expected_objects": [
+    "person"
+  ],
+  "license": "CC BY-SA 4.0",
+  "source_url": "https://upload.wikimedia.org/wikipedia/commons/5/5b/Pedestrian_walking_by_User-MrALCA95.png?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+  "image_file": "pedestrian_crossing_007.jpg"
+}
