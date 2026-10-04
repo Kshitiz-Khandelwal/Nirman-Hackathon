@@ -23,10 +23,11 @@
 
 ## 1. System Overview & End-to-End Data Flow
 
-SpatialVector-HMI operates on a strict **12-module pipelined architecture (M01 to M12)** designed to answer three fundamental questions:
-1. *Is an obstacle on a collision course with the user?* (Trajectory Intersection & CPA)
+SpatialVector-HMI operates on a strict **15-module pipelined architecture (M01 to M15)** designed to answer four fundamental questions:
+1. *Is an obstacle on a collision course with the user?* (Trajectory Intersection, TTC & CPA)
 2. *How soon will the risk materialize?* (Time-To-Collision - TTC)
-3. *Which local corridor is safer?* (Corridor Policy: Left / Center / Right)
+3. *Is the physical ground ahead affirmatively walkable and continuous?* (FreeSpace & Gradient Continuity - M14, Ground Hazards - M13)
+4. *Which navigation action is safe and actionable?* (Navigation Decision Engine - M15 → Haptic Policy - M09)
 
 ```
 [ Chest Camera / VDO.Ninja WebRTC ]       [ MPU6050 IMU / Gyroscope ]
@@ -60,9 +61,20 @@ SpatialVector-HMI operates on a strict **12-module pipelined architecture (M01 t
                         M08: Risk Engine & State Machine
                              (SAFE / CAUTION / WARNING / CRITICAL)
                                     │
+                ┌───────────────────┼───────────────────┐
+                │                   │                   │
+                ▼                   │                   ▼
+    M13: Ground Hazard Detector     │       M14: FreeSpace Corridor Estimator
+    (pothole_yolov8 / cavities)     │       (Bottom-up continuity & gradient jumps)
+                │                   │                   │
+                └───────────────────┼───────────────────┘
+                                    ▼
+                        M15: Navigation Decision Engine
+                             (Single Source of Truth guidance & reasons)
+                                    │
                                     ▼
                         M09: Safe-Corridor Selector & Policy
-                             (Left / Center / Right clearance)
+                             (Left / Center / Right clearance & urgency)
                                     │
                     ┌───────────────┴───────────────┐
                     ▼                               ▼
@@ -71,7 +83,8 @@ SpatialVector-HMI operates on a strict **12-module pipelined architecture (M01 t
                     │                               │
                     └───────────────┬───────────────┘
                                     ▼
-                        M12: Session Logger & Replay
+                        M12: Session Logger, Replay & Benchmark Harness
+                             (Ground Truth Eval: scripts/evaluate.py)
 ```
 
 ---
@@ -80,7 +93,7 @@ SpatialVector-HMI operates on a strict **12-module pipelined architecture (M01 t
 
 | File / Path | Primary Role | What It Does | When to Modify This File |
 |---|---|---|---|
-| [`run.py`](file:///c:/Users/Admin/Desktop/Kshitiz/Nirman-Hackathon/run.py) | **Master Entrypoint** | Initializes all modules (M01–M12), starts camera ingestion, spawns telemetry server, runs the main 30 FPS processing loop, and handles CLI arguments (`--synthetic`, `--arduino-port`, `--source`, `--port`). | When adding new CLI parameters, changing default ports, or altering pipeline loop execution timing. |
+| [`run.py`](file:///c:/Users/Admin/Desktop/Kshitiz/Nirman-Hackathon/run.py) | **Master Entrypoint** | Initializes all modules (M01–M15), starts camera ingestion, spawns telemetry server, runs the main 30 FPS processing loop, and handles CLI arguments (`--synthetic`, `--arduino-port`, `--source`, `--port`). | When adding new CLI parameters, changing default ports, or altering pipeline loop execution timing. |
 | [`run_system.py`](file:///c:/Users/Admin/Desktop/Kshitiz/Nirman-Hackathon/run_system.py) | **Simple Launcher** | Lightweight wrapper to start `run.py` without requiring extra arguments. | Quick start script. |
 | [`run_camera_prediction_viewer.py`](file:///c:/Users/Admin/Desktop/Kshitiz/Nirman-Hackathon/run_camera_prediction_viewer.py) | **Standalone CV Visualizer** | High-performance standalone OpenCV desktop viewer that displays bounding boxes, velocity vectors, looming risk, and trajectory cones. | When tuning visual overlays for an external monitor presentation. |
 | [`spatialvector/config/default.yaml`](file:///c:/Users/Admin/Desktop/Kshitiz/Nirman-Hackathon/spatialvector/config/default.yaml) | **Master Configuration** | Central YAML configuration for camera index, YOLO model path, confidence thresholds, optical flow parameters, risk weights, corridor thresholds, and baud rates. | **First place to look** to tune system sensitivity, risk weights, or camera resolution without editing Python code. |
@@ -114,6 +127,24 @@ SpatialVector-HMI operates on a strict **12-module pipelined architecture (M01 t
 | [`adaptive_calibrator.py`](file:///c:/Users/Admin/Desktop/Kshitiz/Nirman-Hackathon/spatialvector/decision/adaptive_calibrator.py) | **Noise Calibrator** | Online dynamic floor estimator that measures environmental motion noise and prevents false collision triggers in crowded rooms. | Modify to change adaptation window or noise floor margin. |
 | [`corridor_constants.py`](file:///c:/Users/Admin/Desktop/Kshitiz/Nirman-Hackathon/spatialvector/decision/corridor_constants.py) | **Corridor Constants** | Shared constants for center bearing angle (`CORRIDOR_CENTER_BEARING_RAD = pi/6`). | Modify to widen or narrow the central forward walking corridor. |
 
+### Module `spatialvector/hazards/` (M13 Ground Hazard Detection)
+| File | Role | Description |
+|---|---|---|
+| [`ground_hazard.py`](file:///c:/Users/Admin/Desktop/Kshitiz/Nirman-Hackathon/spatialvector/hazards/ground_hazard.py) | **M13 Hazard Detector** | Identifies potholes, cavities, and damaged floor zones. Features an honest fallback (`allow_heuristic=False`) that suppresses false alerts unless a verified YOLO model (`pothole_yolov8.pt`) is loaded. Bounding boxes above the horizon or overlapping raw YOLO boxes are gated out. | Modify to tune pothole confidence thresholds, IoU overlap limits, or camera horizon position. |
+| [`schemas.py`](file:///c:/Users/Admin/Desktop/Kshitiz/Nirman-Hackathon/spatialvector/hazards/schemas.py) | **Hazard Data Types** | Dataclasses for `HazardDetection` (coordinates, confidence, category, persistence). | Modify when adding new surface defect categories (e.g. wet surfaces, ice). |
+
+### Module `spatialvector/freespace/` (M14 FreeSpace & Ground Verification)
+| File | Role | Description |
+|---|---|---|
+| [`corridor_estimator.py`](file:///c:/Users/Admin/Desktop/Kshitiz/Nirman-Hackathon/spatialvector/freespace/corridor_estimator.py) | **M14 Corridor Estimator** | Affirmatively verifies walkable ground in Left, Center, and Right corridors. Executes bottom-up unbroken continuity scan from user's feet upward, multi-scale gradient jump checks ($k=10$, $>28\text{ px}$ span), and dark-blob / obstacle exclusion. Runs at ~300 FPS. | Modify to adjust ground continuity tolerances, gradient sensitivity, or ROI dimensions. |
+| [`schemas.py`](file:///c:/Users/Admin/Desktop/Kshitiz/Nirman-Hackathon/spatialvector/freespace/schemas.py) | **FreeSpace Data Types** | Dataclasses for `CorridorStatus` (`WALKABLE`, `BLOCKED`, `UNKNOWN`) and `FreeSpaceResult`. | Modify to extend corridor definitions. |
+
+### Module `spatialvector/guidance/` (M15 Navigation Decision Engine)
+| File | Role | Description |
+|---|---|---|
+| [`decision.py`](file:///c:/Users/Admin/Desktop/Kshitiz/Nirman-Hackathon/spatialvector/guidance/decision.py) | **M15 Guidance Engine** | **Single Source of Truth** for navigation decisions (`WALK FORWARD`, `MOVE LEFT`, `MOVE RIGHT`, `STOP`, `CAUTION`). Synthesizes obstacle collision risk (M08), ground hazards (M13), and freespace continuity (M14) into clear action directives with explicit human-readable reasons. | Modify to update multi-sensor arbitration logic or voice phrasing. |
+| [`schemas.py`](file:///c:/Users/Admin/Desktop/Kshitiz/Nirman-Hackathon/spatialvector/guidance/schemas.py) | **Guidance Data Types** | Dataclasses for `NavAction`, `GuidanceDecision` (action, reason, corridor, voice text, banner colors). | Modify to register new navigational directives or HUD display styling. |
+
 ### Module `spatialvector/hmi/` (Arduino, Web Telemetry & Logging)
 | File | Role | Description |
 |---|---|---|
@@ -136,6 +167,19 @@ SpatialVector-HMI operates on a strict **12-module pipelined architecture (M01 t
 | File | Role | Description |
 |---|---|---|
 | [`haptic_controller.ino`](file:///c:/Users/Admin/Desktop/Kshitiz/Nirman-Hackathon/firmware/haptic_controller/haptic_controller.ino) | **Arduino Firmware** | Drives 3× vibration motors on PWM pins (Pin 9: Left, Pin 10: Center, Pin 11: Right) based on serial commands, with safety watchdog timeout. | Modify when changing Arduino pin assignments or vibration wave frequencies. |
+
+### Ground-Truth Evaluation Suite & Benchmarks (`scripts/` & `tests/fixtures/real/`)
+| File | Role | Description |
+|---|---|---|
+| [`scripts/evaluate.py`](file:///c:/Users/Admin/Desktop/Kshitiz/Nirman-Hackathon/scripts/evaluate.py) | **Ground-Truth Evaluation Harness** | Executes quantitative evaluation of object detection (M02), hazard detection (M13), and freespace estimation (M14) across 17 realistic fixtures. Computes precision/recall, measures per-frame latency, and writes results to `eval_results.csv`. | Run to benchmark detection and walkability safety before and after tuning parameters. |
+| [`scripts/smoke_test_m14.py`](file:///c:/Users/Admin/Desktop/Kshitiz/Nirman-Hackathon/scripts/smoke_test_m14.py) | **M14 Fast Unit Smoke Test** | Instant sanity test verifying table corners, table edges, dark objects, clear paths, and covered lenses. | Quick command-line smoke test during development. |
+| [`tests/fixtures/real/generate_real_fixtures.py`](file:///c:/Users/Admin/Desktop/Kshitiz/Nirman-Hackathon/tests/fixtures/real/generate_real_fixtures.py) | **Fixture Generator** | Generates 17 standardized benchmark image fixtures and paired JSON ground-truth metadata matching exact camera geometry. | Modify when introducing new failure edge cases or real camera calibration scenarios. |
+
+### Model Management & Integrity Verification (`models/`)
+| File | Role | Description |
+|---|---|---|
+| [`models/download_verify_model.py`](file:///c:/Users/Admin/Desktop/Kshitiz/Nirman-Hackathon/models/download_verify_model.py) | **Model Verifier & Card** | Inspects local presence of `yolov8n.pt` and `pothole_yolov8.pt`, verifies SHA256 checksums, and reports readiness for inference. | Run to verify model weights before live demonstration. |
+| [`models/README.md`](file:///c:/Users/Admin/Desktop/Kshitiz/Nirman-Hackathon/models/README.md) | **Model Architecture Card** | Documents model origins, input/output tensors, SHA256 hashes, and safety fallback behavior. | Reference for judges and engineers. |
 
 ---
 
@@ -257,19 +301,25 @@ Frame Ingestion (frame_source.py)
 YOLO Detector (detector.py)  ───>  Detections: bbox_xyxy, confidence, class_name
       │
       ▼
-Multi-Object Tracker (tracker.py) ───>  Tracks: track_id, velocity (vx, vy), history
+Multi-Object Tracker (tracker.py) ───>  Tracks: track_id, velocity (vx, vy), history + raw_bboxes
       │
-      ▼
-Ego-Motion Compensation (ego_motion.py) ───>  Corrected relative motion
-      │
-      ▼
-Collision Prediction (prediction.py) ───>  TTC (sec), CPA (m), Looming Area Expansion
-      │
-      ▼
-Risk Engine (risk_engine.py) ───>  Global Risk (0–1), Severity State, Corridor Risks
-      │
-      ▼
-Corridor Policy (corridor_policy.py) ───>  Safe Corridor (L/C/R), Urgency (1–5)
+      ├───────────────────────────────────────┬───────────────────────────────────────┐
+      ▼                                       ▼                                       ▼
+Ego-Motion Compensation (ego_motion.py)   Ground Hazard Detector (ground_hazard.py) FreeSpace Estimator (corridor_estimator.py)
+      │                                   (pothole model & raw YOLO overlap gate)   (bottom-up continuity & gradient jumps)
+      ▼                                       │                                       │
+Collision Prediction (prediction.py)          │                                       │
+      │                                       │                                       │
+      ▼                                       │                                       │
+Risk Engine (risk_engine.py)                  │                                       │
+      │                                       │                                       │
+      └───────────────────────────────────────┼───────────────────────────────────────┘
+                                              ▼
+                                 Navigation Decision Engine (decision.py)
+                                 (Single Source of Truth guidance & reasons)
+                                              │
+                                              ▼
+                                 Corridor Policy (corridor_policy.py) ───>  Haptic Commands & Urgency
 ```
 
 ### Exact Code Locations for Key CV Behaviors
@@ -356,6 +406,32 @@ Corridor Policy (corridor_policy.py) ───>  Safe Corridor (L/C/R), Urgency 
   - `_DEFAULT_ALL_UNSAFE_THRESHOLD = 0.70`: If Left, Center, and Right risk all exceed 70%, triggers the `STOP_CRITICAL` pattern.
   - `_DURATION_MS = {1: 400, 2: 400, 3: 300, 4: 200, 5: 150}`: Vibration pulse lengths per urgency tier.
 
+#### 6. Tune Ground Verification & Hazard Sensitivity (M13 & M14)
+- **File**: [`spatialvector/config/default.yaml`](file:///c:/Users/Admin/Desktop/Kshitiz/Nirman-Hackathon/spatialvector/config/default.yaml)
+  ```yaml
+  hazard_detector:
+    persistence_required: 2       # Consecutive detections needed for surface alerts
+    min_conf: 0.45               # Confidence cutoff for pothole model
+    max_iou_with_yolo: 0.15      # Bboxes overlapping YOLO objects are rejected
+    allow_heuristic: false       # Never alert on dark blobs without verified weights
+
+  freespace:
+    roi_y_start_ratio: 0.50      # Ground analysis starts at lower 50% of frame
+    edge_std_thresh: 18.0        # Max texture standard deviation for flat ground
+    smoothing_window: 3          # Moving average filter across frames
+  ```
+- **Code Reference**:
+  - [`spatialvector/freespace/corridor_estimator.py`](file:///c:/Users/Admin/Desktop/Kshitiz/Nirman-Hackathon/spatialvector/freespace/corridor_estimator.py): Look at `_continuity_scan()` (strictly starts from band 0) and `_gradient_jump_check()` (evaluates step jumps, windowed diagonal diffs $k=10$, and span shifts $>28\text{ px}$).
+  - [`spatialvector/hazards/ground_hazard.py`](file:///c:/Users/Admin/Desktop/Kshitiz/Nirman-Hackathon/spatialvector/hazards/ground_hazard.py): Bounding boxes above `roi_y_start` or overlapping raw YOLO detections are pruned immediately.
+
+#### 7. Navigation Decision Engine & Voice Guidance (M15)
+- **File**: [`spatialvector/guidance/decision.py`](file:///c:/Users/Admin/Desktop/Kshitiz/Nirman-Hackathon/spatialvector/guidance/decision.py)
+  - Acts as the **Single Source of Truth** for navigation decisions.
+  - High collision risk ($>0.70$) or obstacles in center $\to$ `STOP` or `MOVE LEFT/RIGHT`.
+  - Missing ground continuity / table edge $\to$ `CAUTION` with reason `"Ground discontinuity detected"`.
+  - Active pothole ahead $\to$ `CAUTION` or `STOP` with reason `"Ground hazard ahead"`.
+  - Clear corridor with unbroken ground $\to$ `WALK FORWARD`.
+
 ---
 
 ## 5. End-to-End Linking Matrix
@@ -371,6 +447,10 @@ This matrix shows the complete pipeline trace: from raw Python computer vision d
 | **Left Corridor Risk** | `RiskState.corridor_risks["left"]` | `msg.risk_state.corridor_risks.left` | `leftRisk` in `updateCorridorBoxes()` | `#txt-corr-left`, `#box-corr-left` |
 | **Center Corridor Risk** | `RiskState.corridor_risks["center"]` | `msg.risk_state.corridor_risks.center` | `centerRisk` in `updateCorridorBoxes()` | `#txt-corr-center`, `#box-corr-center` |
 | **Right Corridor Risk** | `RiskState.corridor_risks["right"]` | `msg.risk_state.corridor_risks.right` | `rightRisk` in `updateCorridorBoxes()` | `#txt-corr-right`, `#box-corr-right` |
+| **Ground Walkability (M14)** | `FreeSpaceResult.centre` | `msg.freespace.centre` | `updateCorridorBoxes()` | Visual corridor floor outline / Walkable indicator |
+| **Ground Hazard (M13)** | `HazardDetection.label` | `msg.hazards` | `drawLiveOverlay()` | Ground hazard highlight box on canvas |
+| **Action Directive (M15)** | `GuidanceDecision.action.value` | `msg.guidance.action` | `updateDirectionRecommendation()` | `#rec-dir-name`, `#rec-dir-sub`, `#rec-arrow-icon` |
+| **Guidance Rationale (M15)** | `GuidanceDecision.reason` | `msg.guidance.reason` | `updateDirectionRecommendation()` | `#rec-dir-sub`, AI reasoning card |
 | **Recommended Direction** | `CorridorPolicy.evaluate().direction` | `msg.haptic.direction` | `updateDirectionRecommendation()` | `#rec-dir-name`, `#rec-dir-sub`, `#rec-arrow-icon` |
 | **Track Bounding Box** | `Track.bbox_xyxy` | `msg.tracks[i].bbox` | `drawLiveOverlay()` | Canvas rectangles on `#live-overlay-canvas` |
 | **Trajectory Vector** | `Track.vx`, `Track.vy` | `msg.tracks[i].velocity` | `drawLiveOverlay()` | Directional arrows on `#live-overlay-canvas` |

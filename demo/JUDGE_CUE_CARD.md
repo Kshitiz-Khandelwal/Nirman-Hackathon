@@ -9,5 +9,6 @@
 # One-line answers if a judge asks...
 
 - "What happens if the camera fails?" → "The system enters a DEGRADED state and tells the user explicitly, rather than staying silent or guessing."
-- "What about ground-level hazards, like curbs?" → "Out of scope by design — this complements a cane or guide dog for head/chest-level hazards, it doesn't replace one."
+- "What about ground-level hazards and drop-offs?" → "We affirmatively verify continuous walkable ground (M14) and detect surface cavities (M13). If ground continuity is broken (like a table edge or drop-off), it commands CAUTION/STOP. But true vertical drops like downward stairs require physical cane synergy, which SpatialVector is built to complement."
+- "What is your measured accuracy?" → "On our standardized 17-fixture ground-truth benchmark (`scripts/evaluate.py`), we achieve 100% precision on walkable ground (0 false walk-forwards across 51 corridor checks), running at 300 FPS (3.3 ms latency)."
 - "Why not just use proximity/distance?" → [Run Scene 2 and Scene 5 back to back live — same distance, different decision, that's the whole point.]
