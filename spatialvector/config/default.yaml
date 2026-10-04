@@ -77,3 +77,25 @@ logging:
   session_dir: sessions/
   schema_version: 1
   log_raw_frames: false
+
+hazard_detector:
+  model_path: pothole_yolov8.pt
+  min_conf: 0.45
+  persistence_required: 2
+  allow_heuristic: false
+  max_iou_with_yolo: 0.15
+
+freespace:
+  min_walkable_conf: 0.45
+  smoothing_window: 5
+  gradient_jump_thresh: 28.0
+  continuity_max_delta: 20.0
+  continuity_min_bands: 5
+  dark_blob_frac_thresh: 0.15
+
+navigation_decision:
+  forward_consec_frames_required: 3
+  freespace_min_conf: 0.48
+  centre_risk_threshold: 0.35
+  global_risk_threshold: 0.45
+  pothole_block_dist_m: 3.0

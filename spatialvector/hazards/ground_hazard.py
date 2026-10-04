@@ -34,14 +34,15 @@ logger = logging.getLogger(__name__)
 @dataclass
 class HazardDetection:
     """A single confirmed ground hazard detection."""
-    hazard_class: str          # "pothole" | "manhole" | "surface_damage"
+    hazard_class: str          # "pothole" | "manhole" | "surface_damage" | "anomaly"
     bbox_xyxy: Tuple[float, float, float, float]   # in original image coordinates
     confidence: float          # 0.0 – 1.0; from heuristic scoring or model output
     dist_m: float              # estimated distance in metres (approximate)
-    source: str                # "heuristic" | "model" | "combined"
+    source: str                # "heuristic" | "model" | "possible surface anomaly (unverified)"
     frame_id: int
     timestamp: float
     persistence_frames: int = 1   # how many consecutive frames this candidate has been seen
+    is_verified: bool = False
 
 
 def _cand_overlap_with_yolo(cand_bbox: Tuple[float,float,float,float], yolo_bbox: Tuple[float,float,float,float]) -> float:
@@ -116,7 +117,7 @@ class GroundHazardDetector:
         w_area: float = 0.35,
         w_edge: float = 0.40,
         w_shape: float = 0.25,
-        min_conf: float = 0.38,           # detections below this confidence are dropped
+        min_conf: float = 0.45,           # detections below this confidence are dropped (higher than object threshold)
         # YOLO overlap gating
         max_iou_with_yolo: float = 0.15,  # discard if IoU with any YOLO track > this
         # Persistence gate (consecutive frames required before promoting)
@@ -127,6 +128,9 @@ class GroundHazardDetector:
         model_path: Optional[str] = None,
         # Whether to run heuristic fallback when a trained model is loaded
         enable_heuristic_fallback: bool = False,
+        # Whether heuristic is permitted when NO trained model is loaded
+        # (Safety critical: default False; unverified heuristic must not produce pothole alerts)
+        allow_heuristic: bool = False,
     ):
         self.roi_y_start = roi_y_start
         self.roi_y_end   = roi_y_end
@@ -148,6 +152,7 @@ class GroundHazardDetector:
         self.persistence_required = persistence_required
         self.max_detections = max_detections
         self.enable_heuristic_fallback = enable_heuristic_fallback
+        self.allow_heuristic = allow_heuristic
 
         # Persistence tracking: list of (bbox_xyxy, consecutive_count)
         self._persistence: List[Tuple[Tuple, int]] = []
@@ -157,8 +162,13 @@ class GroundHazardDetector:
         if model_path:
             self._load_model(model_path)
 
-        mode_str = "trained-model" if self._model else "heuristic"
+        mode_str = "trained-model" if self._model else ("heuristic-unverified" if allow_heuristic else "disabled (no model)")
         logger.info("GroundHazardDetector (M13) initialised — mode=%s, persistence=%d", mode_str, persistence_required)
+
+    @property
+    def has_trained_model(self) -> bool:
+        """True if a verified trained pothole model is loaded."""
+        return self._model is not None
 
     def _load_model(self, path: str):
         """Load optional trained ONNX/YOLO pothole model."""
@@ -167,7 +177,7 @@ class GroundHazardDetector:
             self._model = YOLO(path)
             logger.info("M13: Loaded trained pothole model from %s", path)
         except Exception as e:
-            logger.warning("M13: Could not load pothole model from %s: %s. Falling back to heuristic.", path, e)
+            logger.warning("M13: Could not load pothole model from %s: %s. Model disabled.", path, e)
             self._model = None
 
     # ── Public API ────────────────────────────────────────────────────────────
@@ -183,7 +193,7 @@ class GroundHazardDetector:
 
         Args:
             frame_bgr: Raw (un-enhanced or lightly-enhanced) BGR image.
-            yolo_bboxes: List of (x1,y1,x2,y2) boxes from YOLO tracker.
+            yolo_bboxes: List of (x1,y1,x2,y2) boxes from YOLO detector/tracker.
                          Candidates overlapping these are discarded.
             frame_id: Frame index for persistence tracking.
             timestamp: Monotonic timestamp (defaults to time.monotonic()).
@@ -197,13 +207,19 @@ class GroundHazardDetector:
         # If a trained model is loaded, use it as primary detector
         if self._model is not None:
             candidates = self._model_detect(frame_bgr, frame_id, timestamp)
-            if self.enable_heuristic_fallback:
+            if self.enable_heuristic_fallback and self.allow_heuristic:
                 h_candidates = self._heuristic_detect(frame_bgr)
                 candidates = self._merge_candidates(h_candidates, candidates)
         else:
-            candidates = self._heuristic_detect(frame_bgr)
+            if self.allow_heuristic:
+                candidates = self._heuristic_detect(frame_bgr)
+                for c in candidates:
+                    c['source'] = 'possible surface anomaly (unverified)'
+                    c['hazard_class'] = 'anomaly'
+            else:
+                candidates = []
 
-        # Gate against YOLO tracks (discard if inside or heavily overlapping an object)
+        # Gate against YOLO detections (discard if inside or heavily overlapping an object)
         if yolo_bboxes:
             candidates = [
                 c for c in candidates
@@ -222,7 +238,7 @@ class GroundHazardDetector:
 
         return [
             HazardDetection(
-                hazard_class="pothole",
+                hazard_class=c.get('hazard_class', 'pothole'),
                 bbox_xyxy=c['bbox'],
                 confidence=c['conf'],
                 dist_m=c['dist_m'],
@@ -230,6 +246,7 @@ class GroundHazardDetector:
                 frame_id=frame_id,
                 timestamp=timestamp,
                 persistence_frames=c.get('persist', 1),
+                is_verified=(c.get('source') == 'model'),
             )
             for c in candidates
         ]
@@ -364,8 +381,12 @@ class GroundHazardDetector:
                     conf = float(r.boxes.conf[i].cpu().numpy())
                     fx1, fy1, fx2, fy2 = float(xyxy[0]), float(xyxy[1]), float(xyxy[2]), float(xyxy[3])
 
-                    # Distance approximation from ground plane vertical position
+                    # Ground ROI gate: candidate must lie on the ground plane
                     fy_center_norm = (fy1 + fy2) / 2.0 / max(h, 1)
+                    if fy_center_norm < self.roi_y_start or fy2 < h * (self.roi_y_start * 0.9):
+                        continue
+
+                    # Distance approximation from ground plane vertical position
                     t = (fy_center_norm - self.roi_y_start) / max(self.roi_y_end - self.roi_y_start, 0.01)
                     dist_m = float(np.clip(5.0 * (1.0 - t) + 0.4 * t, 0.3, 6.0))
 

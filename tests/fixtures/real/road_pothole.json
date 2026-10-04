@@ -1,0 +1,9 @@
+{
+  "expected_objects": [],
+  "expected_potholes": true,
+  "expected_walkable": {
+    "left": "WALKABLE",
+    "centre": "UNKNOWN",
+    "right": "WALKABLE"
+  }
+}

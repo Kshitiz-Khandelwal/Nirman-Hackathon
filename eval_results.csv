@@ -1,0 +1,52 @@
+fixture,corridor,expected_walkable,got_walkable,conf,reason,tp_w,fp_w,fn_w,tp_b,fp_b,fn_b,pothole_expected,pothole_got,objects_expected,objects_got,fps_m14
+bag_on_floor,left,WALKABLE,WALKABLE,0.812,ground confirmed (std=28.2),1,0,0,0,0,0,0,0,backpack,,207.5
+bag_on_floor,centre,BLOCKED,UNKNOWN,0.100,brightness step 35.6 px (table edge?),0,0,0,1,0,0,0,0,backpack,,207.5
+bag_on_floor,right,WALKABLE,WALKABLE,0.807,ground confirmed (std=28.8),1,0,0,0,0,0,0,0,backpack,,207.5
+blank_wall,left,UNKNOWN,UNKNOWN,0.000,frame blurry/covered (lap_var=12.5),0,0,0,1,0,0,0,0,,,506.0
+blank_wall,centre,UNKNOWN,UNKNOWN,0.000,frame blurry/covered (lap_var=12.5),0,0,0,1,0,0,0,0,,,506.0
+blank_wall,right,UNKNOWN,UNKNOWN,0.000,frame blurry/covered (lap_var=12.5),0,0,0,1,0,0,0,0,,,506.0
+clear_indoor_corridor,left,WALKABLE,WALKABLE,0.977,ground confirmed (std=8.7),1,0,0,0,0,0,0,0,,,245.7
+clear_indoor_corridor,centre,WALKABLE,WALKABLE,0.978,ground confirmed (std=8.6),1,0,0,0,0,0,0,0,,,245.7
+clear_indoor_corridor,right,WALKABLE,WALKABLE,0.978,ground confirmed (std=8.7),1,0,0,0,0,0,0,0,,,245.7
+covered_lens,left,UNKNOWN,UNKNOWN,0.000,frame blurry/covered (lap_var=12.5),0,0,0,1,0,0,0,0,,,338.1
+covered_lens,centre,UNKNOWN,UNKNOWN,0.000,frame blurry/covered (lap_var=12.5),0,0,0,1,0,0,0,0,,,338.1
+covered_lens,right,UNKNOWN,UNKNOWN,0.000,frame blurry/covered (lap_var=12.5),0,0,0,1,0,0,0,0,,,338.1
+dark_covered_lens,left,UNKNOWN,UNKNOWN,0.000,frame too dark (mean=3.5),0,0,0,1,0,0,0,0,,,438.5
+dark_covered_lens,centre,UNKNOWN,UNKNOWN,0.000,frame too dark (mean=3.5),0,0,0,1,0,0,0,0,,,438.5
+dark_covered_lens,right,UNKNOWN,UNKNOWN,0.000,frame too dark (mean=3.5),0,0,0,1,0,0,0,0,,,438.5
+dark_floor,left,UNKNOWN,UNKNOWN,0.000,uniform surface (std=4.8),0,0,0,1,0,0,0,0,,,275.2
+dark_floor,centre,UNKNOWN,UNKNOWN,0.000,uniform surface (std=4.8),0,0,0,1,0,0,0,0,,,275.2
+dark_floor,right,UNKNOWN,UNKNOWN,0.000,uniform surface (std=4.8),0,0,0,1,0,0,0,0,,,275.2
+desk_laptop,left,UNKNOWN,UNKNOWN,0.100,brightness step 138.9 px (table edge?),0,0,0,1,0,0,0,0,laptop,,290.5
+desk_laptop,centre,UNKNOWN,UNKNOWN,0.000,chaotic surface (std=77.8),0,0,0,1,0,0,0,0,laptop,,290.5
+desk_laptop,right,UNKNOWN,UNKNOWN,0.100,brightness step 137.6 px (table edge?),0,0,0,1,0,0,0,0,laptop,,290.5
+keyboard_on_desk,left,UNKNOWN,UNKNOWN,0.100,brightness step 80.0 px (table edge?),0,0,0,1,0,0,0,0,keyboard,,357.5
+keyboard_on_desk,centre,UNKNOWN,UNKNOWN,0.100,brightness step 118.0 px (table edge?),0,0,0,1,0,0,0,0,keyboard,,357.5
+keyboard_on_desk,right,UNKNOWN,UNKNOWN,0.100,brightness step 79.9 px (table edge?),0,0,0,1,0,0,0,0,keyboard,,357.5
+outdoor_footpath,left,WALKABLE,WALKABLE,0.977,ground confirmed (std=8.7),1,0,0,0,0,0,0,0,,,231.9
+outdoor_footpath,centre,WALKABLE,WALKABLE,0.978,ground confirmed (std=8.6),1,0,0,0,0,0,0,0,,,231.9
+outdoor_footpath,right,WALKABLE,WALKABLE,0.978,ground confirmed (std=8.6),1,0,0,0,0,0,0,0,,,231.9
+person_dark_clothing,left,WALKABLE,WALKABLE,0.962,ground confirmed (std=10.4),1,0,0,0,0,0,0,0,person,person,334.3
+person_dark_clothing,centre,BLOCKED,UNKNOWN,0.000,chaotic surface (std=67.0),0,0,0,1,0,0,0,0,person,person,334.3
+person_dark_clothing,right,WALKABLE,WALKABLE,0.963,ground confirmed (std=10.4),1,0,0,0,0,0,0,0,person,person,334.3
+person_with_bag,left,WALKABLE,WALKABLE,0.963,ground confirmed (std=10.4),1,0,0,0,0,0,0,0,person;backpack,person,251.4
+person_with_bag,centre,BLOCKED,UNKNOWN,0.000,chaotic surface (std=70.0),0,0,0,1,0,0,0,0,person;backpack,person,251.4
+person_with_bag,right,WALKABLE,WALKABLE,0.962,ground confirmed (std=10.5),1,0,0,0,0,0,0,0,person;backpack,person,251.4
+road_manhole_patch,left,WALKABLE,WALKABLE,0.910,ground confirmed (std=16.6),1,0,0,0,0,0,0,0,,,250.6
+road_manhole_patch,centre,WALKABLE,UNKNOWN,0.000,uniform surface (std=5.8),0,0,1,0,1,0,0,0,,,250.6
+road_manhole_patch,right,WALKABLE,WALKABLE,0.936,ground confirmed (std=13.5),1,0,0,0,0,0,0,0,,,250.6
+road_pothole,left,WALKABLE,UNKNOWN,0.000,uniform surface (std=5.8),0,0,1,0,1,0,1,0,,,208.1
+road_pothole,centre,UNKNOWN,UNKNOWN,0.100,diagonal edge jump 40.5 px (corner/angled obstacle?),0,0,0,1,0,0,1,0,,,208.1
+road_pothole,right,WALKABLE,UNKNOWN,0.000,uniform surface (std=5.8),0,0,1,0,1,0,1,0,,,208.1
+shadow_on_floor,left,UNKNOWN,UNKNOWN,0.100,brightness step 29.8 px (table edge?),0,0,0,1,0,0,0,0,,,274.8
+shadow_on_floor,centre,UNKNOWN,UNKNOWN,0.100,brightness step 84.8 px (table edge?),0,0,0,1,0,0,0,0,,,274.8
+shadow_on_floor,right,UNKNOWN,UNKNOWN,0.100,brightness step 29.6 px (table edge?),0,0,0,1,0,0,0,0,,,274.8
+stairs_ledge,left,UNKNOWN,UNKNOWN,0.100,brightness step 149.5 px (table edge?),0,0,0,1,0,0,0,0,,,370.7
+stairs_ledge,centre,UNKNOWN,UNKNOWN,0.100,brightness step 149.4 px (table edge?),0,0,0,1,0,0,0,0,,,370.7
+stairs_ledge,right,UNKNOWN,UNKNOWN,0.100,brightness step 148.5 px (table edge?),0,0,0,1,0,0,0,0,,,370.7
+table_corner,left,UNKNOWN,UNKNOWN,0.100,surface mismatch ahead (span diff 81.2 px),0,0,0,1,0,0,0,0,,,365.2
+table_corner,centre,UNKNOWN,UNKNOWN,0.100,diagonal edge jump 93.2 px (corner/angled obstacle?),0,0,0,1,0,0,0,0,,,365.2
+table_corner,right,UNKNOWN,UNKNOWN,0.100,surface mismatch ahead (span diff 79.6 px),0,0,0,1,0,0,0,0,,,365.2
+table_edge,left,UNKNOWN,UNKNOWN,0.100,brightness step 194.0 px (table edge?),0,0,0,1,0,0,0,0,,,156.8
+table_edge,centre,UNKNOWN,UNKNOWN,0.100,brightness step 193.7 px (table edge?),0,0,0,1,0,0,0,0,,,156.8
+table_edge,right,UNKNOWN,UNKNOWN,0.100,brightness step 194.2 px (table edge?),0,0,0,1,0,0,0,0,,,156.8

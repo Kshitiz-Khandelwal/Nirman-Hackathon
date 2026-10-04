@@ -1,0 +1,11 @@
+{
+  "expected_objects": [
+    "laptop"
+  ],
+  "expected_potholes": false,
+  "expected_walkable": {
+    "left": "UNKNOWN",
+    "centre": "UNKNOWN",
+    "right": "UNKNOWN"
+  }
+}

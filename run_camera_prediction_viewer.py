@@ -260,11 +260,27 @@ class PredictionViewer:
         self.auto_scaled_once = False
         self.last_stream_shape = None
 
+        # Load centralized configuration from default.yaml
+        self.config: Dict[str, Any] = {}
+        config_path = ROOT / "spatialvector" / "config" / "default.yaml"
+        if config_path.is_file():
+            try:
+                import yaml
+                with open(config_path, "r", encoding="utf-8") as f:
+                    self.config = yaml.safe_load(f) or {}
+            except Exception as e:
+                print(f"[!] Warning: Could not read default.yaml: {e}")
+
         # Pipeline modules
         self.init_source(source_str)
-        # Tracker: class_filter=None so ALL COCO classes are tracked.
-        # Do NOT restrict here — silent detection loss is worse than extra labels.
-        self.tracker = MultiObjectTracker(backend=tracker_type, history_length=10, confidence_threshold=det_conf)
+
+        cfg_tracker = self.config.get("tracker", {})
+        tracker_history = cfg_tracker.get("history_length", 10)
+        self.tracker = MultiObjectTracker(
+            backend=tracker_type,
+            history_length=tracker_history,
+            confidence_threshold=det_conf,
+        )
         self.flow_est = OpticalFlowEstimator(max_corners=200, quality_level=0.01, min_distance=7.0)
         self.imu = SimulatedIMUReader(gyro_fn=lambda t: (0.0, 0.0, 0.0), rate_hz=100.0)
         self.imu.start()
@@ -285,34 +301,44 @@ class PredictionViewer:
 
         # M13 — Ground Hazard Detector (potholes, surface damage)
         # Automatically loads trained YOLO pothole model if present, avoiding heuristic false positives
+        cfg_hazard = self.config.get("hazard_detector", {})
         base_dir = os.path.dirname(os.path.abspath(__file__))
         pothole_candidates = [
+            cfg_hazard.get("model_path", ""),
             os.path.join(base_dir, "pothole_yolov8.pt"),
             os.path.join(base_dir, "models", "pothole_yolov8.pt"),
             "pothole_yolov8.pt",
         ]
-        pothole_model_path = next((p for p in pothole_candidates if os.path.isfile(p)), None)
+        pothole_model_path = next((p for p in pothole_candidates if p and os.path.isfile(p)), None)
 
         self.hazard_detector = GroundHazardDetector(
-            persistence_required=2,
-            min_conf=0.45,
-            max_iou_with_yolo=0.15,
+            persistence_required=cfg_hazard.get("persistence_required", 2),
+            min_conf=cfg_hazard.get("min_conf", 0.45),
+            max_iou_with_yolo=cfg_hazard.get("max_iou_with_yolo", 0.15),
             model_path=pothole_model_path,
+            allow_heuristic=cfg_hazard.get("allow_heuristic", False),
         )
 
         # M14 — Freespace / Walkable-Ground Estimator
         # Defaults to UNKNOWN; requires positive confirmation for WALKABLE.
+        cfg_fs = self.config.get("freespace", {})
         self.freespace_estimator = FreeSpaceEstimator(
-            min_walkable_conf=0.45,
-            smoothing_window=5,
+            min_walkable_conf=cfg_fs.get("min_walkable_conf", 0.45),
+            smoothing_window=cfg_fs.get("smoothing_window", 5),
+            gradient_jump_thresh=cfg_fs.get("gradient_jump_thresh", 28.0),
+            continuity_max_delta=cfg_fs.get("continuity_max_delta", 20.0),
+            continuity_min_bands=cfg_fs.get("continuity_min_bands", 5),
+            dark_blob_frac_thresh=cfg_fs.get("dark_blob_frac_thresh", 0.15),
         )
 
         # M15 — Navigation Decision Engine (single source of truth)
+        cfg_nav = self.config.get("navigation_decision", {})
         self.nav_engine = NavigationDecisionEngine(
-            forward_consec_frames_required=3,
-            freespace_min_conf=0.48,
-            centre_risk_threshold=0.35,
-            global_risk_threshold=0.45,
+            forward_consec_frames_required=cfg_nav.get("forward_consec_frames_required", 3),
+            freespace_min_conf=cfg_nav.get("freespace_min_conf", 0.48),
+            centre_risk_threshold=cfg_nav.get("centre_risk_threshold", 0.35),
+            global_risk_threshold=cfg_nav.get("global_risk_threshold", 0.45),
+            pothole_block_dist_m=cfg_nav.get("pothole_block_dist_m", 3.0),
         )
 
         self.last_frame = None
@@ -467,11 +493,13 @@ class PredictionViewer:
                 cmd = self.policy.select(risk_state, timestamp=ts)
 
                 # M13 — Ground Hazard Detection
-                # Pass YOLO bboxes so heuristic never fires on tracked objects
-                yolo_bboxes = [t.bbox_history[-1] for t in tracks if t.bbox_history]
+                # Pass both tracked bboxes and raw detections so M13 and M14 gate against all obstacles
+                tracked_bboxes = [t.bbox_history[-1] for t in tracks if t.bbox_history]
+                raw_bboxes = getattr(self.tracker, 'raw_bboxes_this_frame', [])
+                all_yolo_bboxes = tracked_bboxes + [b for b in raw_bboxes if b not in tracked_bboxes]
                 self._hazard_detections = self.hazard_detector.detect(
                     frame_bgr=img,
-                    yolo_bboxes=yolo_bboxes,
+                    yolo_bboxes=all_yolo_bboxes,
                     frame_id=f_obj.frame_id,
                     timestamp=ts,
                 )
@@ -486,7 +514,7 @@ class PredictionViewer:
                 # M14 — Freespace / Walkable-Ground Estimation
                 self._freespace_result = self.freespace_estimator.estimate(
                     frame_bgr=img,
-                    yolo_bboxes=yolo_bboxes,
+                    yolo_bboxes=all_yolo_bboxes,
                 )
 
                 # M15 — Single Navigation Decision (single source of truth)
@@ -1355,9 +1383,11 @@ class PredictionViewer:
                 cv2.putText(canvas, "SYSTEM STATUS", (lx1 + 10, ly1 + 18), cv2.FONT_HERSHEY_SIMPLEX, 0.36, (0, 200, 255), 1, cv2.LINE_AA)
                 cv2.line(canvas, (lx1 + 10, ly1 + 23), (lx2 - 10, ly1 + 23), (40, 45, 55), 1)
 
+                pothole_loaded = getattr(getattr(self, 'hazard_detector', None), 'has_trained_model', False)
                 status_items = [
                     ("Camera", fps > 2, fps > 0.5),
                     ("AI Detection", len(tracks) >= 0, True),
+                    ("Pothole Model", pothole_loaded, pothole_loaded),
                     ("Gyroscope", not motion.fallback_active, True),
                     ("Vibration Belt", cmd.urgency > 0 or risk.global_risk < 0.3, True),
                     ("Voice Engine", True, True),
@@ -1371,6 +1401,9 @@ class PredictionViewer:
                     if is_active and is_connected:
                         dot_color = (80, 230, 130)
                         status_label = "Active"
+                    elif name == "Pothole Model":
+                        dot_color = (0, 195, 255)
+                        status_label = "NOT LOADED"
                     elif is_connected:
                         dot_color = (0, 195, 255)
                         status_label = "Warning"
@@ -1514,14 +1547,19 @@ class PredictionViewer:
                 else:
                     line1 = "Path unobstructed."
 
-                if c_risk >= 0.50:
+                _guidance = getattr(self, '_guidance', None)
+                if _guidance is not None and _guidance.reason:
+                    line2 = f"{_guidance.reason[:26]}."
+                elif c_risk >= 0.50:
                     line2 = "Center path blocked."
                 elif c_risk > 0.25:
                     line2 = "Center caution zone."
                 else:
                     line2 = "Center corridor clear."
 
-                if cmd.direction == "LEFT":
+                if not pothole_loaded:
+                    line3 = "Pothole model: NOT LOADED."
+                elif cmd.direction == "LEFT":
                     line3 = "Left clear -> Move Left."
                 elif cmd.direction == "RIGHT":
                     line3 = "Right clear -> Move Right."

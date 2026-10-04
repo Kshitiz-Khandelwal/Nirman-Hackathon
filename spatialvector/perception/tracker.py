@@ -29,6 +29,8 @@ class MultiObjectTracker:
         model_path: str = "yolov8n.pt",
         confidence_threshold: float = 0.4,
         class_filter: Optional[list[str]] = None,
+        class_conf_thresholds: Optional[dict[str, float]] = None,
+        min_persistence_frames: int = 2,
     ):
         self.backend = backend.lower()
         if self.backend not in ["bytetrack", "botsort"]:
@@ -39,12 +41,25 @@ class MultiObjectTracker:
         self.max_missed_frames = max_missed_frames
         self.confidence_threshold = confidence_threshold
         self.class_filter = [c.lower() for c in class_filter] if class_filter else None
+        # Per-class confidence thresholds: e.g. lower for safety-critical person/vehicles, higher for prone-to-hallucinate
+        self.class_conf_thresholds = {
+            "person": 0.30,
+            "bicycle": 0.35, "car": 0.35, "motorcycle": 0.35, "bus": 0.35, "truck": 0.35,
+            "backpack": 0.40, "handbag": 0.40, "suitcase": 0.40,
+            "chair": 0.45, "couch": 0.45, "bed": 0.45, "dining table": 0.45,
+            "laptop": 0.45, "tv": 0.45, "cell phone": 0.50,
+        }
+        if class_conf_thresholds:
+            self.class_conf_thresholds.update({k.lower(): v for k, v in class_conf_thresholds.items()})
+
+        self.min_persistence_frames = min_persistence_frames
         self.model_path = model_path
 
         # Internal active track records
         # track_id -> dict with track history, age, last_seen, etc.
         self._tracks: dict[int, dict] = {}
         self._scale_smoothers: dict[int, AdaptiveEMA] = {}
+        self.raw_bboxes_this_frame: list[tuple[float, float, float, float]] = []
         self.current_frame_id = 0
         self.status = "OK"
 
@@ -104,6 +119,7 @@ class MultiObjectTracker:
             return []
 
         self.status = "OK"
+        self.raw_bboxes_this_frame = []
         active_track_ids_this_frame: set[int] = set()
         current_tracks: list[Track] = []
 
@@ -113,21 +129,30 @@ class MultiObjectTracker:
                 continue
 
             for i in range(len(boxes)):
+                xyxy = boxes.xyxy[i].cpu().numpy().tolist()
+                conf = float(boxes.conf[i].cpu().numpy())
+                cls_id = int(boxes.cls[i].cpu().numpy())
+                cls_name = str(self._model.names.get(cls_id, f"class_{cls_id}"))
+                bbox_tuple = (float(xyxy[0]), float(xyxy[1]), float(xyxy[2]), float(xyxy[3]))
+
+                # Record all raw bounding boxes (used for M13 hazard gating)
+                self.raw_bboxes_this_frame.append(bbox_tuple)
+
                 # If Ultralytics tracker hasn't assigned an ID yet, skip
                 if boxes.id is None:
                     continue
 
                 track_id = int(boxes.id[i].cpu().numpy())
-                xyxy = boxes.xyxy[i].cpu().numpy().tolist()
-                conf = float(boxes.conf[i].cpu().numpy())
-                cls_id = int(boxes.cls[i].cpu().numpy())
-                cls_name = str(self._model.names.get(cls_id, f"class_{cls_id}"))
+
+                # Per-class confidence thresholds (higher for easily-hallucinated classes, lower for person/vehicles)
+                required_conf = self.class_conf_thresholds.get(cls_name.lower(), self.confidence_threshold)
+                if conf < required_conf:
+                    continue
 
                 # Apply class filter if specified
                 if self.class_filter is not None and cls_name.lower() not in self.class_filter:
                     continue
 
-                bbox_tuple = (float(xyxy[0]), float(xyxy[1]), float(xyxy[2]), float(xyxy[3]))
                 center_x = (bbox_tuple[0] + bbox_tuple[2]) / 2.0
                 center_y = (bbox_tuple[1] + bbox_tuple[3]) / 2.0
                 center_pt = (center_x, center_y)
@@ -144,6 +169,7 @@ class MultiObjectTracker:
                     self._detect_potential_id_switch(frame_id, track_id, cls_name, center_pt)
                     self._tracks[track_id] = {
                         "class_name": cls_name,
+                        "class_history": [cls_name],
                         "bbox_history": [bbox_tuple],
                         "center_history": [center_pt],
                         "timestamps": [timestamp],
@@ -153,7 +179,7 @@ class MultiObjectTracker:
                     }
                 else:
                     t_record = self._tracks[track_id]
-                    t_record["class_name"] = cls_name
+                    t_record["class_history"].append(cls_name)
                     t_record["bbox_history"].append(bbox_tuple)
                     t_record["center_history"].append(center_pt)
                     t_record["timestamps"].append(timestamp)
@@ -163,12 +189,17 @@ class MultiObjectTracker:
 
                     # Enforce max history length
                     if len(t_record["bbox_history"]) > self.history_length:
+                        t_record["class_history"].pop(0)
                         t_record["bbox_history"].pop(0)
                         t_record["center_history"].pop(0)
                         t_record["timestamps"].pop(0)
 
-                # Calculate estimated image velocity (pixels/sec) via finite differences
+                # Temporal class vote (majority class over last N frames prevents single-frame mislabeling)
                 t_record = self._tracks[track_id]
+                voted_class = max(set(t_record["class_history"]), key=t_record["class_history"].count)
+                t_record["class_name"] = voted_class
+
+                # Calculate estimated image velocity (pixels/sec) via finite differences
                 image_velocity = self._compute_velocity(
                     t_record["center_history"], t_record["timestamps"]
                 )
@@ -192,10 +223,15 @@ class MultiObjectTracker:
                     )
                 bbox_scale = float(self._scale_smoothers[track_id].update(raw_bbox_scale))
 
+                # Track persistence suppression: suppress phantom 1-frame tracks unless close/imminent
+                is_immediate = (voted_class in ("person", "car", "truck", "bus", "motorcycle", "bicycle") and raw_bbox_scale > 0.28)
+                if t_record["track_age"] < self.min_persistence_frames and not is_immediate:
+                    continue
+
                 current_tracks.append(
                     Track(
                         track_id=track_id,
-                        class_name=cls_name,
+                        class_name=voted_class,
                         bbox_history=list(t_record["bbox_history"]),
                         center_history=list(t_record["center_history"]),
                         estimated_image_velocity=image_velocity,

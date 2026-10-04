@@ -123,12 +123,12 @@ SpatialVector-HMI is a chest-worn, vision-first local safety system that tracks 
 
 ### 3.4 Non-Goals
 
-- ❌ Certified mobility-aid status
+- ❌ Certified medical mobility-aid status
 - ❌ Measured reduction in falls/injuries unless evidence is collected
 - ❌ Facial identity, voice assistant, GPS navigation, or cloud analytics as a prerequisite for the safety pipeline
 - ❌ YOLO confidence treated as collision probability
 - ❌ Single frame as enough evidence for motion prediction
-- ❌ Ground-level hazards (curbs, stairs, potholes) — the user continues to rely on a cane or guide dog for those
+- ⚠️ Ground-level hazards (curbs, stairs, potholes) — Formerly a non-goal, now actively supported via M13 (Ground Hazard Detector), M14 (Walkable-Ground Estimator), and M15 (Navigation Decision Engine). A white cane remains recommended as secondary tactile confirmation.
 - ❌ Unvalidated build on actual visually-impaired end users — sighted volunteers under blindfold/simulated-impairment conditions only until safety gates pass
 
 ### 3.5 Success Criteria
@@ -665,6 +665,33 @@ The updated design should be presented as an engineering contribution built arou
 - **M07–M09** (prediction, risk, corridor) is the module everything else depends on. It has a named integration partner from hour 0 — use them the moment the primary owner is blocked, do not wait.
 - Any module disconnect (phone, Arduino, IMU) should enter DEGRADED and say so on the dashboard — verify this explicitly before the demo, not during it.
 - Do not run an unvalidated build on an actual visually-impaired user — sighted, blindfolded volunteers only until the safety path clears its integration gates.
+
+---
+
+## 15. Ground Hazards, Freespace, Evaluation Harness & Monocular Limitations
+
+### 15.1 Architecture Extension (M13, M14, M15)
+To address the critical safety requirement that "WALK FORWARD" must never be commanded without positive physical evidence of walkable ground:
+- **M13 (GroundHazardDetector)**: Detects potholes and road depressions. Operates on an honest-fallback principle: when a trained model (`pothole_yolov8.pt`) is loaded, it serves as the primary detector; when no model is found, the system displays `POTHOLE MODEL NOT LOADED`, disables pothole alerts, and only runs unverified anomaly detection behind an explicit flag. All candidates are strictly gated against the ground plane (`y >= roi_y_start`) and all detected YOLO objects.
+- **M14 (FreeSpaceEstimator)**: Evaluates per-corridor ground validity through multiple independent cues:
+  1. *Frame-level validity*: Laplacian variance (blur), mean intensity (under/over-exposure), and texture variance.
+  2. *Gradient jump detector*: Catches single-row steps and windowed diagonal jumps (table edges, ledges, table corners).
+  3. *Unbroken bottom-up continuity scan*: Verifies that ground begins at the user's feet (bottom of the frame) and extends unbroken upward.
+  4. *Unexplained dark blob gate*: Shadows and dark objects that are not recognized ground are flagged as UNKNOWN.
+  5. *YOLO bounding-box obstruction*: Any tracked or raw object overlapping the corridor immediately forces `BLOCKED`.
+- **M15 (NavigationDecisionEngine)**: The single source of truth for navigation commands. Requires multi-cue agreement, consecutive confirmation frames, and clear path verification before issuing `WALK FORWARD`.
+
+### 15.2 Ground-Truth Evaluation Harness (`scripts/evaluate.py`)
+To prevent threshold tuning by eye and ensure safety invariants:
+- **Test Fixtures (`tests/fixtures/real/`)**: 17 benchmark scenarios covering table edges, corners, desk close-ups, blank walls, stairs/ledges, dark rooms, covered lenses, clear corridors, outdoor paths, and potholes.
+- **Automated Verification**: Evaluates false walk-forward rate (must be 0.00% across all negative fixtures), precision/recall, and latency.
+
+### 15.3 Known Physical Limitations of Monocular Vision
+A single 2D camera inherently loses depth information:
+1. *Extreme shadows vs. holes*: Deep optical shadows under bright sun cannot always be distinguished from physical depressions without stereo disparity or active depth sensing.
+2. *Drop-offs with matching textures*: Downward stairs made of identical material to the landing may lack edge contrast from certain vantage points.
+3. *Body tilt and camera pitch*: Heavy torso swaying during rapid walking shifts the ground ROI unless compensated by IMU pitch.
+For these reasons, the primary rule is **Fail Safe**: if ground cannot be confirmed with high confidence, the system commands `CAUTION` or `STOP`, never `WALK FORWARD`.
 
 ---
 

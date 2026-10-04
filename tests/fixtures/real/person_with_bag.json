@@ -1,0 +1,12 @@
+{
+  "expected_objects": [
+    "person",
+    "backpack"
+  ],
+  "expected_potholes": false,
+  "expected_walkable": {
+    "left": "WALKABLE",
+    "centre": "BLOCKED",
+    "right": "WALKABLE"
+  }
+}
