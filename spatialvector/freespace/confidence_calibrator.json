@@ -15,6 +15,5 @@
     "cue_agreement": -0.0017507361763445858,
     "temporal_frac": 0.0
   },
-  "intercept": 1.0079556426379757,
-  "ece_holdout": 0.0984
+  "intercept": 1.0079556426379757
 }

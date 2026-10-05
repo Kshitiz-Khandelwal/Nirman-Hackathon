@@ -299,6 +299,13 @@ def evaluate(
         w.writeheader()
         w.writerows(rows)
 
+    # Write sha256 checksum next to output CSV for provenance verification
+    import hashlib
+    sha256_hash = hashlib.sha256(out_csv.read_bytes()).hexdigest()
+    sha256_file = out_csv.with_suffix(out_csv.suffix + ".sha256")
+    sha256_file.write_text(sha256_hash.strip() + "\n", encoding="utf-8")
+    print(f"  SHA-256 written to        : {sha256_file} ({sha256_hash[:16]}...)")
+
     # ── Summary calculation ───────────────────────────────────────────────────
     def safe_div(n, d):
         return n / d if d else 0.0

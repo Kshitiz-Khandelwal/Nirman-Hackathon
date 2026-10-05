@@ -157,10 +157,9 @@ class NavigationDecisionEngine:
         centre_fs_conf = freespace.centre_conf if freespace else 0.0
         centre_reason  = (freespace.reasons or {}).get("centre", "unknown") if freespace else "freespace not running"
 
-        centre_walkable = (
-            centre_fs == CorridorStatus.WALKABLE
-            and centre_fs_conf >= self.freespace_min_conf
-        )
+        # The safety gates are segmentation, vetoes, and consecutive-frames rule.
+        # Freespace confidence is an uncalibrated evidence score, NOT used as a safety gate.
+        centre_walkable = (centre_fs == CorridorStatus.WALKABLE)
 
         if centre_walkable:
             self._centre_walkable_streak += 1

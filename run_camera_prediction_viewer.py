@@ -1476,10 +1476,14 @@ class PredictionViewer:
         cv2.putText(canvas, nav_action, (tx, ty), cv2.FONT_HERSHEY_SIMPLEX, banner_font_sz, (255, 255, 255), banner_thick, cv2.LINE_AA)
 
         if bx1 >= 200:
-            cv2.putText(canvas, "CORRIDOR", (16, bar_y1 + 18), cv2.FONT_HERSHEY_SIMPLEX, 0.30, (0, 180, 240), 1, cv2.LINE_AA)
+            cv2.putText(canvas, "CORRIDOR RISK", (16, bar_y1 + 18), cv2.FONT_HERSHEY_SIMPLEX, 0.30, (0, 180, 240), 1, cv2.LINE_AA)
             for ci, (clbl, cval) in enumerate([("L", l_risk), ("C", c_risk), ("R", r_risk)]):
                 cc = (80, 230, 130) if cval < 0.35 else ((0, 195, 255) if cval < 0.65 else (60, 60, 255))
-                cv2.putText(canvas, f"{clbl}:{cval:.2f}", (16 + ci * 52, bar_y1 + 38), cv2.FONT_HERSHEY_SIMPLEX, 0.34, cc, 1, cv2.LINE_AA)
+                cv2.putText(canvas, f"{clbl}:{cval:.2f}", (16 + ci * 48, bar_y1 + 38), cv2.FONT_HERSHEY_SIMPLEX, 0.32, cc, 1, cv2.LINE_AA)
+            # Display freespace evidence score as uncalibrated, never as a probability
+            fs_c_conf = getattr(getattr(self, '_freespace_result', None), 'centre_conf', None)
+            if fs_c_conf is not None:
+                cv2.putText(canvas, f"FS score (uncalibrated): {fs_c_conf:.2f}", (16, bar_y1 + 50), cv2.FONT_HERSHEY_SIMPLEX, 0.22, (150, 160, 175), 1, cv2.LINE_AA)
 
         if target_w - bx2 >= 200:
             haptic_txt = f"{cmd.pattern_id}"

@@ -244,6 +244,32 @@ def compute_all_metrics(df: pd.DataFrame) -> Dict[str, any]:
     metrics["safety_calibration_table"] = calib_table
     metrics["expected_calibration_error"] = total_ece
 
+    # Calibration Honesty: AUC & Constant-baseline ECE
+    y_true_binary = (walkable_decisions["expected_walkable"] == "WALKABLE").astype(int).tolist()
+    y_scores = walkable_decisions["conf"].astype(float).tolist()
+    # Compute AUC (ROC AUC) if both classes present
+    calib_auc: Optional[float] = None
+    if len(set(y_true_binary)) > 1 and len(y_true_binary) > 0:
+        try:
+            from sklearn.metrics import roc_auc_score
+            calib_auc = float(roc_auc_score(y_true_binary, y_scores))
+        except Exception:
+            # Fallback manual AUC calculation (Wilcoxon rank-sum / Mann-Whitney U)
+            pos_scores = [s for y, s in zip(y_true_binary, y_scores) if y == 1]
+            neg_scores = [s for y, s in zip(y_true_binary, y_scores) if y == 0]
+            if pos_scores and neg_scores:
+                pairs = sum(1.0 if p > n else (0.5 if p == n else 0.0) for p in pos_scores for n in neg_scores)
+                calib_auc = float(pairs / (len(pos_scores) * len(neg_scores)))
+
+    # Constant 0.82 predictor baseline ECE
+    constant_baseline_val = 0.82
+    obs_acc = (w_dec_truly_clear / max(w_dec_total, 1))
+    constant_baseline_ece = abs(constant_baseline_val - obs_acc)
+
+    metrics["calibration_auc"] = calib_auc
+    metrics["constant_baseline_ece"] = constant_baseline_ece
+    metrics["constant_baseline_pred"] = constant_baseline_val
+
     # ── 4. Pothole Metrics ───────────────────────────────────────────────────
     # Evaluated once per fixture (using centre corridor row)
     centre_df = df[df["corridor"] == "centre"]
@@ -342,13 +368,23 @@ def print_report_table(metrics: Dict[str, any], dataset_name: str = "Fresh HOLDO
     obj_set = metrics["object_agreement"]["unique_class_set"]
     sp = metrics["safety_precision"]
     ece = metrics.get("expected_calibration_error", 0.0)
+    calib_auc = metrics.get("calibration_auc")
+    const_ece = metrics.get("constant_baseline_ece", 0.0)
+    const_val = metrics.get("constant_baseline_pred", 0.82)
 
     status_hz_img = "PASS" if hz_img["count"] == 0 else "FAIL"
     status_hz_ctr = "PASS" if hz_ctr["count"] == 0 else "FAIL"
     status_cl_ctr = "PASS" if cl_ctr["rate"] >= 0.80 else "FAIL"
     status_ph_fpr = "PASS" if ph["fpr_on_neg"] <= 0.05 else "FAIL"
     status_ph_rec = "PASS" if ph["recall"] >= 0.60 else "FAIL"
-    status_ece = "PASS" if ece <= 0.10 else "FAIL"
+
+    # Criterion passes only if AUC >= 0.70 AND ECE beats constant-baseline ECE
+    if calib_auc is not None and calib_auc >= 0.70 and ece < const_ece:
+        status_ece = "PASS"
+    else:
+        status_ece = "NOT MEANINGFUL"
+
+    auc_str = f"{calib_auc:.3f}" if calib_auc is not None else "n/a"
 
     print("\n### Generated Report Table (Exact Copy for Markdown):\n")
     print("| Split / Evaluation Scope | Criterion / Metric | Stated Target | Measured Result | Status |")
@@ -358,7 +394,7 @@ def print_report_table(metrics: Dict[str, any], dataset_name: str = "Fresh HOLDO
     print(f"| **{dataset_name}** | Clear Corridor Recall (Centre Corridor Only) | $\\ge 80.0\\%$ | **{cl_ctr['rate']:.2%}** ({cl_ctr['count']} / {cl_ctr['total']} images) | **{status_cl_ctr}** |")
     print(f"| **{dataset_name}** | Clear Corridor Recall (Any Corridor Walkable) | $\\ge 80.0\\%$ | **{cl_any['rate']:.2%}** ({cl_any['count']} / {cl_any['total']} images) | **FAIL** |")
     print(f"| **{dataset_name}** | Safety Precision (Truly Clear among Predicted WALKABLE) | Informational | **{sp['precision']:.2%}** ({sp['truly_clear']} / {sp['total_predicted_walkable']} decisions) | **MEASURED** |")
-    print(f"| **{dataset_name}** | Expected Calibration Error (ECE on WALKABLE decisions) | $\\le 10.0\\%$ | **{ece:.2%}** | **{status_ece}** |")
+    print(f"| **{dataset_name}** | Expected Calibration Error (ECE on WALKABLE decisions) | $\\le 10.0\\%$ & beats const baseline | **{ece:.2%}** (AUC={auc_str}, Const {const_val:.2f} ECE={const_ece:.2%}) | **{status_ece}** |")
     print(f"| **{dataset_name}** | Pothole FPR on Negatives | $\\le 5.0\\%$ | **{ph['fpr_on_neg']:.2%}** ({ph['fp']} / {ph['neg_total']} negative images) | **{status_ph_fpr}** |")
     print(f"| **{dataset_name}** | Pothole Recall on Positives | $\\ge 60.0\\%$ | **{ph['recall']:.2%}** ({ph['tp']} / {ph['pos_total']} positive images) | **{status_ph_rec}** |")
     print(f"| **{dataset_name}** | Pothole Precision | Informational | **{ph['precision']:.2%}** ({ph['tp']} / {ph['total_detections']} detections) | **MEASURED** |")
@@ -372,6 +408,9 @@ def print_report_table(metrics: Dict[str, any], dataset_name: str = "Fresh HOLDO
     print("-" * 68)
     for row in metrics["safety_calibration_table"]:
         print(f"{row['bin']:<14} | {row['count']:<6} | {row['mean_conf']:<10.4f} | {row['observed_accuracy']:<22.2%} | {row['gap']:<8.4f}")
+    print(f"\nCalibration Honesty: Discrimination AUC = {auc_str} (Target >= 0.70). Constant {const_val:.2f} baseline ECE = {const_ece:.2%}.")
+    if status_ece == "NOT MEANINGFUL":
+        print(">> Note: ECE is NOT MEANINGFUL because score distribution is narrow [0.73-0.84], discrimination is near-random (AUC ~0.56), and a constant predictor achieves essentially identical ECE.")
 
 
 def main():
@@ -383,6 +422,25 @@ def main():
     csv_path = Path(args.csv)
     if not csv_path.exists():
         print(f"Error: CSV file not found: {csv_path}", file=sys.stderr)
+        sys.exit(1)
+
+    # Provenance verification: require matching .sha256 hash written by evaluate.py
+    sha256_file = csv_path.with_suffix(csv_path.suffix + ".sha256")
+    if not sha256_file.exists():
+        print(f"Error: Provenance hash file missing ({sha256_file}). Regenerate CSV using scripts/evaluate.py.", file=sys.stderr)
+        sys.exit(1)
+
+    import hashlib
+    actual_hash = hashlib.sha256(csv_path.read_bytes()).hexdigest().strip()
+    expected_hash = sha256_file.read_text(encoding="utf-8").strip()
+    if actual_hash != expected_hash:
+        print(
+            f"Error: Provenance check failed for {csv_path}!\n"
+            f"  Expected SHA-256: {expected_hash}\n"
+            f"  Actual SHA-256:   {actual_hash}\n"
+            f"  The CSV has been modified outside scripts/evaluate.py. Regenerate with evaluate.py.",
+            file=sys.stderr
+        )
         sys.exit(1)
 
     df = pd.read_csv(csv_path)

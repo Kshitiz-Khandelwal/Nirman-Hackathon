@@ -81,15 +81,15 @@ def _compute_confidence(
     classical_cues_passed: bool,
     temporal_walkable_fraction: float,
 ) -> float:
-    """Compute an evidence-based calibrated confidence score in [0, 1].
+    """Compute an uncalibrated evidence score in [0, 1].
 
-    All inputs are real measurable quantities — no constants are returned directly.
-    WALKABLE confidence is computed via a fitted LogisticRegression calibrator trained
-    on TUNE with measurable ground margin, mean softmax probability, cue agreement, and
-    temporal consistency.
+    Note: This is an evidence score (uncalibrated), NOT a true calibrated probability.
+    It is presented for diagnostic and telemetry inspection only and is NOT used as a
+    safety gate (safety gating relies strictly on segmentation, classical vetoes,
+    and consecutive-frame persistence).
 
-    BLOCKED:  confidence scales with obstacle fraction (o_frac / 0.35), floored at 0.5.
-    UNKNOWN:  confidence = 0.0 by definition (we do not know).
+    BLOCKED:  evidence scales with obstacle fraction (o_frac / 0.35), floored at 0.5.
+    UNKNOWN:  evidence = 0.0 by definition (we do not know).
     """
     if status == CorridorStatus.UNKNOWN:
         return 0.0
