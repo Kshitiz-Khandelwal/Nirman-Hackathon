@@ -10,5 +10,7 @@
     "bird"
   ],
   "license": "CC BY / Public Domain",
-  "image_file": "table_corner_023.jpg"
+  "image_file": "table_corner_023.jpg",
+  "label_source": "yolov8x_prefill",
+  "verified": false
 }

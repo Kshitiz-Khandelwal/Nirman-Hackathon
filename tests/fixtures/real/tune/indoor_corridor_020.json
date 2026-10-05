@@ -9,5 +9,7 @@
   "expected_objects": [],
   "license": "CC BY-SA 4.0",
   "source_url": "https://upload.wikimedia.org/wikipedia/commons/9/91/Green_corridor_from_Lillie_Bridge.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
-  "image_file": "indoor_corridor_020.jpg"
+  "image_file": "indoor_corridor_020.jpg",
+  "label_source": "yolov8x_prefill",
+  "verified": false
 }

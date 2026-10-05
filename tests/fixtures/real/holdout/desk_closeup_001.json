@@ -18,5 +18,7 @@
   ],
   "license": "CC BY / Public Domain",
   "source_url": "https://upload.wikimedia.org/wikipedia/commons/2/2d/PowerMac_g3_233.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
-  "image_file": "desk_closeup_001.jpg"
+  "image_file": "desk_closeup_001.jpg",
+  "label_source": "yolov8x_prefill",
+  "verified": false
 }

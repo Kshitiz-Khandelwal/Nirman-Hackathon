@@ -11,5 +11,7 @@
   ],
   "license": "CC BY-SA 2.0",
   "source_url": "https://upload.wikimedia.org/wikipedia/commons/3/35/Stone_table%2C_Kinnoull_Hill_-_geograph.org.uk_-_1629312.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
-  "image_file": "table_edge_019.jpg"
+  "image_file": "table_edge_019.jpg",
+  "label_source": "yolov8x_prefill",
+  "verified": false
 }

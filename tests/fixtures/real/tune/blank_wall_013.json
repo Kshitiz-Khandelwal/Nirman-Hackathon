@@ -9,5 +9,7 @@
   "expected_objects": [],
   "license": "CC BY-SA 4.0",
   "source_url": "https://upload.wikimedia.org/wikipedia/commons/3/37/Funchal_%28Madeira%2C_Portugal%29%2C_Rua_de_Santa_Maria_1_--_2025_--_0818.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
-  "image_file": "blank_wall_013.jpg"
+  "image_file": "blank_wall_013.jpg",
+  "label_source": "yolov8x_prefill",
+  "verified": false
 }

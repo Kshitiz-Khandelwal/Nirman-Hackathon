@@ -15,5 +15,7 @@
   ],
   "license": "CC BY / Public Domain",
   "source_url": "https://upload.wikimedia.org/wikipedia/commons/7/78/EFTA00001748_-_Wooden_desk_with_a_white_chair_a_computer_monitor_and_various_office_supplies_under_a_blue-painted_ceiling.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
-  "image_file": "desk_closeup_020.jpg"
+  "image_file": "desk_closeup_020.jpg",
+  "label_source": "yolov8x_prefill",
+  "verified": false
 }

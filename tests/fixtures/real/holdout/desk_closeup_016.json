@@ -12,5 +12,7 @@
   ],
   "license": "CC BY / Public Domain",
   "source_url": "https://upload.wikimedia.org/wikipedia/commons/f/f2/EFTA00000888_-_Wooden-walled_office_with_a_red_desk_computer_guitar_and_zebra-patterned_rug.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
-  "image_file": "desk_closeup_016.jpg"
+  "image_file": "desk_closeup_016.jpg",
+  "label_source": "yolov8x_prefill",
+  "verified": false
 }

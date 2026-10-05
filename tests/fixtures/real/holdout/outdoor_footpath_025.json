@@ -8,5 +8,7 @@
   "expected_hazards": [],
   "expected_objects": [],
   "license": "CC BY / Public Domain",
-  "image_file": "outdoor_footpath_025.jpg"
+  "image_file": "outdoor_footpath_025.jpg",
+  "label_source": "yolov8x_prefill",
+  "verified": false
 }

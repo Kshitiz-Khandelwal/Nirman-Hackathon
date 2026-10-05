@@ -13,5 +13,7 @@
   ],
   "license": "CC BY / Public Domain",
   "source_url": "https://upload.wikimedia.org/wikipedia/commons/1/1b/EFTA00001757_-_Bright_modern_bedroom_with_a_blue_vaulted_ceiling_white_walls_and_light_wood_flooring_A_large_bed_with_white_linens_sits_beside_a_wooden_desk_with_a_computer_monitor_a_gray_office_chair_and_a....jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
-  "image_file": "desk_closeup_021.jpg"
+  "image_file": "desk_closeup_021.jpg",
+  "label_source": "yolov8x_prefill",
+  "verified": false
 }

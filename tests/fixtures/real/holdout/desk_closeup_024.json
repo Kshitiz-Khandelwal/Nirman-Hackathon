@@ -18,5 +18,7 @@
   ],
   "license": "CC BY / Public Domain",
   "source_url": "https://upload.wikimedia.org/wikipedia/commons/1/17/EFTA00002168_-_Cluttered_desk_with_a_computer_monitor_printer_keyboard_and_various_office_supplies_including_a_funnel_and_a_label_maker.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
-  "image_file": "desk_closeup_024.jpg"
+  "image_file": "desk_closeup_024.jpg",
+  "label_source": "yolov8x_prefill",
+  "verified": false
 }

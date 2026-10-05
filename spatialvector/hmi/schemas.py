@@ -73,6 +73,7 @@ def build_track_telemetry(tracks: List[Any], pred_map: Dict[int, Any]) -> List[D
             "ttc_s": getattr(pred, "ttc_s", None),
             "intersect": bool(getattr(pred, "intersection_flag", False)),
             "pred_conf": getattr(pred, "prediction_confidence", None),
+            "confidence_source": getattr(pred, "confidence_source", "geometry"),
             "bearing": getattr(pred, "bearing", None),
             "relative_velocity": getattr(t, "estimated_image_velocity", (0.0, 0.0)),
         })

@@ -13,5 +13,7 @@
   ],
   "license": "CC BY / Public Domain",
   "source_url": "https://upload.wikimedia.org/wikipedia/commons/9/96/EFTA00001220_-_Vibrant_curved_desk_with_a_turquoise_top_and_red_trim_sits_against_a_metallic_wall_paneling_in_a_modern_office_space_A_black_chair_is_positioned_at_the_desk_which_holds_a_computer_monitor_lamp....jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
-  "image_file": "desk_closeup_018.jpg"
+  "image_file": "desk_closeup_018.jpg",
+  "label_source": "yolov8x_prefill",
+  "verified": false
 }

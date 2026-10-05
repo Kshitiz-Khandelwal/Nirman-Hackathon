@@ -15,5 +15,7 @@
   ],
   "license": "CC BY / Public Domain",
   "source_url": "https://upload.wikimedia.org/wikipedia/commons/e/e0/EFTA00001583_-_Cluttered_office_desk_with_an_Epson_projector_multiple_electronic_devices_a_computer_monitor_and_various_cables_next_to_a_window_with_shutters.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
-  "image_file": "desk_closeup_019.jpg"
+  "image_file": "desk_closeup_019.jpg",
+  "label_source": "yolov8x_prefill",
+  "verified": false
 }

@@ -3,13 +3,15 @@
   "category": "road_manhole",
   "split": "TUNE",
   "is_hazard_category": false,
-  "expected_walkable": false,
-  "corridor_status": "BLOCKED",
+  "expected_walkable": "UNLABELLED",
+  "corridor_status": "UNLABELLED",
   "expected_hazards": [],
   "expected_objects": [
     "clock"
   ],
   "license": "CC BY-SA 4.0",
   "source_url": "https://upload.wikimedia.org/wikipedia/commons/2/28/Manhole_cover_20.09.24_in_Istanbul_02.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
-  "image_file": "road_manhole_021.jpg"
+  "image_file": "road_manhole_021.jpg",
+  "label_source": "yolov8x_prefill",
+  "verified": false
 }

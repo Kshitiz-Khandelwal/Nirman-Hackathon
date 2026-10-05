@@ -234,19 +234,19 @@ class CollisionPredictor:
                 self.proximity_offcenter_cap,
             ))
 
-        if proximity_risk >= 0.40:
-            # Direct path obstruction: log advisory but do NOT synthesize CPA/TTC values.
-            # Synthetic overrides would make the telemetry report a "measured" collision time
-            # that was never derived from motion. Keep whatever the CPA/TTC computation gave us.
-            # The risk engine (M08) acts on proximity_risk directly; it does not need a fake TTC.
-            intersection_flag = True  # path IS obstructed
+        # SAFETY OVERRIDE (DOCUMENTED):
+        # Forced intersection_flag applies ONLY for objects directly in the centre corridor
+        # exceeding the proximity threshold (proximity_risk >= 0.40). This is an explicit
+        # fail-safe safety override to prevent walking into large unmoving obstacles directly ahead,
+        # NOT an objective kinematic measurement.
+        if in_center_corridor and proximity_risk >= 0.40:
+            intersection_flag = True  # Safety override: path IS physically blocked
             if cpa_norm > 0.10:
-                # Clamp CPA to reflect observed closeness from bbox scale;
-                # still derived from proximity (not a constant).
+                # Bound CPA to reflect closeness from bbox scale
                 cpa_norm = min(cpa_norm, float(np.clip(0.05 / max(proximity_scale, 0.05), 0.01, 0.15)))
                 miss_norm = min(miss_norm, cpa_norm)
             logger.debug(
-                "[M07] proximity_risk=%.2f (scale=%.3f) — intersection forced True, "
+                "[M07] proximity_risk=%.2f (scale=%.3f) in center corridor — intersection forced True (safety override), "
                 "CPA clamped to %.4f; TTC from geometry: %s",
                 proximity_risk, proximity_scale, cpa_norm, ttc_s
             )
@@ -267,9 +267,13 @@ class CollisionPredictor:
 
         # --- Prediction confidence ---
         pred_conf = self._compute_prediction_confidence(geometry, track)
+        conf_source = "geometry"
         if proximity_risk > 0.25:
-            # Boost confidence for direct proximity hazards
-            pred_conf = max(pred_conf, float(np.clip(proximity_risk * 0.95, 0.4, 1.0)))
+            # Boost confidence for direct proximity hazards; mark source explicitly
+            boosted = float(np.clip(proximity_risk * 0.95, 0.4, 1.0))
+            if boosted > pred_conf:
+                pred_conf = boosted
+                conf_source = "proximity_heuristic"
 
         prediction = Prediction(
             track_id=track.track_id,
@@ -282,6 +286,7 @@ class CollisionPredictor:
             bearing=geometry.bearing,
             proximity_risk=proximity_risk,
             expansion_rate=raw_expansion,
+            confidence_source=conf_source,
         )
 
         logger.debug(

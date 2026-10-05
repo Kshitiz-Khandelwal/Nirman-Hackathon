@@ -9,5 +9,7 @@
   "expected_objects": [],
   "license": "CC0",
   "source_url": "https://upload.wikimedia.org/wikipedia/commons/7/79/Table_Rock%2C_NE_Pennsylvania_x_Nebraska_NW_corner_1.JPG?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
-  "image_file": "table_corner_024.jpg"
+  "image_file": "table_corner_024.jpg",
+  "label_source": "yolov8x_prefill",
+  "verified": false
 }

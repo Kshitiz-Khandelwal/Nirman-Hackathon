@@ -9,5 +9,7 @@
   "expected_objects": [],
   "license": "CC0",
   "source_url": "https://upload.wikimedia.org/wikipedia/commons/4/45/Stairs_down_to_Goodge_Street_Station_2021.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
-  "image_file": "stairs_down_022.jpg"
+  "image_file": "stairs_down_022.jpg",
+  "label_source": "yolov8x_prefill",
+  "verified": false
 }

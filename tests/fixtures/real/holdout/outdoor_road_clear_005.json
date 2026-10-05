@@ -11,5 +11,7 @@
     "motorcycle"
   ],
   "license": "CC BY / Public Domain",
-  "image_file": "outdoor_road_clear_005.jpg"
+  "image_file": "outdoor_road_clear_005.jpg",
+  "label_source": "yolov8x_prefill",
+  "verified": false
 }

@@ -18,5 +18,7 @@
   ],
   "license": "CC BY / Public Domain",
   "source_url": "https://upload.wikimedia.org/wikipedia/commons/3/35/Doctor_working_at_a_desk_in_a_medical_office_setting_with_a_computer_and_stationery.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
-  "image_file": "desk_closeup_013.jpg"
+  "image_file": "desk_closeup_013.jpg",
+  "label_source": "yolov8x_prefill",
+  "verified": false
 }

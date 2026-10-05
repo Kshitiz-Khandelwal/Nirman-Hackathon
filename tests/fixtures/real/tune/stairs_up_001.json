@@ -9,5 +9,7 @@
   "expected_objects": [],
   "license": "CC BY-SA 4.0",
   "source_url": "https://upload.wikimedia.org/wikipedia/commons/f/ff/D%C3%BClmen%2C_St.-Viktor-Kirche%2C_Aufgang_zum_Kirchturm_--_2021_--_6700-2_%28bw%2C_crop%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
-  "image_file": "stairs_up_001.jpg"
+  "image_file": "stairs_up_001.jpg",
+  "label_source": "yolov8x_prefill",
+  "verified": false
 }

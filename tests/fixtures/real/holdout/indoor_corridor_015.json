@@ -11,5 +11,7 @@
   ],
   "license": "CC BY / Public Domain",
   "source_url": "https://upload.wikimedia.org/wikipedia/commons/4/46/Bossier_High_School_hallway_Colquittt_Interior_NRHP_LASHPO_13.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
-  "image_file": "indoor_corridor_015.jpg"
+  "image_file": "indoor_corridor_015.jpg",
+  "label_source": "yolov8x_prefill",
+  "verified": false
 }

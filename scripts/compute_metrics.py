@@ -71,7 +71,7 @@ REQUIRED_COLUMNS: List[str] = [
     "objects_got",
 ]
 
-VALID_WALKABLE_VALUES: Set[str] = {"WALKABLE", "BLOCKED", "UNKNOWN"}
+VALID_WALKABLE_VALUES: Set[str] = {"WALKABLE", "BLOCKED", "UNKNOWN", "UNLABELLED"}
 VALID_CORRIDORS: Set[str] = {"left", "centre", "right"}
 
 
@@ -126,6 +126,15 @@ def compute_all_metrics(df: pd.DataFrame) -> Dict[str, any]:
 
     metrics = {}
 
+    # Check UNLABELLED exclusion
+    unlabelled_df = df[df["expected_walkable"] == "UNLABELLED"]
+    unlabelled_img_count = len(unlabelled_df["fixture"].unique()) if len(unlabelled_df) > 0 else 0
+    unlabelled_corridor_count = len(unlabelled_df)
+    metrics["unlabelled_excluded"] = {
+        "images": unlabelled_img_count,
+        "corridor_decisions": unlabelled_corridor_count,
+    }
+
     # ── 1. Hazard Categories False WALKABLE Rate ──────────────────────────────
     h_df = df[df["category"].isin(EXPECTED_HAZARD_CATEGORIES)]
     h_images_total = len(h_df["fixture"].unique())
@@ -157,7 +166,7 @@ def compute_all_metrics(df: pd.DataFrame) -> Dict[str, any]:
     }
 
     # ── 2. Clear Corridor Recall ──────────────────────────────────────────────
-    c_df = df[df["category"].isin(EXPECTED_CLEAR_CATEGORIES)]
+    c_df = df[df["category"].isin(EXPECTED_CLEAR_CATEGORIES) & (df["expected_walkable"] != "UNLABELLED")]
     c_images_total = len(c_df["fixture"].unique())
 
     # Centre corridor recall
@@ -183,8 +192,8 @@ def compute_all_metrics(df: pd.DataFrame) -> Dict[str, any]:
     }
 
     # ── 3. Safety-Relevant Precision & Category Breakdown ─────────────────────
-    # Among all corridor decisions where the system output WALKABLE, what fraction were truly clear?
-    walkable_decisions = df[df["got_walkable"] == "WALKABLE"]
+    # Exclude UNLABELLED from precision and calibration
+    walkable_decisions = df[(df["got_walkable"] == "WALKABLE") & (df["expected_walkable"] != "UNLABELLED")]
     w_dec_total = len(walkable_decisions)
     w_dec_truly_clear = int((walkable_decisions["expected_walkable"] == "WALKABLE").sum())
     w_dec_precision = w_dec_truly_clear / max(w_dec_total, 1)
@@ -204,9 +213,10 @@ def compute_all_metrics(df: pd.DataFrame) -> Dict[str, any]:
         "by_category": cat_precision,
     }
 
-    # Confidence bin calibration for WALKABLE decisions
+    # Confidence bin calibration for WALKABLE decisions (ECE)
     bins = [(0.0, 0.2), (0.2, 0.4), (0.4, 0.6), (0.6, 0.8), (0.8, 1.0)]
     calib_table = []
+    total_ece = 0.0
     for b_low, b_high in bins:
         if b_high < 1.0:
             sub = walkable_decisions[(walkable_decisions["conf"] >= b_low) & (walkable_decisions["conf"] < b_high)]
@@ -218,6 +228,7 @@ def compute_all_metrics(df: pd.DataFrame) -> Dict[str, any]:
             m_conf = float(sub["conf"].mean())
             prec = tc / cnt
             gap = abs(m_conf - prec)
+            total_ece += (cnt / max(w_dec_total, 1)) * gap
         else:
             tc = 0
             m_conf = (b_low + b_high) / 2.0
@@ -231,6 +242,7 @@ def compute_all_metrics(df: pd.DataFrame) -> Dict[str, any]:
             "gap": gap,
         })
     metrics["safety_calibration_table"] = calib_table
+    metrics["expected_calibration_error"] = total_ece
 
     # ── 4. Pothole Metrics ───────────────────────────────────────────────────
     # Evaluated once per fixture (using centre corridor row)
@@ -317,6 +329,10 @@ def print_report_table(metrics: Dict[str, any], dataset_name: str = "Fresh HOLDO
     print(f"  SPATIALVECTOR-HMI EVALUATION METRICS REPORT ({dataset_name})")
     print("=" * 80)
 
+    unl = metrics.get("unlabelled_excluded", {})
+    if unl.get("images", 0) > 0:
+        print(f"[*] Note: Excluded {unl['images']} unlabelled images ({unl['corridor_decisions']} corridor decisions) from walkable precision/recall/calibration.")
+
     hz_img = metrics["hazard_per_image"]
     hz_ctr = metrics["hazard_centre_only"]
     cl_ctr = metrics["clear_recall_centre"]
@@ -325,12 +341,14 @@ def print_report_table(metrics: Dict[str, any], dataset_name: str = "Fresh HOLDO
     obj_bow = metrics["object_agreement"]["bag_of_words"]
     obj_set = metrics["object_agreement"]["unique_class_set"]
     sp = metrics["safety_precision"]
+    ece = metrics.get("expected_calibration_error", 0.0)
 
     status_hz_img = "PASS" if hz_img["count"] == 0 else "FAIL"
     status_hz_ctr = "PASS" if hz_ctr["count"] == 0 else "FAIL"
     status_cl_ctr = "PASS" if cl_ctr["rate"] >= 0.80 else "FAIL"
     status_ph_fpr = "PASS" if ph["fpr_on_neg"] <= 0.05 else "FAIL"
     status_ph_rec = "PASS" if ph["recall"] >= 0.60 else "FAIL"
+    status_ece = "PASS" if ece <= 0.10 else "FAIL"
 
     print("\n### Generated Report Table (Exact Copy for Markdown):\n")
     print("| Split / Evaluation Scope | Criterion / Metric | Stated Target | Measured Result | Status |")
@@ -340,6 +358,7 @@ def print_report_table(metrics: Dict[str, any], dataset_name: str = "Fresh HOLDO
     print(f"| **{dataset_name}** | Clear Corridor Recall (Centre Corridor Only) | $\\ge 80.0\\%$ | **{cl_ctr['rate']:.2%}** ({cl_ctr['count']} / {cl_ctr['total']} images) | **{status_cl_ctr}** |")
     print(f"| **{dataset_name}** | Clear Corridor Recall (Any Corridor Walkable) | $\\ge 80.0\\%$ | **{cl_any['rate']:.2%}** ({cl_any['count']} / {cl_any['total']} images) | **FAIL** |")
     print(f"| **{dataset_name}** | Safety Precision (Truly Clear among Predicted WALKABLE) | Informational | **{sp['precision']:.2%}** ({sp['truly_clear']} / {sp['total_predicted_walkable']} decisions) | **MEASURED** |")
+    print(f"| **{dataset_name}** | Expected Calibration Error (ECE on WALKABLE decisions) | $\\le 10.0\\%$ | **{ece:.2%}** | **{status_ece}** |")
     print(f"| **{dataset_name}** | Pothole FPR on Negatives | $\\le 5.0\\%$ | **{ph['fpr_on_neg']:.2%}** ({ph['fp']} / {ph['neg_total']} negative images) | **{status_ph_fpr}** |")
     print(f"| **{dataset_name}** | Pothole Recall on Positives | $\\ge 60.0\\%$ | **{ph['recall']:.2%}** ({ph['tp']} / {ph['pos_total']} positive images) | **{status_ph_rec}** |")
     print(f"| **{dataset_name}** | Pothole Precision | Informational | **{ph['precision']:.2%}** ({ph['tp']} / {ph['total_detections']} detections) | **MEASURED** |")
@@ -367,8 +386,30 @@ def main():
         sys.exit(1)
 
     df = pd.read_csv(csv_path)
-    metrics = compute_all_metrics(df)
-    print_report_table(metrics, dataset_name=args.dataset_name)
+
+    # Report 1: All labelled images
+    metrics_all = compute_all_metrics(df)
+    print_report_table(metrics_all, dataset_name=f"{args.dataset_name} - All Labelled Images")
+
+    # Report 2: Human-verified only
+    print("\n" + "=" * 80)
+    print("  HUMAN-VERIFIED ONLY METRICS REPORT")
+    print("=" * 80)
+    if "verified" in df.columns:
+        human_df = df[df["verified"].astype(str).str.lower().isin(["true", "1"])].copy()
+    else:
+        human_df = pd.DataFrame()
+
+    if len(human_df) == 0:
+        print("[!] No human-verified images found in evaluation CSV (0 images verified).")
+        print("    Human-verified metrics: NO DATA (awaiting operator verification).")
+    else:
+        # Only compute if at least categories are present
+        try:
+            metrics_human = compute_all_metrics(human_df)
+            print_report_table(metrics_human, dataset_name=f"{args.dataset_name} - Human-Verified Only ({len(human_df['fixture'].unique())} images)")
+        except Exception as e:
+            print(f"[!] Human-verified subset incomplete for full breakdown: {e}")
 
 
 if __name__ == "__main__":

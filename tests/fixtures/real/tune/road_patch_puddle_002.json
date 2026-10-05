@@ -3,8 +3,8 @@
   "category": "road_patch_puddle",
   "split": "TUNE",
   "is_hazard_category": false,
-  "expected_walkable": false,
-  "corridor_status": "BLOCKED",
+  "expected_walkable": "UNLABELLED",
+  "corridor_status": "UNLABELLED",
   "expected_hazards": [],
   "expected_objects": [
     "car",
@@ -12,5 +12,7 @@
   ],
   "license": "CC BY-SA 2.0",
   "source_url": "https://upload.wikimedia.org/wikipedia/commons/f/f8/A3211%2C_Puddle_Dock_-_geograph.org.uk_-_4459944.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
-  "image_file": "road_patch_puddle_002.jpg"
+  "image_file": "road_patch_puddle_002.jpg",
+  "label_source": "yolov8x_prefill",
+  "verified": false
 }

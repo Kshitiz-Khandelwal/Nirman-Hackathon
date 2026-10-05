@@ -9,5 +9,7 @@
   "expected_objects": [],
   "license": "CC BY-SA 4.0",
   "source_url": "https://upload.wikimedia.org/wikipedia/commons/f/fe/Lower_Gate_Stairs_Bab_Jemaa_Taza_Nov25_A7CR_09666.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
-  "image_file": "stairs_down_019.jpg"
+  "image_file": "stairs_down_019.jpg",
+  "label_source": "yolov8x_prefill",
+  "verified": false
 }

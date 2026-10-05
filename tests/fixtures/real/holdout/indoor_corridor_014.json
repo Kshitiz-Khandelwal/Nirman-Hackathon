@@ -11,5 +11,7 @@
   ],
   "license": "CC BY / Public Domain",
   "source_url": "https://upload.wikimedia.org/wikipedia/commons/3/30/Arboretum_Hallway_in_Winchester_Mystery_House.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
-  "image_file": "indoor_corridor_014.jpg"
+  "image_file": "indoor_corridor_014.jpg",
+  "label_source": "yolov8x_prefill",
+  "verified": false
 }

@@ -12,5 +12,7 @@
   ],
   "license": "CC0",
   "source_url": "https://upload.wikimedia.org/wikipedia/commons/3/3f/Corridor_in_Arundel_Castle_2026-05-14.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
-  "image_file": "indoor_corridor_010.jpg"
+  "image_file": "indoor_corridor_010.jpg",
+  "label_source": "yolov8x_prefill",
+  "verified": false
 }

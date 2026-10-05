@@ -12,5 +12,7 @@
   ],
   "license": "CC BY / Public Domain",
   "source_url": "https://upload.wikimedia.org/wikipedia/commons/7/75/RGB_desktop_computer_setup_with_keyboard_and_monitor.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
-  "image_file": "desk_closeup_002.jpg"
+  "image_file": "desk_closeup_002.jpg",
+  "label_source": "yolov8x_prefill",
+  "verified": false
 }

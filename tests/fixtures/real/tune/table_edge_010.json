@@ -11,5 +11,7 @@
   ],
   "license": "CC BY-SA 2.0",
   "source_url": "https://upload.wikimedia.org/wikipedia/commons/6/69/Paragliders_over_Rushup_Edge_-_geograph.org.uk_-_2668749.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
-  "image_file": "table_edge_010.jpg"
+  "image_file": "table_edge_010.jpg",
+  "label_source": "yolov8x_prefill",
+  "verified": false
 }

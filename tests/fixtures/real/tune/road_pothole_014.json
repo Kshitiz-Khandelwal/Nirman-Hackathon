@@ -3,8 +3,8 @@
   "category": "road_pothole",
   "split": "TUNE",
   "is_hazard_category": false,
-  "expected_walkable": false,
-  "corridor_status": "BLOCKED",
+  "expected_walkable": "UNLABELLED",
+  "corridor_status": "UNLABELLED",
   "expected_hazards": [
     "pothole"
   ],
@@ -15,5 +15,7 @@
   ],
   "license": "CC BY 4.0",
   "source_url": "https://huggingface.co/datasets/Ryukijano/Pothole-detection-Yolov8/blob/main/test/images/0201_jpg.rf.5d124f864320873ed87bb61d2657eb0d.jpg",
-  "image_file": "road_pothole_014.jpg"
+  "image_file": "road_pothole_014.jpg",
+  "label_source": "yolov8x_prefill",
+  "verified": false
 }

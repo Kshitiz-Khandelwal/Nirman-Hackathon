@@ -9,5 +9,7 @@
   "expected_objects": [],
   "license": "CC BY 4.0",
   "source_url": "https://upload.wikimedia.org/wikipedia/commons/e/e8/Staircase_of_Liesikuja_parking_hall_in_Myyrm%C3%A4ki%2C_Vantaa%2C_Finland%2C_2022_May.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
-  "image_file": "stairs_up_024.jpg"
+  "image_file": "stairs_up_024.jpg",
+  "label_source": "yolov8x_prefill",
+  "verified": false
 }

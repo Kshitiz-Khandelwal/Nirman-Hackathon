@@ -9,5 +9,7 @@
   "expected_objects": [],
   "license": "CC BY / Public Domain",
   "source_url": "https://upload.wikimedia.org/wikipedia/commons/d/de/Black_porphyritic_dacite_%28upper_Holocene%2C_14_May_1915%3B_Devastated_Area%2C_Lassen_Volcano_National_Park%2C_California%2C_USA%29_23.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
-  "image_file": "covered_lens_006.jpg"
+  "image_file": "covered_lens_006.jpg",
+  "label_source": "yolov8x_prefill",
+  "verified": false
 }

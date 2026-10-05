@@ -9,5 +9,7 @@
   "expected_objects": [],
   "license": "CC BY-SA 4.0",
   "source_url": "https://upload.wikimedia.org/wikipedia/commons/2/27/Corridor_leading_to_indoor_pool_of_spa_at_Amantaka_luxury_Resort_%26_Hotel_in_Luang_Prabang_Laos_front_view.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
-  "image_file": "indoor_corridor_013.jpg"
+  "image_file": "indoor_corridor_013.jpg",
+  "label_source": "yolov8x_prefill",
+  "verified": false
 }

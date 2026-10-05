@@ -9,5 +9,7 @@
   "expected_objects": [],
   "license": "CC BY-SA 4.0",
   "source_url": "https://upload.wikimedia.org/wikipedia/commons/9/9b/Staircase_of_the_National_Museum_of_Slovenia.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
-  "image_file": "stairs_up_022.jpg"
+  "image_file": "stairs_up_022.jpg",
+  "label_source": "yolov8x_prefill",
+  "verified": false
 }

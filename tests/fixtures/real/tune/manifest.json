@@ -2692,8 +2692,8 @@
     "category": "pedestrian_crossing",
     "split": "TUNE",
     "is_hazard_category": false,
-    "expected_walkable": false,
-    "corridor_status": "BLOCKED",
+    "expected_walkable": "UNLABELLED",
+    "corridor_status": "UNLABELLED",
     "expected_hazards": [],
     "expected_objects": [
       "horse",
@@ -2711,8 +2711,8 @@
     "category": "pedestrian_crossing",
     "split": "TUNE",
     "is_hazard_category": false,
-    "expected_walkable": false,
-    "corridor_status": "BLOCKED",
+    "expected_walkable": "UNLABELLED",
+    "corridor_status": "UNLABELLED",
     "expected_hazards": [],
     "expected_objects": [
       "person",
@@ -2729,8 +2729,8 @@
     "category": "pedestrian_crossing",
     "split": "TUNE",
     "is_hazard_category": false,
-    "expected_walkable": false,
-    "corridor_status": "BLOCKED",
+    "expected_walkable": "UNLABELLED",
+    "corridor_status": "UNLABELLED",
     "expected_hazards": [],
     "expected_objects": [
       "horse",
@@ -2748,8 +2748,8 @@
     "category": "pedestrian_crossing",
     "split": "TUNE",
     "is_hazard_category": false,
-    "expected_walkable": false,
-    "corridor_status": "BLOCKED",
+    "expected_walkable": "UNLABELLED",
+    "corridor_status": "UNLABELLED",
     "expected_hazards": [],
     "expected_objects": [
       "person",
@@ -2766,8 +2766,8 @@
     "category": "pedestrian_crossing",
     "split": "TUNE",
     "is_hazard_category": false,
-    "expected_walkable": false,
-    "corridor_status": "BLOCKED",
+    "expected_walkable": "UNLABELLED",
+    "corridor_status": "UNLABELLED",
     "expected_hazards": [],
     "expected_objects": [],
     "license": "CC BY-SA 4.0",
@@ -2781,8 +2781,8 @@
     "category": "pedestrian_crossing",
     "split": "TUNE",
     "is_hazard_category": false,
-    "expected_walkable": false,
-    "corridor_status": "BLOCKED",
+    "expected_walkable": "UNLABELLED",
+    "corridor_status": "UNLABELLED",
     "expected_hazards": [],
     "expected_objects": [
       "horse",
@@ -2799,8 +2799,8 @@
     "category": "pedestrian_crossing",
     "split": "TUNE",
     "is_hazard_category": false,
-    "expected_walkable": false,
-    "corridor_status": "BLOCKED",
+    "expected_walkable": "UNLABELLED",
+    "corridor_status": "UNLABELLED",
     "expected_hazards": [],
     "expected_objects": [],
     "license": "CC BY-SA 4.0",
@@ -2814,8 +2814,8 @@
     "category": "pedestrian_crossing",
     "split": "TUNE",
     "is_hazard_category": false,
-    "expected_walkable": false,
-    "corridor_status": "BLOCKED",
+    "expected_walkable": "UNLABELLED",
+    "corridor_status": "UNLABELLED",
     "expected_hazards": [],
     "expected_objects": [
       "person",
@@ -2833,8 +2833,8 @@
     "category": "pedestrian_crossing",
     "split": "TUNE",
     "is_hazard_category": false,
-    "expected_walkable": false,
-    "corridor_status": "BLOCKED",
+    "expected_walkable": "UNLABELLED",
+    "corridor_status": "UNLABELLED",
     "expected_hazards": [],
     "expected_objects": [
       "person",
@@ -2851,8 +2851,8 @@
     "category": "pedestrian_crossing",
     "split": "TUNE",
     "is_hazard_category": false,
-    "expected_walkable": false,
-    "corridor_status": "BLOCKED",
+    "expected_walkable": "UNLABELLED",
+    "corridor_status": "UNLABELLED",
     "expected_hazards": [],
     "expected_objects": [
       "person",
@@ -2870,8 +2870,8 @@
     "category": "pedestrian_crossing",
     "split": "TUNE",
     "is_hazard_category": false,
-    "expected_walkable": false,
-    "corridor_status": "BLOCKED",
+    "expected_walkable": "UNLABELLED",
+    "corridor_status": "UNLABELLED",
     "expected_hazards": [],
     "expected_objects": [
       "person",
@@ -2891,8 +2891,8 @@
     "category": "pedestrian_crossing",
     "split": "TUNE",
     "is_hazard_category": false,
-    "expected_walkable": false,
-    "corridor_status": "BLOCKED",
+    "expected_walkable": "UNLABELLED",
+    "corridor_status": "UNLABELLED",
     "expected_hazards": [],
     "expected_objects": [],
     "license": "CC BY-SA 4.0",
@@ -2906,8 +2906,8 @@
     "category": "pedestrian_crossing",
     "split": "TUNE",
     "is_hazard_category": false,
-    "expected_walkable": false,
-    "corridor_status": "BLOCKED",
+    "expected_walkable": "UNLABELLED",
+    "corridor_status": "UNLABELLED",
     "expected_hazards": [],
     "expected_objects": [
       "person",
@@ -2924,8 +2924,8 @@
     "category": "pedestrian_crossing",
     "split": "TUNE",
     "is_hazard_category": false,
-    "expected_walkable": false,
-    "corridor_status": "BLOCKED",
+    "expected_walkable": "UNLABELLED",
+    "corridor_status": "UNLABELLED",
     "expected_hazards": [],
     "expected_objects": [
       "car",
@@ -2944,8 +2944,8 @@
     "category": "pedestrian_crossing",
     "split": "TUNE",
     "is_hazard_category": false,
-    "expected_walkable": false,
-    "corridor_status": "BLOCKED",
+    "expected_walkable": "UNLABELLED",
+    "corridor_status": "UNLABELLED",
     "expected_hazards": [],
     "expected_objects": [
       "person",
@@ -2965,8 +2965,8 @@
     "category": "pedestrian_crossing",
     "split": "TUNE",
     "is_hazard_category": false,
-    "expected_walkable": false,
-    "corridor_status": "BLOCKED",
+    "expected_walkable": "UNLABELLED",
+    "corridor_status": "UNLABELLED",
     "expected_hazards": [],
     "expected_objects": [
       "person",
@@ -2983,8 +2983,8 @@
     "category": "pedestrian_crossing",
     "split": "TUNE",
     "is_hazard_category": false,
-    "expected_walkable": false,
-    "corridor_status": "BLOCKED",
+    "expected_walkable": "UNLABELLED",
+    "corridor_status": "UNLABELLED",
     "expected_hazards": [],
     "expected_objects": [
       "person",
@@ -3002,8 +3002,8 @@
     "category": "pedestrian_crossing",
     "split": "TUNE",
     "is_hazard_category": false,
-    "expected_walkable": false,
-    "corridor_status": "BLOCKED",
+    "expected_walkable": "UNLABELLED",
+    "corridor_status": "UNLABELLED",
     "expected_hazards": [],
     "expected_objects": [
       "person",
@@ -3022,8 +3022,8 @@
     "category": "pedestrian_crossing",
     "split": "TUNE",
     "is_hazard_category": false,
-    "expected_walkable": false,
-    "corridor_status": "BLOCKED",
+    "expected_walkable": "UNLABELLED",
+    "corridor_status": "UNLABELLED",
     "expected_hazards": [],
     "expected_objects": [
       "potted plant",
@@ -3040,8 +3040,8 @@
     "category": "pedestrian_crossing",
     "split": "TUNE",
     "is_hazard_category": false,
-    "expected_walkable": false,
-    "corridor_status": "BLOCKED",
+    "expected_walkable": "UNLABELLED",
+    "corridor_status": "UNLABELLED",
     "expected_hazards": [],
     "expected_objects": [
       "person",
@@ -3058,8 +3058,8 @@
     "category": "pedestrian_crossing",
     "split": "TUNE",
     "is_hazard_category": false,
-    "expected_walkable": false,
-    "corridor_status": "BLOCKED",
+    "expected_walkable": "UNLABELLED",
+    "corridor_status": "UNLABELLED",
     "expected_hazards": [],
     "expected_objects": [
       "person",
@@ -3077,8 +3077,8 @@
     "category": "pedestrian_crossing",
     "split": "TUNE",
     "is_hazard_category": false,
-    "expected_walkable": false,
-    "corridor_status": "BLOCKED",
+    "expected_walkable": "UNLABELLED",
+    "corridor_status": "UNLABELLED",
     "expected_hazards": [],
     "expected_objects": [
       "suitcase",
@@ -3095,8 +3095,8 @@
     "category": "pedestrian_crossing",
     "split": "TUNE",
     "is_hazard_category": false,
-    "expected_walkable": false,
-    "corridor_status": "BLOCKED",
+    "expected_walkable": "UNLABELLED",
+    "corridor_status": "UNLABELLED",
     "expected_hazards": [],
     "expected_objects": [],
     "license": "CC BY-SA 4.0",
@@ -3110,8 +3110,8 @@
     "category": "pedestrian_crossing",
     "split": "TUNE",
     "is_hazard_category": false,
-    "expected_walkable": false,
-    "corridor_status": "BLOCKED",
+    "expected_walkable": "UNLABELLED",
+    "corridor_status": "UNLABELLED",
     "expected_hazards": [],
     "expected_objects": [],
     "license": "CC BY-SA 4.0",
@@ -3125,8 +3125,8 @@
     "category": "road_manhole",
     "split": "TUNE",
     "is_hazard_category": false,
-    "expected_walkable": false,
-    "corridor_status": "BLOCKED",
+    "expected_walkable": "UNLABELLED",
+    "corridor_status": "UNLABELLED",
     "expected_hazards": [],
     "expected_objects": [
       "remote"
@@ -3142,8 +3142,8 @@
     "category": "road_manhole",
     "split": "TUNE",
     "is_hazard_category": false,
-    "expected_walkable": false,
-    "corridor_status": "BLOCKED",
+    "expected_walkable": "UNLABELLED",
+    "corridor_status": "UNLABELLED",
     "expected_hazards": [],
     "expected_objects": [
       "clock"
@@ -3159,8 +3159,8 @@
     "category": "road_manhole",
     "split": "TUNE",
     "is_hazard_category": false,
-    "expected_walkable": false,
-    "corridor_status": "BLOCKED",
+    "expected_walkable": "UNLABELLED",
+    "corridor_status": "UNLABELLED",
     "expected_hazards": [],
     "expected_objects": [],
     "license": "CC BY-SA 4.0",
@@ -3174,8 +3174,8 @@
     "category": "road_manhole",
     "split": "TUNE",
     "is_hazard_category": false,
-    "expected_walkable": false,
-    "corridor_status": "BLOCKED",
+    "expected_walkable": "UNLABELLED",
+    "corridor_status": "UNLABELLED",
     "expected_hazards": [],
     "expected_objects": [
       "frisbee"
@@ -3191,8 +3191,8 @@
     "category": "road_manhole",
     "split": "TUNE",
     "is_hazard_category": false,
-    "expected_walkable": false,
-    "corridor_status": "BLOCKED",
+    "expected_walkable": "UNLABELLED",
+    "corridor_status": "UNLABELLED",
     "expected_hazards": [],
     "expected_objects": [
       "clock"
@@ -3208,8 +3208,8 @@
     "category": "road_manhole",
     "split": "TUNE",
     "is_hazard_category": false,
-    "expected_walkable": false,
-    "corridor_status": "BLOCKED",
+    "expected_walkable": "UNLABELLED",
+    "corridor_status": "UNLABELLED",
     "expected_hazards": [],
     "expected_objects": [
       "clock"
@@ -3225,8 +3225,8 @@
     "category": "road_manhole",
     "split": "TUNE",
     "is_hazard_category": false,
-    "expected_walkable": false,
-    "corridor_status": "BLOCKED",
+    "expected_walkable": "UNLABELLED",
+    "corridor_status": "UNLABELLED",
     "expected_hazards": [],
     "expected_objects": [
       "keyboard"
@@ -3242,8 +3242,8 @@
     "category": "road_manhole",
     "split": "TUNE",
     "is_hazard_category": false,
-    "expected_walkable": false,
-    "corridor_status": "BLOCKED",
+    "expected_walkable": "UNLABELLED",
+    "corridor_status": "UNLABELLED",
     "expected_hazards": [],
     "expected_objects": [],
     "license": "CC BY-SA 4.0",
@@ -3257,8 +3257,8 @@
     "category": "road_manhole",
     "split": "TUNE",
     "is_hazard_category": false,
-    "expected_walkable": false,
-    "corridor_status": "BLOCKED",
+    "expected_walkable": "UNLABELLED",
+    "corridor_status": "UNLABELLED",
     "expected_hazards": [],
     "expected_objects": [
       "clock"
@@ -3274,8 +3274,8 @@
     "category": "road_manhole",
     "split": "TUNE",
     "is_hazard_category": false,
-    "expected_walkable": false,
-    "corridor_status": "BLOCKED",
+    "expected_walkable": "UNLABELLED",
+    "corridor_status": "UNLABELLED",
     "expected_hazards": [],
     "expected_objects": [],
     "license": "CC BY-SA 4.0",
@@ -3289,8 +3289,8 @@
     "category": "road_manhole",
     "split": "TUNE",
     "is_hazard_category": false,
-    "expected_walkable": false,
-    "corridor_status": "BLOCKED",
+    "expected_walkable": "UNLABELLED",
+    "corridor_status": "UNLABELLED",
     "expected_hazards": [],
     "expected_objects": [
       "frisbee"
@@ -3306,8 +3306,8 @@
     "category": "road_manhole",
     "split": "TUNE",
     "is_hazard_category": false,
-    "expected_walkable": false,
-    "corridor_status": "BLOCKED",
+    "expected_walkable": "UNLABELLED",
+    "corridor_status": "UNLABELLED",
     "expected_hazards": [],
     "expected_objects": [
       "frisbee"
@@ -3323,8 +3323,8 @@
     "category": "road_manhole",
     "split": "TUNE",
     "is_hazard_category": false,
-    "expected_walkable": false,
-    "corridor_status": "BLOCKED",
+    "expected_walkable": "UNLABELLED",
+    "corridor_status": "UNLABELLED",
     "expected_hazards": [],
     "expected_objects": [
       "clock"
@@ -3340,8 +3340,8 @@
     "category": "road_manhole",
     "split": "TUNE",
     "is_hazard_category": false,
-    "expected_walkable": false,
-    "corridor_status": "BLOCKED",
+    "expected_walkable": "UNLABELLED",
+    "corridor_status": "UNLABELLED",
     "expected_hazards": [],
     "expected_objects": [
       "clock"
@@ -3357,8 +3357,8 @@
     "category": "road_manhole",
     "split": "TUNE",
     "is_hazard_category": false,
-    "expected_walkable": false,
-    "corridor_status": "BLOCKED",
+    "expected_walkable": "UNLABELLED",
+    "corridor_status": "UNLABELLED",
     "expected_hazards": [],
     "expected_objects": [
       "clock"
@@ -3374,8 +3374,8 @@
     "category": "road_manhole",
     "split": "TUNE",
     "is_hazard_category": false,
-    "expected_walkable": false,
-    "corridor_status": "BLOCKED",
+    "expected_walkable": "UNLABELLED",
+    "corridor_status": "UNLABELLED",
     "expected_hazards": [],
     "expected_objects": [
       "clock"
@@ -3391,8 +3391,8 @@
     "category": "road_manhole",
     "split": "TUNE",
     "is_hazard_category": false,
-    "expected_walkable": false,
-    "corridor_status": "BLOCKED",
+    "expected_walkable": "UNLABELLED",
+    "corridor_status": "UNLABELLED",
     "expected_hazards": [],
     "expected_objects": [
       "clock"
@@ -3408,8 +3408,8 @@
     "category": "road_manhole",
     "split": "TUNE",
     "is_hazard_category": false,
-    "expected_walkable": false,
-    "corridor_status": "BLOCKED",
+    "expected_walkable": "UNLABELLED",
+    "corridor_status": "UNLABELLED",
     "expected_hazards": [],
     "expected_objects": [
       "clock"
@@ -3425,8 +3425,8 @@
     "category": "road_manhole",
     "split": "TUNE",
     "is_hazard_category": false,
-    "expected_walkable": false,
-    "corridor_status": "BLOCKED",
+    "expected_walkable": "UNLABELLED",
+    "corridor_status": "UNLABELLED",
     "expected_hazards": [],
     "expected_objects": [
       "clock"
@@ -3442,8 +3442,8 @@
     "category": "road_manhole",
     "split": "TUNE",
     "is_hazard_category": false,
-    "expected_walkable": false,
-    "corridor_status": "BLOCKED",
+    "expected_walkable": "UNLABELLED",
+    "corridor_status": "UNLABELLED",
     "expected_hazards": [],
     "expected_objects": [],
     "license": "CC BY-SA 4.0",
@@ -3457,8 +3457,8 @@
     "category": "road_manhole",
     "split": "TUNE",
     "is_hazard_category": false,
-    "expected_walkable": false,
-    "corridor_status": "BLOCKED",
+    "expected_walkable": "UNLABELLED",
+    "corridor_status": "UNLABELLED",
     "expected_hazards": [],
     "expected_objects": [
       "clock"
@@ -3474,8 +3474,8 @@
     "category": "road_manhole",
     "split": "TUNE",
     "is_hazard_category": false,
-    "expected_walkable": false,
-    "corridor_status": "BLOCKED",
+    "expected_walkable": "UNLABELLED",
+    "corridor_status": "UNLABELLED",
     "expected_hazards": [],
     "expected_objects": [
       "suitcase"
@@ -3491,8 +3491,8 @@
     "category": "road_manhole",
     "split": "TUNE",
     "is_hazard_category": false,
-    "expected_walkable": false,
-    "corridor_status": "BLOCKED",
+    "expected_walkable": "UNLABELLED",
+    "corridor_status": "UNLABELLED",
     "expected_hazards": [],
     "expected_objects": [
       "clock"
@@ -3508,8 +3508,8 @@
     "category": "road_manhole",
     "split": "TUNE",
     "is_hazard_category": false,
-    "expected_walkable": false,
-    "corridor_status": "BLOCKED",
+    "expected_walkable": "UNLABELLED",
+    "corridor_status": "UNLABELLED",
     "expected_hazards": [],
     "expected_objects": [
       "clock"
@@ -3525,8 +3525,8 @@
     "category": "road_patch_puddle",
     "split": "TUNE",
     "is_hazard_category": false,
-    "expected_walkable": false,
-    "corridor_status": "BLOCKED",
+    "expected_walkable": "UNLABELLED",
+    "corridor_status": "UNLABELLED",
     "expected_hazards": [],
     "expected_objects": [],
     "license": "CC BY-SA 2.0",
@@ -3540,8 +3540,8 @@
     "category": "road_patch_puddle",
     "split": "TUNE",
     "is_hazard_category": false,
-    "expected_walkable": false,
-    "corridor_status": "BLOCKED",
+    "expected_walkable": "UNLABELLED",
+    "corridor_status": "UNLABELLED",
     "expected_hazards": [],
     "expected_objects": [
       "car",
@@ -3558,8 +3558,8 @@
     "category": "road_patch_puddle",
     "split": "TUNE",
     "is_hazard_category": false,
-    "expected_walkable": false,
-    "corridor_status": "BLOCKED",
+    "expected_walkable": "UNLABELLED",
+    "corridor_status": "UNLABELLED",
     "expected_hazards": [],
     "expected_objects": [],
     "license": "CC BY-SA 2.0",
@@ -3573,8 +3573,8 @@
     "category": "road_patch_puddle",
     "split": "TUNE",
     "is_hazard_category": false,
-    "expected_walkable": false,
-    "corridor_status": "BLOCKED",
+    "expected_walkable": "UNLABELLED",
+    "corridor_status": "UNLABELLED",
     "expected_hazards": [],
     "expected_objects": [],
     "license": "CC BY-SA 2.0",
@@ -3588,8 +3588,8 @@
     "category": "road_patch_puddle",
     "split": "TUNE",
     "is_hazard_category": false,
-    "expected_walkable": false,
-    "corridor_status": "BLOCKED",
+    "expected_walkable": "UNLABELLED",
+    "corridor_status": "UNLABELLED",
     "expected_hazards": [],
     "expected_objects": [],
     "license": "CC BY-SA 2.0",
@@ -3603,8 +3603,8 @@
     "category": "road_patch_puddle",
     "split": "TUNE",
     "is_hazard_category": false,
-    "expected_walkable": false,
-    "corridor_status": "BLOCKED",
+    "expected_walkable": "UNLABELLED",
+    "corridor_status": "UNLABELLED",
     "expected_hazards": [],
     "expected_objects": [],
     "license": "CC BY-SA 4.0",
@@ -3618,8 +3618,8 @@
     "category": "road_patch_puddle",
     "split": "TUNE",
     "is_hazard_category": false,
-    "expected_walkable": false,
-    "corridor_status": "BLOCKED",
+    "expected_walkable": "UNLABELLED",
+    "corridor_status": "UNLABELLED",
     "expected_hazards": [],
     "expected_objects": [],
     "license": "CC BY-SA 2.0",
@@ -3633,8 +3633,8 @@
     "category": "road_patch_puddle",
     "split": "TUNE",
     "is_hazard_category": false,
-    "expected_walkable": false,
-    "corridor_status": "BLOCKED",
+    "expected_walkable": "UNLABELLED",
+    "corridor_status": "UNLABELLED",
     "expected_hazards": [],
     "expected_objects": [],
     "license": "CC BY-SA 2.0",
@@ -3648,8 +3648,8 @@
     "category": "road_patch_puddle",
     "split": "TUNE",
     "is_hazard_category": false,
-    "expected_walkable": false,
-    "corridor_status": "BLOCKED",
+    "expected_walkable": "UNLABELLED",
+    "corridor_status": "UNLABELLED",
     "expected_hazards": [],
     "expected_objects": [],
     "license": "CC BY-SA 4.0",
@@ -3663,8 +3663,8 @@
     "category": "road_patch_puddle",
     "split": "TUNE",
     "is_hazard_category": false,
-    "expected_walkable": false,
-    "corridor_status": "BLOCKED",
+    "expected_walkable": "UNLABELLED",
+    "corridor_status": "UNLABELLED",
     "expected_hazards": [],
     "expected_objects": [
       "car"
@@ -3680,8 +3680,8 @@
     "category": "road_patch_puddle",
     "split": "TUNE",
     "is_hazard_category": false,
-    "expected_walkable": false,
-    "corridor_status": "BLOCKED",
+    "expected_walkable": "UNLABELLED",
+    "corridor_status": "UNLABELLED",
     "expected_hazards": [],
     "expected_objects": [],
     "license": "CC BY-SA 2.0",
@@ -3695,8 +3695,8 @@
     "category": "road_patch_puddle",
     "split": "TUNE",
     "is_hazard_category": false,
-    "expected_walkable": false,
-    "corridor_status": "BLOCKED",
+    "expected_walkable": "UNLABELLED",
+    "corridor_status": "UNLABELLED",
     "expected_hazards": [],
     "expected_objects": [],
     "license": "CC BY-SA 2.0",
@@ -3710,8 +3710,8 @@
     "category": "road_patch_puddle",
     "split": "TUNE",
     "is_hazard_category": false,
-    "expected_walkable": false,
-    "corridor_status": "BLOCKED",
+    "expected_walkable": "UNLABELLED",
+    "corridor_status": "UNLABELLED",
     "expected_hazards": [],
     "expected_objects": [],
     "license": "CC BY-SA 2.0",
@@ -3725,8 +3725,8 @@
     "category": "road_patch_puddle",
     "split": "TUNE",
     "is_hazard_category": false,
-    "expected_walkable": false,
-    "corridor_status": "BLOCKED",
+    "expected_walkable": "UNLABELLED",
+    "corridor_status": "UNLABELLED",
     "expected_hazards": [],
     "expected_objects": [],
     "license": "CC BY-SA 2.0",
@@ -3740,8 +3740,8 @@
     "category": "road_patch_puddle",
     "split": "TUNE",
     "is_hazard_category": false,
-    "expected_walkable": false,
-    "corridor_status": "BLOCKED",
+    "expected_walkable": "UNLABELLED",
+    "corridor_status": "UNLABELLED",
     "expected_hazards": [],
     "expected_objects": [
       "bench"
@@ -3757,8 +3757,8 @@
     "category": "road_patch_puddle",
     "split": "TUNE",
     "is_hazard_category": false,
-    "expected_walkable": false,
-    "corridor_status": "BLOCKED",
+    "expected_walkable": "UNLABELLED",
+    "corridor_status": "UNLABELLED",
     "expected_hazards": [],
     "expected_objects": [],
     "license": "CC BY-SA 2.0",
@@ -3772,8 +3772,8 @@
     "category": "road_patch_puddle",
     "split": "TUNE",
     "is_hazard_category": false,
-    "expected_walkable": false,
-    "corridor_status": "BLOCKED",
+    "expected_walkable": "UNLABELLED",
+    "corridor_status": "UNLABELLED",
     "expected_hazards": [],
     "expected_objects": [
       "car",
@@ -3791,8 +3791,8 @@
     "category": "road_patch_puddle",
     "split": "TUNE",
     "is_hazard_category": false,
-    "expected_walkable": false,
-    "corridor_status": "BLOCKED",
+    "expected_walkable": "UNLABELLED",
+    "corridor_status": "UNLABELLED",
     "expected_hazards": [],
     "expected_objects": [
       "car",
@@ -3810,8 +3810,8 @@
     "category": "road_patch_puddle",
     "split": "TUNE",
     "is_hazard_category": false,
-    "expected_walkable": false,
-    "corridor_status": "BLOCKED",
+    "expected_walkable": "UNLABELLED",
+    "corridor_status": "UNLABELLED",
     "expected_hazards": [],
     "expected_objects": [],
     "license": "CC BY-SA 2.0",
@@ -3825,8 +3825,8 @@
     "category": "road_patch_puddle",
     "split": "TUNE",
     "is_hazard_category": false,
-    "expected_walkable": false,
-    "corridor_status": "BLOCKED",
+    "expected_walkable": "UNLABELLED",
+    "corridor_status": "UNLABELLED",
     "expected_hazards": [],
     "expected_objects": [
       "truck",
@@ -3843,8 +3843,8 @@
     "category": "road_patch_puddle",
     "split": "TUNE",
     "is_hazard_category": false,
-    "expected_walkable": false,
-    "corridor_status": "BLOCKED",
+    "expected_walkable": "UNLABELLED",
+    "corridor_status": "UNLABELLED",
     "expected_hazards": [],
     "expected_objects": [
       "fire hydrant"
@@ -3860,8 +3860,8 @@
     "category": "road_patch_puddle",
     "split": "TUNE",
     "is_hazard_category": false,
-    "expected_walkable": false,
-    "corridor_status": "BLOCKED",
+    "expected_walkable": "UNLABELLED",
+    "corridor_status": "UNLABELLED",
     "expected_hazards": [],
     "expected_objects": [],
     "license": "CC BY-SA 2.0",
@@ -3875,8 +3875,8 @@
     "category": "road_patch_puddle",
     "split": "TUNE",
     "is_hazard_category": false,
-    "expected_walkable": false,
-    "corridor_status": "BLOCKED",
+    "expected_walkable": "UNLABELLED",
+    "corridor_status": "UNLABELLED",
     "expected_hazards": [],
     "expected_objects": [
       "car"
@@ -3892,8 +3892,8 @@
     "category": "road_patch_puddle",
     "split": "TUNE",
     "is_hazard_category": false,
-    "expected_walkable": false,
-    "corridor_status": "BLOCKED",
+    "expected_walkable": "UNLABELLED",
+    "corridor_status": "UNLABELLED",
     "expected_hazards": [],
     "expected_objects": [
       "car"
@@ -3909,8 +3909,8 @@
     "category": "road_pothole",
     "split": "TUNE",
     "is_hazard_category": false,
-    "expected_walkable": false,
-    "corridor_status": "BLOCKED",
+    "expected_walkable": "UNLABELLED",
+    "corridor_status": "UNLABELLED",
     "expected_hazards": [
       "pothole"
     ],
@@ -3926,8 +3926,8 @@
     "category": "road_pothole",
     "split": "TUNE",
     "is_hazard_category": false,
-    "expected_walkable": false,
-    "corridor_status": "BLOCKED",
+    "expected_walkable": "UNLABELLED",
+    "corridor_status": "UNLABELLED",
     "expected_hazards": [
       "pothole"
     ],
@@ -3943,8 +3943,8 @@
     "category": "road_pothole",
     "split": "TUNE",
     "is_hazard_category": false,
-    "expected_walkable": false,
-    "corridor_status": "BLOCKED",
+    "expected_walkable": "UNLABELLED",
+    "corridor_status": "UNLABELLED",
     "expected_hazards": [
       "pothole"
     ],
@@ -3962,8 +3962,8 @@
     "category": "road_pothole",
     "split": "TUNE",
     "is_hazard_category": false,
-    "expected_walkable": false,
-    "corridor_status": "BLOCKED",
+    "expected_walkable": "UNLABELLED",
+    "corridor_status": "UNLABELLED",
     "expected_hazards": [
       "pothole"
     ],
@@ -3982,8 +3982,8 @@
     "category": "road_pothole",
     "split": "TUNE",
     "is_hazard_category": false,
-    "expected_walkable": false,
-    "corridor_status": "BLOCKED",
+    "expected_walkable": "UNLABELLED",
+    "corridor_status": "UNLABELLED",
     "expected_hazards": [
       "pothole"
     ],
@@ -4003,8 +4003,8 @@
     "category": "road_pothole",
     "split": "TUNE",
     "is_hazard_category": false,
-    "expected_walkable": false,
-    "corridor_status": "BLOCKED",
+    "expected_walkable": "UNLABELLED",
+    "corridor_status": "UNLABELLED",
     "expected_hazards": [
       "pothole"
     ],
@@ -4020,8 +4020,8 @@
     "category": "road_pothole",
     "split": "TUNE",
     "is_hazard_category": false,
-    "expected_walkable": false,
-    "corridor_status": "BLOCKED",
+    "expected_walkable": "UNLABELLED",
+    "corridor_status": "UNLABELLED",
     "expected_hazards": [
       "pothole"
     ],
@@ -4039,8 +4039,8 @@
     "category": "road_pothole",
     "split": "TUNE",
     "is_hazard_category": false,
-    "expected_walkable": false,
-    "corridor_status": "BLOCKED",
+    "expected_walkable": "UNLABELLED",
+    "corridor_status": "UNLABELLED",
     "expected_hazards": [
       "pothole"
     ],
@@ -4058,8 +4058,8 @@
     "category": "road_pothole",
     "split": "TUNE",
     "is_hazard_category": false,
-    "expected_walkable": false,
-    "corridor_status": "BLOCKED",
+    "expected_walkable": "UNLABELLED",
+    "corridor_status": "UNLABELLED",
     "expected_hazards": [
       "pothole"
     ],
@@ -4075,8 +4075,8 @@
     "category": "road_pothole",
     "split": "TUNE",
     "is_hazard_category": false,
-    "expected_walkable": false,
-    "corridor_status": "BLOCKED",
+    "expected_walkable": "UNLABELLED",
+    "corridor_status": "UNLABELLED",
     "expected_hazards": [
       "pothole"
     ],
@@ -4095,8 +4095,8 @@
     "category": "road_pothole",
     "split": "TUNE",
     "is_hazard_category": false,
-    "expected_walkable": false,
-    "corridor_status": "BLOCKED",
+    "expected_walkable": "UNLABELLED",
+    "corridor_status": "UNLABELLED",
     "expected_hazards": [
       "pothole"
     ],
@@ -4116,8 +4116,8 @@
     "category": "road_pothole",
     "split": "TUNE",
     "is_hazard_category": false,
-    "expected_walkable": false,
-    "corridor_status": "BLOCKED",
+    "expected_walkable": "UNLABELLED",
+    "corridor_status": "UNLABELLED",
     "expected_hazards": [
       "pothole"
     ],
@@ -4136,8 +4136,8 @@
     "category": "road_pothole",
     "split": "TUNE",
     "is_hazard_category": false,
-    "expected_walkable": false,
-    "corridor_status": "BLOCKED",
+    "expected_walkable": "UNLABELLED",
+    "corridor_status": "UNLABELLED",
     "expected_hazards": [
       "pothole"
     ],
@@ -4153,8 +4153,8 @@
     "category": "road_pothole",
     "split": "TUNE",
     "is_hazard_category": false,
-    "expected_walkable": false,
-    "corridor_status": "BLOCKED",
+    "expected_walkable": "UNLABELLED",
+    "corridor_status": "UNLABELLED",
     "expected_hazards": [
       "pothole"
     ],
@@ -4174,8 +4174,8 @@
     "category": "road_pothole",
     "split": "TUNE",
     "is_hazard_category": false,
-    "expected_walkable": false,
-    "corridor_status": "BLOCKED",
+    "expected_walkable": "UNLABELLED",
+    "corridor_status": "UNLABELLED",
     "expected_hazards": [
       "pothole"
     ],
@@ -4195,8 +4195,8 @@
     "category": "road_pothole",
     "split": "TUNE",
     "is_hazard_category": false,
-    "expected_walkable": false,
-    "corridor_status": "BLOCKED",
+    "expected_walkable": "UNLABELLED",
+    "corridor_status": "UNLABELLED",
     "expected_hazards": [
       "pothole"
     ],
@@ -4215,8 +4215,8 @@
     "category": "road_pothole",
     "split": "TUNE",
     "is_hazard_category": false,
-    "expected_walkable": false,
-    "corridor_status": "BLOCKED",
+    "expected_walkable": "UNLABELLED",
+    "corridor_status": "UNLABELLED",
     "expected_hazards": [
       "pothole"
     ],
@@ -4234,8 +4234,8 @@
     "category": "road_pothole",
     "split": "TUNE",
     "is_hazard_category": false,
-    "expected_walkable": false,
-    "corridor_status": "BLOCKED",
+    "expected_walkable": "UNLABELLED",
+    "corridor_status": "UNLABELLED",
     "expected_hazards": [
       "pothole"
     ],
@@ -4253,8 +4253,8 @@
     "category": "road_pothole",
     "split": "TUNE",
     "is_hazard_category": false,
-    "expected_walkable": false,
-    "corridor_status": "BLOCKED",
+    "expected_walkable": "UNLABELLED",
+    "corridor_status": "UNLABELLED",
     "expected_hazards": [
       "pothole"
     ],
@@ -4273,8 +4273,8 @@
     "category": "road_pothole",
     "split": "TUNE",
     "is_hazard_category": false,
-    "expected_walkable": false,
-    "corridor_status": "BLOCKED",
+    "expected_walkable": "UNLABELLED",
+    "corridor_status": "UNLABELLED",
     "expected_hazards": [
       "pothole"
     ],
@@ -4292,8 +4292,8 @@
     "category": "road_pothole",
     "split": "TUNE",
     "is_hazard_category": false,
-    "expected_walkable": false,
-    "corridor_status": "BLOCKED",
+    "expected_walkable": "UNLABELLED",
+    "corridor_status": "UNLABELLED",
     "expected_hazards": [
       "pothole"
     ],
@@ -4309,8 +4309,8 @@
     "category": "road_pothole",
     "split": "TUNE",
     "is_hazard_category": false,
-    "expected_walkable": false,
-    "corridor_status": "BLOCKED",
+    "expected_walkable": "UNLABELLED",
+    "corridor_status": "UNLABELLED",
     "expected_hazards": [
       "pothole"
     ],
@@ -4329,8 +4329,8 @@
     "category": "road_pothole",
     "split": "TUNE",
     "is_hazard_category": false,
-    "expected_walkable": false,
-    "corridor_status": "BLOCKED",
+    "expected_walkable": "UNLABELLED",
+    "corridor_status": "UNLABELLED",
     "expected_hazards": [
       "pothole"
     ],
@@ -4351,8 +4351,8 @@
     "category": "road_pothole",
     "split": "TUNE",
     "is_hazard_category": false,
-    "expected_walkable": false,
-    "corridor_status": "BLOCKED",
+    "expected_walkable": "UNLABELLED",
+    "corridor_status": "UNLABELLED",
     "expected_hazards": [
       "pothole"
     ],

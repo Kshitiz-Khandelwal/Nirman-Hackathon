@@ -54,6 +54,7 @@ class Prediction:
     bearing: float = 0.0               # horizontal bearing (radians) from M06, for corridor assignment
     proximity_risk: float = 0.0        # 0..1 direct proximity hazard (large obstacle in path)
     expansion_rate: float = 0.0        # 1/sec looming expansion rate
+    confidence_source: str = "geometry" # "geometry" | "proximity_heuristic"
 
 
 @dataclass

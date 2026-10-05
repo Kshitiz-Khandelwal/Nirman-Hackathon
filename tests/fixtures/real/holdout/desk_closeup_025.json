@@ -12,5 +12,7 @@
   ],
   "license": "CC BY / Public Domain",
   "source_url": "https://upload.wikimedia.org/wikipedia/commons/d/d0/EFTA00002438_-_Functional_office_space_with_a_desk_computer_phone_and_a_small_refrigerator_in_a_concrete-walled_room.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
-  "image_file": "desk_closeup_025.jpg"
+  "image_file": "desk_closeup_025.jpg",
+  "label_source": "yolov8x_prefill",
+  "verified": false
 }

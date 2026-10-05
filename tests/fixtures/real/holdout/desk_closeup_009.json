@@ -13,5 +13,7 @@
   ],
   "license": "CC BY / Public Domain",
   "source_url": "https://upload.wikimedia.org/wikipedia/commons/7/75/Computer_Workstation_Variables_2.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
-  "image_file": "desk_closeup_009.jpg"
+  "image_file": "desk_closeup_009.jpg",
+  "label_source": "yolov8x_prefill",
+  "verified": false
 }

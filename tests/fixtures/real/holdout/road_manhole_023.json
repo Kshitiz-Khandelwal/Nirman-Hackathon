@@ -3,13 +3,15 @@
   "category": "road_manhole",
   "split": "HOLDOUT",
   "is_hazard_category": false,
-  "expected_walkable": false,
-  "corridor_status": "BLOCKED",
+  "expected_walkable": "UNLABELLED",
+  "corridor_status": "UNLABELLED",
   "expected_hazards": [],
   "expected_objects": [
     "car",
     "traffic light"
   ],
   "license": "CC BY / Public Domain",
-  "image_file": "road_manhole_023.jpg"
+  "image_file": "road_manhole_023.jpg",
+  "label_source": "yolov8x_prefill",
+  "verified": false
 }

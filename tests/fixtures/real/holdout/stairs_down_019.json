@@ -11,5 +11,7 @@
     "person"
   ],
   "license": "CC BY / Public Domain",
-  "image_file": "stairs_down_019.jpg"
+  "image_file": "stairs_down_019.jpg",
+  "label_source": "yolov8x_prefill",
+  "verified": false
 }

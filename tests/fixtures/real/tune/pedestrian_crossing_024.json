@@ -3,11 +3,13 @@
   "category": "pedestrian_crossing",
   "split": "TUNE",
   "is_hazard_category": false,
-  "expected_walkable": false,
-  "corridor_status": "BLOCKED",
+  "expected_walkable": "UNLABELLED",
+  "corridor_status": "UNLABELLED",
   "expected_hazards": [],
   "expected_objects": [],
   "license": "CC BY-SA 4.0",
   "source_url": "https://upload.wikimedia.org/wikipedia/commons/5/51/Walking_infrastructure_-_Pedestrian_crossing_in_Tel_Aviv%2C_April_2024_02.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
-  "image_file": "pedestrian_crossing_024.jpg"
+  "image_file": "pedestrian_crossing_024.jpg",
+  "label_source": "yolov8x_prefill",
+  "verified": false
 }

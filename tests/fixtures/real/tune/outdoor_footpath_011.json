@@ -13,5 +13,7 @@
   ],
   "license": "Public domain",
   "source_url": "https://upload.wikimedia.org/wikipedia/commons/4/4a/Max_Dupain_-_Adelaide_-_Google_Art_Project.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
-  "image_file": "outdoor_footpath_011.jpg"
+  "image_file": "outdoor_footpath_011.jpg",
+  "label_source": "yolov8x_prefill",
+  "verified": false
 }

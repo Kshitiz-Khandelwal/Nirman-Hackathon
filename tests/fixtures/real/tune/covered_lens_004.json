@@ -9,5 +9,7 @@
   "expected_objects": [],
   "license": "CC0 - Camera Sensor Occlusion Noise",
   "source_url": "local://camera_occlusion",
-  "image_file": "covered_lens_004.jpg"
+  "image_file": "covered_lens_004.jpg",
+  "label_source": "yolov8x_prefill",
+  "verified": false
 }

@@ -11,5 +11,7 @@
   ],
   "license": "CC BY 4.0",
   "source_url": "https://upload.wikimedia.org/wikipedia/commons/f/f2/Muzeum_Sztuki_Nowoczesnej%2C_wn%C4%99trza%2C_hol_ze_schodami_017%2C_KsP_listopad_2024.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
-  "image_file": "stairs_up_020.jpg"
+  "image_file": "stairs_up_020.jpg",
+  "label_source": "yolov8x_prefill",
+  "verified": false
 }

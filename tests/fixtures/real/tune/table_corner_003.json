@@ -13,5 +13,7 @@
   ],
   "license": "CC BY 2.0",
   "source_url": "https://upload.wikimedia.org/wikipedia/commons/3/32/A_small%2C_inviting_corner_features_a_wooden_table_with_two_chairs_beside_a_large_window.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
-  "image_file": "table_corner_003.jpg"
+  "image_file": "table_corner_003.jpg",
+  "label_source": "yolov8x_prefill",
+  "verified": false
 }

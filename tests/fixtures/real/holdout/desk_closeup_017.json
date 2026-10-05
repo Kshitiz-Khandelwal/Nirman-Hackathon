@@ -13,5 +13,7 @@
   ],
   "license": "CC BY / Public Domain",
   "source_url": "https://upload.wikimedia.org/wikipedia/commons/7/74/EFTA00001034_-_Luxurious_wooden_desk_with_a_computer_papers_and_a_plush_armchair_in_a_richly_decorated_office_with_ornate_wood_paneling_and_elegant_curtains.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
-  "image_file": "desk_closeup_017.jpg"
+  "image_file": "desk_closeup_017.jpg",
+  "label_source": "yolov8x_prefill",
+  "verified": false
 }

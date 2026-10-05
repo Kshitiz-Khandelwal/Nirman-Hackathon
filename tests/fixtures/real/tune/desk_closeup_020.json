@@ -11,5 +11,7 @@
   ],
   "license": "CC BY-SA 3.0",
   "source_url": "https://upload.wikimedia.org/wikipedia/commons/0/0a/QWERTY_keyboard.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
-  "image_file": "desk_closeup_020.jpg"
+  "image_file": "desk_closeup_020.jpg",
+  "label_source": "yolov8x_prefill",
+  "verified": false
 }

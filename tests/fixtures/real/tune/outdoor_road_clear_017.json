@@ -13,5 +13,7 @@
   ],
   "license": "CC BY-SA 4.0",
   "source_url": "https://upload.wikimedia.org/wikipedia/commons/7/79/Heavy_machines_for_asphalt_pavement_in_Canada.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
-  "image_file": "outdoor_road_clear_017.jpg"
+  "image_file": "outdoor_road_clear_017.jpg",
+  "label_source": "yolov8x_prefill",
+  "verified": false
 }

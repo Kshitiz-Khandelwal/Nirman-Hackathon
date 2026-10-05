@@ -9,5 +9,7 @@
   "expected_objects": [],
   "license": "Public domain",
   "source_url": "https://upload.wikimedia.org/wikipedia/commons/e/e4/Corner_Table_-_DPLA_-_82d724f9a01b0e12f8d7d50ae85e3fda.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
-  "image_file": "table_corner_007.jpg"
+  "image_file": "table_corner_007.jpg",
+  "label_source": "yolov8x_prefill",
+  "verified": false
 }

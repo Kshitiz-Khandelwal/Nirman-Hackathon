@@ -9,5 +9,7 @@
   "expected_objects": [],
   "license": "CC BY 2.0",
   "source_url": "https://upload.wikimedia.org/wikipedia/commons/5/5e/A_Table_Corner_%28Un_coin_de_table%29_%28ca._1895%29_by_Paul_C%C3%A9zanne._Original_from_Original_from_Barnes_Foundation._Digitally_enhanced_by_rawpixel._%2850639818021%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
-  "image_file": "table_corner_002.jpg"
+  "image_file": "table_corner_002.jpg",
+  "label_source": "yolov8x_prefill",
+  "verified": false
 }

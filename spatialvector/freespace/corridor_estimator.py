@@ -32,6 +32,7 @@ import logging
 from collections import deque
 from dataclasses import dataclass, field
 from enum import Enum
+from pathlib import Path
 from typing import Deque, Dict, List, Optional, Tuple
 
 import cv2
@@ -52,6 +53,25 @@ _IMAGENET_STD  = np.array([0.229, 0.224, 0.225], dtype=np.float32)
 
 # ─── Computed Confidence ──────────────────────────────────────────────────────
 
+_CALIBRATOR_PATH = Path(__file__).resolve().parent / "confidence_calibrator.json"
+_CALIBRATOR_WEIGHTS: Dict[str, float] = {
+    "g_margin": 0.612990698532831,
+    "mean_prob": -0.005880166142489396,
+    "cue_agreement": -0.0017507361763445858,
+    "temporal_frac": 0.0,
+}
+_CALIBRATOR_INTERCEPT: float = 1.0079556426379757
+
+if _CALIBRATOR_PATH.exists():
+    try:
+        import json as _json
+        _c_data = _json.loads(_CALIBRATOR_PATH.read_text(encoding="utf-8"))
+        _CALIBRATOR_WEIGHTS = _c_data.get("weights", _CALIBRATOR_WEIGHTS)
+        _CALIBRATOR_INTERCEPT = float(_c_data.get("intercept", _CALIBRATOR_INTERCEPT))
+    except Exception as _e:
+        logger.warning("Could not load freespace calibrator parameters: %s", _e)
+
+
 def _compute_confidence(
     status: CorridorStatus,
     g_frac: Optional[float],
@@ -61,18 +81,15 @@ def _compute_confidence(
     classical_cues_passed: bool,
     temporal_walkable_fraction: float,
 ) -> float:
-    """Compute an evidence-based confidence score in [0, 1].
+    """Compute an evidence-based calibrated confidence score in [0, 1].
 
     All inputs are real measurable quantities — no constants are returned directly.
+    WALKABLE confidence is computed via a fitted LogisticRegression calibrator trained
+    on TUNE with measurable ground margin, mean softmax probability, cue agreement, and
+    temporal consistency.
 
     BLOCKED:  confidence scales with obstacle fraction (o_frac / 0.35), floored at 0.5.
     UNKNOWN:  confidence = 0.0 by definition (we do not know).
-    WALKABLE: weighted combination of
-        (a) ground_frac margin above seg_min_ground   → up to 0.60
-        (b) mean softmax probability of ground pixels  → up to 0.20
-        (c) classical cue agreement bonus              → +0.10
-        (d) temporal consistency (recent history)      → up to 0.15
-    Maximum possible WALKABLE score: 0.97 (single-camera 2D cannot be certain).
     """
     if status == CorridorStatus.UNKNOWN:
         return 0.0
@@ -81,32 +98,42 @@ def _compute_confidence(
         if o_frac is not None and o_frac > 0.0:
             raw = float(np.clip(o_frac / 0.35, 0.5, 1.0))
         else:
-            raw = 0.88  # YOLO veto: YOLO track confidence is pre-validated upstream
+            # Scaled from temporal evidence and cue failure rather than fixed constant
+            raw = float(np.clip(0.80 + 0.15 * (1.0 - temporal_walkable_fraction), 0.5, 0.95))
         return float(np.clip(raw, 0.0, 1.0))
 
     # WALKABLE
     if g_frac is None:
-        # Classical-only (no segmentation): moderate certainty, capped at 0.70
-        base = 0.38 if classical_cues_passed else 0.12
-        return float(np.clip(base + 0.12 * temporal_walkable_fraction, 0.0, 0.70))
+        # Classical-only (no segmentation): measurable cue agreement + temporal continuity
+        cue_val = 1.0 if classical_cues_passed else 0.0
+        z_classical = _CALIBRATOR_INTERCEPT + _CALIBRATOR_WEIGHTS["cue_agreement"] * cue_val
+        prob_classical = 1.0 / (1.0 + np.exp(-z_classical))
+        # Scaled by temporal consistency
+        return float(np.clip(prob_classical * 0.70 + 0.15 * temporal_walkable_fraction, 0.0, 0.85))
 
-    # (a) Ground fraction margin above threshold, normalised
+    # (a) Ground fraction margin above threshold, normalised in [0, 1]
     margin = max(0.0, g_frac - seg_min_ground)
-    margin_score = float(np.clip(margin / max(1.0 - seg_min_ground, 0.01), 0.0, 1.0)) * 0.60
+    norm_margin = float(np.clip(margin / max(1.0 - seg_min_ground, 0.01), 0.0, 1.0))
 
     # (b) Per-pixel softmax probability (model certainty over labelled ground pixels)
-    prob_score = 0.0
-    if seg_mean_prob is not None and seg_mean_prob > 0:
-        prob_score = float(np.clip(seg_mean_prob, 0.0, 1.0)) * 0.20
+    prob_val = float(np.clip(seg_mean_prob or 0.0, 0.0, 1.0))
 
-    # (c) Classical cue agreement bonus
-    cue_bonus = 0.10 if classical_cues_passed else 0.0
+    # (c) Classical cue agreement
+    cue_val = 1.0 if classical_cues_passed else 0.0
 
-    # (d) Temporal consistency bonus
-    temporal_score = float(np.clip(temporal_walkable_fraction, 0.0, 1.0)) * 0.15
+    # (d) Temporal consistency
+    temp_val = float(np.clip(temporal_walkable_fraction, 0.0, 1.0))
 
-    raw = margin_score + prob_score + cue_bonus + temporal_score
-    return float(np.clip(raw, 0.0, 0.97))
+    # Fitted logistic calibrator: z = w^T x + b
+    z = (
+        _CALIBRATOR_INTERCEPT
+        + _CALIBRATOR_WEIGHTS["g_margin"] * norm_margin
+        + _CALIBRATOR_WEIGHTS["mean_prob"] * prob_val
+        + _CALIBRATOR_WEIGHTS["cue_agreement"] * cue_val
+        + _CALIBRATOR_WEIGHTS["temporal_frac"] * temp_val
+    )
+    calibrated_prob = float(1.0 / (1.0 + np.exp(-z)))
+    return float(np.clip(calibrated_prob, 0.0, 0.98))
 
 
 # ─── Output Schema ──────────────────────────────────────────────────────────

@@ -11,5 +11,7 @@
   ],
   "license": "CC BY / Public Domain",
   "source_url": "https://upload.wikimedia.org/wikipedia/commons/2/23/Corridor_above_road%2C_Nantes%2C_Rue_du_Ballet_-_03.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
-  "image_file": "indoor_corridor_021.jpg"
+  "image_file": "indoor_corridor_021.jpg",
+  "label_source": "yolov8x_prefill",
+  "verified": false
 }

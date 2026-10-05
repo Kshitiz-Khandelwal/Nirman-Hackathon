@@ -1149,7 +1149,7 @@ class PredictionViewer:
                 else:
                     dist_line = f"Approx. {dist_m:.1f}m"
             else:
-                dist_line = "unknown"
+                dist_line = "dist: unknown"
             conf_line = f"{conf_pct}%" if conf_pct > 0 else ""
 
             if is_intersect:
@@ -1289,11 +1289,11 @@ class PredictionViewer:
             cv2.putText(canvas, "!", (ph_cx - 3, ph_cy + tri_size - 2),
                         cv2.FONT_HERSHEY_SIMPLEX, 0.34, (10, 10, 10), 1, cv2.LINE_AA)
 
-            # Badge: POTHOLE | dist
-            ph_dist_str = f"{ph_dist:.1f}m"
-            ph_label = "POTHOLE"
-            (plw, plh), _ = cv2.getTextSize(ph_label, cv2.FONT_HERSHEY_SIMPLEX, 0.32, 1)
-            (pdw, pdh), _ = cv2.getTextSize(ph_dist_str, cv2.FONT_HERSHEY_SIMPLEX, 0.40, 2)
+            # Badge: POSSIBLE POTHOLE (advisory) | dist
+            ph_dist_str = f"{ph_dist:.1f}m" if (getattr(self, 'config', {}).get("hazard_detector", {}).get("camera_pitch_deg") is not None) else "dist: unknown"
+            ph_label = "POSSIBLE POTHOLE (advisory)"
+            (plw, plh), _ = cv2.getTextSize(ph_label, cv2.FONT_HERSHEY_SIMPLEX, 0.30, 1)
+            (pdw, pdh), _ = cv2.getTextSize(ph_dist_str, cv2.FONT_HERSHEY_SIMPLEX, 0.38, 2)
             pb_w = max(plw, pdw) + 14
             pb_h = plh + pdh + 14
             pb_x1 = max(ox + 2, min(ppx1, ox + vw - pb_w - 2))
@@ -1303,9 +1303,9 @@ class PredictionViewer:
             self._draw_rounded_rect(canvas, (pb_x1, pb_y1), (pb_x2, pb_y2), (10, 12, 16), radius=5, thickness=-1, alpha=0.88)
             self._draw_rounded_rect(canvas, (pb_x1, pb_y1), (pb_x2, pb_y2), ph_color, radius=5, thickness=2)
             cv2.putText(canvas, ph_label, (pb_x1 + 6, pb_y1 + plh + 4),
-                        cv2.FONT_HERSHEY_SIMPLEX, 0.32, ph_color, 1, cv2.LINE_AA)
+                        cv2.FONT_HERSHEY_SIMPLEX, 0.30, ph_color, 1, cv2.LINE_AA)
             cv2.putText(canvas, ph_dist_str, (pb_x1 + 6, pb_y1 + plh + pdh + 10),
-                        cv2.FONT_HERSHEY_SIMPLEX, 0.40, ph_color, 2, cv2.LINE_AA)
+                        cv2.FONT_HERSHEY_SIMPLEX, 0.38, ph_color, 2, cv2.LINE_AA)
         # ── End Pothole AR Overlays ──────────────────────────────────────────
 
         # 5. SPATIAL VECTOR — Professional Top Header Bar
@@ -1324,7 +1324,9 @@ class PredictionViewer:
 
         min_obstacle_dist = 6.0
         if track_distances:
-            min_obstacle_dist = min(track_distances.values())
+            valid_dists = [d for d in track_distances.values() if d is not None]
+            if valid_dists:
+                min_obstacle_dist = min(valid_dists)
         # Also consider nearest pothole
         if getattr(self, '_pothole_detections', []):
             nearest_ph_dist = min(ph['dist_m'] for ph in self._pothole_detections)
@@ -1377,10 +1379,15 @@ class PredictionViewer:
         latency_ms = max(12, int((1.0 / max(0.1, fps)) * 1000))
         conf_pct_overall = int(risk.confidence * 100) if hasattr(risk, 'confidence') else 94
 
+        imu_sample = self.imu.get_latest() if hasattr(self, 'imu') and self.imu else None
+        imu_status_str = imu_sample.status if imu_sample else "DISCONNECTED"
+        imu_color = (0, 195, 255) if imu_status_str == "SIMULATED" else ((80, 230, 130) if imu_status_str == "OK" else (60, 60, 255))
+
         right_items = [
             (f"FPS:{fps:.0f}", (80, 230, 130) if fps >= 15 else ((0, 195, 255) if fps >= 8 else (60, 60, 255))),
             (f"{latency_ms}ms", (200, 215, 230)),
             (f"OBJS:{len(tracks)}", (0, 210, 255)),
+            (f"IMU:{imu_status_str}", imu_color),
             (f"CONF:{conf_pct_overall}%", (80, 230, 130) if conf_pct_overall >= 70 else (0, 195, 255)),
             ("ACTIVE" if fps > 2 else "STANDBY", (80, 230, 130) if fps > 2 else (60, 60, 255)),
         ]

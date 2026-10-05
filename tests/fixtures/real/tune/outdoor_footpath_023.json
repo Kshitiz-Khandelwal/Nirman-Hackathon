@@ -9,5 +9,7 @@
   "expected_objects": [],
   "license": "CC0",
   "source_url": "https://upload.wikimedia.org/wikipedia/commons/2/21/Pavement_ants_battling_on_sidewalk.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
-  "image_file": "outdoor_footpath_023.jpg"
+  "image_file": "outdoor_footpath_023.jpg",
+  "label_source": "yolov8x_prefill",
+  "verified": false
 }

@@ -10,5 +10,7 @@
     "potted plant"
   ],
   "license": "CC BY / Public Domain",
-  "image_file": "stairs_up_009.jpg"
+  "image_file": "stairs_up_009.jpg",
+  "label_source": "yolov8x_prefill",
+  "verified": false
 }

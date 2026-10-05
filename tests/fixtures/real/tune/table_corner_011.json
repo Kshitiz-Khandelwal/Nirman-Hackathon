@@ -14,5 +14,7 @@
   ],
   "license": "CC BY 2.0",
   "source_url": "https://upload.wikimedia.org/wikipedia/commons/f/f8/Corner_Table_Restaurant.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
-  "image_file": "table_corner_011.jpg"
+  "image_file": "table_corner_011.jpg",
+  "label_source": "yolov8x_prefill",
+  "verified": false
 }

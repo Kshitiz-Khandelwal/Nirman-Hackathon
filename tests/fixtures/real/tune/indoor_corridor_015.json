@@ -11,5 +11,7 @@
   ],
   "license": "Public domain",
   "source_url": "https://upload.wikimedia.org/wikipedia/commons/4/4e/Corridor_to_Committee_Rooms_of_the_House_of_Commons%2C_Westminster.png?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
-  "image_file": "indoor_corridor_015.jpg"
+  "image_file": "indoor_corridor_015.jpg",
+  "label_source": "yolov8x_prefill",
+  "verified": false
 }

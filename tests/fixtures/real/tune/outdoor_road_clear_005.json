@@ -9,5 +9,7 @@
   "expected_objects": [],
   "license": "CC BY-SA 4.0",
   "source_url": "https://upload.wikimedia.org/wikipedia/commons/7/74/Asphalt_roads_in_Russia._img_04.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
-  "image_file": "outdoor_road_clear_005.jpg"
+  "image_file": "outdoor_road_clear_005.jpg",
+  "label_source": "yolov8x_prefill",
+  "verified": false
 }

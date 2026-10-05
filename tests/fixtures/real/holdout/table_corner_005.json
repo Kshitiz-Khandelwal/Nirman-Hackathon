@@ -11,5 +11,7 @@
     "sports ball"
   ],
   "license": "CC BY / Public Domain",
-  "image_file": "table_corner_005.jpg"
+  "image_file": "table_corner_005.jpg",
+  "label_source": "yolov8x_prefill",
+  "verified": false
 }

@@ -12,5 +12,7 @@
   ],
   "license": "CC BY / Public Domain",
   "source_url": "https://upload.wikimedia.org/wikipedia/commons/1/1a/Hallway_at_the_radiology_department_at_the_Boerhaavekwartier_of_the_Leiden_University_Medical_Center%2C_AHM-F-59200-250.tiff?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
-  "image_file": "indoor_corridor_011.jpg"
+  "image_file": "indoor_corridor_011.jpg",
+  "label_source": "yolov8x_prefill",
+  "verified": false
 }

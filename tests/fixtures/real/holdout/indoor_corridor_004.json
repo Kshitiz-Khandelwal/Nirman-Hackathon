@@ -9,5 +9,7 @@
   "expected_objects": [],
   "license": "CC BY / Public Domain",
   "source_url": "https://upload.wikimedia.org/wikipedia/commons/d/d3/Corridor_on_the_first_floor._Corridor_on_the_second_floor._Mt._Carmel_Hospital%2C_Columbu%2C_Ohio._-_DPLA_-_f3b50f34373d6f644ea9f5bae37d5d1b_%28page_2%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
-  "image_file": "indoor_corridor_004.jpg"
+  "image_file": "indoor_corridor_004.jpg",
+  "label_source": "yolov8x_prefill",
+  "verified": false
 }

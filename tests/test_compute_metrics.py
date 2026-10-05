@@ -178,3 +178,16 @@ def test_wilson_score_bounds():
     # 4 successes out of 175: around 5.73%
     ub4 = wilson_score_upper_bound(4, 175)
     assert pytest.approx(ub4, abs=0.001) == 0.0573
+
+
+def test_unlabelled_corridor_exclusion():
+    df = _make_dummy_csv_df()
+    # Mark road_pothole_01 expected_walkable as UNLABELLED
+    df.loc[df["category"] == "road_pothole", "expected_walkable"] = "UNLABELLED"
+    validate_dataframe(df)
+    m = compute_all_metrics(df)
+    assert m["unlabelled_excluded"]["images"] == 1
+    assert m["unlabelled_excluded"]["corridor_decisions"] == 3
+    # ECE should be a valid float
+    assert 0.0 <= m["expected_calibration_error"] <= 1.0
+

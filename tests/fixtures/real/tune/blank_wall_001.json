@@ -9,5 +9,7 @@
   "expected_objects": [],
   "license": "CC BY-SA 3.0",
   "source_url": "https://upload.wikimedia.org/wikipedia/commons/1/12/Albarrac%C3%ADn%2C_Teruel%2C_Espa%C3%B1a%2C_2014-01-10%2C_DD_051.JPG?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
-  "image_file": "blank_wall_001.jpg"
+  "image_file": "blank_wall_001.jpg",
+  "label_source": "yolov8x_prefill",
+  "verified": false
 }

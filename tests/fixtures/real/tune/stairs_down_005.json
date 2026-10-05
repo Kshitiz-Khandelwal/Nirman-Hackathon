@@ -9,5 +9,7 @@
   "expected_objects": [],
   "license": "Public domain",
   "source_url": "https://upload.wikimedia.org/wikipedia/commons/f/f4/A_shot_looking_down_the_main_stairs_%2816040027841%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
-  "image_file": "stairs_down_005.jpg"
+  "image_file": "stairs_down_005.jpg",
+  "label_source": "yolov8x_prefill",
+  "verified": false
 }

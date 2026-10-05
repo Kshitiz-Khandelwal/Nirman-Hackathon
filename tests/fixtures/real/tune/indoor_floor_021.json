@@ -9,5 +9,7 @@
   "expected_objects": [],
   "license": "Public domain",
   "source_url": "https://upload.wikimedia.org/wikipedia/commons/4/49/House_of_Marcus_Lucretius_Fronto_Pompeii_2018_Room_%E2%80%98g%E2%80%99%2C_looking_west_across_flooring_in_south-west_corner_courtesy_of_Annette_Haug.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
-  "image_file": "indoor_floor_021.jpg"
+  "image_file": "indoor_floor_021.jpg",
+  "label_source": "yolov8x_prefill",
+  "verified": false
 }

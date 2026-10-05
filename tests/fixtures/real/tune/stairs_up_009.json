@@ -13,5 +13,7 @@
   ],
   "license": "CC BY-SA 3.0",
   "source_url": "https://upload.wikimedia.org/wikipedia/commons/a/a5/India_-_Painting_a_staircase_-_0063.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
-  "image_file": "stairs_up_009.jpg"
+  "image_file": "stairs_up_009.jpg",
+  "label_source": "yolov8x_prefill",
+  "verified": false
 }

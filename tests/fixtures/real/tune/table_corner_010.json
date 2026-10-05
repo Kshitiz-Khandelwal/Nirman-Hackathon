@@ -17,5 +17,7 @@
   ],
   "license": "Public domain",
   "source_url": "https://upload.wikimedia.org/wikipedia/commons/9/90/Henri_Fantin-Latour_The_Corner_of_the_Table.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
-  "image_file": "table_corner_010.jpg"
+  "image_file": "table_corner_010.jpg",
+  "label_source": "yolov8x_prefill",
+  "verified": false
 }

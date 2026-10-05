@@ -3,11 +3,13 @@
   "category": "road_patch_puddle",
   "split": "TUNE",
   "is_hazard_category": false,
-  "expected_walkable": false,
-  "corridor_status": "BLOCKED",
+  "expected_walkable": "UNLABELLED",
+  "corridor_status": "UNLABELLED",
   "expected_hazards": [],
   "expected_objects": [],
   "license": "CC BY-SA 4.0",
   "source_url": "https://upload.wikimedia.org/wikipedia/commons/9/9b/Muddy_road_in_Akamas_Peninsula%2C_Cyprus_02.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
-  "image_file": "road_patch_puddle_009.jpg"
+  "image_file": "road_patch_puddle_009.jpg",
+  "label_source": "yolov8x_prefill",
+  "verified": false
 }

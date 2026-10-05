@@ -14,5 +14,7 @@
   ],
   "license": "CC0",
   "source_url": "https://upload.wikimedia.org/wikipedia/commons/8/8e/Photographer%27s_table_edge_%28Unsplash%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
-  "image_file": "table_edge_009.jpg"
+  "image_file": "table_edge_009.jpg",
+  "label_source": "yolov8x_prefill",
+  "verified": false
 }

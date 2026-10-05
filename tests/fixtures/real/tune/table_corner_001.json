@@ -16,5 +16,7 @@
   ],
   "license": "CC BY 2.0",
   "source_url": "https://upload.wikimedia.org/wikipedia/commons/a/a1/Apple_Tysons_corner_opening_kids%27_table.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
-  "image_file": "table_corner_001.jpg"
+  "image_file": "table_corner_001.jpg",
+  "label_source": "yolov8x_prefill",
+  "verified": false
 }

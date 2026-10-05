@@ -3,13 +3,15 @@
   "category": "road_patch_puddle",
   "split": "TUNE",
   "is_hazard_category": false,
-  "expected_walkable": false,
-  "corridor_status": "BLOCKED",
+  "expected_walkable": "UNLABELLED",
+  "corridor_status": "UNLABELLED",
   "expected_hazards": [],
   "expected_objects": [
     "bench"
   ],
   "license": "CC BY-SA 2.0",
   "source_url": "https://upload.wikimedia.org/wikipedia/commons/b/b3/Puddle_by_Teignmouth_Road%2C_Torquay_-_geograph.org.uk_-_4731096.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
-  "image_file": "road_patch_puddle_015.jpg"
+  "image_file": "road_patch_puddle_015.jpg",
+  "label_source": "yolov8x_prefill",
+  "verified": false
 }

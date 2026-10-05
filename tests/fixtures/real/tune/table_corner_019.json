@@ -12,5 +12,7 @@
   ],
   "license": "CC BY-SA 3.0",
   "source_url": "https://upload.wikimedia.org/wikipedia/commons/a/a1/Hanyiguan_Corridor_Corner_and_Sauces_Table_20101114.JPG?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
-  "image_file": "table_corner_019.jpg"
+  "image_file": "table_corner_019.jpg",
+  "label_source": "yolov8x_prefill",
+  "verified": false
 }

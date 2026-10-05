@@ -9,5 +9,7 @@
   "expected_objects": [],
   "license": "CC BY-SA 2.0",
   "source_url": "https://upload.wikimedia.org/wikipedia/commons/3/32/Factory_Flooring_Outlet%2C_Ravensthorpe_Road_-_geograph.org.uk_-_5260608.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
-  "image_file": "indoor_floor_007.jpg"
+  "image_file": "indoor_floor_007.jpg",
+  "label_source": "yolov8x_prefill",
+  "verified": false
 }

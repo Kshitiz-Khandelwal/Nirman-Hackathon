@@ -9,5 +9,7 @@
   "expected_objects": [],
   "license": "CC BY 4.0",
   "source_url": "https://upload.wikimedia.org/wikipedia/commons/e/e5/Red_hedges%2C_green_floral_arch_gates_%26_concrete_pavements_in_the_Joysana_Retreat%2C_a_resort_in_Oinam_town%2C_near_Nambol_town%2C_in_Manipur_state_%28Kangleipak%29_01.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
-  "image_file": "outdoor_road_clear_021.jpg"
+  "image_file": "outdoor_road_clear_021.jpg",
+  "label_source": "yolov8x_prefill",
+  "verified": false
 }

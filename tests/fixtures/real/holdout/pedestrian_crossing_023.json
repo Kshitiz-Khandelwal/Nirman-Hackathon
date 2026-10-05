@@ -3,8 +3,8 @@
   "category": "pedestrian_crossing",
   "split": "HOLDOUT",
   "is_hazard_category": false,
-  "expected_walkable": false,
-  "corridor_status": "BLOCKED",
+  "expected_walkable": "UNLABELLED",
+  "corridor_status": "UNLABELLED",
   "expected_hazards": [],
   "expected_objects": [
     "car",
@@ -14,5 +14,7 @@
     "bus"
   ],
   "license": "CC BY / Public Domain",
-  "image_file": "pedestrian_crossing_023.jpg"
+  "image_file": "pedestrian_crossing_023.jpg",
+  "label_source": "yolov8x_prefill",
+  "verified": false
 }
