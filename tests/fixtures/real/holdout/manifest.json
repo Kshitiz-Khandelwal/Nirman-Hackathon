@@ -14,7 +14,9 @@
     ],
     "license": "CC BY / Public Domain",
     "source_url": "https://upload.wikimedia.org/wikipedia/commons/b/b2/American_homes_and_gardens_%281912%29_%2818150808672%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
-    "image_file": "blank_wall_001.jpg"
+    "image_file": "blank_wall_001.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "blank_wall_002",
@@ -30,7 +32,9 @@
     ],
     "license": "CC BY / Public Domain",
     "source_url": "https://upload.wikimedia.org/wikipedia/commons/f/fc/Farmers_and_Merchants_Union_Bank%2C_James_Street_and_Dickason_Boulevard%2C_Columbus%2C_WI_-_52807451092.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
-    "image_file": "blank_wall_002.jpg"
+    "image_file": "blank_wall_002.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "blank_wall_003",
@@ -45,7 +49,9 @@
     ],
     "license": "CC BY / Public Domain",
     "source_url": "https://upload.wikimedia.org/wikipedia/commons/0/0b/Farmers_and_Merchants_Union_Bank%2C_James_Street_and_Dickason_Boulevard%2C_Columbus%2C_WI_-_52807451227.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
-    "image_file": "blank_wall_003.jpg"
+    "image_file": "blank_wall_003.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "blank_wall_004",
@@ -58,7 +64,9 @@
     "expected_objects": [],
     "license": "CC BY / Public Domain",
     "source_url": "https://upload.wikimedia.org/wikipedia/commons/1/17/Farmers_and_Merchants_Union_Bank%2C_James_Street_and_Dickason_Boulevard%2C_Columbus%2C_WI_-_52807452127.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
-    "image_file": "blank_wall_004.jpg"
+    "image_file": "blank_wall_004.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "blank_wall_005",
@@ -71,7 +79,9 @@
     "expected_objects": [],
     "license": "CC BY / Public Domain",
     "source_url": "https://upload.wikimedia.org/wikipedia/commons/e/e3/Farmers_and_Merchants_Union_Bank%2C_James_Street_and_Dickason_Boulevard%2C_Columbus%2C_WI_-_52807452617.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
-    "image_file": "blank_wall_005.jpg"
+    "image_file": "blank_wall_005.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "blank_wall_006",
@@ -84,7 +94,9 @@
     "expected_objects": [],
     "license": "CC BY / Public Domain",
     "source_url": "https://upload.wikimedia.org/wikipedia/commons/6/60/Farmers_and_Merchants_Union_Bank%2C_James_Street_and_Dickason_Boulevard%2C_Columbus%2C_WI_-_52807465767.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
-    "image_file": "blank_wall_006.jpg"
+    "image_file": "blank_wall_006.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "blank_wall_007",
@@ -99,7 +111,9 @@
     ],
     "license": "CC BY / Public Domain",
     "source_url": "https://upload.wikimedia.org/wikipedia/commons/8/8c/Farmers_and_Merchants_Union_Bank%2C_James_Street_and_Dickason_Boulevard%2C_Columbus%2C_WI_-_52807466207.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
-    "image_file": "blank_wall_007.jpg"
+    "image_file": "blank_wall_007.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "blank_wall_008",
@@ -116,7 +130,9 @@
     ],
     "license": "CC BY / Public Domain",
     "source_url": "https://upload.wikimedia.org/wikipedia/commons/b/b2/Farmers_and_Merchants_Union_Bank%2C_James_Street_and_Dickason_Boulevard%2C_Columbus%2C_WI_-_52807466257.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
-    "image_file": "blank_wall_008.jpg"
+    "image_file": "blank_wall_008.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "blank_wall_009",
@@ -131,7 +147,9 @@
     ],
     "license": "CC BY / Public Domain",
     "source_url": "https://upload.wikimedia.org/wikipedia/commons/0/02/Farmers_and_Merchants_Union_Bank%2C_James_Street_and_Dickason_Boulevard%2C_Columbus%2C_WI_-_52807466372.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
-    "image_file": "blank_wall_009.jpg"
+    "image_file": "blank_wall_009.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "blank_wall_010",
@@ -148,7 +166,9 @@
     ],
     "license": "CC BY / Public Domain",
     "source_url": "https://upload.wikimedia.org/wikipedia/commons/f/f0/Farmers_and_Merchants_Union_Bank%2C_James_Street_and_Dickason_Boulevard%2C_Columbus%2C_WI_-_52807466612.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
-    "image_file": "blank_wall_010.jpg"
+    "image_file": "blank_wall_010.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "blank_wall_011",
@@ -161,7 +181,9 @@
     "expected_objects": [],
     "license": "CC BY / Public Domain",
     "source_url": "https://upload.wikimedia.org/wikipedia/commons/7/79/Farmers_and_Merchants_Union_Bank%2C_James_Street_and_Dickason_Boulevard%2C_Columbus%2C_WI_-_52807466967.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
-    "image_file": "blank_wall_011.jpg"
+    "image_file": "blank_wall_011.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "blank_wall_012",
@@ -174,7 +196,9 @@
     "expected_objects": [],
     "license": "CC BY / Public Domain",
     "source_url": "https://upload.wikimedia.org/wikipedia/commons/2/23/Farmers_and_Merchants_Union_Bank%2C_James_Street_and_Dickason_Boulevard%2C_Columbus%2C_WI_-_52807467052.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
-    "image_file": "blank_wall_012.jpg"
+    "image_file": "blank_wall_012.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "blank_wall_013",
@@ -189,7 +213,9 @@
     ],
     "license": "CC BY / Public Domain",
     "source_url": "https://upload.wikimedia.org/wikipedia/commons/3/3e/Farmers_and_Merchants_Union_Bank%2C_James_Street_and_Dickason_Boulevard%2C_Columbus%2C_WI_-_52807467132.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
-    "image_file": "blank_wall_013.jpg"
+    "image_file": "blank_wall_013.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "blank_wall_014",
@@ -204,7 +230,9 @@
     ],
     "license": "CC BY / Public Domain",
     "source_url": "https://upload.wikimedia.org/wikipedia/commons/d/d5/Farmers_and_Merchants_Union_Bank%2C_James_Street_and_Dickason_Boulevard%2C_Columbus%2C_WI_-_52808006501.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
-    "image_file": "blank_wall_014.jpg"
+    "image_file": "blank_wall_014.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "blank_wall_015",
@@ -217,7 +245,9 @@
     "expected_objects": [],
     "license": "CC BY / Public Domain",
     "source_url": "https://upload.wikimedia.org/wikipedia/commons/f/fa/Farmers_and_Merchants_Union_Bank%2C_James_Street_and_Dickason_Boulevard%2C_Columbus%2C_WI_-_52808006956.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
-    "image_file": "blank_wall_015.jpg"
+    "image_file": "blank_wall_015.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "blank_wall_016",
@@ -232,7 +262,9 @@
     ],
     "license": "CC BY / Public Domain",
     "source_url": "https://upload.wikimedia.org/wikipedia/commons/f/f3/Farmers_and_Merchants_Union_Bank%2C_James_Street_and_Dickason_Boulevard%2C_Columbus%2C_WI_-_52808007011.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
-    "image_file": "blank_wall_016.jpg"
+    "image_file": "blank_wall_016.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "blank_wall_017",
@@ -247,7 +279,9 @@
     ],
     "license": "CC BY / Public Domain",
     "source_url": "https://upload.wikimedia.org/wikipedia/commons/4/41/Farmers_and_Merchants_Union_Bank%2C_James_Street_and_Dickason_Boulevard%2C_Columbus%2C_WI_-_52808007526.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
-    "image_file": "blank_wall_017.jpg"
+    "image_file": "blank_wall_017.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "blank_wall_018",
@@ -262,7 +296,9 @@
     ],
     "license": "CC BY / Public Domain",
     "source_url": "https://upload.wikimedia.org/wikipedia/commons/9/92/Farmers_and_Merchants_Union_Bank%2C_James_Street_and_Dickason_Boulevard%2C_Columbus%2C_WI_-_52808018611.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
-    "image_file": "blank_wall_018.jpg"
+    "image_file": "blank_wall_018.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "blank_wall_019",
@@ -277,7 +313,9 @@
     ],
     "license": "CC BY / Public Domain",
     "source_url": "https://upload.wikimedia.org/wikipedia/commons/0/09/Farmers_and_Merchants_Union_Bank%2C_James_Street_and_Dickason_Boulevard%2C_Columbus%2C_WI_-_52808020496.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
-    "image_file": "blank_wall_019.jpg"
+    "image_file": "blank_wall_019.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "blank_wall_020",
@@ -292,7 +330,9 @@
     ],
     "license": "CC BY / Public Domain",
     "source_url": "https://upload.wikimedia.org/wikipedia/commons/4/42/Farmers_and_Merchants_Union_Bank%2C_James_Street_and_Dickason_Boulevard%2C_Columbus%2C_WI_-_52808021766.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
-    "image_file": "blank_wall_020.jpg"
+    "image_file": "blank_wall_020.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "blank_wall_021",
@@ -308,7 +348,9 @@
     ],
     "license": "CC BY / Public Domain",
     "source_url": "https://upload.wikimedia.org/wikipedia/commons/3/34/Farmers_and_Merchants_Union_Bank%2C_James_Street_and_Dickason_Boulevard%2C_Columbus%2C_WI_-_52808023006.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
-    "image_file": "blank_wall_021.jpg"
+    "image_file": "blank_wall_021.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "blank_wall_022",
@@ -323,7 +365,9 @@
     ],
     "license": "CC BY / Public Domain",
     "source_url": "https://upload.wikimedia.org/wikipedia/commons/8/81/Farmers_and_Merchants_Union_Bank%2C_James_Street_and_Dickason_Boulevard%2C_Columbus%2C_WI_-_52808210264.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
-    "image_file": "blank_wall_022.jpg"
+    "image_file": "blank_wall_022.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "blank_wall_023",
@@ -339,7 +383,9 @@
     ],
     "license": "CC BY / Public Domain",
     "source_url": "https://upload.wikimedia.org/wikipedia/commons/6/64/Farmers_and_Merchants_Union_Bank%2C_James_Street_and_Dickason_Boulevard%2C_Columbus%2C_WI_-_52808210384.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
-    "image_file": "blank_wall_023.jpg"
+    "image_file": "blank_wall_023.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "blank_wall_024",
@@ -352,7 +398,9 @@
     "expected_objects": [],
     "license": "CC BY / Public Domain",
     "source_url": "https://upload.wikimedia.org/wikipedia/commons/a/a9/Farmers_and_Merchants_Union_Bank%2C_James_Street_and_Dickason_Boulevard%2C_Columbus%2C_WI_-_52808212024.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
-    "image_file": "blank_wall_024.jpg"
+    "image_file": "blank_wall_024.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "blank_wall_025",
@@ -367,7 +415,9 @@
     ],
     "license": "CC BY / Public Domain",
     "source_url": "https://upload.wikimedia.org/wikipedia/commons/6/63/Farmers_and_Merchants_Union_Bank%2C_James_Street_and_Dickason_Boulevard%2C_Columbus%2C_WI_-_52808221884.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
-    "image_file": "blank_wall_025.jpg"
+    "image_file": "blank_wall_025.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "covered_lens_001",
@@ -382,7 +432,9 @@
     ],
     "license": "CC BY / Public Domain",
     "source_url": "https://upload.wikimedia.org/wikipedia/commons/4/4f/Algol-type_variable_binary_star_animation_2.gif?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
-    "image_file": "covered_lens_001.jpg"
+    "image_file": "covered_lens_001.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "covered_lens_002",
@@ -398,7 +450,9 @@
     ],
     "license": "CC BY / Public Domain",
     "source_url": "https://upload.wikimedia.org/wikipedia/commons/4/40/Arthur_Oscar_Freudenberg_%281891-1968%29%2C_1910s%2C_New_York_City.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
-    "image_file": "covered_lens_002.jpg"
+    "image_file": "covered_lens_002.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "covered_lens_003",
@@ -413,7 +467,9 @@
     ],
     "license": "CC BY / Public Domain",
     "source_url": "https://upload.wikimedia.org/wikipedia/commons/c/c3/Ayol_obrazi_1.png?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
-    "image_file": "covered_lens_003.jpg"
+    "image_file": "covered_lens_003.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "covered_lens_004",
@@ -426,7 +482,9 @@
     "expected_objects": [],
     "license": "CC BY / Public Domain",
     "source_url": "https://upload.wikimedia.org/wikipedia/commons/0/0f/Black_porphyritic_dacite_%28upper_Holocene%2C_14_May_1915%3B_Devastated_Area%2C_Lassen_Volcano_National_Park%2C_California%2C_USA%29_1.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
-    "image_file": "covered_lens_004.jpg"
+    "image_file": "covered_lens_004.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "covered_lens_005",
@@ -439,7 +497,9 @@
     "expected_objects": [],
     "license": "CC BY / Public Domain",
     "source_url": "https://upload.wikimedia.org/wikipedia/commons/0/01/Black_porphyritic_dacite_%28upper_Holocene%2C_14_May_1915%3B_Devastated_Area%2C_Lassen_Volcano_National_Park%2C_California%2C_USA%29_2.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
-    "image_file": "covered_lens_005.jpg"
+    "image_file": "covered_lens_005.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "covered_lens_006",
@@ -452,7 +512,9 @@
     "expected_objects": [],
     "license": "CC BY / Public Domain",
     "source_url": "https://upload.wikimedia.org/wikipedia/commons/d/de/Black_porphyritic_dacite_%28upper_Holocene%2C_14_May_1915%3B_Devastated_Area%2C_Lassen_Volcano_National_Park%2C_California%2C_USA%29_23.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
-    "image_file": "covered_lens_006.jpg"
+    "image_file": "covered_lens_006.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "covered_lens_007",
@@ -465,7 +527,9 @@
     "expected_objects": [],
     "license": "CC BY / Public Domain",
     "source_url": "https://upload.wikimedia.org/wikipedia/commons/f/ff/Black_porphyritic_dacite_%28upper_Holocene%2C_14_May_1915%3B_Devastated_Area%2C_Lassen_Volcano_National_Park%2C_California%2C_USA%29_24_%2837575924341%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
-    "image_file": "covered_lens_007.jpg"
+    "image_file": "covered_lens_007.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "covered_lens_008",
@@ -478,7 +542,9 @@
     "expected_objects": [],
     "license": "CC BY / Public Domain",
     "source_url": "https://upload.wikimedia.org/wikipedia/commons/a/a3/Black_porphyritic_dacite_%28upper_Holocene%2C_14_May_1915%3B_Devastated_Area%2C_Lassen_Volcano_National_Park%2C_California%2C_USA%29_25.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
-    "image_file": "covered_lens_008.jpg"
+    "image_file": "covered_lens_008.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "covered_lens_009",
@@ -491,7 +557,9 @@
     "expected_objects": [],
     "license": "CC BY / Public Domain",
     "source_url": "https://upload.wikimedia.org/wikipedia/commons/8/86/Black_porphyritic_dacite_%28upper_Holocene%2C_14_May_1915%3B_Devastated_Area%2C_Lassen_Volcano_National_Park%2C_California%2C_USA%29_26.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
-    "image_file": "covered_lens_009.jpg"
+    "image_file": "covered_lens_009.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "covered_lens_010",
@@ -504,7 +572,9 @@
     "expected_objects": [],
     "license": "CC BY / Public Domain",
     "source_url": "https://upload.wikimedia.org/wikipedia/commons/e/e9/Black_porphyritic_dacite_%28upper_Holocene%2C_14_May_1915%3B_Devastated_Area%2C_Lassen_Volcano_National_Park%2C_California%2C_USA%29_27.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
-    "image_file": "covered_lens_010.jpg"
+    "image_file": "covered_lens_010.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "covered_lens_011",
@@ -517,7 +587,9 @@
     "expected_objects": [],
     "license": "CC BY / Public Domain",
     "source_url": "https://upload.wikimedia.org/wikipedia/commons/c/cc/Black_porphyritic_dacite_%28upper_Holocene%2C_14_May_1915%3B_Devastated_Area%2C_Lassen_Volcano_National_Park%2C_California%2C_USA%29_32.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
-    "image_file": "covered_lens_011.jpg"
+    "image_file": "covered_lens_011.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "covered_lens_012",
@@ -530,7 +602,9 @@
     "expected_objects": [],
     "license": "CC BY / Public Domain",
     "source_url": "https://upload.wikimedia.org/wikipedia/commons/b/b3/Black_porphyritic_dacite_%28upper_Holocene%2C_14_May_1915%3B_Devastated_Area%2C_Lassen_Volcano_National_Park%2C_California%2C_USA%29_33.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
-    "image_file": "covered_lens_012.jpg"
+    "image_file": "covered_lens_012.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "covered_lens_013",
@@ -543,7 +617,9 @@
     "expected_objects": [],
     "license": "CC BY / Public Domain",
     "source_url": "https://upload.wikimedia.org/wikipedia/commons/f/f5/Black_porphyritic_dacite_%28upper_Holocene%2C_14_May_1915%3B_Devastated_Area%2C_Lassen_Volcano_National_Park%2C_California%2C_USA%29_34.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
-    "image_file": "covered_lens_013.jpg"
+    "image_file": "covered_lens_013.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "covered_lens_014",
@@ -558,7 +634,9 @@
     ],
     "license": "CC BY / Public Domain",
     "source_url": "https://upload.wikimedia.org/wikipedia/commons/a/ae/Black_porphyritic_dacite_%28upper_Holocene%2C_14_May_1915%3B_Devastated_Area%2C_Lassen_Volcano_National_Park%2C_California%2C_USA%29_35.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
-    "image_file": "covered_lens_014.jpg"
+    "image_file": "covered_lens_014.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "covered_lens_015",
@@ -571,7 +649,9 @@
     "expected_objects": [],
     "license": "CC BY / Public Domain",
     "source_url": "https://upload.wikimedia.org/wikipedia/commons/8/8f/Black_porphyritic_dacite_%28upper_Holocene%2C_14_May_1915%3B_Devastated_Area%2C_Lassen_Volcano_National_Park%2C_California%2C_USA%29_36.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
-    "image_file": "covered_lens_015.jpg"
+    "image_file": "covered_lens_015.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "covered_lens_016",
@@ -584,7 +664,9 @@
     "expected_objects": [],
     "license": "CC BY / Public Domain",
     "source_url": "https://upload.wikimedia.org/wikipedia/commons/c/cf/Black_porphyritic_dacite_%28upper_Holocene%2C_14_May_1915%3B_Devastated_Area%2C_Lassen_Volcano_National_Park%2C_California%2C_USA%29_5.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
-    "image_file": "covered_lens_016.jpg"
+    "image_file": "covered_lens_016.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "covered_lens_017",
@@ -597,7 +679,9 @@
     "expected_objects": [],
     "license": "CC BY / Public Domain",
     "source_url": "https://upload.wikimedia.org/wikipedia/commons/c/c2/Black_porphyritic_dacite_%28upper_Holocene%2C_14_May_1915%3B_Devastated_Area%2C_Lassen_Volcano_National_Park%2C_California%2C_USA%29_52.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
-    "image_file": "covered_lens_017.jpg"
+    "image_file": "covered_lens_017.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "covered_lens_018",
@@ -610,7 +694,9 @@
     "expected_objects": [],
     "license": "CC BY / Public Domain",
     "source_url": "https://upload.wikimedia.org/wikipedia/commons/1/16/Black_porphyritic_dacite_%28upper_Holocene%2C_14_May_1915%3B_Devastated_Area%2C_Lassen_Volcano_National_Park%2C_California%2C_USA%29_54.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
-    "image_file": "covered_lens_018.jpg"
+    "image_file": "covered_lens_018.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "covered_lens_019",
@@ -625,7 +711,9 @@
     ],
     "license": "CC BY / Public Domain",
     "source_url": "https://upload.wikimedia.org/wikipedia/commons/e/e3/Black_porphyritic_dacite_%28upper_Holocene%2C_14_May_1915%3B_Devastated_Area%2C_Lassen_Volcano_National_Park%2C_California%2C_USA%29_56.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
-    "image_file": "covered_lens_019.jpg"
+    "image_file": "covered_lens_019.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "covered_lens_020",
@@ -638,7 +726,9 @@
     "expected_objects": [],
     "license": "CC BY / Public Domain",
     "source_url": "https://upload.wikimedia.org/wikipedia/commons/9/93/Black_porphyritic_dacite_%28upper_Holocene%2C_14_May_1915%3B_Devastated_Area%2C_Lassen_Volcano_National_Park%2C_California%2C_USA%29_57.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
-    "image_file": "covered_lens_020.jpg"
+    "image_file": "covered_lens_020.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "covered_lens_021",
@@ -651,7 +741,9 @@
     "expected_objects": [],
     "license": "CC BY / Public Domain",
     "source_url": "https://upload.wikimedia.org/wikipedia/commons/8/89/Black_porphyritic_dacite_%28upper_Holocene%2C_14_May_1915%3B_Devastated_Area%2C_Lassen_Volcano_National_Park%2C_California%2C_USA%29_60.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
-    "image_file": "covered_lens_021.jpg"
+    "image_file": "covered_lens_021.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "covered_lens_022",
@@ -666,7 +758,9 @@
     ],
     "license": "CC BY / Public Domain",
     "source_url": "https://upload.wikimedia.org/wikipedia/commons/f/f2/Black_porphyritic_dacite_%28upper_Holocene%2C_14_May_1915%3B_Devastated_Area%2C_Lassen_Volcano_National_Park%2C_California%2C_USA%29_61.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
-    "image_file": "covered_lens_022.jpg"
+    "image_file": "covered_lens_022.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "covered_lens_023",
@@ -679,7 +773,9 @@
     "expected_objects": [],
     "license": "CC BY / Public Domain",
     "source_url": "https://upload.wikimedia.org/wikipedia/commons/c/c6/Black_porphyritic_dacite_%28upper_Holocene%2C_14_May_1915%3B_Devastated_Area%2C_Lassen_Volcano_National_Park%2C_California%2C_USA%29_8.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
-    "image_file": "covered_lens_023.jpg"
+    "image_file": "covered_lens_023.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "covered_lens_024",
@@ -692,7 +788,9 @@
     "expected_objects": [],
     "license": "CC BY / Public Domain",
     "source_url": "https://upload.wikimedia.org/wikipedia/commons/f/f8/Dark_Surface_Tension.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
-    "image_file": "covered_lens_024.jpg"
+    "image_file": "covered_lens_024.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "covered_lens_025",
@@ -707,7 +805,9 @@
     ],
     "license": "CC BY / Public Domain",
     "source_url": "https://upload.wikimedia.org/wikipedia/commons/2/24/Gabbronorite_%28%22Impala_Black_Granite%22%29_%28Bushveld_Complex%2C_2.054-2.061_Ga%2C_Paleoproterozoic%3B_north_of_Rustenburg%2C_North_West_Province%2C_South_Africa%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
-    "image_file": "covered_lens_025.jpg"
+    "image_file": "covered_lens_025.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "desk_closeup_001",
@@ -729,7 +829,9 @@
     ],
     "license": "CC BY / Public Domain",
     "source_url": "https://upload.wikimedia.org/wikipedia/commons/2/2d/PowerMac_g3_233.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
-    "image_file": "desk_closeup_001.jpg"
+    "image_file": "desk_closeup_001.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "desk_closeup_002",
@@ -745,7 +847,9 @@
     ],
     "license": "CC BY / Public Domain",
     "source_url": "https://upload.wikimedia.org/wikipedia/commons/7/75/RGB_desktop_computer_setup_with_keyboard_and_monitor.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
-    "image_file": "desk_closeup_002.jpg"
+    "image_file": "desk_closeup_002.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "desk_closeup_003",
@@ -766,7 +870,9 @@
     ],
     "license": "CC BY / Public Domain",
     "source_url": "https://upload.wikimedia.org/wikipedia/commons/b/be/Angelas_desk_%283818388294%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
-    "image_file": "desk_closeup_003.jpg"
+    "image_file": "desk_closeup_003.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "desk_closeup_004",
@@ -782,7 +888,9 @@
     ],
     "license": "CC BY / Public Domain",
     "source_url": "https://upload.wikimedia.org/wikipedia/commons/d/d8/Apple-camera-desk-office_%2824031346580%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
-    "image_file": "desk_closeup_004.jpg"
+    "image_file": "desk_closeup_004.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "desk_closeup_005",
@@ -797,7 +905,9 @@
     ],
     "license": "CC BY / Public Domain",
     "source_url": "https://upload.wikimedia.org/wikipedia/commons/3/31/BLW_Control_Desk_for_Post_Office_%28London%29_Railway_%28Mail_Rail%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
-    "image_file": "desk_closeup_005.jpg"
+    "image_file": "desk_closeup_005.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "desk_closeup_006",
@@ -812,7 +922,9 @@
     ],
     "license": "CC BY / Public Domain",
     "source_url": "https://upload.wikimedia.org/wikipedia/commons/8/8f/Card_puncher_-_NARA_-_513295.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
-    "image_file": "desk_closeup_006.jpg"
+    "image_file": "desk_closeup_006.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "desk_closeup_007",
@@ -832,7 +944,9 @@
     ],
     "license": "CC BY / Public Domain",
     "source_url": "https://upload.wikimedia.org/wikipedia/commons/6/60/Clean_minimalist_office_%28Unsplash%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
-    "image_file": "desk_closeup_007.jpg"
+    "image_file": "desk_closeup_007.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "desk_closeup_008",
@@ -851,7 +965,9 @@
     ],
     "license": "CC BY / Public Domain",
     "source_url": "https://upload.wikimedia.org/wikipedia/commons/6/63/CleancubicleSouth20050109.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
-    "image_file": "desk_closeup_008.jpg"
+    "image_file": "desk_closeup_008.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "desk_closeup_009",
@@ -868,7 +984,9 @@
     ],
     "license": "CC BY / Public Domain",
     "source_url": "https://upload.wikimedia.org/wikipedia/commons/7/75/Computer_Workstation_Variables_2.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
-    "image_file": "desk_closeup_009.jpg"
+    "image_file": "desk_closeup_009.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "desk_closeup_010",
@@ -883,7 +1001,9 @@
     ],
     "license": "CC BY / Public Domain",
     "source_url": "https://upload.wikimedia.org/wikipedia/commons/f/f0/Computer_keyboard_placed_on_a_black_desk_in_a_modern_workspace.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
-    "image_file": "desk_closeup_010.jpg"
+    "image_file": "desk_closeup_010.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "desk_closeup_011",
@@ -899,7 +1019,9 @@
     ],
     "license": "CC BY / Public Domain",
     "source_url": "https://upload.wikimedia.org/wikipedia/commons/3/3f/Defective_computer_at_the_reception_desk_of_the_municipal_office%2C_Oude_Pekela_%282019%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
-    "image_file": "desk_closeup_011.jpg"
+    "image_file": "desk_closeup_011.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "desk_closeup_012",
@@ -916,7 +1038,9 @@
     ],
     "license": "CC BY / Public Domain",
     "source_url": "https://upload.wikimedia.org/wikipedia/commons/8/87/Dell_tablet_on_small_desk_-_Back_to_basics_%282015-04-01_21.26.01_by_c-g.%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
-    "image_file": "desk_closeup_012.jpg"
+    "image_file": "desk_closeup_012.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "desk_closeup_013",
@@ -938,7 +1062,9 @@
     ],
     "license": "CC BY / Public Domain",
     "source_url": "https://upload.wikimedia.org/wikipedia/commons/3/35/Doctor_working_at_a_desk_in_a_medical_office_setting_with_a_computer_and_stationery.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
-    "image_file": "desk_closeup_013.jpg"
+    "image_file": "desk_closeup_013.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "desk_closeup_014",
@@ -956,7 +1082,9 @@
     ],
     "license": "CC BY / Public Domain",
     "source_url": "https://upload.wikimedia.org/wikipedia/commons/6/60/Doctor_working_at_a_desk_using_a_computer_mouse_and_keyboard_in_a_medical_office_setting.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
-    "image_file": "desk_closeup_014.jpg"
+    "image_file": "desk_closeup_014.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "desk_closeup_015",
@@ -973,7 +1101,9 @@
     ],
     "license": "CC BY / Public Domain",
     "source_url": "https://upload.wikimedia.org/wikipedia/commons/b/bb/EFTA00000866_-_Cluttered_office_desk_with_tools_supplies_and_a_computer_monitor_viewed_through_a_doorway_into_another_room.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
-    "image_file": "desk_closeup_015.jpg"
+    "image_file": "desk_closeup_015.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "desk_closeup_016",
@@ -989,7 +1119,9 @@
     ],
     "license": "CC BY / Public Domain",
     "source_url": "https://upload.wikimedia.org/wikipedia/commons/f/f2/EFTA00000888_-_Wooden-walled_office_with_a_red_desk_computer_guitar_and_zebra-patterned_rug.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
-    "image_file": "desk_closeup_016.jpg"
+    "image_file": "desk_closeup_016.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "desk_closeup_017",
@@ -1006,7 +1138,9 @@
     ],
     "license": "CC BY / Public Domain",
     "source_url": "https://upload.wikimedia.org/wikipedia/commons/7/74/EFTA00001034_-_Luxurious_wooden_desk_with_a_computer_papers_and_a_plush_armchair_in_a_richly_decorated_office_with_ornate_wood_paneling_and_elegant_curtains.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
-    "image_file": "desk_closeup_017.jpg"
+    "image_file": "desk_closeup_017.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "desk_closeup_018",
@@ -1023,7 +1157,9 @@
     ],
     "license": "CC BY / Public Domain",
     "source_url": "https://upload.wikimedia.org/wikipedia/commons/9/96/EFTA00001220_-_Vibrant_curved_desk_with_a_turquoise_top_and_red_trim_sits_against_a_metallic_wall_paneling_in_a_modern_office_space_A_black_chair_is_positioned_at_the_desk_which_holds_a_computer_monitor_lamp....jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
-    "image_file": "desk_closeup_018.jpg"
+    "image_file": "desk_closeup_018.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "desk_closeup_019",
@@ -1042,7 +1178,9 @@
     ],
     "license": "CC BY / Public Domain",
     "source_url": "https://upload.wikimedia.org/wikipedia/commons/e/e0/EFTA00001583_-_Cluttered_office_desk_with_an_Epson_projector_multiple_electronic_devices_a_computer_monitor_and_various_cables_next_to_a_window_with_shutters.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
-    "image_file": "desk_closeup_019.jpg"
+    "image_file": "desk_closeup_019.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "desk_closeup_020",
@@ -1061,7 +1199,9 @@
     ],
     "license": "CC BY / Public Domain",
     "source_url": "https://upload.wikimedia.org/wikipedia/commons/7/78/EFTA00001748_-_Wooden_desk_with_a_white_chair_a_computer_monitor_and_various_office_supplies_under_a_blue-painted_ceiling.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
-    "image_file": "desk_closeup_020.jpg"
+    "image_file": "desk_closeup_020.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "desk_closeup_021",
@@ -1078,7 +1218,9 @@
     ],
     "license": "CC BY / Public Domain",
     "source_url": "https://upload.wikimedia.org/wikipedia/commons/1/1b/EFTA00001757_-_Bright_modern_bedroom_with_a_blue_vaulted_ceiling_white_walls_and_light_wood_flooring_A_large_bed_with_white_linens_sits_beside_a_wooden_desk_with_a_computer_monitor_a_gray_office_chair_and_a....jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
-    "image_file": "desk_closeup_021.jpg"
+    "image_file": "desk_closeup_021.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "desk_closeup_022",
@@ -1096,7 +1238,9 @@
     ],
     "license": "CC BY / Public Domain",
     "source_url": "https://upload.wikimedia.org/wikipedia/commons/0/02/EFTA00002091_-_Modern_white_desk_with_a_computer_printer_and_chair_in_a_minimalist_office_space.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
-    "image_file": "desk_closeup_022.jpg"
+    "image_file": "desk_closeup_022.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "desk_closeup_023",
@@ -1116,7 +1260,9 @@
     ],
     "license": "CC BY / Public Domain",
     "source_url": "https://upload.wikimedia.org/wikipedia/commons/2/2d/EFTA00002092_-_Clean_white_desk_with_a_computer_printer_and_supplies_ready_for_work.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
-    "image_file": "desk_closeup_023.jpg"
+    "image_file": "desk_closeup_023.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "desk_closeup_024",
@@ -1138,7 +1284,9 @@
     ],
     "license": "CC BY / Public Domain",
     "source_url": "https://upload.wikimedia.org/wikipedia/commons/1/17/EFTA00002168_-_Cluttered_desk_with_a_computer_monitor_printer_keyboard_and_various_office_supplies_including_a_funnel_and_a_label_maker.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
-    "image_file": "desk_closeup_024.jpg"
+    "image_file": "desk_closeup_024.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "desk_closeup_025",
@@ -1154,7 +1302,9 @@
     ],
     "license": "CC BY / Public Domain",
     "source_url": "https://upload.wikimedia.org/wikipedia/commons/d/d0/EFTA00002438_-_Functional_office_space_with_a_desk_computer_phone_and_a_small_refrigerator_in_a_concrete-walled_room.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
-    "image_file": "desk_closeup_025.jpg"
+    "image_file": "desk_closeup_025.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "indoor_corridor_001",
@@ -1169,7 +1319,9 @@
     ],
     "license": "CC BY / Public Domain",
     "source_url": "https://upload.wikimedia.org/wikipedia/commons/a/a3/ChennaiGH_Corridor.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
-    "image_file": "indoor_corridor_001.jpg"
+    "image_file": "indoor_corridor_001.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "indoor_corridor_002",
@@ -1182,7 +1334,9 @@
     "expected_objects": [],
     "license": "CC BY / Public Domain",
     "source_url": "https://upload.wikimedia.org/wikipedia/commons/1/18/Corridor_A._Interior_view_looking_north_in_hallway._-_Madigan_Hospital%2C_Corridors_and_Ramps%2C_Bounded_by_Wilson_and_McKinley_Avenues_and_Garfield_and_Lincoln_Streets%2C_Tacoma%2C_HABS_WASH%2C27-TACO%2C8L-6.tif?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
-    "image_file": "indoor_corridor_002.jpg"
+    "image_file": "indoor_corridor_002.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "indoor_corridor_003",
@@ -1200,7 +1354,9 @@
     ],
     "license": "CC BY / Public Domain",
     "source_url": "https://upload.wikimedia.org/wikipedia/commons/0/02/Corridor_on_the_first_floor._Corridor_on_the_second_floor._Mt._Carmel_Hospital%2C_Columbu%2C_Ohio._-_DPLA_-_f3b50f34373d6f644ea9f5bae37d5d1b_%28page_1%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
-    "image_file": "indoor_corridor_003.jpg"
+    "image_file": "indoor_corridor_003.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "indoor_corridor_004",
@@ -1213,7 +1369,9 @@
     "expected_objects": [],
     "license": "CC BY / Public Domain",
     "source_url": "https://upload.wikimedia.org/wikipedia/commons/d/d3/Corridor_on_the_first_floor._Corridor_on_the_second_floor._Mt._Carmel_Hospital%2C_Columbu%2C_Ohio._-_DPLA_-_f3b50f34373d6f644ea9f5bae37d5d1b_%28page_2%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
-    "image_file": "indoor_corridor_004.jpg"
+    "image_file": "indoor_corridor_004.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "indoor_corridor_005",
@@ -1230,7 +1388,9 @@
     ],
     "license": "CC BY / Public Domain",
     "source_url": "https://upload.wikimedia.org/wikipedia/commons/9/95/GreenwichCTHospitalWatson3rdFlSouthEnd2010.JPG?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
-    "image_file": "indoor_corridor_005.jpg"
+    "image_file": "indoor_corridor_005.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "indoor_corridor_006",
@@ -1246,7 +1406,9 @@
     ],
     "license": "CC BY / Public Domain",
     "source_url": "https://upload.wikimedia.org/wikipedia/commons/5/58/HC_Patos_hallway.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
-    "image_file": "indoor_corridor_006.jpg"
+    "image_file": "indoor_corridor_006.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "indoor_corridor_007",
@@ -1261,7 +1423,9 @@
     ],
     "license": "CC BY / Public Domain",
     "source_url": "https://upload.wikimedia.org/wikipedia/commons/1/1e/Hall2_DSC0025_HDR.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
-    "image_file": "indoor_corridor_007.jpg"
+    "image_file": "indoor_corridor_007.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "indoor_corridor_008",
@@ -1276,7 +1440,9 @@
     ],
     "license": "CC BY / Public Domain",
     "source_url": "https://upload.wikimedia.org/wikipedia/commons/1/1a/Hall_DSC0025_HDR.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
-    "image_file": "indoor_corridor_008.jpg"
+    "image_file": "indoor_corridor_008.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "indoor_corridor_009",
@@ -1291,7 +1457,9 @@
     ],
     "license": "CC BY / Public Domain",
     "source_url": "https://upload.wikimedia.org/wikipedia/commons/c/c9/Hallway-_DSC0108_HDR.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
-    "image_file": "indoor_corridor_009.jpg"
+    "image_file": "indoor_corridor_009.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "indoor_corridor_010",
@@ -1308,7 +1476,9 @@
     ],
     "license": "CC BY / Public Domain",
     "source_url": "https://upload.wikimedia.org/wikipedia/commons/1/13/Hallway_at_the_radiology_department_at_the_Boerhaavekwartier_of_the_Leiden_University_Medical_Center%2C_AHM-F-59197-247.tiff?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
-    "image_file": "indoor_corridor_010.jpg"
+    "image_file": "indoor_corridor_010.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "indoor_corridor_011",
@@ -1324,7 +1494,9 @@
     ],
     "license": "CC BY / Public Domain",
     "source_url": "https://upload.wikimedia.org/wikipedia/commons/1/1a/Hallway_at_the_radiology_department_at_the_Boerhaavekwartier_of_the_Leiden_University_Medical_Center%2C_AHM-F-59200-250.tiff?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
-    "image_file": "indoor_corridor_011.jpg"
+    "image_file": "indoor_corridor_011.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "indoor_corridor_012",
@@ -1340,7 +1512,9 @@
     ],
     "license": "CC BY / Public Domain",
     "source_url": "https://upload.wikimedia.org/wikipedia/commons/9/90/A_cat_in_a_low_light_corridor.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
-    "image_file": "indoor_corridor_012.jpg"
+    "image_file": "indoor_corridor_012.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "indoor_corridor_013",
@@ -1353,7 +1527,9 @@
     "expected_objects": [],
     "license": "CC BY / Public Domain",
     "source_url": "https://upload.wikimedia.org/wikipedia/commons/d/d6/An_interior_hallway_at_Portland_Union_Station_in_Oregon.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
-    "image_file": "indoor_corridor_013.jpg"
+    "image_file": "indoor_corridor_013.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "indoor_corridor_014",
@@ -1368,7 +1544,9 @@
     ],
     "license": "CC BY / Public Domain",
     "source_url": "https://upload.wikimedia.org/wikipedia/commons/3/30/Arboretum_Hallway_in_Winchester_Mystery_House.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
-    "image_file": "indoor_corridor_014.jpg"
+    "image_file": "indoor_corridor_014.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "indoor_corridor_015",
@@ -1383,7 +1561,9 @@
     ],
     "license": "CC BY / Public Domain",
     "source_url": "https://upload.wikimedia.org/wikipedia/commons/4/46/Bossier_High_School_hallway_Colquittt_Interior_NRHP_LASHPO_13.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
-    "image_file": "indoor_corridor_015.jpg"
+    "image_file": "indoor_corridor_015.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "indoor_corridor_016",
@@ -1396,7 +1576,9 @@
     "expected_objects": [],
     "license": "CC BY / Public Domain",
     "source_url": "https://upload.wikimedia.org/wikipedia/commons/4/44/CICR-ICRC-Archives-Satigny-Corridor_RomanDeckert09062020.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
-    "image_file": "indoor_corridor_016.jpg"
+    "image_file": "indoor_corridor_016.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "indoor_corridor_017",
@@ -1412,7 +1594,9 @@
     ],
     "license": "CC BY / Public Domain",
     "source_url": "https://upload.wikimedia.org/wikipedia/commons/5/52/ChateauDeCassan_Hallway.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
-    "image_file": "indoor_corridor_017.jpg"
+    "image_file": "indoor_corridor_017.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "indoor_corridor_018",
@@ -1425,7 +1609,9 @@
     "expected_objects": [],
     "license": "CC BY / Public Domain",
     "source_url": "https://upload.wikimedia.org/wikipedia/commons/9/9d/Corridor_A._deck_%289250770786%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
-    "image_file": "indoor_corridor_018.jpg"
+    "image_file": "indoor_corridor_018.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "indoor_corridor_019",
@@ -1442,7 +1628,9 @@
     ],
     "license": "CC BY / Public Domain",
     "source_url": "https://upload.wikimedia.org/wikipedia/commons/d/d2/Corridor_above_road%2C_Nantes%2C_Rue_du_Ballet_-_01.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
-    "image_file": "indoor_corridor_019.jpg"
+    "image_file": "indoor_corridor_019.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "indoor_corridor_020",
@@ -1459,7 +1647,9 @@
     ],
     "license": "CC BY / Public Domain",
     "source_url": "https://upload.wikimedia.org/wikipedia/commons/8/88/Corridor_above_road%2C_Nantes%2C_Rue_du_Ballet_-_02.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
-    "image_file": "indoor_corridor_020.jpg"
+    "image_file": "indoor_corridor_020.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "indoor_corridor_021",
@@ -1474,7 +1664,9 @@
     ],
     "license": "CC BY / Public Domain",
     "source_url": "https://upload.wikimedia.org/wikipedia/commons/2/23/Corridor_above_road%2C_Nantes%2C_Rue_du_Ballet_-_03.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
-    "image_file": "indoor_corridor_021.jpg"
+    "image_file": "indoor_corridor_021.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "indoor_corridor_022",
@@ -1487,7 +1679,9 @@
     "expected_objects": [],
     "license": "CC BY / Public Domain",
     "source_url": "https://upload.wikimedia.org/wikipedia/commons/c/c9/Corridor_above_road%2C_Nantes%2C_Rue_du_Ballet_-_04.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
-    "image_file": "indoor_corridor_022.jpg"
+    "image_file": "indoor_corridor_022.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "indoor_corridor_023",
@@ -1502,7 +1696,9 @@
     ],
     "license": "CC BY / Public Domain",
     "source_url": "https://upload.wikimedia.org/wikipedia/commons/3/35/Corridor_above_road%2C_Nantes%2C_Rue_du_Ballet_-_06.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
-    "image_file": "indoor_corridor_023.jpg"
+    "image_file": "indoor_corridor_023.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "indoor_corridor_024",
@@ -1515,7 +1711,9 @@
     "expected_objects": [],
     "license": "CC BY / Public Domain",
     "source_url": "https://upload.wikimedia.org/wikipedia/commons/6/62/Corridor_of_the_Kaneyu.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
-    "image_file": "indoor_corridor_024.jpg"
+    "image_file": "indoor_corridor_024.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "indoor_corridor_025",
@@ -1528,7 +1726,9 @@
     "expected_objects": [],
     "license": "CC BY / Public Domain",
     "source_url": "https://upload.wikimedia.org/wikipedia/commons/6/6d/Dornbirn-ORF_Vorarlberg-Television_studio-corridor-03ASD.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
-    "image_file": "indoor_corridor_025.jpg"
+    "image_file": "indoor_corridor_025.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "indoor_floor_001",
@@ -1541,7 +1741,9 @@
     "expected_objects": [],
     "license": "CC BY / Public Domain",
     "source_url": "https://upload.wikimedia.org/wikipedia/commons/c/ca/An_Interior_View_of_a_Grand_Chamber_with_Stained-Glass_Doors_and_Detailed_Parquet_Flooring_%2855245888870%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
-    "image_file": "indoor_floor_001.jpg"
+    "image_file": "indoor_floor_001.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "indoor_floor_002",
@@ -1554,7 +1756,9 @@
     "expected_objects": [],
     "license": "CC BY / Public Domain",
     "source_url": "https://upload.wikimedia.org/wikipedia/commons/a/a1/Clay_-_Preview_-_Diagonal_Parquet_%28Anonymous_Bob_and_Jandre_van_Heerden_via_Poly_Haven%29.webp?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
-    "image_file": "indoor_floor_002.jpg"
+    "image_file": "indoor_floor_002.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "indoor_floor_003",
@@ -1567,7 +1771,9 @@
     "expected_objects": [],
     "license": "CC BY / Public Domain",
     "source_url": "https://upload.wikimedia.org/wikipedia/commons/1/12/Clay_-_Preview_-_Herringbone_Parquet_%28Anonymous_Bob_and_Jandre_van_Heerden_via_Poly_Haven%29.webp?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
-    "image_file": "indoor_floor_003.jpg"
+    "image_file": "indoor_floor_003.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "indoor_floor_004",
@@ -1580,7 +1786,9 @@
     "expected_objects": [],
     "license": "CC BY / Public Domain",
     "source_url": "https://upload.wikimedia.org/wikipedia/commons/8/8c/Diagonal_parquet_-_Preview_%28Anonymous_Bob_and_Jandre_van_Heerden_via_Poly_Haven%29.png?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
-    "image_file": "indoor_floor_004.jpg"
+    "image_file": "indoor_floor_004.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "indoor_floor_005",
@@ -1593,7 +1801,9 @@
     "expected_objects": [],
     "license": "CC BY / Public Domain",
     "source_url": "https://upload.wikimedia.org/wikipedia/commons/8/85/Diagonal_parquet_-_Preview_%28Anonymous_Bob_and_Jandre_van_Heerden_via_Poly_Haven%29.webp?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
-    "image_file": "indoor_floor_005.jpg"
+    "image_file": "indoor_floor_005.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "indoor_floor_006",
@@ -1606,7 +1816,9 @@
     "expected_objects": [],
     "license": "CC BY / Public Domain",
     "source_url": "https://upload.wikimedia.org/wikipedia/commons/e/e9/Diagonal_parquet_ao_16k_%28Anonymous_Bob_and_Jandre_van_Heerden_via_Poly_Haven%29.png?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
-    "image_file": "indoor_floor_006.jpg"
+    "image_file": "indoor_floor_006.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "indoor_floor_007",
@@ -1620,7 +1832,9 @@
       "person"
     ],
     "license": "CC BY / Public Domain",
-    "image_file": "indoor_floor_007.jpg"
+    "image_file": "indoor_floor_007.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "indoor_floor_008",
@@ -1632,7 +1846,9 @@
     "expected_hazards": [],
     "expected_objects": [],
     "license": "CC BY / Public Domain",
-    "image_file": "indoor_floor_008.jpg"
+    "image_file": "indoor_floor_008.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "indoor_floor_009",
@@ -1644,7 +1860,9 @@
     "expected_hazards": [],
     "expected_objects": [],
     "license": "CC BY / Public Domain",
-    "image_file": "indoor_floor_009.jpg"
+    "image_file": "indoor_floor_009.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "indoor_floor_010",
@@ -1656,7 +1874,9 @@
     "expected_hazards": [],
     "expected_objects": [],
     "license": "CC BY / Public Domain",
-    "image_file": "indoor_floor_010.jpg"
+    "image_file": "indoor_floor_010.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "indoor_floor_011",
@@ -1670,7 +1890,9 @@
       "car"
     ],
     "license": "CC BY / Public Domain",
-    "image_file": "indoor_floor_011.jpg"
+    "image_file": "indoor_floor_011.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "indoor_floor_012",
@@ -1682,7 +1904,9 @@
     "expected_hazards": [],
     "expected_objects": [],
     "license": "CC BY / Public Domain",
-    "image_file": "indoor_floor_012.jpg"
+    "image_file": "indoor_floor_012.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "indoor_floor_013",
@@ -1694,7 +1918,9 @@
     "expected_hazards": [],
     "expected_objects": [],
     "license": "CC BY / Public Domain",
-    "image_file": "indoor_floor_013.jpg"
+    "image_file": "indoor_floor_013.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "indoor_floor_014",
@@ -1706,7 +1932,9 @@
     "expected_hazards": [],
     "expected_objects": [],
     "license": "CC BY / Public Domain",
-    "image_file": "indoor_floor_014.jpg"
+    "image_file": "indoor_floor_014.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "indoor_floor_015",
@@ -1720,7 +1948,9 @@
       "refrigerator"
     ],
     "license": "CC BY / Public Domain",
-    "image_file": "indoor_floor_015.jpg"
+    "image_file": "indoor_floor_015.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "indoor_floor_016",
@@ -1732,7 +1962,9 @@
     "expected_hazards": [],
     "expected_objects": [],
     "license": "CC BY / Public Domain",
-    "image_file": "indoor_floor_016.jpg"
+    "image_file": "indoor_floor_016.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "indoor_floor_017",
@@ -1744,7 +1976,9 @@
     "expected_hazards": [],
     "expected_objects": [],
     "license": "CC BY / Public Domain",
-    "image_file": "indoor_floor_017.jpg"
+    "image_file": "indoor_floor_017.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "indoor_floor_018",
@@ -1758,7 +1992,9 @@
       "clock"
     ],
     "license": "CC BY / Public Domain",
-    "image_file": "indoor_floor_018.jpg"
+    "image_file": "indoor_floor_018.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "indoor_floor_019",
@@ -1772,7 +2008,9 @@
       "person"
     ],
     "license": "CC BY / Public Domain",
-    "image_file": "indoor_floor_019.jpg"
+    "image_file": "indoor_floor_019.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "indoor_floor_020",
@@ -1784,7 +2022,9 @@
     "expected_hazards": [],
     "expected_objects": [],
     "license": "CC BY / Public Domain",
-    "image_file": "indoor_floor_020.jpg"
+    "image_file": "indoor_floor_020.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "indoor_floor_021",
@@ -1796,7 +2036,9 @@
     "expected_hazards": [],
     "expected_objects": [],
     "license": "CC BY / Public Domain",
-    "image_file": "indoor_floor_021.jpg"
+    "image_file": "indoor_floor_021.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "indoor_floor_022",
@@ -1808,7 +2050,9 @@
     "expected_hazards": [],
     "expected_objects": [],
     "license": "CC BY / Public Domain",
-    "image_file": "indoor_floor_022.jpg"
+    "image_file": "indoor_floor_022.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "indoor_floor_023",
@@ -1820,7 +2064,9 @@
     "expected_hazards": [],
     "expected_objects": [],
     "license": "CC BY / Public Domain",
-    "image_file": "indoor_floor_023.jpg"
+    "image_file": "indoor_floor_023.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "indoor_floor_024",
@@ -1832,7 +2078,9 @@
     "expected_hazards": [],
     "expected_objects": [],
     "license": "CC BY / Public Domain",
-    "image_file": "indoor_floor_024.jpg"
+    "image_file": "indoor_floor_024.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "indoor_floor_025",
@@ -1844,7 +2092,9 @@
     "expected_hazards": [],
     "expected_objects": [],
     "license": "CC BY / Public Domain",
-    "image_file": "indoor_floor_025.jpg"
+    "image_file": "indoor_floor_025.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "outdoor_footpath_001",
@@ -1858,7 +2108,9 @@
       "train"
     ],
     "license": "CC BY / Public Domain",
-    "image_file": "outdoor_footpath_001.jpg"
+    "image_file": "outdoor_footpath_001.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "outdoor_footpath_002",
@@ -1872,7 +2124,9 @@
       "car"
     ],
     "license": "CC BY / Public Domain",
-    "image_file": "outdoor_footpath_002.jpg"
+    "image_file": "outdoor_footpath_002.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "outdoor_footpath_003",
@@ -1887,7 +2141,9 @@
       "truck"
     ],
     "license": "CC BY / Public Domain",
-    "image_file": "outdoor_footpath_003.jpg"
+    "image_file": "outdoor_footpath_003.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "outdoor_footpath_004",
@@ -1899,7 +2155,9 @@
     "expected_hazards": [],
     "expected_objects": [],
     "license": "CC BY / Public Domain",
-    "image_file": "outdoor_footpath_004.jpg"
+    "image_file": "outdoor_footpath_004.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "outdoor_footpath_005",
@@ -1911,7 +2169,9 @@
     "expected_hazards": [],
     "expected_objects": [],
     "license": "CC BY / Public Domain",
-    "image_file": "outdoor_footpath_005.jpg"
+    "image_file": "outdoor_footpath_005.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "outdoor_footpath_006",
@@ -1925,7 +2185,9 @@
       "car"
     ],
     "license": "CC BY / Public Domain",
-    "image_file": "outdoor_footpath_006.jpg"
+    "image_file": "outdoor_footpath_006.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "outdoor_footpath_007",
@@ -1937,7 +2199,9 @@
     "expected_hazards": [],
     "expected_objects": [],
     "license": "CC BY / Public Domain",
-    "image_file": "outdoor_footpath_007.jpg"
+    "image_file": "outdoor_footpath_007.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "outdoor_footpath_008",
@@ -1949,7 +2213,9 @@
     "expected_hazards": [],
     "expected_objects": [],
     "license": "CC BY / Public Domain",
-    "image_file": "outdoor_footpath_008.jpg"
+    "image_file": "outdoor_footpath_008.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "outdoor_footpath_009",
@@ -1961,7 +2227,9 @@
     "expected_hazards": [],
     "expected_objects": [],
     "license": "CC BY / Public Domain",
-    "image_file": "outdoor_footpath_009.jpg"
+    "image_file": "outdoor_footpath_009.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "outdoor_footpath_010",
@@ -1973,7 +2241,9 @@
     "expected_hazards": [],
     "expected_objects": [],
     "license": "CC BY / Public Domain",
-    "image_file": "outdoor_footpath_010.jpg"
+    "image_file": "outdoor_footpath_010.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "outdoor_footpath_011",
@@ -1985,7 +2255,9 @@
     "expected_hazards": [],
     "expected_objects": [],
     "license": "CC BY / Public Domain",
-    "image_file": "outdoor_footpath_011.jpg"
+    "image_file": "outdoor_footpath_011.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "outdoor_footpath_012",
@@ -1997,7 +2269,9 @@
     "expected_hazards": [],
     "expected_objects": [],
     "license": "CC BY / Public Domain",
-    "image_file": "outdoor_footpath_012.jpg"
+    "image_file": "outdoor_footpath_012.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "outdoor_footpath_013",
@@ -2009,7 +2283,9 @@
     "expected_hazards": [],
     "expected_objects": [],
     "license": "CC BY / Public Domain",
-    "image_file": "outdoor_footpath_013.jpg"
+    "image_file": "outdoor_footpath_013.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "outdoor_footpath_014",
@@ -2021,7 +2297,9 @@
     "expected_hazards": [],
     "expected_objects": [],
     "license": "CC BY / Public Domain",
-    "image_file": "outdoor_footpath_014.jpg"
+    "image_file": "outdoor_footpath_014.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "outdoor_footpath_015",
@@ -2033,7 +2311,9 @@
     "expected_hazards": [],
     "expected_objects": [],
     "license": "CC BY / Public Domain",
-    "image_file": "outdoor_footpath_015.jpg"
+    "image_file": "outdoor_footpath_015.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "outdoor_footpath_016",
@@ -2045,7 +2325,9 @@
     "expected_hazards": [],
     "expected_objects": [],
     "license": "CC BY / Public Domain",
-    "image_file": "outdoor_footpath_016.jpg"
+    "image_file": "outdoor_footpath_016.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "outdoor_footpath_017",
@@ -2057,7 +2339,9 @@
     "expected_hazards": [],
     "expected_objects": [],
     "license": "CC BY / Public Domain",
-    "image_file": "outdoor_footpath_017.jpg"
+    "image_file": "outdoor_footpath_017.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "outdoor_footpath_018",
@@ -2069,7 +2353,9 @@
     "expected_hazards": [],
     "expected_objects": [],
     "license": "CC BY / Public Domain",
-    "image_file": "outdoor_footpath_018.jpg"
+    "image_file": "outdoor_footpath_018.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "outdoor_footpath_019",
@@ -2081,7 +2367,9 @@
     "expected_hazards": [],
     "expected_objects": [],
     "license": "CC BY / Public Domain",
-    "image_file": "outdoor_footpath_019.jpg"
+    "image_file": "outdoor_footpath_019.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "outdoor_footpath_020",
@@ -2093,7 +2381,9 @@
     "expected_hazards": [],
     "expected_objects": [],
     "license": "CC BY / Public Domain",
-    "image_file": "outdoor_footpath_020.jpg"
+    "image_file": "outdoor_footpath_020.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "outdoor_footpath_021",
@@ -2105,7 +2395,9 @@
     "expected_hazards": [],
     "expected_objects": [],
     "license": "CC BY / Public Domain",
-    "image_file": "outdoor_footpath_021.jpg"
+    "image_file": "outdoor_footpath_021.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "outdoor_footpath_022",
@@ -2117,7 +2409,9 @@
     "expected_hazards": [],
     "expected_objects": [],
     "license": "CC BY / Public Domain",
-    "image_file": "outdoor_footpath_022.jpg"
+    "image_file": "outdoor_footpath_022.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "outdoor_footpath_023",
@@ -2129,7 +2423,9 @@
     "expected_hazards": [],
     "expected_objects": [],
     "license": "CC BY / Public Domain",
-    "image_file": "outdoor_footpath_023.jpg"
+    "image_file": "outdoor_footpath_023.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "outdoor_footpath_024",
@@ -2141,7 +2437,9 @@
     "expected_hazards": [],
     "expected_objects": [],
     "license": "CC BY / Public Domain",
-    "image_file": "outdoor_footpath_024.jpg"
+    "image_file": "outdoor_footpath_024.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "outdoor_footpath_025",
@@ -2153,7 +2451,9 @@
     "expected_hazards": [],
     "expected_objects": [],
     "license": "CC BY / Public Domain",
-    "image_file": "outdoor_footpath_025.jpg"
+    "image_file": "outdoor_footpath_025.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "outdoor_road_clear_001",
@@ -2169,7 +2469,9 @@
       "dog"
     ],
     "license": "CC BY / Public Domain",
-    "image_file": "outdoor_road_clear_001.jpg"
+    "image_file": "outdoor_road_clear_001.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "outdoor_road_clear_002",
@@ -2186,7 +2488,9 @@
       "suitcase"
     ],
     "license": "CC BY / Public Domain",
-    "image_file": "outdoor_road_clear_002.jpg"
+    "image_file": "outdoor_road_clear_002.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "outdoor_road_clear_003",
@@ -2203,7 +2507,9 @@
       "car"
     ],
     "license": "CC BY / Public Domain",
-    "image_file": "outdoor_road_clear_003.jpg"
+    "image_file": "outdoor_road_clear_003.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "outdoor_road_clear_004",
@@ -2220,7 +2526,9 @@
       "dog"
     ],
     "license": "CC BY / Public Domain",
-    "image_file": "outdoor_road_clear_004.jpg"
+    "image_file": "outdoor_road_clear_004.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "outdoor_road_clear_005",
@@ -2235,7 +2543,9 @@
       "motorcycle"
     ],
     "license": "CC BY / Public Domain",
-    "image_file": "outdoor_road_clear_005.jpg"
+    "image_file": "outdoor_road_clear_005.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "outdoor_road_clear_006",
@@ -2250,7 +2560,9 @@
       "motorcycle"
     ],
     "license": "CC BY / Public Domain",
-    "image_file": "outdoor_road_clear_006.jpg"
+    "image_file": "outdoor_road_clear_006.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "outdoor_road_clear_007",
@@ -2266,7 +2578,9 @@
       "truck"
     ],
     "license": "CC BY / Public Domain",
-    "image_file": "outdoor_road_clear_007.jpg"
+    "image_file": "outdoor_road_clear_007.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "outdoor_road_clear_008",
@@ -2282,7 +2596,9 @@
       "motorcycle"
     ],
     "license": "CC BY / Public Domain",
-    "image_file": "outdoor_road_clear_008.jpg"
+    "image_file": "outdoor_road_clear_008.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "outdoor_road_clear_009",
@@ -2298,7 +2614,9 @@
       "truck"
     ],
     "license": "CC BY / Public Domain",
-    "image_file": "outdoor_road_clear_009.jpg"
+    "image_file": "outdoor_road_clear_009.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "outdoor_road_clear_010",
@@ -2310,7 +2628,9 @@
     "expected_hazards": [],
     "expected_objects": [],
     "license": "CC BY / Public Domain",
-    "image_file": "outdoor_road_clear_010.jpg"
+    "image_file": "outdoor_road_clear_010.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "outdoor_road_clear_011",
@@ -2322,7 +2642,9 @@
     "expected_hazards": [],
     "expected_objects": [],
     "license": "CC BY / Public Domain",
-    "image_file": "outdoor_road_clear_011.jpg"
+    "image_file": "outdoor_road_clear_011.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "outdoor_road_clear_012",
@@ -2334,7 +2656,9 @@
     "expected_hazards": [],
     "expected_objects": [],
     "license": "CC BY / Public Domain",
-    "image_file": "outdoor_road_clear_012.jpg"
+    "image_file": "outdoor_road_clear_012.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "outdoor_road_clear_013",
@@ -2346,7 +2670,9 @@
     "expected_hazards": [],
     "expected_objects": [],
     "license": "CC BY / Public Domain",
-    "image_file": "outdoor_road_clear_013.jpg"
+    "image_file": "outdoor_road_clear_013.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "outdoor_road_clear_014",
@@ -2360,7 +2686,9 @@
       "person"
     ],
     "license": "CC BY / Public Domain",
-    "image_file": "outdoor_road_clear_014.jpg"
+    "image_file": "outdoor_road_clear_014.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "outdoor_road_clear_015",
@@ -2375,7 +2703,9 @@
       "person"
     ],
     "license": "CC BY / Public Domain",
-    "image_file": "outdoor_road_clear_015.jpg"
+    "image_file": "outdoor_road_clear_015.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "outdoor_road_clear_016",
@@ -2387,7 +2717,9 @@
     "expected_hazards": [],
     "expected_objects": [],
     "license": "CC BY / Public Domain",
-    "image_file": "outdoor_road_clear_016.jpg"
+    "image_file": "outdoor_road_clear_016.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "outdoor_road_clear_017",
@@ -2399,7 +2731,9 @@
     "expected_hazards": [],
     "expected_objects": [],
     "license": "CC BY / Public Domain",
-    "image_file": "outdoor_road_clear_017.jpg"
+    "image_file": "outdoor_road_clear_017.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "outdoor_road_clear_018",
@@ -2411,7 +2745,9 @@
     "expected_hazards": [],
     "expected_objects": [],
     "license": "CC BY / Public Domain",
-    "image_file": "outdoor_road_clear_018.jpg"
+    "image_file": "outdoor_road_clear_018.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "outdoor_road_clear_019",
@@ -2423,7 +2759,9 @@
     "expected_hazards": [],
     "expected_objects": [],
     "license": "CC BY / Public Domain",
-    "image_file": "outdoor_road_clear_019.jpg"
+    "image_file": "outdoor_road_clear_019.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "outdoor_road_clear_020",
@@ -2435,7 +2773,9 @@
     "expected_hazards": [],
     "expected_objects": [],
     "license": "CC BY / Public Domain",
-    "image_file": "outdoor_road_clear_020.jpg"
+    "image_file": "outdoor_road_clear_020.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "outdoor_road_clear_021",
@@ -2447,7 +2787,9 @@
     "expected_hazards": [],
     "expected_objects": [],
     "license": "CC BY / Public Domain",
-    "image_file": "outdoor_road_clear_021.jpg"
+    "image_file": "outdoor_road_clear_021.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "outdoor_road_clear_022",
@@ -2459,7 +2801,9 @@
     "expected_hazards": [],
     "expected_objects": [],
     "license": "CC BY / Public Domain",
-    "image_file": "outdoor_road_clear_022.jpg"
+    "image_file": "outdoor_road_clear_022.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "outdoor_road_clear_023",
@@ -2471,7 +2815,9 @@
     "expected_hazards": [],
     "expected_objects": [],
     "license": "CC BY / Public Domain",
-    "image_file": "outdoor_road_clear_023.jpg"
+    "image_file": "outdoor_road_clear_023.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "outdoor_road_clear_024",
@@ -2483,7 +2829,9 @@
     "expected_hazards": [],
     "expected_objects": [],
     "license": "CC BY / Public Domain",
-    "image_file": "outdoor_road_clear_024.jpg"
+    "image_file": "outdoor_road_clear_024.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "outdoor_road_clear_025",
@@ -2495,7 +2843,9 @@
     "expected_hazards": [],
     "expected_objects": [],
     "license": "CC BY / Public Domain",
-    "image_file": "outdoor_road_clear_025.jpg"
+    "image_file": "outdoor_road_clear_025.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "pedestrian_crossing_001",
@@ -2512,7 +2862,9 @@
       "handbag"
     ],
     "license": "CC BY / Public Domain",
-    "image_file": "pedestrian_crossing_001.jpg"
+    "image_file": "pedestrian_crossing_001.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "pedestrian_crossing_002",
@@ -2527,7 +2879,9 @@
       "traffic light"
     ],
     "license": "CC BY / Public Domain",
-    "image_file": "pedestrian_crossing_002.jpg"
+    "image_file": "pedestrian_crossing_002.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "pedestrian_crossing_003",
@@ -2541,7 +2895,9 @@
       "car"
     ],
     "license": "CC BY / Public Domain",
-    "image_file": "pedestrian_crossing_003.jpg"
+    "image_file": "pedestrian_crossing_003.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "pedestrian_crossing_004",
@@ -2556,7 +2912,9 @@
       "sports ball"
     ],
     "license": "CC BY / Public Domain",
-    "image_file": "pedestrian_crossing_004.jpg"
+    "image_file": "pedestrian_crossing_004.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "pedestrian_crossing_005",
@@ -2572,7 +2930,9 @@
       "person"
     ],
     "license": "CC BY / Public Domain",
-    "image_file": "pedestrian_crossing_005.jpg"
+    "image_file": "pedestrian_crossing_005.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "pedestrian_crossing_006",
@@ -2589,7 +2949,9 @@
       "person"
     ],
     "license": "CC BY / Public Domain",
-    "image_file": "pedestrian_crossing_006.jpg"
+    "image_file": "pedestrian_crossing_006.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "pedestrian_crossing_007",
@@ -2606,7 +2968,9 @@
       "motorcycle"
     ],
     "license": "CC BY / Public Domain",
-    "image_file": "pedestrian_crossing_007.jpg"
+    "image_file": "pedestrian_crossing_007.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "pedestrian_crossing_008",
@@ -2621,7 +2985,9 @@
       "traffic light"
     ],
     "license": "CC BY / Public Domain",
-    "image_file": "pedestrian_crossing_008.jpg"
+    "image_file": "pedestrian_crossing_008.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "pedestrian_crossing_009",
@@ -2633,7 +2999,9 @@
     "expected_hazards": [],
     "expected_objects": [],
     "license": "CC BY / Public Domain",
-    "image_file": "pedestrian_crossing_009.jpg"
+    "image_file": "pedestrian_crossing_009.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "pedestrian_crossing_010",
@@ -2647,7 +3015,9 @@
       "truck"
     ],
     "license": "CC BY / Public Domain",
-    "image_file": "pedestrian_crossing_010.jpg"
+    "image_file": "pedestrian_crossing_010.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "pedestrian_crossing_011",
@@ -2661,7 +3031,9 @@
       "car"
     ],
     "license": "CC BY / Public Domain",
-    "image_file": "pedestrian_crossing_011.jpg"
+    "image_file": "pedestrian_crossing_011.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "pedestrian_crossing_012",
@@ -2675,7 +3047,9 @@
       "car"
     ],
     "license": "CC BY / Public Domain",
-    "image_file": "pedestrian_crossing_012.jpg"
+    "image_file": "pedestrian_crossing_012.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "pedestrian_crossing_013",
@@ -2691,7 +3065,9 @@
       "person"
     ],
     "license": "CC BY / Public Domain",
-    "image_file": "pedestrian_crossing_013.jpg"
+    "image_file": "pedestrian_crossing_013.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "pedestrian_crossing_014",
@@ -2706,7 +3082,9 @@
       "person"
     ],
     "license": "CC BY / Public Domain",
-    "image_file": "pedestrian_crossing_014.jpg"
+    "image_file": "pedestrian_crossing_014.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "pedestrian_crossing_015",
@@ -2723,7 +3101,9 @@
       "truck"
     ],
     "license": "CC BY / Public Domain",
-    "image_file": "pedestrian_crossing_015.jpg"
+    "image_file": "pedestrian_crossing_015.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "pedestrian_crossing_016",
@@ -2740,7 +3120,9 @@
       "traffic light"
     ],
     "license": "CC BY / Public Domain",
-    "image_file": "pedestrian_crossing_016.jpg"
+    "image_file": "pedestrian_crossing_016.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "pedestrian_crossing_017",
@@ -2756,7 +3138,9 @@
       "bench"
     ],
     "license": "CC BY / Public Domain",
-    "image_file": "pedestrian_crossing_017.jpg"
+    "image_file": "pedestrian_crossing_017.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "pedestrian_crossing_018",
@@ -2772,7 +3156,9 @@
       "umbrella"
     ],
     "license": "CC BY / Public Domain",
-    "image_file": "pedestrian_crossing_018.jpg"
+    "image_file": "pedestrian_crossing_018.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "pedestrian_crossing_019",
@@ -2787,7 +3173,9 @@
       "car"
     ],
     "license": "CC BY / Public Domain",
-    "image_file": "pedestrian_crossing_019.jpg"
+    "image_file": "pedestrian_crossing_019.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "pedestrian_crossing_020",
@@ -2804,7 +3192,9 @@
       "car"
     ],
     "license": "CC BY / Public Domain",
-    "image_file": "pedestrian_crossing_020.jpg"
+    "image_file": "pedestrian_crossing_020.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "pedestrian_crossing_021",
@@ -2820,7 +3210,9 @@
       "traffic light"
     ],
     "license": "CC BY / Public Domain",
-    "image_file": "pedestrian_crossing_021.jpg"
+    "image_file": "pedestrian_crossing_021.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "pedestrian_crossing_022",
@@ -2838,7 +3230,9 @@
       "handbag"
     ],
     "license": "CC BY / Public Domain",
-    "image_file": "pedestrian_crossing_022.jpg"
+    "image_file": "pedestrian_crossing_022.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "pedestrian_crossing_023",
@@ -2856,7 +3250,9 @@
       "bus"
     ],
     "license": "CC BY / Public Domain",
-    "image_file": "pedestrian_crossing_023.jpg"
+    "image_file": "pedestrian_crossing_023.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "pedestrian_crossing_024",
@@ -2872,7 +3268,9 @@
       "backpack"
     ],
     "license": "CC BY / Public Domain",
-    "image_file": "pedestrian_crossing_024.jpg"
+    "image_file": "pedestrian_crossing_024.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "pedestrian_crossing_025",
@@ -2888,7 +3286,9 @@
       "traffic light"
     ],
     "license": "CC BY / Public Domain",
-    "image_file": "pedestrian_crossing_025.jpg"
+    "image_file": "pedestrian_crossing_025.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "road_manhole_001",
@@ -2900,7 +3300,9 @@
     "expected_hazards": [],
     "expected_objects": [],
     "license": "CC BY / Public Domain",
-    "image_file": "road_manhole_001.jpg"
+    "image_file": "road_manhole_001.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "road_manhole_002",
@@ -2912,7 +3314,9 @@
     "expected_hazards": [],
     "expected_objects": [],
     "license": "CC BY / Public Domain",
-    "image_file": "road_manhole_002.jpg"
+    "image_file": "road_manhole_002.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "road_manhole_003",
@@ -2927,7 +3331,9 @@
       "car"
     ],
     "license": "CC BY / Public Domain",
-    "image_file": "road_manhole_003.jpg"
+    "image_file": "road_manhole_003.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "road_manhole_004",
@@ -2942,7 +3348,9 @@
       "stop sign"
     ],
     "license": "CC BY / Public Domain",
-    "image_file": "road_manhole_004.jpg"
+    "image_file": "road_manhole_004.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "road_manhole_005",
@@ -2954,7 +3362,9 @@
     "expected_hazards": [],
     "expected_objects": [],
     "license": "CC BY / Public Domain",
-    "image_file": "road_manhole_005.jpg"
+    "image_file": "road_manhole_005.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "road_manhole_006",
@@ -2966,7 +3376,9 @@
     "expected_hazards": [],
     "expected_objects": [],
     "license": "CC BY / Public Domain",
-    "image_file": "road_manhole_006.jpg"
+    "image_file": "road_manhole_006.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "road_manhole_007",
@@ -2980,7 +3392,9 @@
       "clock"
     ],
     "license": "CC BY / Public Domain",
-    "image_file": "road_manhole_007.jpg"
+    "image_file": "road_manhole_007.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "road_manhole_008",
@@ -2992,7 +3406,9 @@
     "expected_hazards": [],
     "expected_objects": [],
     "license": "CC BY / Public Domain",
-    "image_file": "road_manhole_008.jpg"
+    "image_file": "road_manhole_008.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "road_manhole_009",
@@ -3007,7 +3423,9 @@
       "truck"
     ],
     "license": "CC BY / Public Domain",
-    "image_file": "road_manhole_009.jpg"
+    "image_file": "road_manhole_009.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "road_manhole_010",
@@ -3021,7 +3439,9 @@
       "car"
     ],
     "license": "CC BY / Public Domain",
-    "image_file": "road_manhole_010.jpg"
+    "image_file": "road_manhole_010.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "road_manhole_011",
@@ -3036,7 +3456,9 @@
       "stop sign"
     ],
     "license": "CC BY / Public Domain",
-    "image_file": "road_manhole_011.jpg"
+    "image_file": "road_manhole_011.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "road_manhole_012",
@@ -3048,7 +3470,9 @@
     "expected_hazards": [],
     "expected_objects": [],
     "license": "CC BY / Public Domain",
-    "image_file": "road_manhole_012.jpg"
+    "image_file": "road_manhole_012.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "road_manhole_013",
@@ -3060,7 +3484,9 @@
     "expected_hazards": [],
     "expected_objects": [],
     "license": "CC BY / Public Domain",
-    "image_file": "road_manhole_013.jpg"
+    "image_file": "road_manhole_013.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "road_manhole_014",
@@ -3072,7 +3498,9 @@
     "expected_hazards": [],
     "expected_objects": [],
     "license": "CC BY / Public Domain",
-    "image_file": "road_manhole_014.jpg"
+    "image_file": "road_manhole_014.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "road_manhole_015",
@@ -3084,7 +3512,9 @@
     "expected_hazards": [],
     "expected_objects": [],
     "license": "CC BY / Public Domain",
-    "image_file": "road_manhole_015.jpg"
+    "image_file": "road_manhole_015.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "road_manhole_016",
@@ -3096,7 +3526,9 @@
     "expected_hazards": [],
     "expected_objects": [],
     "license": "CC BY / Public Domain",
-    "image_file": "road_manhole_016.jpg"
+    "image_file": "road_manhole_016.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "road_manhole_017",
@@ -3108,7 +3540,9 @@
     "expected_hazards": [],
     "expected_objects": [],
     "license": "CC BY / Public Domain",
-    "image_file": "road_manhole_017.jpg"
+    "image_file": "road_manhole_017.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "road_manhole_018",
@@ -3124,7 +3558,9 @@
       "bicycle"
     ],
     "license": "CC BY / Public Domain",
-    "image_file": "road_manhole_018.jpg"
+    "image_file": "road_manhole_018.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "road_manhole_019",
@@ -3139,7 +3575,9 @@
       "person"
     ],
     "license": "CC BY / Public Domain",
-    "image_file": "road_manhole_019.jpg"
+    "image_file": "road_manhole_019.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "road_manhole_020",
@@ -3151,7 +3589,9 @@
     "expected_hazards": [],
     "expected_objects": [],
     "license": "CC BY / Public Domain",
-    "image_file": "road_manhole_020.jpg"
+    "image_file": "road_manhole_020.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "road_manhole_021",
@@ -3163,7 +3603,9 @@
     "expected_hazards": [],
     "expected_objects": [],
     "license": "CC BY / Public Domain",
-    "image_file": "road_manhole_021.jpg"
+    "image_file": "road_manhole_021.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "road_manhole_022",
@@ -3177,7 +3619,9 @@
       "frisbee"
     ],
     "license": "CC BY / Public Domain",
-    "image_file": "road_manhole_022.jpg"
+    "image_file": "road_manhole_022.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "road_manhole_023",
@@ -3192,7 +3636,9 @@
       "traffic light"
     ],
     "license": "CC BY / Public Domain",
-    "image_file": "road_manhole_023.jpg"
+    "image_file": "road_manhole_023.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "road_manhole_024",
@@ -3204,7 +3650,9 @@
     "expected_hazards": [],
     "expected_objects": [],
     "license": "CC BY / Public Domain",
-    "image_file": "road_manhole_024.jpg"
+    "image_file": "road_manhole_024.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "road_manhole_025",
@@ -3219,7 +3667,9 @@
       "person"
     ],
     "license": "CC BY / Public Domain",
-    "image_file": "road_manhole_025.jpg"
+    "image_file": "road_manhole_025.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "road_patch_puddle_001",
@@ -3231,7 +3681,9 @@
     "expected_hazards": [],
     "expected_objects": [],
     "license": "CC BY / Public Domain",
-    "image_file": "road_patch_puddle_001.jpg"
+    "image_file": "road_patch_puddle_001.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "road_patch_puddle_002",
@@ -3243,7 +3695,9 @@
     "expected_hazards": [],
     "expected_objects": [],
     "license": "CC BY / Public Domain",
-    "image_file": "road_patch_puddle_002.jpg"
+    "image_file": "road_patch_puddle_002.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "road_patch_puddle_003",
@@ -3255,7 +3709,9 @@
     "expected_hazards": [],
     "expected_objects": [],
     "license": "CC BY / Public Domain",
-    "image_file": "road_patch_puddle_003.jpg"
+    "image_file": "road_patch_puddle_003.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "road_patch_puddle_004",
@@ -3267,7 +3723,9 @@
     "expected_hazards": [],
     "expected_objects": [],
     "license": "CC BY / Public Domain",
-    "image_file": "road_patch_puddle_004.jpg"
+    "image_file": "road_patch_puddle_004.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "road_patch_puddle_005",
@@ -3279,7 +3737,9 @@
     "expected_hazards": [],
     "expected_objects": [],
     "license": "CC BY / Public Domain",
-    "image_file": "road_patch_puddle_005.jpg"
+    "image_file": "road_patch_puddle_005.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "road_patch_puddle_006",
@@ -3291,7 +3751,9 @@
     "expected_hazards": [],
     "expected_objects": [],
     "license": "CC BY / Public Domain",
-    "image_file": "road_patch_puddle_006.jpg"
+    "image_file": "road_patch_puddle_006.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "road_patch_puddle_007",
@@ -3306,7 +3768,9 @@
       "person"
     ],
     "license": "CC BY / Public Domain",
-    "image_file": "road_patch_puddle_007.jpg"
+    "image_file": "road_patch_puddle_007.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "road_patch_puddle_008",
@@ -3322,7 +3786,9 @@
       "car"
     ],
     "license": "CC BY / Public Domain",
-    "image_file": "road_patch_puddle_008.jpg"
+    "image_file": "road_patch_puddle_008.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "road_patch_puddle_009",
@@ -3334,7 +3800,9 @@
     "expected_hazards": [],
     "expected_objects": [],
     "license": "CC BY / Public Domain",
-    "image_file": "road_patch_puddle_009.jpg"
+    "image_file": "road_patch_puddle_009.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "road_patch_puddle_010",
@@ -3349,7 +3817,9 @@
       "cow"
     ],
     "license": "CC BY / Public Domain",
-    "image_file": "road_patch_puddle_010.jpg"
+    "image_file": "road_patch_puddle_010.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "road_patch_puddle_011",
@@ -3365,7 +3835,9 @@
       "person"
     ],
     "license": "CC BY / Public Domain",
-    "image_file": "road_patch_puddle_011.jpg"
+    "image_file": "road_patch_puddle_011.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "road_patch_puddle_012",
@@ -3379,7 +3851,9 @@
       "person"
     ],
     "license": "CC BY / Public Domain",
-    "image_file": "road_patch_puddle_012.jpg"
+    "image_file": "road_patch_puddle_012.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "road_patch_puddle_013",
@@ -3391,7 +3865,9 @@
     "expected_hazards": [],
     "expected_objects": [],
     "license": "CC BY / Public Domain",
-    "image_file": "road_patch_puddle_013.jpg"
+    "image_file": "road_patch_puddle_013.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "road_patch_puddle_014",
@@ -3403,7 +3879,9 @@
     "expected_hazards": [],
     "expected_objects": [],
     "license": "CC BY / Public Domain",
-    "image_file": "road_patch_puddle_014.jpg"
+    "image_file": "road_patch_puddle_014.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "road_patch_puddle_015",
@@ -3415,7 +3893,9 @@
     "expected_hazards": [],
     "expected_objects": [],
     "license": "CC BY / Public Domain",
-    "image_file": "road_patch_puddle_015.jpg"
+    "image_file": "road_patch_puddle_015.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "road_patch_puddle_016",
@@ -3427,7 +3907,9 @@
     "expected_hazards": [],
     "expected_objects": [],
     "license": "CC BY / Public Domain",
-    "image_file": "road_patch_puddle_016.jpg"
+    "image_file": "road_patch_puddle_016.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "road_patch_puddle_017",
@@ -3442,7 +3924,9 @@
       "person"
     ],
     "license": "CC BY / Public Domain",
-    "image_file": "road_patch_puddle_017.jpg"
+    "image_file": "road_patch_puddle_017.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "road_patch_puddle_018",
@@ -3454,7 +3938,9 @@
     "expected_hazards": [],
     "expected_objects": [],
     "license": "CC BY / Public Domain",
-    "image_file": "road_patch_puddle_018.jpg"
+    "image_file": "road_patch_puddle_018.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "road_patch_puddle_019",
@@ -3466,7 +3952,9 @@
     "expected_hazards": [],
     "expected_objects": [],
     "license": "CC BY / Public Domain",
-    "image_file": "road_patch_puddle_019.jpg"
+    "image_file": "road_patch_puddle_019.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "road_patch_puddle_020",
@@ -3478,7 +3966,9 @@
     "expected_hazards": [],
     "expected_objects": [],
     "license": "CC BY / Public Domain",
-    "image_file": "road_patch_puddle_020.jpg"
+    "image_file": "road_patch_puddle_020.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "road_patch_puddle_021",
@@ -3490,7 +3980,9 @@
     "expected_hazards": [],
     "expected_objects": [],
     "license": "CC BY / Public Domain",
-    "image_file": "road_patch_puddle_021.jpg"
+    "image_file": "road_patch_puddle_021.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "road_patch_puddle_022",
@@ -3502,7 +3994,9 @@
     "expected_hazards": [],
     "expected_objects": [],
     "license": "CC BY / Public Domain",
-    "image_file": "road_patch_puddle_022.jpg"
+    "image_file": "road_patch_puddle_022.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "road_patch_puddle_023",
@@ -3519,7 +4013,9 @@
       "truck"
     ],
     "license": "CC BY / Public Domain",
-    "image_file": "road_patch_puddle_023.jpg"
+    "image_file": "road_patch_puddle_023.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "road_patch_puddle_024",
@@ -3531,7 +4027,9 @@
     "expected_hazards": [],
     "expected_objects": [],
     "license": "CC BY / Public Domain",
-    "image_file": "road_patch_puddle_024.jpg"
+    "image_file": "road_patch_puddle_024.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "road_patch_puddle_025",
@@ -3543,7 +4041,9 @@
     "expected_hazards": [],
     "expected_objects": [],
     "license": "CC BY / Public Domain",
-    "image_file": "road_patch_puddle_025.jpg"
+    "image_file": "road_patch_puddle_025.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "road_pothole_001",
@@ -3561,7 +4061,9 @@
       "cell phone"
     ],
     "license": "CC BY / Public Domain",
-    "image_file": "road_pothole_001.jpg"
+    "image_file": "road_pothole_001.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "road_pothole_002",
@@ -3578,7 +4080,9 @@
       "baseball bat"
     ],
     "license": "CC BY / Public Domain",
-    "image_file": "road_pothole_002.jpg"
+    "image_file": "road_pothole_002.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "road_pothole_003",
@@ -3596,7 +4100,9 @@
       "car"
     ],
     "license": "CC BY / Public Domain",
-    "image_file": "road_pothole_003.jpg"
+    "image_file": "road_pothole_003.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "road_pothole_004",
@@ -3610,7 +4116,9 @@
     ],
     "expected_objects": [],
     "license": "CC BY / Public Domain",
-    "image_file": "road_pothole_004.jpg"
+    "image_file": "road_pothole_004.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "road_pothole_005",
@@ -3626,7 +4134,9 @@
       "car"
     ],
     "license": "CC BY / Public Domain",
-    "image_file": "road_pothole_005.jpg"
+    "image_file": "road_pothole_005.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "road_pothole_006",
@@ -3643,7 +4153,9 @@
       "person"
     ],
     "license": "CC BY / Public Domain",
-    "image_file": "road_pothole_006.jpg"
+    "image_file": "road_pothole_006.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "road_pothole_007",
@@ -3660,7 +4172,9 @@
       "truck"
     ],
     "license": "CC BY / Public Domain",
-    "image_file": "road_pothole_007.jpg"
+    "image_file": "road_pothole_007.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "road_pothole_008",
@@ -3676,7 +4190,9 @@
       "car"
     ],
     "license": "CC BY / Public Domain",
-    "image_file": "road_pothole_008.jpg"
+    "image_file": "road_pothole_008.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "road_pothole_009",
@@ -3694,7 +4210,9 @@
       "cell phone"
     ],
     "license": "CC BY / Public Domain",
-    "image_file": "road_pothole_009.jpg"
+    "image_file": "road_pothole_009.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "road_pothole_010",
@@ -3711,7 +4229,9 @@
       "baseball bat"
     ],
     "license": "CC BY / Public Domain",
-    "image_file": "road_pothole_010.jpg"
+    "image_file": "road_pothole_010.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "road_pothole_011",
@@ -3729,7 +4249,9 @@
       "car"
     ],
     "license": "CC BY / Public Domain",
-    "image_file": "road_pothole_011.jpg"
+    "image_file": "road_pothole_011.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "road_pothole_012",
@@ -3743,7 +4265,9 @@
     ],
     "expected_objects": [],
     "license": "CC BY / Public Domain",
-    "image_file": "road_pothole_012.jpg"
+    "image_file": "road_pothole_012.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "road_pothole_013",
@@ -3759,7 +4283,9 @@
       "car"
     ],
     "license": "CC BY / Public Domain",
-    "image_file": "road_pothole_013.jpg"
+    "image_file": "road_pothole_013.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "road_pothole_014",
@@ -3776,7 +4302,9 @@
       "person"
     ],
     "license": "CC BY / Public Domain",
-    "image_file": "road_pothole_014.jpg"
+    "image_file": "road_pothole_014.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "road_pothole_015",
@@ -3793,7 +4321,9 @@
       "truck"
     ],
     "license": "CC BY / Public Domain",
-    "image_file": "road_pothole_015.jpg"
+    "image_file": "road_pothole_015.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "road_pothole_016",
@@ -3809,7 +4339,9 @@
       "car"
     ],
     "license": "CC BY / Public Domain",
-    "image_file": "road_pothole_016.jpg"
+    "image_file": "road_pothole_016.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "road_pothole_017",
@@ -3823,7 +4355,9 @@
     ],
     "expected_objects": [],
     "license": "CC BY / Public Domain",
-    "image_file": "road_pothole_017.jpg"
+    "image_file": "road_pothole_017.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "road_pothole_018",
@@ -3837,7 +4371,9 @@
     ],
     "expected_objects": [],
     "license": "CC BY / Public Domain",
-    "image_file": "road_pothole_018.jpg"
+    "image_file": "road_pothole_018.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "road_pothole_019",
@@ -3853,7 +4389,9 @@
       "boat"
     ],
     "license": "CC BY / Public Domain",
-    "image_file": "road_pothole_019.jpg"
+    "image_file": "road_pothole_019.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "road_pothole_020",
@@ -3867,7 +4405,9 @@
     ],
     "expected_objects": [],
     "license": "CC BY / Public Domain",
-    "image_file": "road_pothole_020.jpg"
+    "image_file": "road_pothole_020.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "road_pothole_021",
@@ -3881,7 +4421,9 @@
     ],
     "expected_objects": [],
     "license": "CC BY / Public Domain",
-    "image_file": "road_pothole_021.jpg"
+    "image_file": "road_pothole_021.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "road_pothole_022",
@@ -3895,7 +4437,9 @@
     ],
     "expected_objects": [],
     "license": "CC BY / Public Domain",
-    "image_file": "road_pothole_022.jpg"
+    "image_file": "road_pothole_022.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "road_pothole_023",
@@ -3911,7 +4455,9 @@
       "elephant"
     ],
     "license": "CC BY / Public Domain",
-    "image_file": "road_pothole_023.jpg"
+    "image_file": "road_pothole_023.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "road_pothole_024",
@@ -3925,7 +4471,9 @@
     ],
     "expected_objects": [],
     "license": "CC BY / Public Domain",
-    "image_file": "road_pothole_024.jpg"
+    "image_file": "road_pothole_024.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "road_pothole_025",
@@ -3941,7 +4489,9 @@
       "person"
     ],
     "license": "CC BY / Public Domain",
-    "image_file": "road_pothole_025.jpg"
+    "image_file": "road_pothole_025.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "stairs_down_001",
@@ -3955,7 +4505,9 @@
       "person"
     ],
     "license": "CC BY / Public Domain",
-    "image_file": "stairs_down_001.jpg"
+    "image_file": "stairs_down_001.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "stairs_down_002",
@@ -3970,7 +4522,9 @@
       "potted plant"
     ],
     "license": "CC BY / Public Domain",
-    "image_file": "stairs_down_002.jpg"
+    "image_file": "stairs_down_002.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "stairs_down_003",
@@ -3985,7 +4539,9 @@
       "chair"
     ],
     "license": "CC BY / Public Domain",
-    "image_file": "stairs_down_003.jpg"
+    "image_file": "stairs_down_003.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "stairs_down_004",
@@ -3997,7 +4553,9 @@
     "expected_hazards": [],
     "expected_objects": [],
     "license": "CC BY / Public Domain",
-    "image_file": "stairs_down_004.jpg"
+    "image_file": "stairs_down_004.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "stairs_down_005",
@@ -4013,7 +4571,9 @@
       "tv"
     ],
     "license": "CC BY / Public Domain",
-    "image_file": "stairs_down_005.jpg"
+    "image_file": "stairs_down_005.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "stairs_down_006",
@@ -4025,7 +4585,9 @@
     "expected_hazards": [],
     "expected_objects": [],
     "license": "CC BY / Public Domain",
-    "image_file": "stairs_down_006.jpg"
+    "image_file": "stairs_down_006.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "stairs_down_007",
@@ -4040,7 +4602,9 @@
       "chair"
     ],
     "license": "CC BY / Public Domain",
-    "image_file": "stairs_down_007.jpg"
+    "image_file": "stairs_down_007.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "stairs_down_008",
@@ -4052,7 +4616,9 @@
     "expected_hazards": [],
     "expected_objects": [],
     "license": "CC BY / Public Domain",
-    "image_file": "stairs_down_008.jpg"
+    "image_file": "stairs_down_008.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "stairs_down_009",
@@ -4071,7 +4637,9 @@
       "cup"
     ],
     "license": "CC BY / Public Domain",
-    "image_file": "stairs_down_009.jpg"
+    "image_file": "stairs_down_009.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "stairs_down_010",
@@ -4085,7 +4653,9 @@
       "person"
     ],
     "license": "CC BY / Public Domain",
-    "image_file": "stairs_down_010.jpg"
+    "image_file": "stairs_down_010.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "stairs_down_011",
@@ -4099,7 +4669,9 @@
       "person"
     ],
     "license": "CC BY / Public Domain",
-    "image_file": "stairs_down_011.jpg"
+    "image_file": "stairs_down_011.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "stairs_down_012",
@@ -4113,7 +4685,9 @@
       "person"
     ],
     "license": "CC BY / Public Domain",
-    "image_file": "stairs_down_012.jpg"
+    "image_file": "stairs_down_012.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "stairs_down_013",
@@ -4127,7 +4701,9 @@
       "person"
     ],
     "license": "CC BY / Public Domain",
-    "image_file": "stairs_down_013.jpg"
+    "image_file": "stairs_down_013.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "stairs_down_014",
@@ -4139,7 +4715,9 @@
     "expected_hazards": [],
     "expected_objects": [],
     "license": "CC BY / Public Domain",
-    "image_file": "stairs_down_014.jpg"
+    "image_file": "stairs_down_014.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "stairs_down_015",
@@ -4151,7 +4729,9 @@
     "expected_hazards": [],
     "expected_objects": [],
     "license": "CC BY / Public Domain",
-    "image_file": "stairs_down_015.jpg"
+    "image_file": "stairs_down_015.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "stairs_down_016",
@@ -4163,7 +4743,9 @@
     "expected_hazards": [],
     "expected_objects": [],
     "license": "CC BY / Public Domain",
-    "image_file": "stairs_down_016.jpg"
+    "image_file": "stairs_down_016.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "stairs_down_017",
@@ -4175,7 +4757,9 @@
     "expected_hazards": [],
     "expected_objects": [],
     "license": "CC BY / Public Domain",
-    "image_file": "stairs_down_017.jpg"
+    "image_file": "stairs_down_017.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "stairs_down_018",
@@ -4190,7 +4774,9 @@
       "suitcase"
     ],
     "license": "CC BY / Public Domain",
-    "image_file": "stairs_down_018.jpg"
+    "image_file": "stairs_down_018.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "stairs_down_019",
@@ -4205,7 +4791,9 @@
       "person"
     ],
     "license": "CC BY / Public Domain",
-    "image_file": "stairs_down_019.jpg"
+    "image_file": "stairs_down_019.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "stairs_down_020",
@@ -4220,7 +4808,9 @@
       "person"
     ],
     "license": "CC BY / Public Domain",
-    "image_file": "stairs_down_020.jpg"
+    "image_file": "stairs_down_020.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "stairs_down_021",
@@ -4232,7 +4822,9 @@
     "expected_hazards": [],
     "expected_objects": [],
     "license": "CC BY / Public Domain",
-    "image_file": "stairs_down_021.jpg"
+    "image_file": "stairs_down_021.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "stairs_down_022",
@@ -4244,7 +4836,9 @@
     "expected_hazards": [],
     "expected_objects": [],
     "license": "CC BY / Public Domain",
-    "image_file": "stairs_down_022.jpg"
+    "image_file": "stairs_down_022.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "stairs_down_023",
@@ -4256,7 +4850,9 @@
     "expected_hazards": [],
     "expected_objects": [],
     "license": "CC BY / Public Domain",
-    "image_file": "stairs_down_023.jpg"
+    "image_file": "stairs_down_023.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "stairs_down_024",
@@ -4268,7 +4864,9 @@
     "expected_hazards": [],
     "expected_objects": [],
     "license": "CC BY / Public Domain",
-    "image_file": "stairs_down_024.jpg"
+    "image_file": "stairs_down_024.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "stairs_down_025",
@@ -4280,7 +4878,9 @@
     "expected_hazards": [],
     "expected_objects": [],
     "license": "CC BY / Public Domain",
-    "image_file": "stairs_down_025.jpg"
+    "image_file": "stairs_down_025.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "stairs_up_001",
@@ -4294,7 +4894,9 @@
       "person"
     ],
     "license": "CC BY / Public Domain",
-    "image_file": "stairs_up_001.jpg"
+    "image_file": "stairs_up_001.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "stairs_up_002",
@@ -4306,7 +4908,9 @@
     "expected_hazards": [],
     "expected_objects": [],
     "license": "CC BY / Public Domain",
-    "image_file": "stairs_up_002.jpg"
+    "image_file": "stairs_up_002.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "stairs_up_003",
@@ -4321,7 +4925,9 @@
       "tie"
     ],
     "license": "CC BY / Public Domain",
-    "image_file": "stairs_up_003.jpg"
+    "image_file": "stairs_up_003.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "stairs_up_004",
@@ -4337,7 +4943,9 @@
       "book"
     ],
     "license": "CC BY / Public Domain",
-    "image_file": "stairs_up_004.jpg"
+    "image_file": "stairs_up_004.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "stairs_up_005",
@@ -4353,7 +4961,9 @@
       "baseball bat"
     ],
     "license": "CC BY / Public Domain",
-    "image_file": "stairs_up_005.jpg"
+    "image_file": "stairs_up_005.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "stairs_up_006",
@@ -4365,7 +4975,9 @@
     "expected_hazards": [],
     "expected_objects": [],
     "license": "CC BY / Public Domain",
-    "image_file": "stairs_up_006.jpg"
+    "image_file": "stairs_up_006.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "stairs_up_007",
@@ -4379,7 +4991,9 @@
       "clock"
     ],
     "license": "CC BY / Public Domain",
-    "image_file": "stairs_up_007.jpg"
+    "image_file": "stairs_up_007.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "stairs_up_008",
@@ -4394,7 +5008,9 @@
       "potted plant"
     ],
     "license": "CC BY / Public Domain",
-    "image_file": "stairs_up_008.jpg"
+    "image_file": "stairs_up_008.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "stairs_up_009",
@@ -4408,7 +5024,9 @@
       "potted plant"
     ],
     "license": "CC BY / Public Domain",
-    "image_file": "stairs_up_009.jpg"
+    "image_file": "stairs_up_009.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "stairs_up_010",
@@ -4422,7 +5040,9 @@
       "person"
     ],
     "license": "CC BY / Public Domain",
-    "image_file": "stairs_up_010.jpg"
+    "image_file": "stairs_up_010.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "stairs_up_011",
@@ -4436,7 +5056,9 @@
       "person"
     ],
     "license": "CC BY / Public Domain",
-    "image_file": "stairs_up_011.jpg"
+    "image_file": "stairs_up_011.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "stairs_up_012",
@@ -4451,7 +5073,9 @@
       "person"
     ],
     "license": "CC BY / Public Domain",
-    "image_file": "stairs_up_012.jpg"
+    "image_file": "stairs_up_012.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "stairs_up_013",
@@ -4468,7 +5092,9 @@
       "vase"
     ],
     "license": "CC BY / Public Domain",
-    "image_file": "stairs_up_013.jpg"
+    "image_file": "stairs_up_013.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "stairs_up_014",
@@ -4485,7 +5111,9 @@
       "book"
     ],
     "license": "CC BY / Public Domain",
-    "image_file": "stairs_up_014.jpg"
+    "image_file": "stairs_up_014.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "stairs_up_015",
@@ -4500,7 +5128,9 @@
       "person"
     ],
     "license": "CC BY / Public Domain",
-    "image_file": "stairs_up_015.jpg"
+    "image_file": "stairs_up_015.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "stairs_up_016",
@@ -4512,7 +5142,9 @@
     "expected_hazards": [],
     "expected_objects": [],
     "license": "CC BY / Public Domain",
-    "image_file": "stairs_up_016.jpg"
+    "image_file": "stairs_up_016.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "stairs_up_017",
@@ -4527,7 +5159,9 @@
       "tie"
     ],
     "license": "CC BY / Public Domain",
-    "image_file": "stairs_up_017.jpg"
+    "image_file": "stairs_up_017.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "stairs_up_018",
@@ -4539,7 +5173,9 @@
     "expected_hazards": [],
     "expected_objects": [],
     "license": "CC BY / Public Domain",
-    "image_file": "stairs_up_018.jpg"
+    "image_file": "stairs_up_018.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "stairs_up_019",
@@ -4553,7 +5189,9 @@
       "person"
     ],
     "license": "CC BY / Public Domain",
-    "image_file": "stairs_up_019.jpg"
+    "image_file": "stairs_up_019.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "stairs_up_020",
@@ -4565,7 +5203,9 @@
     "expected_hazards": [],
     "expected_objects": [],
     "license": "CC BY / Public Domain",
-    "image_file": "stairs_up_020.jpg"
+    "image_file": "stairs_up_020.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "stairs_up_021",
@@ -4577,7 +5217,9 @@
     "expected_hazards": [],
     "expected_objects": [],
     "license": "CC BY / Public Domain",
-    "image_file": "stairs_up_021.jpg"
+    "image_file": "stairs_up_021.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "stairs_up_022",
@@ -4591,7 +5233,9 @@
       "person"
     ],
     "license": "CC BY / Public Domain",
-    "image_file": "stairs_up_022.jpg"
+    "image_file": "stairs_up_022.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "stairs_up_023",
@@ -4606,7 +5250,9 @@
       "truck"
     ],
     "license": "CC BY / Public Domain",
-    "image_file": "stairs_up_023.jpg"
+    "image_file": "stairs_up_023.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "stairs_up_024",
@@ -4621,7 +5267,9 @@
       "car"
     ],
     "license": "CC BY / Public Domain",
-    "image_file": "stairs_up_024.jpg"
+    "image_file": "stairs_up_024.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "stairs_up_025",
@@ -4636,7 +5284,9 @@
       "car"
     ],
     "license": "CC BY / Public Domain",
-    "image_file": "stairs_up_025.jpg"
+    "image_file": "stairs_up_025.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "table_corner_001",
@@ -4652,7 +5302,9 @@
       "vase"
     ],
     "license": "CC BY / Public Domain",
-    "image_file": "table_corner_001.jpg"
+    "image_file": "table_corner_001.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "table_corner_002",
@@ -4664,7 +5316,9 @@
     "expected_hazards": [],
     "expected_objects": [],
     "license": "CC BY / Public Domain",
-    "image_file": "table_corner_002.jpg"
+    "image_file": "table_corner_002.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "table_corner_003",
@@ -4679,7 +5333,9 @@
       "bowl"
     ],
     "license": "CC BY / Public Domain",
-    "image_file": "table_corner_003.jpg"
+    "image_file": "table_corner_003.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "table_corner_004",
@@ -4697,7 +5353,9 @@
       "umbrella"
     ],
     "license": "CC BY / Public Domain",
-    "image_file": "table_corner_004.jpg"
+    "image_file": "table_corner_004.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "table_corner_005",
@@ -4712,7 +5370,9 @@
       "sports ball"
     ],
     "license": "CC BY / Public Domain",
-    "image_file": "table_corner_005.jpg"
+    "image_file": "table_corner_005.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "table_corner_006",
@@ -4728,7 +5388,9 @@
       "tv"
     ],
     "license": "CC BY / Public Domain",
-    "image_file": "table_corner_006.jpg"
+    "image_file": "table_corner_006.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "table_corner_007",
@@ -4746,7 +5408,9 @@
       "book"
     ],
     "license": "CC BY / Public Domain",
-    "image_file": "table_corner_007.jpg"
+    "image_file": "table_corner_007.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "table_corner_008",
@@ -4760,7 +5424,9 @@
       "person"
     ],
     "license": "CC BY / Public Domain",
-    "image_file": "table_corner_008.jpg"
+    "image_file": "table_corner_008.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "table_corner_009",
@@ -4775,7 +5441,9 @@
       "book"
     ],
     "license": "CC BY / Public Domain",
-    "image_file": "table_corner_009.jpg"
+    "image_file": "table_corner_009.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "table_corner_010",
@@ -4789,7 +5457,9 @@
       "bench"
     ],
     "license": "CC BY / Public Domain",
-    "image_file": "table_corner_010.jpg"
+    "image_file": "table_corner_010.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "table_corner_011",
@@ -4803,7 +5473,9 @@
       "train"
     ],
     "license": "CC BY / Public Domain",
-    "image_file": "table_corner_011.jpg"
+    "image_file": "table_corner_011.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "table_corner_012",
@@ -4818,7 +5490,9 @@
       "book"
     ],
     "license": "CC BY / Public Domain",
-    "image_file": "table_corner_012.jpg"
+    "image_file": "table_corner_012.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "table_corner_013",
@@ -4834,7 +5508,9 @@
       "couch"
     ],
     "license": "CC BY / Public Domain",
-    "image_file": "table_corner_013.jpg"
+    "image_file": "table_corner_013.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "table_corner_014",
@@ -4851,7 +5527,9 @@
       "clock"
     ],
     "license": "CC BY / Public Domain",
-    "image_file": "table_corner_014.jpg"
+    "image_file": "table_corner_014.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "table_corner_015",
@@ -4863,7 +5541,9 @@
     "expected_hazards": [],
     "expected_objects": [],
     "license": "CC BY / Public Domain",
-    "image_file": "table_corner_015.jpg"
+    "image_file": "table_corner_015.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "table_corner_016",
@@ -4875,7 +5555,9 @@
     "expected_hazards": [],
     "expected_objects": [],
     "license": "CC BY / Public Domain",
-    "image_file": "table_corner_016.jpg"
+    "image_file": "table_corner_016.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "table_corner_017",
@@ -4889,7 +5571,9 @@
       "bench"
     ],
     "license": "CC BY / Public Domain",
-    "image_file": "table_corner_017.jpg"
+    "image_file": "table_corner_017.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "table_corner_018",
@@ -4901,7 +5585,9 @@
     "expected_hazards": [],
     "expected_objects": [],
     "license": "CC BY / Public Domain",
-    "image_file": "table_corner_018.jpg"
+    "image_file": "table_corner_018.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "table_corner_019",
@@ -4913,7 +5599,9 @@
     "expected_hazards": [],
     "expected_objects": [],
     "license": "CC BY / Public Domain",
-    "image_file": "table_corner_019.jpg"
+    "image_file": "table_corner_019.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "table_corner_020",
@@ -4925,7 +5613,9 @@
     "expected_hazards": [],
     "expected_objects": [],
     "license": "CC BY / Public Domain",
-    "image_file": "table_corner_020.jpg"
+    "image_file": "table_corner_020.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "table_corner_021",
@@ -4939,7 +5629,9 @@
       "vase"
     ],
     "license": "CC BY / Public Domain",
-    "image_file": "table_corner_021.jpg"
+    "image_file": "table_corner_021.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "table_corner_022",
@@ -4953,7 +5645,9 @@
       "vase"
     ],
     "license": "CC BY / Public Domain",
-    "image_file": "table_corner_022.jpg"
+    "image_file": "table_corner_022.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "table_corner_023",
@@ -4967,7 +5661,9 @@
       "bird"
     ],
     "license": "CC BY / Public Domain",
-    "image_file": "table_corner_023.jpg"
+    "image_file": "table_corner_023.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "table_corner_024",
@@ -4981,7 +5677,9 @@
       "vase"
     ],
     "license": "CC BY / Public Domain",
-    "image_file": "table_corner_024.jpg"
+    "image_file": "table_corner_024.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "table_corner_025",
@@ -4995,7 +5693,9 @@
       "vase"
     ],
     "license": "CC BY / Public Domain",
-    "image_file": "table_corner_025.jpg"
+    "image_file": "table_corner_025.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "table_edge_001",
@@ -5007,7 +5707,9 @@
     "expected_hazards": [],
     "expected_objects": [],
     "license": "CC BY / Public Domain",
-    "image_file": "table_edge_001.jpg"
+    "image_file": "table_edge_001.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "table_edge_002",
@@ -5022,7 +5724,9 @@
       "bowl"
     ],
     "license": "CC BY / Public Domain",
-    "image_file": "table_edge_002.jpg"
+    "image_file": "table_edge_002.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "table_edge_003",
@@ -5034,7 +5738,9 @@
     "expected_hazards": [],
     "expected_objects": [],
     "license": "CC BY / Public Domain",
-    "image_file": "table_edge_003.jpg"
+    "image_file": "table_edge_003.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "table_edge_004",
@@ -5046,7 +5752,9 @@
     "expected_hazards": [],
     "expected_objects": [],
     "license": "CC BY / Public Domain",
-    "image_file": "table_edge_004.jpg"
+    "image_file": "table_edge_004.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "table_edge_005",
@@ -5058,7 +5766,9 @@
     "expected_hazards": [],
     "expected_objects": [],
     "license": "CC BY / Public Domain",
-    "image_file": "table_edge_005.jpg"
+    "image_file": "table_edge_005.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "table_edge_006",
@@ -5072,7 +5782,9 @@
       "person"
     ],
     "license": "CC BY / Public Domain",
-    "image_file": "table_edge_006.jpg"
+    "image_file": "table_edge_006.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "table_edge_007",
@@ -5088,7 +5800,9 @@
       "dining table"
     ],
     "license": "CC BY / Public Domain",
-    "image_file": "table_edge_007.jpg"
+    "image_file": "table_edge_007.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "table_edge_008",
@@ -5103,7 +5817,9 @@
       "person"
     ],
     "license": "CC BY / Public Domain",
-    "image_file": "table_edge_008.jpg"
+    "image_file": "table_edge_008.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "table_edge_009",
@@ -5117,7 +5833,9 @@
       "bed"
     ],
     "license": "CC BY / Public Domain",
-    "image_file": "table_edge_009.jpg"
+    "image_file": "table_edge_009.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "table_edge_010",
@@ -5129,7 +5847,9 @@
     "expected_hazards": [],
     "expected_objects": [],
     "license": "CC BY / Public Domain",
-    "image_file": "table_edge_010.jpg"
+    "image_file": "table_edge_010.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "table_edge_011",
@@ -5143,7 +5863,9 @@
       "bowl"
     ],
     "license": "CC BY / Public Domain",
-    "image_file": "table_edge_011.jpg"
+    "image_file": "table_edge_011.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "table_edge_012",
@@ -5155,7 +5877,9 @@
     "expected_hazards": [],
     "expected_objects": [],
     "license": "CC BY / Public Domain",
-    "image_file": "table_edge_012.jpg"
+    "image_file": "table_edge_012.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "table_edge_013",
@@ -5171,7 +5895,9 @@
       "airplane"
     ],
     "license": "CC BY / Public Domain",
-    "image_file": "table_edge_013.jpg"
+    "image_file": "table_edge_013.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "table_edge_014",
@@ -5185,7 +5911,9 @@
       "book"
     ],
     "license": "CC BY / Public Domain",
-    "image_file": "table_edge_014.jpg"
+    "image_file": "table_edge_014.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "table_edge_015",
@@ -5197,7 +5925,9 @@
     "expected_hazards": [],
     "expected_objects": [],
     "license": "CC BY / Public Domain",
-    "image_file": "table_edge_015.jpg"
+    "image_file": "table_edge_015.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "table_edge_016",
@@ -5211,7 +5941,9 @@
       "laptop"
     ],
     "license": "CC BY / Public Domain",
-    "image_file": "table_edge_016.jpg"
+    "image_file": "table_edge_016.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "table_edge_017",
@@ -5225,7 +5957,9 @@
       "person"
     ],
     "license": "CC BY / Public Domain",
-    "image_file": "table_edge_017.jpg"
+    "image_file": "table_edge_017.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "table_edge_018",
@@ -5240,7 +5974,9 @@
       "book"
     ],
     "license": "CC BY / Public Domain",
-    "image_file": "table_edge_018.jpg"
+    "image_file": "table_edge_018.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "table_edge_019",
@@ -5255,7 +5991,9 @@
       "bench"
     ],
     "license": "CC BY / Public Domain",
-    "image_file": "table_edge_019.jpg"
+    "image_file": "table_edge_019.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "table_edge_020",
@@ -5269,7 +6007,9 @@
       "suitcase"
     ],
     "license": "CC BY / Public Domain",
-    "image_file": "table_edge_020.jpg"
+    "image_file": "table_edge_020.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "table_edge_021",
@@ -5281,7 +6021,9 @@
     "expected_hazards": [],
     "expected_objects": [],
     "license": "CC BY / Public Domain",
-    "image_file": "table_edge_021.jpg"
+    "image_file": "table_edge_021.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "table_edge_022",
@@ -5295,7 +6037,9 @@
       "person"
     ],
     "license": "CC BY / Public Domain",
-    "image_file": "table_edge_022.jpg"
+    "image_file": "table_edge_022.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "table_edge_023",
@@ -5307,7 +6051,9 @@
     "expected_hazards": [],
     "expected_objects": [],
     "license": "CC BY / Public Domain",
-    "image_file": "table_edge_023.jpg"
+    "image_file": "table_edge_023.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "table_edge_024",
@@ -5324,7 +6070,9 @@
       "tie"
     ],
     "license": "CC BY / Public Domain",
-    "image_file": "table_edge_024.jpg"
+    "image_file": "table_edge_024.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   },
   {
     "id": "table_edge_025",
@@ -5336,6 +6084,8 @@
     "expected_hazards": [],
     "expected_objects": [],
     "license": "CC BY / Public Domain",
-    "image_file": "table_edge_025.jpg"
+    "image_file": "table_edge_025.jpg",
+    "label_source": "yolov8x_prefill",
+    "verified": false
   }
 ]
