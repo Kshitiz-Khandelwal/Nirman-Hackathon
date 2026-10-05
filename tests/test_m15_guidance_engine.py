@@ -66,6 +66,7 @@ def make_pothole(dist_m=1.5, conf=0.75):
         bbox_xyxy=(100.0, 300.0, 200.0, 400.0),
         confidence=conf,
         dist_m=dist_m,
+        dist_provenance="ground_plane_geometry",
         source="heuristic",
         frame_id=0,
         timestamp=time.monotonic(),
@@ -137,11 +138,11 @@ class TestNavigationDecisionEngine:
     # ── Hazard blocking ───────────────────────────────────────────────────────
 
     def test_pothole_close_blocks_walk_forward(self):
-        """A near pothole (< pothole_block_dist_m) must not allow WALK_FORWARD."""
-        self.engine.reset()
+        """A near pothole (< pothole_block_dist_m) must not allow WALK_FORWARD when blocking is enabled."""
+        engine = NavigationDecisionEngine(forward_consec_frames_required=3, pothole_advisory_only=False)
         # Prime streak to WALKABLE state
         for _ in range(3):
-            d = self.engine.decide(make_risk(), make_cmd(), make_freespace(), [make_pothole(dist_m=1.0)])
+            d = engine.decide(make_risk(), make_cmd(), make_freespace(), [make_pothole(dist_m=1.0)])
         assert d.action != GuidanceAction.WALK_FORWARD, (
             "Nearby pothole must prevent WALK_FORWARD"
         )

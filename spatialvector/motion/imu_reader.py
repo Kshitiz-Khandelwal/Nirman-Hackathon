@@ -225,6 +225,10 @@ def _parse_imu_line(
 class SimulatedIMUReader:
     """Simulates an IMU stream from a callable — for tests and demos.
 
+    All samples emitted by this reader carry status="SIMULATED" (not "OK").
+    Callers and the UI MUST distinguish SIMULATED from real hardware ("OK").
+    Display "IMU: SIMULATED" whenever status=="SIMULATED" is seen.
+
     Usage:
         def my_gyro_fn(t): return (0.01 * math.sin(t), 0.0, 0.0)
         reader = SimulatedIMUReader(gyro_fn=my_gyro_fn)
@@ -290,7 +294,7 @@ class SimulatedIMUReader:
                     t_arrival=t,
                     t_device=elapsed,
                     gyro_xyz=gyro,
-                    status="OK",
+                    status="SIMULATED",  # Not real hardware — callers/UI must show "IMU: SIMULATED"
                 )
 
             with self._lock:

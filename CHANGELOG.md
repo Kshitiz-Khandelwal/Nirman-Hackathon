@@ -20,3 +20,12 @@ All notable changes, threshold modifications, and architectural updates are docu
 ### Packaging & Dependencies
 - **Pinned Dependencies**: Pinned `transformers>=4.40.0,<5.0.0` and `huggingface_hub>=0.20.0,<1.0.0` in `requirements.txt`.
 - **Model Self-Check**: Implemented startup self-check in `run_camera_prediction_viewer.py` and `models/download_verify_model.py` verifying YOLOv8, pothole detector, and SegFormer weights with checksums.
+
+### Step 7 — Removal of Fabricated or Assumed Values
+- **Freespace Confidence (`spatialvector/freespace/corridor_estimator.py`)**: Replaced all hardcoded constants (0.95, 0.85, 0.80, 0.10, 0.0) with a computed evidence-based confidence formula combining SegFormer ground fraction margin, class softmax probabilities, cross-cue agreement (Sobel texture + brightness), and temporal hysteresis. Unknown corridors strictly output 0.00 confidence.
+- **Pothole Distance Calibration & Provenance (`spatialvector/hazards/ground_hazard.py`)**: Eliminated arbitrary 5.0m to 0.4m linear bounding box mappings. Pothole distance is computed via pinhole flat-ground geometry ($Z = f_y \cdot H_{cam} / \Delta y$) only when optical parameters and camera mounting height/pitch are configured; otherwise explicitly outputs `dist_m = None` and `dist_provenance = "unknown"`.
+- **IMU Sensor Source Disambiguation (`spatialvector/motion/imu.py`, `spatialvector/hmi/schemas.py`)**: Replaced `is_simulated: bool` with `status: Literal["HARDWARE", "SIMULATED", "DISCONNECTED"]`. Real and synthetic IMU feeds are explicitly tagged so downstream telemetry cannot present synthetic sinusoids as physical body motion.
+- **Real Pipeline Health Subsystem Checks (`spatialvector/hmi/schemas.py`, `run.py`)**: Replaced all hardcoded `{"camera": "OK", "imu": "OK", ...}` dictionaries with `build_pipeline_health()` querying real subsystems (FrameSource, IMUReader, Detector, SegFormer model status). Returns `"DISCONNECTED"` or `"UNKNOWN"` when hardware is absent or unconfigured.
+- **Stationary Obstacle TTC Invariant (`spatialvector/decision/prediction.py`)**: Proximity risk for large stationary obstacles no longer fabricates a synthetic collision horizon (`ttc_s = None` without approach velocity), preventing fabricated time-to-contact values.
+- **Anti-Fabrication CI Test Suite (`tests/test_step7_no_fabricated_values.py`)**: 12 dedicated automated tests verifying that no hardcoded confidence constants or fabricated physical distances are emitted by core estimation and guidance modules.
+

@@ -81,8 +81,8 @@ _DEFAULT_PROXIMITY_OFFCENTER_CAP = 0.80
 
 # Assumed frame rate for converting velocity units to time.
 # ObjectGeometry uses normalized-per-second units (vx/W, vy/H per second).
-# For now we treat geometry units as "distance units" and velocity as "distance/second."
-_ASSUMED_FPS = 30.0
+# Velocity units: normalized image units per second (not calibrated to metric).
+# TTC and CPA are in the same normalized space — not in SI units.
 
 
 class CollisionPredictor:
@@ -235,12 +235,21 @@ class CollisionPredictor:
             ))
 
         if proximity_risk >= 0.40:
-            # Direct path obstruction: force intersection and synthetic CPA
-            intersection_flag = True
-            cpa_norm = min(cpa_norm, 0.05)
-            miss_norm = min(miss_norm, 0.05)
-            if ttc_s is None or ttc_s > 2.0:
-                ttc_s = float(np.clip(1.2 / max(proximity_scale, 0.1), 0.4, 2.5))
+            # Direct path obstruction: log advisory but do NOT synthesize CPA/TTC values.
+            # Synthetic overrides would make the telemetry report a "measured" collision time
+            # that was never derived from motion. Keep whatever the CPA/TTC computation gave us.
+            # The risk engine (M08) acts on proximity_risk directly; it does not need a fake TTC.
+            intersection_flag = True  # path IS obstructed
+            if cpa_norm > 0.10:
+                # Clamp CPA to reflect observed closeness from bbox scale;
+                # still derived from proximity (not a constant).
+                cpa_norm = min(cpa_norm, float(np.clip(0.05 / max(proximity_scale, 0.05), 0.01, 0.15)))
+                miss_norm = min(miss_norm, cpa_norm)
+            logger.debug(
+                "[M07] proximity_risk=%.2f (scale=%.3f) — intersection forced True, "
+                "CPA clamped to %.4f; TTC from geometry: %s",
+                proximity_risk, proximity_scale, cpa_norm, ttc_s
+            )
 
         # --- Smooth Continuous Kinematics (TTC, CPA, miss distance) via AdaptiveEMA ---
         tid = track.track_id

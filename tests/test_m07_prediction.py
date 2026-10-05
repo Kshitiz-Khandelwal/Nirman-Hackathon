@@ -360,7 +360,9 @@ def test_t16d_static_large_obstacle_center_proximity():
 
     assert pred.proximity_risk > 0.50, f"Expected proximity_risk > 0.50 for 55% height object, got {pred.proximity_risk}"
     assert pred.intersection_flag is True, "Large static center obstacle must block the path"
-    assert pred.ttc_s is not None, "Proximity obstacle must provide finite warning horizon"
+    # Step 7 anti-fabrication: Stationary obstacles do not have a synthetic TTC fabricated
+    # without approach motion; risk engine acts directly on proximity_risk and intersection_flag.
+    assert pred.ttc_s is None, "Stationary obstacle must not fabricate synthetic TTC without motion"
 
 
 # ---------------------------------------------------------------------------

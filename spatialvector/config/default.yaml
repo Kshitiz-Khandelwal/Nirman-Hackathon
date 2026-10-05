@@ -86,6 +86,49 @@ hazard_detector:
   max_iou_with_yolo: 0.15
   require_ground_confirmation: true  # Two-stage rule: require freespace road/ground confirmation
   advisory_only: true                # Potholes alert visually/audibly, but do not override walk-forward or force-redirect
+  camera_height_m: 1.30              # Physical camera height above ground plane in metres
+  camera_pitch_deg: 15.0             # Physical camera depression angle below horizon in degrees (null = unknown)
+  focal_length_ratio: 0.72           # focal_length_px / frame_width
+
+distance_estimation:
+  focal_length_ratio: 0.72
+  object_heights_m:
+    person: 1.70
+    man: 1.75
+    woman: 1.65
+    child: 1.10
+    chair: 0.90
+    couch: 0.85
+    sofa: 0.85
+    dining table: 0.76
+    table: 0.76
+    desk: 0.76
+    laptop: 0.30
+    keyboard: 0.04
+    mouse: 0.05
+    tv: 0.70
+    monitor: 0.55
+    bottle: 0.28
+    cup: 0.16
+    wine glass: 0.22
+    cell phone: 0.15
+    book: 0.24
+    bicycle: 1.10
+    motorcycle: 1.10
+    scooter: 1.10
+    car: 1.52
+    truck: 2.80
+    bus: 3.20
+    dog: 0.55
+    cat: 0.32
+    backpack: 0.55
+    suitcase: 0.68
+    cone: 0.75
+    fire hydrant: 0.55
+    stop sign: 1.20
+    bench: 0.90
+    tree: 3.00
+    pole: 3.00
 
 freespace:
   use_segmentation: true

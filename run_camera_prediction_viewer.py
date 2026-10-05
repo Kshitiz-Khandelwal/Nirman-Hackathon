@@ -222,20 +222,37 @@ def _estimate_distance_m_calibrated(
     bbox_raw: tuple,
     img_w: int,
     img_h: int,
-) -> float:
+    config: Optional[dict] = None,
+) -> Optional[float]:
     """Calibrated monocular distance estimation using pinhole camera model.
 
     Formula: distance = (H_real * focal_px) / H_bbox_px
-    where focal_px is derived from the known (or assumed) horizontal FOV.
+    where focal_px is derived from the configured camera focal length ratio.
 
-    This is significantly more accurate than a simple fractional-height heuristic
-    because it accounts for the focal length of the lens.
-
-    Returns distance in metres, clamped to [0.2m, 20.0m].
+    Returns distance in metres (float) if class height is known and bbox is not truncated,
+    or None ("unknown") if class is unlisted or bbox touches frame borders (truncated).
     """
-    h_real = _OBJ_H_REAL_M.get(class_name.lower(), 1.00)   # fallback 1m
-    bbox_h_px = max(4.0, float(bbox_raw[3] - bbox_raw[1]))
-    focal_px = _focal_from_width(img_w)
+    if config is None:
+        config = {}
+    dist_cfg = config.get("distance_estimation", {})
+    obj_heights = dist_cfg.get("object_heights_m", _OBJ_H_REAL_M)
+    focal_ratio = float(dist_cfg.get("focal_length_ratio", _FOCAL_LENGTH_RATIO))
+
+    c_norm = class_name.lower().strip()
+    if c_norm not in obj_heights:
+        # Unlisted class — do not fabricate an assumed default height
+        return None
+
+    # Check for bbox truncation at image boundaries (margin = 2px)
+    x1, y1, x2, y2 = bbox_raw
+    is_truncated = (x1 <= 2.0 or y1 <= 2.0 or x2 >= (img_w - 2.0) or y2 >= (img_h - 2.0))
+    if is_truncated:
+        # Truncated bounding box height does not reflect physical object height
+        return None
+
+    h_real = float(obj_heights[c_norm])
+    bbox_h_px = max(4.0, float(y2 - y1))
+    focal_px = img_w * focal_ratio
     dist = (h_real * focal_px) / bbox_h_px
     return float(max(0.2, min(20.0, dist)))
 
@@ -997,20 +1014,27 @@ class PredictionViewer:
 
         # ── Calibrated Monocular Distance Estimation ─────────────────────────
         SMOOTH_WINDOW = 6
-        track_distances: dict[int, float] = {}
+        track_distances: dict[int, Optional[float]] = {}
         track_dist_confidence: dict[int, float] = {}
         active_ids = set()
         for _tr in tracks:
             if _tr.bbox_history:
-                # Use calibrated focal-length model (module-level function)
+                # Use config-driven calibrated focal-length model
                 raw_dist = _estimate_distance_m_calibrated(
-                    _tr.class_name, _tr.bbox_history[-1], orig_w, orig_h
+                    _tr.class_name, _tr.bbox_history[-1], orig_w, orig_h, getattr(self, 'config', {})
                 )
                 tid = _tr.track_id
                 active_ids.add(tid)
 
                 if not hasattr(self, '_dist_history'):
                     self._dist_history = {}
+
+                if raw_dist is None:
+                    # Truncated box or unlisted class: do not assume/fabricate
+                    track_distances[tid] = None
+                    track_dist_confidence[tid] = 0.0
+                    continue
+
                 if tid not in self._dist_history:
                     self._dist_history[tid] = []
                 self._dist_history[tid].append(raw_dist)
@@ -1114,18 +1138,18 @@ class PredictionViewer:
                 cv2.circle(canvas, (cx, cy), 3, (0, 240, 255), -1, cv2.LINE_AA)
 
             # AR Distance Badge (name | conf% | distance)
-            dist_m = track_distances.get(t.track_id, -1.0)
+            dist_m = track_distances.get(t.track_id, None)
             dist_conf = track_dist_confidence.get(t.track_id, 0.0)
             is_nearest = (t.track_id == nearest_id)
 
             obj_label = t.class_name.title()
-            if dist_m >= 0:
+            if dist_m is not None and dist_m >= 0:
                 if dist_conf >= 0.6:
                     dist_line = f"{dist_m:.1f}m"
                 else:
                     dist_line = f"Approx. {dist_m:.1f}m"
             else:
-                dist_line = "--m"
+                dist_line = "unknown"
             conf_line = f"{conf_pct}%" if conf_pct > 0 else ""
 
             if is_intersect:
@@ -1474,29 +1498,37 @@ class PredictionViewer:
                 cv2.line(canvas, (lx1 + 10, ly1 + 23), (lx2 - 10, ly1 + 23), (40, 45, 55), 1)
 
                 pothole_loaded = getattr(getattr(self, 'hazard_detector', None), 'has_trained_model', False)
+                # Check real IMU reader provenance if available
+                imu_reader_obj = getattr(self, 'imu_reader', None)
+                imu_sample = imu_reader_obj.get_latest() if imu_reader_obj else None
+                imu_status_str = getattr(imu_sample, 'status', 'SIMULATED') if imu_sample else 'SIMULATED'
+
                 status_items = [
-                    ("Camera", fps > 2, fps > 0.5),
-                    ("AI Detection", len(tracks) >= 0, True),
-                    ("Pothole Model", pothole_loaded, pothole_loaded),
-                    ("Gyroscope", not motion.fallback_active, True),
-                    ("Vibration Belt", cmd.urgency > 0 or risk.global_risk < 0.3, True),
-                    ("Voice Engine", True, True),
+                    ("Camera", fps > 2, fps > 0.5, "Active" if fps > 2 else "Offline"),
+                    ("AI Detection", len(tracks) >= 0, True, "Active"),
+                    ("Pothole Model", pothole_loaded, pothole_loaded, "Active" if pothole_loaded else "NOT LOADED"),
+                    ("IMU / Gyro", True, True, imu_status_str),
+                    ("Vibration Belt", cmd.urgency > 0 or risk.global_risk < 0.3, True, "Active"),
+                    ("Voice Engine", True, True, "Active"),
                 ]
 
                 card_y = ly1 + 30
                 card_h = 22
-                for name, is_active, is_connected in status_items:
+                for name, is_active, is_connected, custom_label in status_items:
                     if card_y + card_h > ly2 - 100:
                         break
-                    if is_active and is_connected:
-                        dot_color = (80, 230, 130)
+                    if custom_label == "SIMULATED":
+                        dot_color = (0, 195, 255)       # Amber for simulated sensor
+                        status_label = "SIMULATED"
+                    elif is_active and is_connected and custom_label == "Active":
+                        dot_color = (80, 230, 130)      # Green for active hardware
                         status_label = "Active"
-                    elif name == "Pothole Model":
+                    elif name == "Pothole Model" and not pothole_loaded:
                         dot_color = (0, 195, 255)
                         status_label = "NOT LOADED"
                     elif is_connected:
                         dot_color = (0, 195, 255)
-                        status_label = "Warning"
+                        status_label = custom_label or "Warning"
                     else:
                         dot_color = (60, 60, 255)
                         status_label = "Offline"

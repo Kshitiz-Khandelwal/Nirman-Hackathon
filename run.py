@@ -34,7 +34,7 @@ from spatialvector.decision.prediction import CollisionPredictor
 from spatialvector.decision.risk_engine import RiskEngine
 from spatialvector.decision.schemas import HapticCommand, Prediction, RiskState
 from spatialvector.hmi.arduino_interface import ArduinoInterface, SimulatedArduinoInterface
-from spatialvector.hmi.schemas import TelemetryMessage, build_track_telemetry
+from spatialvector.hmi.schemas import TelemetryMessage, build_track_telemetry, build_pipeline_health
 from spatialvector.hmi.telemetry_server import TelemetryServer
 from spatialvector.motion.schemas import ObjectGeometry
 from spatialvector.perception.schemas import Frame, Track
@@ -165,7 +165,7 @@ def build_waiting_telemetry_message(
             pattern_id="DEGRADED_WARN",
             duration_ms=200,
         )),
-        pipeline_health={"camera": camera_health, "imu": "OK", "arduino": "OK"},
+        pipeline_health={"camera": camera_health, "imu": "UNKNOWN", "arduino": "UNKNOWN"},
     )
 
 
@@ -244,7 +244,7 @@ def main():
                     tracks=build_track_telemetry(tracks, pred_map),
                     risk_state=asdict(risk_state),
                     haptic=asdict(cmd),
-                    pipeline_health={"camera": "OK (Synthetic)", "imu": "OK", "arduino": "OK"},
+                    pipeline_health={"camera": "OK (Synthetic)", "imu": "SIMULATED", "arduino": "SIMULATED"},
                     frame_width=640,
                     frame_height=480,
                 ))
@@ -341,7 +341,11 @@ def main():
                     tracks=build_track_telemetry(tracks, pred_map),
                     risk_state=asdict(risk_state),
                     haptic=asdict(cmd),
-                    pipeline_health={"camera": frame_src.status, "imu": "OK", "arduino": "OK"},
+                    pipeline_health=build_pipeline_health(
+                        frame_source=frame_src,
+                        imu_reader=imu,
+                        arduino=arduino,
+                    ),
                     frame_width=w,
                     frame_height=h,
                 ))

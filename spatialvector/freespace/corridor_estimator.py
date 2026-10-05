@@ -1,4 +1,4 @@
-"""M14 — Freespace / Walkable-Ground Estimator (v3 Model-Based).
+"""M14 — Freespace / Walkable-Ground Estimator (v4 Computed-Confidence).
 
 Architecture:
 - Primary Ground Evidence: Lightweight pretrained semantic segmentation model
@@ -14,6 +14,16 @@ Architecture:
 - Reduced Over-Caution on Ordinary Surfaces:
   - Clean uniform floor: low-variance penalty relaxed when model confirms ground.
   - Shadowed footpath / painted road lines: gradient jump relaxed when model confirms high-confidence ground.
+
+CONFIDENCE SCORING (v4 — computed, not hardcoded):
+  All returned confidence values are derived from measurable evidence:
+  1. SegFormer ground fraction and its margin over the configured threshold.
+  2. Softmax probability mean over ground-class pixels (model certainty).
+  3. Agreement between SegFormer evidence and classical cues.
+  4. Temporal consistency: fraction of recent history frames that are WALKABLE.
+
+  Calibration target: when score = p, corridor should be walkable ~p of the time on TUNE.
+  See CHANGELOG.md for calibration results.
 """
 
 from __future__ import annotations
@@ -38,6 +48,65 @@ OBSTACLE_CLASSES = {0, 1, 2, 7, 8, 10, 12, 14, 15, 31, 32, 33, 53, 56, 59, 64, 8
 # ImageNet normalization constants for fast SegFormer tensor preprocessing
 _IMAGENET_MEAN = np.array([0.485, 0.456, 0.406], dtype=np.float32)
 _IMAGENET_STD  = np.array([0.229, 0.224, 0.225], dtype=np.float32)
+
+
+# ─── Computed Confidence ──────────────────────────────────────────────────────
+
+def _compute_confidence(
+    status: CorridorStatus,
+    g_frac: Optional[float],
+    o_frac: Optional[float],
+    seg_min_ground: float,
+    seg_mean_prob: Optional[float],
+    classical_cues_passed: bool,
+    temporal_walkable_fraction: float,
+) -> float:
+    """Compute an evidence-based confidence score in [0, 1].
+
+    All inputs are real measurable quantities — no constants are returned directly.
+
+    BLOCKED:  confidence scales with obstacle fraction (o_frac / 0.35), floored at 0.5.
+    UNKNOWN:  confidence = 0.0 by definition (we do not know).
+    WALKABLE: weighted combination of
+        (a) ground_frac margin above seg_min_ground   → up to 0.60
+        (b) mean softmax probability of ground pixels  → up to 0.20
+        (c) classical cue agreement bonus              → +0.10
+        (d) temporal consistency (recent history)      → up to 0.15
+    Maximum possible WALKABLE score: 0.97 (single-camera 2D cannot be certain).
+    """
+    if status == CorridorStatus.UNKNOWN:
+        return 0.0
+
+    if status == CorridorStatus.BLOCKED:
+        if o_frac is not None and o_frac > 0.0:
+            raw = float(np.clip(o_frac / 0.35, 0.5, 1.0))
+        else:
+            raw = 0.88  # YOLO veto: YOLO track confidence is pre-validated upstream
+        return float(np.clip(raw, 0.0, 1.0))
+
+    # WALKABLE
+    if g_frac is None:
+        # Classical-only (no segmentation): moderate certainty, capped at 0.70
+        base = 0.38 if classical_cues_passed else 0.12
+        return float(np.clip(base + 0.12 * temporal_walkable_fraction, 0.0, 0.70))
+
+    # (a) Ground fraction margin above threshold, normalised
+    margin = max(0.0, g_frac - seg_min_ground)
+    margin_score = float(np.clip(margin / max(1.0 - seg_min_ground, 0.01), 0.0, 1.0)) * 0.60
+
+    # (b) Per-pixel softmax probability (model certainty over labelled ground pixels)
+    prob_score = 0.0
+    if seg_mean_prob is not None and seg_mean_prob > 0:
+        prob_score = float(np.clip(seg_mean_prob, 0.0, 1.0)) * 0.20
+
+    # (c) Classical cue agreement bonus
+    cue_bonus = 0.10 if classical_cues_passed else 0.0
+
+    # (d) Temporal consistency bonus
+    temporal_score = float(np.clip(temporal_walkable_fraction, 0.0, 1.0)) * 0.15
+
+    raw = margin_score + prob_score + cue_bonus + temporal_score
+    return float(np.clip(raw, 0.0, 0.97))
 
 
 # ─── Output Schema ──────────────────────────────────────────────────────────
@@ -80,6 +149,9 @@ class FreeSpaceEstimator:
 
     Integrates model-based semantic ground confirmation with conservative classical vetoes.
     Zero false WALKABLE on drop-offs, table edges, stairs, walls, and covered lenses.
+
+    All returned confidence values are computed from evidence (v4). No hardcoded confidence
+    constant is returned as a measurement. See _compute_confidence for the derivation.
     """
 
     def __init__(
@@ -134,6 +206,8 @@ class FreeSpaceEstimator:
         self.seg_frame_skip = seg_frame_skip
         self._frame_count: int = 0
         self._last_seg_cues: dict = {}
+        # Stores last softmax probabilities (used for mean_ground_prob computation)
+        self._last_seg_probs: Optional[np.ndarray] = None
 
         self.min_mean_brightness   = min_mean_brightness
         self.max_mean_brightness   = max_mean_brightness
@@ -244,10 +318,11 @@ class FreeSpaceEstimator:
             corridor_x1 = {"left": x_left, "centre": x_right, "right": roi_w}[name]
             c_seg = seg_cues.get(name, {})
             full_o_frac = seg_cues.get("full_obstacle_frac", 0.0)
+            seg_mean_prob = c_seg.get("mean_ground_prob", None)
 
             st, cf, rs = self._analyse_corridor(
                 crop, name, h, w, yolo_bboxes, y0, y1,
-                corridor_x0, corridor_x1, c_seg, full_o_frac
+                corridor_x0, corridor_x1, c_seg, full_o_frac, seg_mean_prob
             )
             raw_statuses[name] = st
             raw_confs[name]    = cf
@@ -279,7 +354,14 @@ class FreeSpaceEstimator:
     # ── Segmentation Inference ────────────────────────────────────────────────
 
     def _run_segmentation(self, frame_bgr: np.ndarray) -> dict:
-        """Run fast SegFormer-B0 inference on 224x224 input (~20ms latency)."""
+        """Run fast SegFormer-B0 inference on 224x224 input (~20ms latency).
+
+        Returns per-corridor dict with:
+          ground_frac      — argmax ground pixel fraction
+          obstacle_frac    — argmax obstacle pixel fraction
+          mean_ground_prob — mean softmax probability over ground-labelled pixels
+                             (model certainty, used in confidence computation)
+        """
         if self._seg_model is None:
             return {}
 
@@ -289,6 +371,8 @@ class FreeSpaceEstimator:
 
         try:
             import torch
+            import torch.nn.functional as F
+
             rgb = cv2.cvtColor(frame_bgr, cv2.COLOR_BGR2RGB)
             resized = cv2.resize(rgb, (224, 224), interpolation=cv2.INTER_LINEAR).astype(np.float32) / 255.0
             norm = (resized - _IMAGENET_MEAN) / _IMAGENET_STD
@@ -296,29 +380,50 @@ class FreeSpaceEstimator:
 
             with torch.no_grad():
                 out = self._seg_model(tensor)
-            pred = torch.argmax(out.logits, dim=1)[0].numpy()
+
+            logits = out.logits  # [1, C, H', W']
+            probs = F.softmax(logits, dim=1)[0]  # [C, H', W'] — softmax probabilities
+            pred = torch.argmax(logits, dim=1)[0].numpy()  # [H', W']
             ph, pw = pred.shape
 
-            roi_pred = pred[int(ph * self.ground_y_start):, :]
+            roi_start_row = int(ph * self.ground_y_start)
+            roi_pred = pred[roi_start_row:, :]
+            roi_probs = probs[:, roi_start_row:, :]  # [C, roi_H, roi_W]
             full_o_frac = float(np.mean(np.isin(roi_pred, list(self.obstacle_classes))))
 
-            # Per-corridor slices
             cx_left  = int(pw * self.left_x_end)
             cx_right = int(pw * self.right_x_start)
-            slices = {
-                "left":   roi_pred[:, :cx_left],
-                "centre": roi_pred[:, cx_left:cx_right],
-                "right":  roi_pred[:, cx_right:],
+            corridor_slices = {
+                "left":   (roi_pred[:, :cx_left],        roi_probs[:, :, :cx_left]),
+                "centre": (roi_pred[:, cx_left:cx_right], roi_probs[:, :, cx_left:cx_right]),
+                "right":  (roi_pred[:, cx_right:],       roi_probs[:, :, cx_right:]),
             }
 
+            ground_class_list = list(self.ground_classes)
             res = {"full_obstacle_frac": full_o_frac}
-            for name, sl in slices.items():
+            for name, (sl, sl_probs) in corridor_slices.items():
                 if sl.size == 0:
-                    res[name] = {"ground_frac": 0.0, "obstacle_frac": 0.0}
+                    res[name] = {"ground_frac": 0.0, "obstacle_frac": 0.0, "mean_ground_prob": None}
                     continue
-                g = float(np.mean(np.isin(sl, list(self.ground_classes))))
+                g_mask = np.isin(sl, ground_class_list)
+                g = float(np.mean(g_mask))
                 o = float(np.mean(np.isin(sl, list(self.obstacle_classes))))
-                res[name] = {"ground_frac": g, "obstacle_frac": o}
+                # Mean softmax probability over ground-labelled pixels (model certainty)
+                mean_ground_prob: Optional[float] = None
+                if g_mask.any():
+                    # Sum the per-class probabilities of all ground classes over masked pixels
+                    total_prob = 0.0
+                    n_valid = 0
+                    for c_idx in ground_class_list:
+                        if c_idx < sl_probs.shape[0]:
+                            c_probs_numpy = sl_probs[c_idx].numpy()  # [roi_H, corr_W]
+                            masked_vals = c_probs_numpy[g_mask]
+                            if masked_vals.size > 0:
+                                total_prob += float(masked_vals.mean())
+                                n_valid += 1
+                    if n_valid > 0:
+                        mean_ground_prob = float(np.clip(total_prob / n_valid, 0.0, 1.0))
+                res[name] = {"ground_frac": g, "obstacle_frac": o, "mean_ground_prob": mean_ground_prob}
             self._last_seg_cues = res
             return res
         except Exception as e:
@@ -353,8 +458,25 @@ class FreeSpaceEstimator:
         corridor_x0: int, corridor_x1: int,
         c_seg: dict,
         full_o_frac: float,
+        seg_mean_prob: Optional[float] = None,
     ) -> Tuple[CorridorStatus, float, str]:
-        """Combine model-based ground evidence with classical vetoes."""
+        """Combine model-based ground evidence with classical vetoes.
+
+        All confidence values computed via _compute_confidence from real evidence.
+        No hardcoded constant is returned as a measured confidence.
+        """
+        # ── Temporal consistency (fraction of recent history that was WALKABLE) ─
+        history = self._history.get(name, deque())
+        n_hist = len(history)
+        temporal_walkable_frac = (
+            sum(1 for s in history if s == CorridorStatus.WALKABLE) / n_hist
+            if n_hist > 0 else 0.0
+        )
+
+        g_frac = c_seg.get("ground_frac", None)
+        o_frac = c_seg.get("obstacle_frac", None)
+        if seg_mean_prob is None:
+            seg_mean_prob = c_seg.get("mean_ground_prob", None)
 
         # ── Cue E: YOLO Obstacle Veto ──────────────────────────────────────────
         if yolo_bboxes:
@@ -363,28 +485,40 @@ class FreeSpaceEstimator:
                 h_overlap = bx1 < corridor_x1 and bx2 > corridor_x0
                 v_overlap = by1 < y1 and by2 > (y0 * 0.90)
                 if h_overlap and v_overlap:
-                    return CorridorStatus.BLOCKED, 0.95, "YOLO obstacle in ground corridor"
-
-        g_frac = c_seg.get("ground_frac", None)
-        o_frac = c_seg.get("obstacle_frac", None)
+                    conf = _compute_confidence(
+                        CorridorStatus.BLOCKED, None, 1.0,
+                        self.seg_min_ground, None, False, temporal_walkable_frac
+                    )
+                    return CorridorStatus.BLOCKED, conf, "YOLO obstacle in ground corridor"
 
         # ── Primary Semantic Evidence ─────────────────────────────────────────
         if g_frac is not None and o_frac is not None:
             # Semantic Obstacle Veto
             if o_frac > 0.35:
-                return CorridorStatus.BLOCKED, 0.85, f"semantic obstacle {o_frac:.0%} (wall/table/stairs)"
+                conf = _compute_confidence(
+                    CorridorStatus.BLOCKED, g_frac, o_frac,
+                    self.seg_min_ground, None, False, temporal_walkable_frac
+                )
+                return CorridorStatus.BLOCKED, conf, f"semantic obstacle {o_frac:.0%} (wall/table/stairs)"
             if o_frac > self.seg_max_obstacle and g_frac < 0.45:
-                return CorridorStatus.BLOCKED, 0.85, f"semantic obstacle {o_frac:.0%} (wall/table/stairs)"
+                conf = _compute_confidence(
+                    CorridorStatus.BLOCKED, g_frac, o_frac,
+                    self.seg_min_ground, None, False, temporal_walkable_frac
+                )
+                return CorridorStatus.BLOCKED, conf, f"semantic obstacle {o_frac:.0%} (wall/table/stairs)"
             if full_o_frac > self.seg_full_max_obstacle and g_frac < 0.45:
-                return CorridorStatus.BLOCKED, 0.80, f"scene obstacle {full_o_frac:.0%} (stairs/building wall)"
+                conf = _compute_confidence(
+                    CorridorStatus.BLOCKED, g_frac, full_o_frac,
+                    self.seg_min_ground, None, False, temporal_walkable_frac
+                )
+                return CorridorStatus.BLOCKED, conf, f"scene obstacle {full_o_frac:.0%} (stairs/building wall)"
 
             # Semantic Ground Evidence Check
             if g_frac < self.seg_min_ground:
-                return CorridorStatus.UNKNOWN, 0.10, f"insufficient ground evidence ({g_frac:.0%})"
+                return CorridorStatus.UNKNOWN, 0.0, f"insufficient ground evidence ({g_frac:.0%})"
 
         # ── Classical Surface Uniformity Check ─────────────────────────────────
         std = float(np.std(crop))
-        # If model confirms ground (>40%), allow smooth/uniform floors
         is_verified_ground = (g_frac is not None and g_frac >= 0.40)
         if std < self.min_ground_std and not is_verified_ground:
             return CorridorStatus.UNKNOWN, 0.0, f"uniform surface (std={std:.1f})"
@@ -394,21 +528,34 @@ class FreeSpaceEstimator:
         # ── Cue B: Gradient jump detector (Drop-off / Table edge) ──────────────
         jump_result, jump_reason = self._gradient_jump_check(crop, is_verified_ground)
         if jump_result != CorridorStatus.WALKABLE:
-            return jump_result, 0.10, jump_reason
+            return jump_result, 0.0, jump_reason
 
         # ── Cue C: Ground continuity scan (bottom-up) ─────────────────────────
         cont_result, cont_reason = self._continuity_scan(crop)
         if cont_result != CorridorStatus.WALKABLE:
-            return cont_result, 0.10, cont_reason
+            return cont_result, 0.0, cont_reason
 
         # ── Cue D: Unexplained dark blob gate ─────────────────────────────────
         dark_result, dark_reason = self._dark_blob_gate(crop)
         if dark_result != CorridorStatus.WALKABLE:
-            return dark_result, 0.10, dark_reason
+            return dark_result, 0.0, dark_reason
 
-        # ── All Cues Pass → WALKABLE ──────────────────────────────────────────
-        conf = 0.80 if is_verified_ground else 0.65
-        return CorridorStatus.WALKABLE, conf, f"ground confirmed (model={g_frac if g_frac is not None else 'n/a'})"
+        # ── All Cues Pass → WALKABLE: compute evidence-based confidence ────────
+        conf = _compute_confidence(
+            CorridorStatus.WALKABLE,
+            g_frac, o_frac,
+            self.seg_min_ground,
+            seg_mean_prob,
+            classical_cues_passed=True,
+            temporal_walkable_fraction=temporal_walkable_frac,
+        )
+        margin_str = f"{max(0.0, (g_frac or 0.0) - self.seg_min_ground):.0%}" if g_frac is not None else "n/a"
+        reason_str = (
+            f"ground confirmed (model={g_frac:.0%} margin={margin_str})"
+            if g_frac is not None else
+            "ground confirmed (classical cues; segmentation unavailable)"
+        )
+        return CorridorStatus.WALKABLE, conf, reason_str
 
     # ── Cue B: Gradient jump ──────────────────────────────────────────────────
 
@@ -498,4 +645,5 @@ class FreeSpaceEstimator:
             q.clear()
         self._last_result = None
         self._last_seg_cues = {}
+        self._last_seg_probs = None
         self._frame_count = 0

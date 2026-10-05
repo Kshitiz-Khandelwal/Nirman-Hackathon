@@ -11,6 +11,22 @@ Design decisions:
 - Output is a list of HazardDetection dataclasses, not raw dicts.
 - All thresholds are configurable at construction time (or via YAML config dict).
 
+Distance estimation (ground-plane geometry):
+  dist = (camera_height_m * focal_length_px) / max(1, bbox_bottom_px - horizon_row_px)
+  where:
+    focal_length_px  = focal_length_ratio * frame_width
+    horizon_row_px   = frame_height * (0.5 - tan(pitch_rad))
+  This requires camera_height_m, camera_pitch_deg, and focal_length_ratio from
+  default.yaml (hazard_detector section). When any parameter is None / 0.0, the
+  returned dist_m is None and is labelled "distance:unknown" in the UI and logs.
+  The constant 5.0m–0.4m linear fallback has been removed (it was not calibrated).
+- Uses a FIXED absolute dark-threshold (not Otsu) to avoid firing on any image.
+- Requires minimum persistence across N frames before promoting a detection.
+- Gates against YOLO tracks: discards candidates that overlap tracked objects.
+- Can accept an optional ONNX model for trained pothole detection as primary cue.
+- Output is a list of HazardDetection dataclasses, not raw dicts.
+- All thresholds are configurable at construction time (or via YAML config dict).
+
 This module ONLY detects and outputs hazards.
 It does NOT write to the risk engine, voice engine, or haptic output.
 Those are the responsibility of the guidance layer (M15).
@@ -25,6 +41,7 @@ from typing import List, Optional, Tuple
 
 import cv2
 import numpy as np
+import math
 
 logger = logging.getLogger(__name__)
 
@@ -37,7 +54,8 @@ class HazardDetection:
     hazard_class: str          # "pothole" | "manhole" | "surface_damage" | "anomaly"
     bbox_xyxy: Tuple[float, float, float, float]   # in original image coordinates
     confidence: float          # 0.0 – 1.0; from heuristic scoring or model output
-    dist_m: float              # estimated distance in metres (approximate)
+    dist_m: Optional[float]    # geometric distance in metres, or None if uncalibratable
+    dist_provenance: str       # "ground_plane_geometry" | "unknown"
     source: str                # "heuristic" | "model" | "possible surface anomaly (unverified)"
     frame_id: int
     timestamp: float
@@ -135,6 +153,10 @@ class GroundHazardDetector:
         require_ground_confirmation: bool = True,
         # Advisory only mode: potholes alert visually/audibly but do not halt user navigation
         advisory_only: bool = True,
+        # Camera geometry for ground-plane distance estimation (from default.yaml)
+        camera_height_m: Optional[float] = None,
+        camera_pitch_deg: Optional[float] = None,
+        focal_length_ratio: Optional[float] = None,
     ):
         self.roi_y_start = roi_y_start
         self.roi_y_end   = roi_y_end
@@ -168,8 +190,19 @@ class GroundHazardDetector:
         if model_path:
             self._load_model(model_path)
 
+        # Camera geometry for ground-plane distance estimation
+        # Read from hazard_detector section of default.yaml (passed as constructor args)
+        self.camera_height_m: Optional[float] = camera_height_m
+        self.camera_pitch_deg: Optional[float] = camera_pitch_deg
+        self.focal_length_ratio: Optional[float] = focal_length_ratio
+
         mode_str = "trained-model" if self._model else ("heuristic-unverified" if allow_heuristic else "disabled (no model)")
-        logger.info("GroundHazardDetector (M13) initialised — mode=%s, persistence=%d", mode_str, persistence_required)
+        if self.camera_height_m and self.focal_length_ratio:
+            dist_mode = "ground-plane geometry"
+        else:
+            dist_mode = "distance:UNKNOWN (camera geometry not configured)"
+        logger.info("GroundHazardDetector (M13) initialised — mode=%s, persistence=%d, distance=%s",
+                    mode_str, persistence_required, dist_mode)
 
     @property
     def has_trained_model(self) -> bool:
@@ -266,7 +299,8 @@ class GroundHazardDetector:
                 hazard_class=c.get('hazard_class', 'pothole'),
                 bbox_xyxy=c['bbox'],
                 confidence=c['conf'],
-                dist_m=c['dist_m'],
+                dist_m=c.get('dist_m', None),
+                dist_provenance=c.get('dist_provenance', 'unknown'),
                 source=c.get('source', 'heuristic'),
                 frame_id=frame_id,
                 timestamp=timestamp,
@@ -275,6 +309,41 @@ class GroundHazardDetector:
             )
             for c in candidates
         ]
+
+    # ── Ground-Plane Distance Estimation ─────────────────────────────────────
+
+    def _compute_ground_plane_distance(
+        self,
+        fy2: float,
+        frame_h: int,
+        frame_w: int,
+    ) -> Tuple[Optional[float], str]:
+        """Compute hazard distance from ground-plane pinhole geometry.
+
+        Model: camera at height H (m) above a flat ground plane, depressed
+        by pitch_deg below the horizon.
+
+            horizon_px = frame_h * (0.5 - tan(pitch_rad))
+            focal_px   = focal_length_ratio * frame_w
+            dist_m     = (H * focal_px) / max(1, fy2 - horizon_px)
+
+        Returns (dist_m, provenance_str).
+        When parameters are missing: returns (None, "unknown").
+        Callers MUST log provenance_str and show it in any UI displaying dist_m.
+        """
+        H   = self.camera_height_m
+        pit = self.camera_pitch_deg
+        flr = self.focal_length_ratio
+
+        if not (H and H > 0 and pit is not None and flr and flr > 0):
+            return None, "unknown"
+
+        pitch_rad  = math.radians(pit)
+        focal_px   = flr * frame_w
+        horizon_px = frame_h * (0.5 - math.tan(pitch_rad))
+        denom      = max(1.0, fy2 - horizon_px)
+        dist_m     = float(np.clip((H * focal_px) / denom, 0.2, 20.0))
+        return dist_m, "ground_plane_geometry"
 
     # ── Heuristic Pipeline ────────────────────────────────────────────────────
 
@@ -362,6 +431,9 @@ class GroundHazardDetector:
             fx2 = float(fx1 + bw)
             fy2 = float(fy1 + bh)
 
+            # Ground-plane distance estimation
+            dist_m, dist_provenance = self._compute_ground_plane_distance(fy2, h, w)
+
             # Confidence score (weighted combination of cues)
             area_score  = min(1.0, area / (roi_area * 0.06))
             edge_score  = min(1.0, mean_edge / 25.0)
@@ -374,17 +446,11 @@ class GroundHazardDetector:
                 0.0, 0.95
             ))
 
-            # Distance from vertical position in frame (pinhole geometry approximation)
-            # Lower in frame (higher fy_norm) → closer to camera
-            fy_center_norm = (fy1 + fy2) / 2.0 / max(h, 1)
-            # Linear model: fy_norm=roi_y_end → ~0.4m, fy_norm=roi_y_start → ~5.0m
-            t = (fy_center_norm - self.roi_y_start) / max(self.roi_y_end - self.roi_y_start, 0.01)
-            dist_m = float(np.clip(5.0 * (1.0 - t) + 0.4 * t, 0.3, 6.0))
-
             candidates.append({
                 'bbox': (fx1, fy1, fx2, fy2),
                 'conf': conf,
                 'dist_m': dist_m,
+                'dist_provenance': dist_provenance,
                 'source': 'heuristic',
             })
 
@@ -411,14 +477,14 @@ class GroundHazardDetector:
                     if fy_center_norm < self.roi_y_start or fy2 < h * (self.roi_y_start * 0.9):
                         continue
 
-                    # Distance approximation from ground plane vertical position
-                    t = (fy_center_norm - self.roi_y_start) / max(self.roi_y_end - self.roi_y_start, 0.01)
-                    dist_m = float(np.clip(5.0 * (1.0 - t) + 0.4 * t, 0.3, 6.0))
+                    # Ground-plane distance estimation
+                    dist_m, dist_provenance = self._compute_ground_plane_distance(fy2, h, w)
 
                     out.append({
                         'bbox': (fx1, fy1, fx2, fy2),
                         'conf': conf,
-                        'dist_m': round(dist_m, 1),
+                        'dist_m': dist_m,
+                        'dist_provenance': dist_provenance,
                         'source': 'model',
                     })
             return out
